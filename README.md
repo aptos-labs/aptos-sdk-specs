@@ -9,6 +9,9 @@ This project is a collection of specifications for SDKs for Aptos. The main purp
 
 ## Overview
 
+We are using [Cucumber]([https://cucumber.io/](https://cucumber.io/docs/guides/overview/) for Behavioral testing across multiple languages.  
+It uses Gherkin as the language for specification.
+
 The project is broken down into the following sections:
 
 * [Required Features](./features/required/README.md) - These features are required to have a minimally working SDK for
