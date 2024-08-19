@@ -1,0 +1,11 @@
+name: "Lint Specs"
+description: |
+  Lint the Gherkin specs
+
+runs:
+  using: composite
+  steps:
+    - name: Gerkhin Linter
+      uses: restqa/gherkin-linter-action@0.0.1
+      with:
+        path: 'features/'
