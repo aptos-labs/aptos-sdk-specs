@@ -20,3 +20,22 @@ The project is broken down into the following sections:
   including all main features.
 * [Optional Features](./features/optional/README.md) - These features are optional, and mostly provide quality of life
   improvements.
+
+## Features Support
+
+Note: This is currently in progress, and does not have all features specified.
+
+Do you have an SDK that you maintain?  Please feel free to open a PR, and add your specification support here!
+
+| Status         | Emoji | Details                                     |
+|----------------|-------|---------------------------------------------|
+| Supported      | ✅ | Currently supported and passing specifications |
+| Supported, not specified | ▶️ | Currently supported, no specification yet |
+| Limited support | 🔺 | Supported, but not fully featured |
+| Not Supported | ❌ | Currently not supported |
+| Unknown | ❓ | Unknown if SDK supports this feature |
+
+| Feature | [TypeScript](https://aptos.dev/en/build/sdks/ts-sdk) | [Go](https://aptos.dev/en/build/sdks/go-sdk) | [Python](https://aptos.dev/en/build/sdks/python-sdk) | [Rust](https://aptos.dev/en/build/sdks/rust-sdk) | [C#](https://aptos.dev/en/build/sdks/unity-sdk) | [C++](https://aptos.dev/en/build/sdks/cpp-sdk) | [Kaptos(Kotlin)](https://aptos.dev/en/build/sdks/kotlin-sdk) | [Alcove(Swift)](https://aptos.dev/en/build/sdks/community-sdks/swift-sdk) |
+|--|--|--|--|--|--|--|--|--|
+| BCS Encoding | ✅ | ✅ | ✅ | ▶️ | ▶️ | ▶️ | ▶️ | ❓|
+| BCS Decoding | ✅ | ✅ | ✅ | ▶️ | ▶️ | ▶️ | ▶️ | ❓|
