@@ -37,5 +37,5 @@ Do you have an SDK that you maintain?  Please feel free to open a PR, and add yo
 
 | Feature | [TypeScript](https://aptos.dev/en/build/sdks/ts-sdk) | [Go](https://aptos.dev/en/build/sdks/go-sdk) | [Python](https://aptos.dev/en/build/sdks/python-sdk) | [Rust](https://aptos.dev/en/build/sdks/rust-sdk) | [C#](https://aptos.dev/en/build/sdks/unity-sdk) | [C++](https://aptos.dev/en/build/sdks/cpp-sdk) | [Kaptos(Kotlin)](https://aptos.dev/en/build/sdks/kotlin-sdk) | [Alcove(Swift)](https://aptos.dev/en/build/sdks/community-sdks/swift-sdk) |
 |--|--|--|--|--|--|--|--|--|
-| BCS Encoding | ✅ | ✅ | ✅ | ▶️ | ▶️ | ▶️ | ▶️ | ❓|
-| BCS Decoding | ✅ | ✅ | ✅ | ▶️ | ▶️ | ▶️ | ▶️ | ❓|
+| BCS Encoding | [✅](https://github.com/aptos-labs/aptos-ts-sdk/blob/main/tests/features/bcs_serialization.feature) | [✅](https://github.com/aptos-labs/aptos-go-sdk/blob/main/features/bcs_serialization.feature) | [✅](https://github.com/aptos-labs/aptos-python-sdk/blob/main/features/bcs_serialization.feature) | ▶️ | ▶️ | ▶️ | ▶️ | ❓|
+| BCS Decoding | [✅](https://github.com/aptos-labs/aptos-ts-sdk/blob/main/tests/features/bcs_deserialization.feature) | [✅](https://github.com/aptos-labs/aptos-go-sdk/blob/main/features/bcs_deserialization.feature) | [✅](https://github.com/aptos-labs/aptos-python-sdk/blob/main/features/bcs_deserialization.feature) | ▶️ | ▶️ | ▶️ | ▶️ | ❓|
