@@ -1,0 +1,16 @@
+{
+  "name": "@aptos-labs/aptos-sdk-specs",
+  "version": "1.0.0",
+  "description": "This project is a collection of specifications for SDKs for Aptos. The main purposes of this project are:",
+  "main": "index.js",
+  "scripts": {
+    "fmt": "prettier --write '**/*.(md|feature)'",
+    "lint": "prettier --check '**/*.(md|feature)'"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "prettier": "^3.3.3",
+    "prettier-plugin-gherkin": "^3.0.0"
+  }
+}
