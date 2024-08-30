@@ -1,15 +1,15 @@
 Feature: Binary Canonical Serialization(BCS) Deserialization
-"""
+  """
   https://github.com/diem/bcs
 
   TODO List:
-    * Add a struct for testing
-    * Add possible invalid input number scenarios?  It's really language specific though
-    * Add invalid UTF-8 string deserialization
-    * Add invalid sequence item deserialization
-    * Add invalid struct deserialization
-    * Add invalid custom error struct deserialization
-"""
+  * Add a struct for testing
+  * Add possible invalid input number scenarios?  It's really language specific though
+  * Add invalid UTF-8 string deserialization
+  * Add invalid sequence item deserialization
+  * Add invalid struct deserialization
+  * Add invalid custom error struct deserialization
+  """
 
   Scenario Outline: It must be able to deserialize <label> as an address
     Given bytes <bytes>
@@ -133,7 +133,6 @@ Feature: Binary Canonical Serialization(BCS) Deserialization
       | 0x1000                                                                                 | 256                                                                            | 0x0001000000000000000000000000000000000000000000000000000000000000 |
       | the highest value (0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF) | 115792089237316195423570985008687907853269984665640564039457584007913129639935 | 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF |
 
-
   Scenario Outline: It must be able to deserialize <label> as an uleb128
     Given bytes <bytes>
     When I deserialize as uleb128
@@ -190,7 +189,6 @@ Feature: Binary Canonical Serialization(BCS) Deserialization
       | two bytes                                         | 0x0102                                                                                                                                                                                                                                                             | 0x020102                                                                                                                                                                                                                                                               |
       | long bytes with one length byte (127 characters)  | 0x0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCD   | 0x7F0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCD     |
       | long bytes with two length bytes (128 characters) | 0x0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF | 0x80010123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF |
-
 
   Scenario Outline: It must be able to deserialize <label> as a string <value> from <bytes>
     Given bytes <bytes>
@@ -265,4 +263,5 @@ Feature: Binary Canonical Serialization(BCS) Deserialization
       | bytes with length and no values  | bytes   | 0x01                                                             |
       | string without length            | string  | 0x                                                               |
       | string with length and no values | string  | 0x01                                                             |
-    # TODO check similar for sequences
+
+# TODO check similar for sequences

@@ -1,5 +1,5 @@
 Feature: Binary Canonical Serialization(BCS) Serialization
-"""
+  """
   https://github.com/diem/bcs
 
   TODO List:
@@ -8,10 +8,9 @@ Feature: Binary Canonical Serialization(BCS) Serialization
   * Add struct sequence tests
   * Add for custom error handling on structs?
   * Do we add a fixed length test that doesn't match length of input (disallowed in Go entirely)
-"""
+  """
 
   # TODO Do we merge all of the primitives into one big scenario outline?
-
   Scenario Outline: It must be able to serialize <label> as an address
     Given address <value>
     When I serialize as address
@@ -144,7 +143,6 @@ Feature: Binary Canonical Serialization(BCS) Serialization
       | four bytes (16777215)      | 16777215   | 0xFFFFFF07   |
       | max u32 (4294966295)       | 4294967295 | 0xFFFFFFFF0F |
 
-
   Scenario Outline: It must be able to serialize <label> as fixed bytes
     Given bytes <value>
     When I serialize as fixed bytes with length <length>
@@ -183,7 +181,6 @@ Feature: Binary Canonical Serialization(BCS) Serialization
       | four character string  | "abcd"     | 0x0461626364         |
       | numbers and letters    | "1234abcd" | 0x083132333461626364 |
       | emojis                 | "😀🚀"     | 0x08F09F9880F09F9A80 |
-
 
   Scenario Outline: It must be able to serialize <label> as a sequence of <type>
     Given sequence of <type> <value>
