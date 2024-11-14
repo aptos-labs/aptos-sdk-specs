@@ -26,6 +26,7 @@ TODO: More to be added
 - [AccountAuthenticator](./account_authenticator.feature)
 - [TransactionAuthenticator](./transaction_authenticator.feature)
 - [AuthenticationKey](./authentication_key.feature)
+- [PrivateKey](./crypto_private_key.feature)
 
 ### Transactions
 
