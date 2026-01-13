@@ -1,0 +1,181 @@
+{
+  "version": "1.1",
+  "description": "Mnemonic and key derivation test vectors for Aptos SDKs",
+  "warning": "The 'all abandon' mnemonic is a well-known test vector - NEVER use in production",
+  "bip39_wordlist": "english",
+  "aptos_coin_type": 637,
+  "ed25519_derivation_vectors": [
+    {
+      "name": "standard_12_word_default_path",
+      "description": "Ed25519 derivation from 12-word mnemonic with default Aptos path",
+      "input": {
+        "mnemonic": "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about",
+        "passphrase": "",
+        "derivation_path": "m/44'/637'/0'/0'/0'"
+      },
+      "expected": {
+        "seed_hex": "5eb00bbddcf069084889a8ab9155568165f5c453ccb85e70811aaed6f6da5fc19a5ac40b389cd370d086206dec8aa6c43daea6690f20ad3d8d48b2d2ce9e38e4",
+        "private_key_hex": "0x82001573a003fd3b7fd72ffb0eaf63aac62f12deb629dca72785a66268ec758b",
+        "public_key_hex": "0xea526ba1710343d953461ff68641f1b7df5f23b9042ffa2d2a798d3adb3f3d6c",
+        "auth_key_hex": "0x9c3a0eeb9f91075eefa4d1f58c02e59e9d34e41320a3ccb357e6a5c7bfa540fa",
+        "address": "0x9c3a0eeb9f91075eefa4d1f58c02e59e9d34e41320a3ccb357e6a5c7bfa540fa"
+      }
+    },
+    {
+      "name": "standard_12_word_index_1",
+      "description": "Ed25519 derivation at address index 1",
+      "input": {
+        "mnemonic": "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about",
+        "passphrase": "",
+        "derivation_path": "m/44'/637'/0'/0'/1'"
+      },
+      "expected": {
+        "note": "Different index produces different address",
+        "address_differs_from_index_0": true
+      }
+    },
+    {
+      "name": "standard_12_word_index_2",
+      "description": "Ed25519 derivation at address index 2",
+      "input": {
+        "mnemonic": "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about",
+        "passphrase": "",
+        "derivation_path": "m/44'/637'/0'/0'/2'"
+      },
+      "expected": {
+        "note": "Different index produces different address"
+      }
+    },
+    {
+      "name": "with_passphrase_trezor",
+      "description": "Ed25519 derivation with TREZOR passphrase",
+      "input": {
+        "mnemonic": "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about",
+        "passphrase": "TREZOR",
+        "derivation_path": "m/44'/637'/0'/0'/0'"
+      },
+      "expected": {
+        "note": "Passphrase changes the seed and thus all derived keys",
+        "seed_differs_from_no_passphrase": true,
+        "address_differs_from_no_passphrase": true
+      }
+    },
+    {
+      "name": "24_word_mnemonic",
+      "description": "Ed25519 derivation from 24-word mnemonic",
+      "input": {
+        "mnemonic": "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon art",
+        "passphrase": "",
+        "derivation_path": "m/44'/637'/0'/0'/0'"
+      },
+      "expected": {
+        "note": "Different mnemonic entropy produces different keys",
+        "address_differs_from_12_word": true
+      }
+    },
+    {
+      "name": "real_world_mnemonic",
+      "description": "A more realistic looking test mnemonic",
+      "input": {
+        "mnemonic": "shoot barn peasant worry pluck rose income snake observe slab wood normal",
+        "passphrase": "",
+        "derivation_path": "m/44'/637'/0'/0'/0'"
+      },
+      "expected": {
+        "note": "Each unique mnemonic produces unique keys"
+      }
+    }
+  ],
+  "secp256k1_derivation_vectors": [
+    {
+      "name": "secp256k1_standard_12_word",
+      "description": "Secp256k1 derivation from standard test mnemonic",
+      "input": {
+        "mnemonic": "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about",
+        "passphrase": "",
+        "derivation_path": "m/44'/637'/0'/0'/0'"
+      },
+      "expected": {
+        "note": "Secp256k1 produces different address than Ed25519 from same mnemonic",
+        "address_differs_from_ed25519": true,
+        "scheme_identifier": 1
+      }
+    }
+  ],
+  "authentication_key_derivation": [
+    {
+      "name": "ed25519_auth_key",
+      "description": "Authentication key derivation for Ed25519",
+      "input": {
+        "public_key_hex": "0xea526ba1710343d953461ff68641f1b7df5f23b9042ffa2d2a798d3adb3f3d6c",
+        "scheme": "ed25519",
+        "scheme_identifier": 0
+      },
+      "expected": {
+        "formula": "SHA3-256(public_key || 0x00)",
+        "auth_key_hex": "0x9c3a0eeb9f91075eefa4d1f58c02e59e9d34e41320a3ccb357e6a5c7bfa540fa"
+      }
+    },
+    {
+      "name": "secp256k1_auth_key",
+      "description": "Authentication key derivation for Secp256k1",
+      "input": {
+        "public_key_uncompressed_hex": "0x04...",
+        "scheme": "secp256k1",
+        "scheme_identifier": 1
+      },
+      "expected": {
+        "formula": "SHA3-256(uncompressed_public_key || 0x01)"
+      }
+    }
+  ],
+  "derivation_paths": {
+    "default_aptos": "m/44'/637'/0'/0'/0'",
+    "purpose": "44'",
+    "coin_type": "637'",
+    "account": "0'",
+    "change": "0'",
+    "address_index": "variable",
+    "examples": [
+      {"path": "m/44'/637'/0'/0'/0'", "description": "First account"},
+      {"path": "m/44'/637'/0'/0'/1'", "description": "Second account"},
+      {"path": "m/44'/637'/0'/0'/2'", "description": "Third account"},
+      {"path": "m/44'/637'/1'/0'/0'", "description": "Different account index (less common)"}
+    ]
+  },
+  "invalid_mnemonics": [
+    {
+      "name": "11_words",
+      "mnemonic": "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon",
+      "reason": "11 words is not a valid BIP-39 word count"
+    },
+    {
+      "name": "13_words",
+      "mnemonic": "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about about",
+      "reason": "13 words is not a valid BIP-39 word count"
+    },
+    {
+      "name": "invalid_word",
+      "mnemonic": "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon xyz",
+      "reason": "'xyz' is not in the BIP-39 English wordlist"
+    },
+    {
+      "name": "wrong_checksum",
+      "mnemonic": "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon",
+      "reason": "Valid words but checksum does not match"
+    },
+    {
+      "name": "mixed_languages",
+      "mnemonic": "abandon 放弃 abandon abandon abandon abandon abandon abandon abandon abandon abandon about",
+      "reason": "Mixed language mnemonics are invalid"
+    }
+  ],
+  "valid_word_counts": [12, 15, 18, 21, 24],
+  "entropy_bits_by_words": {
+    "12": 128,
+    "15": 160,
+    "18": 192,
+    "21": 224,
+    "24": 256
+  }
+}

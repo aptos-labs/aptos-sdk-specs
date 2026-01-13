@@ -1,0 +1,209 @@
+{
+  "version": "1.0",
+  "description": "Multi-signature and advanced transaction test vectors for Aptos SDKs",
+  "multi_ed25519": {
+    "description": "Multi-Ed25519 (M-of-N threshold) test vectors",
+    "auth_key_derivation": {
+      "formula": "SHA3-256(pk1 || pk2 || ... || pkN || threshold || 0x01)",
+      "scheme_identifier": "0x01"
+    },
+    "vectors": [
+      {
+        "name": "2_of_3_multisig",
+        "description": "2-of-3 multi-signature account",
+        "input": {
+          "public_keys": [
+            "0xpubkey1_32bytes_hex",
+            "0xpubkey2_32bytes_hex",
+            "0xpubkey3_32bytes_hex"
+          ],
+          "threshold": 2
+        },
+        "expected": {
+          "auth_key_input_length": 99,
+          "auth_key_input_structure": "pk1(32) || pk2(32) || pk3(32) || threshold(1) || scheme(1)",
+          "note": "Auth key is SHA3-256 of the concatenated input"
+        }
+      },
+      {
+        "name": "1_of_1_multisig",
+        "description": "Degenerate 1-of-1 case",
+        "input": {
+          "public_keys": ["0xpubkey1"],
+          "threshold": 1
+        }
+      },
+      {
+        "name": "3_of_5_multisig",
+        "description": "3-of-5 threshold",
+        "input": {
+          "public_keys": ["pk1", "pk2", "pk3", "pk4", "pk5"],
+          "threshold": 3
+        }
+      }
+    ],
+    "signature_structure": {
+      "description": "Multi-Ed25519 signature contains bitmap and signatures",
+      "fields": [
+        {"name": "signatures", "type": "vector of 64-byte Ed25519 signatures"},
+        {"name": "bitmap", "type": "4 bytes indicating which keys signed"}
+      ],
+      "bitmap_encoding": {
+        "description": "Bitmap is big-endian, bit N set means key N signed",
+        "examples": [
+          {"signers": [0, 1], "bitmap_hex": "c0000000", "note": "bits 0 and 1 set"},
+          {"signers": [0, 2], "bitmap_hex": "a0000000", "note": "bits 0 and 2 set"},
+          {"signers": [1, 2], "bitmap_hex": "60000000", "note": "bits 1 and 2 set"}
+        ]
+      }
+    },
+    "invalid_cases": [
+      {
+        "name": "threshold_zero",
+        "threshold": 0,
+        "num_keys": 3,
+        "error": "InvalidThreshold"
+      },
+      {
+        "name": "threshold_exceeds_keys",
+        "threshold": 4,
+        "num_keys": 3,
+        "error": "InvalidThreshold"
+      },
+      {
+        "name": "no_keys",
+        "threshold": 1,
+        "num_keys": 0,
+        "error": "InvalidKeyCount"
+      },
+      {
+        "name": "duplicate_signer",
+        "signers": [0, 0, 1],
+        "error": "DuplicateSignerIndex"
+      },
+      {
+        "name": "invalid_signer_index",
+        "num_keys": 3,
+        "signer_index": 5,
+        "error": "InvalidSignerIndex"
+      }
+    ]
+  },
+  "multi_agent": {
+    "description": "Multi-agent transaction test vectors",
+    "signing_message": {
+      "domain": "APTOS::RawTransactionWithData",
+      "structure": "domain_prefix || BCS(RawTransactionWithData::MultiAgent)",
+      "multi_agent_structure": {
+        "raw_txn": "RawTransaction",
+        "secondary_signer_addresses": "vector<AccountAddress>"
+      }
+    },
+    "vectors": [
+      {
+        "name": "two_signers",
+        "description": "Sender plus one secondary signer",
+        "input": {
+          "sender": "0x1",
+          "secondary_signers": ["0x2"]
+        },
+        "expected": {
+          "all_sign_same_message": true,
+          "authenticator_type": "MultiAgent"
+        }
+      },
+      {
+        "name": "three_signers",
+        "description": "Sender plus two secondary signers",
+        "input": {
+          "sender": "0x1",
+          "secondary_signers": ["0x2", "0x3"]
+        }
+      }
+    ],
+    "authenticator_structure": {
+      "fields": [
+        {"name": "sender", "type": "AccountAuthenticator"},
+        {"name": "secondary_signer_addresses", "type": "vector<AccountAddress>"},
+        {"name": "secondary_signers", "type": "vector<AccountAuthenticator>"}
+      ],
+      "note": "secondary_signer_addresses and secondary_signers must have same length"
+    }
+  },
+  "fee_payer": {
+    "description": "Fee payer (sponsored) transaction test vectors",
+    "signing_message": {
+      "domain": "APTOS::RawTransactionWithData",
+      "structure": "domain_prefix || BCS(RawTransactionWithData::FeePayer)",
+      "fee_payer_structure": {
+        "raw_txn": "RawTransaction",
+        "secondary_signer_addresses": "vector<AccountAddress>",
+        "fee_payer_address": "AccountAddress"
+      }
+    },
+    "vectors": [
+      {
+        "name": "simple_sponsored",
+        "description": "Sender transaction paid by sponsor",
+        "input": {
+          "sender": "0x1",
+          "fee_payer": "0xSPONSOR",
+          "secondary_signers": []
+        },
+        "expected": {
+          "who_pays_gas": "fee_payer",
+          "all_sign_same_message": true
+        }
+      },
+      {
+        "name": "sponsored_multi_agent",
+        "description": "Multi-agent transaction with sponsor",
+        "input": {
+          "sender": "0x1",
+          "secondary_signers": ["0x2"],
+          "fee_payer": "0xSPONSOR"
+        }
+      }
+    ],
+    "authenticator_structure": {
+      "fields": [
+        {"name": "sender", "type": "AccountAuthenticator"},
+        {"name": "secondary_signer_addresses", "type": "vector<AccountAddress>"},
+        {"name": "secondary_signers", "type": "vector<AccountAuthenticator>"},
+        {"name": "fee_payer_address", "type": "AccountAddress"},
+        {"name": "fee_payer_signer", "type": "AccountAuthenticator"}
+      ]
+    },
+    "gas_behavior": {
+      "description": "Gas is charged to fee_payer, not sender",
+      "notes": [
+        "Sender's max_gas_amount and gas_unit_price are used for limits",
+        "Fee payer must have sufficient balance",
+        "Sender's balance is not checked for gas"
+      ]
+    }
+  },
+  "account_authenticator_variants": [
+    {
+      "variant": "Ed25519",
+      "index": 0,
+      "fields": ["public_key", "signature"]
+    },
+    {
+      "variant": "MultiEd25519",
+      "index": 1,
+      "fields": ["public_key", "signature"]
+    },
+    {
+      "variant": "SingleKey",
+      "index": 2,
+      "fields": ["authenticator"]
+    },
+    {
+      "variant": "MultiKey",
+      "index": 3,
+      "fields": ["public_keys", "signatures", "signatures_bitmap"]
+    }
+  ]
+}
+
