@@ -1,4 +1,5 @@
-@core-types @required
+@core-types
+@required
 Feature: Account Address Handling
   As an SDK user
   I want to parse and format account addresses
@@ -7,7 +8,6 @@ Feature: Account Address Handling
   # =============================================================================
   # Address Parsing - Valid Inputs
   # =============================================================================
-
   @required
   Scenario: Parse hex address with 0x prefix
     Given a hex string "0x1"
@@ -42,12 +42,12 @@ Feature: Account Address Handling
     And the full hex should be "<full>"
 
     Examples:
-      | input | short | full |
-      | 0x1 | 0x1 | 0x0000000000000000000000000000000000000000000000000000000000000001 |
-      | 0x10 | 0x10 | 0x0000000000000000000000000000000000000000000000000000000000000010 |
-      | 0xff | 0xff | 0x00000000000000000000000000000000000000000000000000000000000000ff |
-      | 0x100 | 0x100 | 0x0000000000000000000000000000000000000000000000000000000000000100 |
-      | 0xabcdef | 0xabcdef | 0x0000000000000000000000000000000000000000000000000000000000abcdef |
+      | input                                                              | short    | full                                                               |
+      | 0x1                                                                | 0x1      | 0x0000000000000000000000000000000000000000000000000000000000000001 |
+      | 0x10                                                               | 0x10     | 0x0000000000000000000000000000000000000000000000000000000000000010 |
+      | 0xff                                                               | 0xff     | 0x00000000000000000000000000000000000000000000000000000000000000ff |
+      | 0x100                                                              | 0x100    | 0x0000000000000000000000000000000000000000000000000000000000000100 |
+      | 0xabcdef                                                           | 0xabcdef | 0x0000000000000000000000000000000000000000000000000000000000abcdef |
       | 0x0000000000000000000000000000000000000000000000000000000000abcdef | 0xabcdef | 0x0000000000000000000000000000000000000000000000000000000000abcdef |
 
   @required
@@ -67,7 +67,6 @@ Feature: Account Address Handling
   # =============================================================================
   # Address Parsing - Invalid Inputs
   # =============================================================================
-
   @required
   Scenario: Reject empty string
     Given a hex string ""
@@ -101,7 +100,6 @@ Feature: Account Address Handling
   # =============================================================================
   # Address Formatting
   # =============================================================================
-
   @required
   Scenario: Format address to full hex
     Given an AccountAddress with value 1
@@ -129,15 +127,14 @@ Feature: Account Address Handling
     Then the result should be "<short>"
 
     Examples:
-      | input | short |
-      | 0x0000000000000000000000000000000000000000000000000000000000000010 | 0x10 |
-      | 0x0000000000000000000000000000000000000000000000000000000000001000 | 0x1000 |
+      | input                                                              | short                                                              |
+      | 0x0000000000000000000000000000000000000000000000000000000000000010 | 0x10                                                               |
+      | 0x0000000000000000000000000000000000000000000000000000000000001000 | 0x1000                                                             |
       | 0x1000000000000000000000000000000000000000000000000000000000000000 | 0x1000000000000000000000000000000000000000000000000000000000000000 |
 
   # =============================================================================
   # Standard Address Constants
   # =============================================================================
-
   @required
   Scenario: ZERO address constant
     Given the ZERO address constant
@@ -166,7 +163,6 @@ Feature: Account Address Handling
   # =============================================================================
   # Address Comparison
   # =============================================================================
-
   @required
   Scenario: Addresses parsed from equivalent inputs are equal
     Given an AccountAddress from hex "0x1"
@@ -182,7 +178,6 @@ Feature: Account Address Handling
   # =============================================================================
   # BCS Serialization
   # =============================================================================
-
   @required
   Scenario: BCS serialize address
     Given an AccountAddress from hex "0x1"
@@ -203,4 +198,3 @@ Feature: Account Address Handling
     When I BCS serialize the address
     And I BCS deserialize the result as AccountAddress
     Then the result should equal the original address
-

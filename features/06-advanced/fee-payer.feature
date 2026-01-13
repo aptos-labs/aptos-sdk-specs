@@ -1,4 +1,5 @@
-@advanced @optional
+@advanced
+@optional
 Feature: Fee Payer (Sponsored) Transactions
   As an SDK user
   I want to create sponsored transactions
@@ -7,7 +8,6 @@ Feature: Fee Payer (Sponsored) Transactions
   # =============================================================================
   # Fee Payer Transaction Creation
   # =============================================================================
-
   @optional
   Scenario: Create fee payer transaction with sponsor
     Given a sender account
@@ -34,7 +34,6 @@ Feature: Fee Payer (Sponsored) Transactions
   # =============================================================================
   # Fee Payer Signing Message
   # =============================================================================
-
   @optional
   Scenario: Fee payer signing message differs from multi-agent
     Given the same RawTransaction and secondary signers
@@ -66,7 +65,6 @@ Feature: Fee Payer (Sponsored) Transactions
   # =============================================================================
   # Fee Payer Signing
   # =============================================================================
-
   @optional
   Scenario: Sign fee payer transaction
     Given a RawTransaction
@@ -107,7 +105,6 @@ Feature: Fee Payer (Sponsored) Transactions
   # =============================================================================
   # Sponsored Transaction Workflow
   # =============================================================================
-
   @optional
   Scenario: Sender initiates sponsored transaction
     Given a sender who wants sponsored transaction
@@ -134,7 +131,6 @@ Feature: Fee Payer (Sponsored) Transactions
   # =============================================================================
   # Gas Configuration
   # =============================================================================
-
   @optional
   Scenario: Fee payer pays gas regardless of sender gas fields
     Given sender creates transaction with max_gas_amount=100
@@ -153,7 +149,6 @@ Feature: Fee Payer (Sponsored) Transactions
   # =============================================================================
   # Error Cases
   # =============================================================================
-
   @optional
   Scenario: Reject missing fee payer signature
     Given a fee payer transaction
@@ -180,7 +175,6 @@ Feature: Fee Payer (Sponsored) Transactions
   # =============================================================================
   # BCS Serialization
   # =============================================================================
-
   @optional
   Scenario: Serialize fee payer authenticator
     Given a fee payer authenticator
@@ -197,7 +191,6 @@ Feature: Fee Payer (Sponsored) Transactions
   # =============================================================================
   # Test Vectors
   # =============================================================================
-
   @optional
   Scenario: Known fee payer signing message test vector
     Given a RawTransaction and fee payer address from test vectors
@@ -209,4 +202,3 @@ Feature: Fee Payer (Sponsored) Transactions
     Given a fee payer transaction from test vectors
     When I serialize it
     Then the bytes should match expected value from test vectors
-

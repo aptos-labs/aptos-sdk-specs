@@ -1,4 +1,5 @@
-@cryptography @required
+@cryptography
+@required
 Feature: Ed25519 Cryptography
   As an SDK user
   I want to use Ed25519 keys for signing
@@ -7,7 +8,6 @@ Feature: Ed25519 Cryptography
   # =============================================================================
   # Key Generation
   # =============================================================================
-
   @required
   Scenario: Generate random Ed25519 key pair
     When I generate a random Ed25519 key pair
@@ -50,7 +50,6 @@ Feature: Ed25519 Cryptography
   # =============================================================================
   # Signing
   # =============================================================================
-
   @required
   Scenario: Sign a message
     Given an Ed25519 key pair
@@ -91,7 +90,6 @@ Feature: Ed25519 Cryptography
   # =============================================================================
   # Verification
   # =============================================================================
-
   @required
   Scenario: Verify valid signature
     Given an Ed25519 key pair
@@ -133,7 +131,6 @@ Feature: Ed25519 Cryptography
   # =============================================================================
   # Key Export
   # =============================================================================
-
   @required
   Scenario: Export public key bytes
     Given an Ed25519 key pair
@@ -158,7 +155,6 @@ Feature: Ed25519 Cryptography
   # =============================================================================
   # Authentication Key Derivation
   # =============================================================================
-
   @required
   Scenario: Derive authentication key from Ed25519 public key
     Given an Ed25519 public key
@@ -177,7 +173,6 @@ Feature: Ed25519 Cryptography
   # =============================================================================
   # Test Vectors
   # =============================================================================
-
   @required
   Scenario: Known test vector - key derivation
     Given private key hex "0x0000000000000000000000000000000000000000000000000000000000000001"
@@ -195,14 +190,17 @@ Feature: Ed25519 Cryptography
   # =============================================================================
   # Security Properties (Manual)
   # =============================================================================
-
-  @required @manual @rust-only
+  @required
+  @manual
+  @rust-only
   Scenario: Private key is zeroized on drop
     Given an Ed25519 key pair created in a scope
     When the key pair goes out of scope
     Then the private key memory should be zeroized
 
-  @required @manual @rust-only
+  @required
+  @manual
+  @rust-only
   Scenario: Private key does not appear in debug output
     Given an Ed25519 key pair
     When I format it for debug output

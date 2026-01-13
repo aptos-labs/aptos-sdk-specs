@@ -1,4 +1,5 @@
-@transaction-building @required
+@transaction-building
+@required
 Feature: Raw Transaction Construction
   As an SDK user
   I want to construct raw transactions
@@ -7,7 +8,6 @@ Feature: Raw Transaction Construction
   # =============================================================================
   # RawTransaction Creation
   # =============================================================================
-
   @required
   Scenario: Create RawTransaction with all fields
     Given a sender address "0x1"
@@ -37,7 +37,6 @@ Feature: Raw Transaction Construction
   # =============================================================================
   # BCS Serialization
   # =============================================================================
-
   @required
   Scenario: BCS serialize RawTransaction
     Given a RawTransaction with known values
@@ -63,7 +62,6 @@ Feature: Raw Transaction Construction
   # =============================================================================
   # Signing Message
   # =============================================================================
-
   @required
   Scenario: Generate signing message for single signer
     Given a valid RawTransaction
@@ -92,7 +90,6 @@ Feature: Raw Transaction Construction
   # =============================================================================
   # Transaction Builder (Preferred)
   # =============================================================================
-
   @preferred
   Scenario: Build transaction with builder pattern
     Given a TransactionBuilder
@@ -154,7 +151,6 @@ Feature: Raw Transaction Construction
   # =============================================================================
   # Chain ID Handling
   # =============================================================================
-
   @required
   Scenario: Transaction with mainnet chain ID
     Given a RawTransaction with chain ID 1 (mainnet)
@@ -170,7 +166,6 @@ Feature: Raw Transaction Construction
   # =============================================================================
   # Test Vectors
   # =============================================================================
-
   @required
   Scenario: Known transaction serialization test vector
     Given a RawTransaction with values from test vectors
@@ -182,4 +177,3 @@ Feature: Raw Transaction Construction
     Given a RawTransaction from test vectors
     When I generate the signing message
     Then it should match the expected value from test vectors
-

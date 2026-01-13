@@ -1,4 +1,5 @@
-@advanced @required
+@advanced
+@required
 Feature: Error Handling
   As an SDK user
   I want consistent and informative error handling
@@ -7,7 +8,6 @@ Feature: Error Handling
   # =============================================================================
   # Error Categories
   # =============================================================================
-
   @required
   Scenario: Network errors are distinguishable
     Given a network timeout or connection failure
@@ -40,7 +40,6 @@ Feature: Error Handling
   # =============================================================================
   # VM Status Codes
   # =============================================================================
-
   @required
   Scenario: Parse success status
     Given a transaction with vm_status "success"
@@ -78,13 +77,12 @@ Feature: Error Handling
   # =============================================================================
   # Common Abort Codes
   # =============================================================================
-
   @preferred
   Scenario: Recognize standard abort codes
     Given common abort codes like:
-      | Code   | Module        | Meaning              |
-      | 65537  | coin          | Insufficient balance |
-      | 65542  | account       | Account not found    |
+      | Code  | Module  | Meaning              |
+      | 65537 | coin    | Insufficient balance |
+      | 65542 | account | Account not found    |
     When I receive these in errors
     Then SDK should provide human-readable descriptions
 
@@ -98,7 +96,6 @@ Feature: Error Handling
   # =============================================================================
   # Error Wrapping and Context
   # =============================================================================
-
   @required
   Scenario: Errors include operation context
     Given an error during "submit_transaction"
@@ -122,7 +119,6 @@ Feature: Error Handling
   # =============================================================================
   # Error Types (Language-Specific)
   # =============================================================================
-
   @required
   Scenario: TypeScript uses typed errors
     Given TypeScript SDK
@@ -156,7 +152,6 @@ Feature: Error Handling
   # =============================================================================
   # Recoverable vs Non-Recoverable
   # =============================================================================
-
   @required
   Scenario: Identify retryable errors
     Given an error
@@ -175,7 +170,6 @@ Feature: Error Handling
   # =============================================================================
   # Simulation Errors
   # =============================================================================
-
   @required
   Scenario: Simulation failure with details
     Given a transaction simulation that fails
@@ -193,7 +187,6 @@ Feature: Error Handling
   # =============================================================================
   # Wait for Transaction Errors
   # =============================================================================
-
   @required
   Scenario: Transaction not found during wait
     Given waiting for a transaction
@@ -210,7 +203,6 @@ Feature: Error Handling
   # =============================================================================
   # Error Messages
   # =============================================================================
-
   @required
   Scenario: Error messages are actionable
     Given an error
@@ -233,7 +225,6 @@ Feature: Error Handling
   # =============================================================================
   # Error Recovery Patterns
   # =============================================================================
-
   @preferred
   Scenario: Sequence number recovery
     Given a SEQUENCE_NUMBER_TOO_OLD error
@@ -254,4 +245,3 @@ Feature: Error Handling
     When I want to recover
     Then SDK should suggest waiting
     And potentially auto-retry with backoff
-

@@ -1,4 +1,5 @@
-@cryptography @required
+@cryptography
+@required
 Feature: Hashing Functions
   As an SDK user
   I want to compute cryptographic hashes
@@ -7,7 +8,6 @@ Feature: Hashing Functions
   # =============================================================================
   # SHA3-256
   # =============================================================================
-
   @required
   Scenario: Compute SHA3-256 of empty data
     Given empty bytes
@@ -42,7 +42,6 @@ Feature: Hashing Functions
   # =============================================================================
   # SHA2-256
   # =============================================================================
-
   @required
   Scenario: Compute SHA2-256 of empty data
     Given empty bytes
@@ -65,7 +64,6 @@ Feature: Hashing Functions
   # =============================================================================
   # Domain-Separated Hashing
   # =============================================================================
-
   @required
   Scenario: Domain-separated hash for RawTransaction
     Given the domain string "APTOS::RawTransaction"
@@ -93,14 +91,13 @@ Feature: Hashing Functions
     Then the first 4 bytes should be "<prefix>"
 
     Examples:
-      | domain | prefix |
-      | APTOS::RawTransaction | known_prefix_1 |
+      | domain                        | prefix         |
+      | APTOS::RawTransaction         | known_prefix_1 |
       | APTOS::RawTransactionWithData | known_prefix_2 |
 
   # =============================================================================
   # HashValue Type
   # =============================================================================
-
   @required
   Scenario: Create HashValue from bytes
     Given 32 random bytes
@@ -145,7 +142,6 @@ Feature: Hashing Functions
   # =============================================================================
   # HMAC-SHA512 (for BIP-39)
   # =============================================================================
-
   @preferred
   Scenario: Compute HMAC-SHA512 for BIP-39 seed derivation
     Given a mnemonic entropy and passphrase
@@ -155,11 +151,9 @@ Feature: Hashing Functions
   # =============================================================================
   # Performance Characteristics
   # =============================================================================
-
   @required
   Scenario: Hashing large data
     Given 1 megabyte of random data
     When I compute SHA3-256
     Then the operation should complete successfully
     And the result should be 32 bytes
-

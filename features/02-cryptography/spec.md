@@ -2,7 +2,9 @@
 
 ## Overview
 
-The cryptography module provides cryptographic primitives for Aptos blockchain operations including key generation, signing, verification, and hashing. Multiple signature schemes are supported with Ed25519 being the primary required scheme.
+The cryptography module provides cryptographic primitives for Aptos blockchain operations including
+key generation, signing, verification, and hashing. Multiple signature schemes are supported with
+Ed25519 being the primary required scheme.
 
 ## Goals
 
@@ -23,48 +25,49 @@ The cryptography module provides cryptographic primitives for Aptos blockchain o
 
 ### Description
 
-Ed25519 is the primary signature scheme for Aptos accounts. It provides fast signing and verification with 32-byte keys.
+Ed25519 is the primary signature scheme for Aptos accounts. It provides fast signing and
+verification with 32-byte keys.
 
 ### Key Sizes
 
-| Component | Size |
-|-----------|------|
-| Private Key (Seed) | 32 bytes |
+| Component              | Size                         |
+| ---------------------- | ---------------------------- |
+| Private Key (Seed)     | 32 bytes                     |
 | Private Key (Extended) | 64 bytes (seed + public key) |
-| Public Key | 32 bytes |
-| Signature | 64 bytes |
+| Public Key             | 32 bytes                     |
+| Signature              | 64 bytes                     |
 
 ### Requirements
 
 #### Key Generation
 
-| Method | Priority | Description |
-|--------|----------|-------------|
-| `generate()` | P0 | Generate random key pair using secure RNG |
-| `from_seed(bytes)` | P0 | Create from 32-byte seed |
-| `from_bytes(bytes)` | P0 | Create from 64-byte private key |
-| `from_hex(string)` | P0 | Create from hex-encoded private key |
+| Method              | Priority | Description                               |
+| ------------------- | -------- | ----------------------------------------- |
+| `generate()`        | P0       | Generate random key pair using secure RNG |
+| `from_seed(bytes)`  | P0       | Create from 32-byte seed                  |
+| `from_bytes(bytes)` | P0       | Create from 64-byte private key           |
+| `from_hex(string)`  | P0       | Create from hex-encoded private key       |
 
 #### Signing
 
-| Method | Priority | Description |
-|--------|----------|-------------|
-| `sign(message)` | P0 | Sign arbitrary bytes |
-| `sign_message(message)` | P0 | Sign with domain separator |
+| Method                  | Priority | Description                |
+| ----------------------- | -------- | -------------------------- |
+| `sign(message)`         | P0       | Sign arbitrary bytes       |
+| `sign_message(message)` | P0       | Sign with domain separator |
 
 #### Verification
 
-| Method | Priority | Description |
-|--------|----------|-------------|
-| `verify(message, signature)` | P0 | Verify signature against public key |
+| Method                       | Priority | Description                         |
+| ---------------------------- | -------- | ----------------------------------- |
+| `verify(message, signature)` | P0       | Verify signature against public key |
 
 #### Export
 
-| Method | Priority | Description |
-|--------|----------|-------------|
-| `public_key_bytes()` | P0 | Get 32-byte public key |
-| `private_key_bytes()` | P0 | Get private key bytes (with security warning) |
-| `to_hex()` | P0 | Export as hex string |
+| Method                | Priority | Description                                   |
+| --------------------- | -------- | --------------------------------------------- |
+| `public_key_bytes()`  | P0       | Get 32-byte public key                        |
+| `private_key_bytes()` | P0       | Get private key bytes (with security warning) |
+| `to_hex()`            | P0       | Export as hex string                          |
 
 ### Security Requirements
 
@@ -83,43 +86,45 @@ Secp256k1 is used for compatibility with Ethereum-style wallets and hardware dev
 
 ### Key Sizes
 
-| Component | Size |
-|-----------|------|
-| Private Key | 32 bytes |
-| Public Key (Compressed) | 33 bytes |
-| Public Key (Uncompressed) | 65 bytes |
-| Signature | 64 bytes (r, s) |
+| Component                 | Size            |
+| ------------------------- | --------------- |
+| Private Key               | 32 bytes        |
+| Public Key (Compressed)   | 33 bytes        |
+| Public Key (Uncompressed) | 65 bytes        |
+| Signature                 | 64 bytes (r, s) |
 
 ### Requirements
 
 #### Key Generation
 
-| Method | Priority | Description |
-|--------|----------|-------------|
-| `generate()` | P1 | Generate random key pair |
-| `from_bytes(bytes)` | P1 | Create from 32-byte private key |
-| `from_hex(string)` | P1 | Create from hex-encoded private key |
+| Method              | Priority | Description                         |
+| ------------------- | -------- | ----------------------------------- |
+| `generate()`        | P1       | Generate random key pair            |
+| `from_bytes(bytes)` | P1       | Create from 32-byte private key     |
+| `from_hex(string)`  | P1       | Create from hex-encoded private key |
 
 #### Public Key Formats
 
-| Method | Priority | Description |
-|--------|----------|-------------|
-| `to_compressed()` | P1 | 33-byte compressed format |
-| `to_uncompressed()` | P1 | 65-byte uncompressed format |
+| Method              | Priority | Description                 |
+| ------------------- | -------- | --------------------------- |
+| `to_compressed()`   | P1       | 33-byte compressed format   |
+| `to_uncompressed()` | P1       | 65-byte uncompressed format |
 
 #### Signing
 
-| Method | Priority | Description |
-|--------|----------|-------------|
-| `sign(message)` | P1 | Sign with recoverable signature |
-| `sign_prehashed(hash)` | P1 | Sign pre-hashed message |
+| Method                 | Priority | Description                     |
+| ---------------------- | -------- | ------------------------------- |
+| `sign(message)`        | P1       | Sign with recoverable signature |
+| `sign_prehashed(hash)` | P1       | Sign pre-hashed message         |
 
 ### Authentication Key
 
 Secp256k1 authentication key derivation:
+
 ```
 auth_key = SHA3-256(public_key_uncompressed || 0x01)
 ```
+
 Where `0x01` is the Secp256k1 scheme identifier.
 
 ---
@@ -139,6 +144,7 @@ Same as Secp256k1.
 ```
 auth_key = SHA3-256(public_key_uncompressed || 0x02)
 ```
+
 Where `0x02` is the Secp256r1 scheme identifier.
 
 ---
@@ -151,22 +157,22 @@ BLS signatures enable signature aggregation for multi-signature schemes.
 
 ### Key Sizes
 
-| Component | Size |
-|-----------|------|
+| Component   | Size     |
+| ----------- | -------- |
 | Private Key | 32 bytes |
-| Public Key | 48 bytes |
-| Signature | 96 bytes |
+| Public Key  | 48 bytes |
+| Signature   | 96 bytes |
 
 ### Requirements
 
-| Method | Priority | Description |
-|--------|----------|-------------|
-| `generate()` | P2 | Generate random key pair |
-| `sign(message)` | P2 | Sign message |
-| `verify(message, signature)` | P2 | Verify signature |
-| `aggregate_signatures(sigs)` | P2 | Combine multiple signatures |
-| `aggregate_public_keys(keys)` | P2 | Combine multiple public keys |
-| `proof_of_possession()` | P2 | Generate PoP for key |
+| Method                        | Priority | Description                  |
+| ----------------------------- | -------- | ---------------------------- |
+| `generate()`                  | P2       | Generate random key pair     |
+| `sign(message)`               | P2       | Sign message                 |
+| `verify(message, signature)`  | P2       | Verify signature             |
+| `aggregate_signatures(sigs)`  | P2       | Combine multiple signatures  |
+| `aggregate_public_keys(keys)` | P2       | Combine multiple public keys |
+| `proof_of_possession()`       | P2       | Generate PoP for key         |
 
 ---
 
@@ -174,18 +180,18 @@ BLS signatures enable signature aggregation for multi-signature schemes.
 
 ### SHA3-256 (Required - P0)
 
-| Method | Priority | Description |
-|--------|----------|-------------|
-| `sha3_256(data)` | P0 | Compute SHA3-256 hash |
-| `sha3_256_of_parts(parts)` | P0 | Hash multiple data segments |
+| Method                     | Priority | Description                 |
+| -------------------------- | -------- | --------------------------- |
+| `sha3_256(data)`           | P0       | Compute SHA3-256 hash       |
+| `sha3_256_of_parts(parts)` | P0       | Hash multiple data segments |
 
 ### SHA2-256 (Required - P0)
 
 Required for BIP-39/BIP-44 key derivation.
 
-| Method | Priority | Description |
-|--------|----------|-------------|
-| `sha256(data)` | P0 | Compute SHA2-256 hash |
+| Method         | Priority | Description           |
+| -------------- | -------- | --------------------- |
+| `sha256(data)` | P0       | Compute SHA2-256 hash |
 
 ### Domain-Separated Hashing
 
@@ -196,6 +202,7 @@ hash = SHA3-256(SHA3-256(domain_string) || data)
 ```
 
 Common domains:
+
 - `APTOS::RawTransaction` - Single-signer transactions
 - `APTOS::RawTransactionWithData` - Multi-agent/fee payer transactions
 
@@ -215,31 +222,32 @@ auth_key = SHA3-256(public_key_bytes || scheme_identifier)
 
 ### Scheme Identifiers
 
-| Scheme | Identifier | Priority |
-|--------|------------|----------|
-| Ed25519 | 0x00 | P0 |
-| Secp256k1 | 0x01 | P1 |
-| Secp256r1 | 0x02 | P2 |
-| MultiEd25519 | 0x01 | P2 |
-| MultiKey | 0x03 | P2 |
-| Keyless | 0x05 | P2 |
+| Scheme       | Identifier | Priority |
+| ------------ | ---------- | -------- |
+| Ed25519      | 0x00       | P0       |
+| Secp256k1    | 0x01       | P1       |
+| Secp256r1    | 0x02       | P2       |
+| MultiEd25519 | 0x01       | P2       |
+| MultiKey     | 0x03       | P2       |
+| Keyless      | 0x05       | P2       |
 
 ### Address Derivation
 
 For new accounts (not rotated):
+
 ```
 account_address = authentication_key
 ```
 
 ### Requirements
 
-| Method | Priority | Description |
-|--------|----------|-------------|
-| `from_public_key(key, scheme)` | P0 | Derive from public key |
-| `from_ed25519(public_key)` | P0 | Derive from Ed25519 key |
-| `from_secp256k1(public_key)` | P1 | Derive from Secp256k1 key |
-| `to_account_address()` | P0 | Convert to address |
-| `as_bytes()` | P0 | Get raw 32 bytes |
+| Method                         | Priority | Description               |
+| ------------------------------ | -------- | ------------------------- |
+| `from_public_key(key, scheme)` | P0       | Derive from public key    |
+| `from_ed25519(public_key)`     | P0       | Derive from Ed25519 key   |
+| `from_secp256k1(public_key)`   | P1       | Derive from Secp256k1 key |
+| `to_account_address()`         | P0       | Convert to address        |
+| `as_bytes()`                   | P0       | Get raw 32 bytes          |
 
 ---
 
@@ -247,26 +255,27 @@ account_address = authentication_key
 
 ### BIP-39 Mnemonics
 
-| Method | Priority | Description |
-|--------|----------|-------------|
-| `generate(word_count)` | P1 | Generate mnemonic (12, 15, 18, 21, 24 words) |
-| `from_phrase(phrase)` | P1 | Parse mnemonic phrase |
-| `validate(phrase)` | P1 | Validate mnemonic checksum |
-| `to_seed(passphrase)` | P1 | Derive 64-byte seed |
+| Method                 | Priority | Description                                  |
+| ---------------------- | -------- | -------------------------------------------- |
+| `generate(word_count)` | P1       | Generate mnemonic (12, 15, 18, 21, 24 words) |
+| `from_phrase(phrase)`  | P1       | Parse mnemonic phrase                        |
+| `validate(phrase)`     | P1       | Validate mnemonic checksum                   |
+| `to_seed(passphrase)`  | P1       | Derive 64-byte seed                          |
 
 ### BIP-44 Path Derivation
 
 Aptos uses coin type 637:
+
 ```
 m/44'/637'/account'/change'/address_index'
 ```
 
 Default path: `m/44'/637'/0'/0'/0'`
 
-| Method | Priority | Description |
-|--------|----------|-------------|
-| `derive_ed25519(seed, path)` | P1 | Derive Ed25519 key |
-| `derive_secp256k1(seed, path)` | P1 | Derive Secp256k1 key |
+| Method                         | Priority | Description          |
+| ------------------------------ | -------- | -------------------- |
+| `derive_ed25519(seed, path)`   | P1       | Derive Ed25519 key   |
+| `derive_secp256k1(seed, path)` | P1       | Derive Secp256k1 key |
 
 ---
 
@@ -274,14 +283,14 @@ Default path: `m/44'/637'/0'/0'/0'`
 
 ### Required Error Cases
 
-| Error | Trigger | Priority |
-|-------|---------|----------|
-| InvalidPrivateKey | Malformed private key bytes | P0 |
-| InvalidPublicKey | Malformed public key bytes | P0 |
-| InvalidSignature | Malformed signature bytes | P0 |
-| VerificationFailed | Signature doesn't verify | P0 |
-| InvalidMnemonic | Bad mnemonic phrase | P1 |
-| InvalidDerivationPath | Malformed BIP-44 path | P1 |
+| Error                 | Trigger                     | Priority |
+| --------------------- | --------------------------- | -------- |
+| InvalidPrivateKey     | Malformed private key bytes | P0       |
+| InvalidPublicKey      | Malformed public key bytes  | P0       |
+| InvalidSignature      | Malformed signature bytes   | P0       |
+| VerificationFailed    | Signature doesn't verify    | P0       |
+| InvalidMnemonic       | Bad mnemonic phrase         | P1       |
+| InvalidDerivationPath | Malformed BIP-44 path       | P1       |
 
 ---
 
@@ -311,22 +320,23 @@ Default path: `m/44'/637'/0'/0'/0'`
 ## Cross-SDK Compatibility
 
 All SDKs must produce identical:
+
 1. Public keys from the same private key
 2. Signatures for the same message and key
 3. Authentication keys from the same public key
 4. Derived keys from the same mnemonic and path
 
-Test vectors in `test-vectors/signatures.json` and `test-vectors/mnemonics.json` provide deterministic test cases.
+Test vectors in `test-vectors/signatures.json` and `test-vectors/mnemonics.json` provide
+deterministic test cases.
 
 ---
 
 ## Related Gherkin Feature Files
 
-| File | Scenarios | Description |
-|------|-----------|-------------|
-| `ed25519.feature` | 23 | Ed25519 key generation, signing, verification |
-| `secp256k1.feature` | 18 | Secp256k1 ECDSA operations |
-| `secp256r1.feature` | 26 | Secp256r1/P-256 for WebAuthn/Passkey |
-| `bls12381.feature` | 30 | BLS12-381 aggregatable signatures |
-| `hashing.feature` | 21 | SHA3-256, SHA2-256, domain separation |
-
+| File                | Scenarios | Description                                   |
+| ------------------- | --------- | --------------------------------------------- |
+| `ed25519.feature`   | 23        | Ed25519 key generation, signing, verification |
+| `secp256k1.feature` | 18        | Secp256k1 ECDSA operations                    |
+| `secp256r1.feature` | 26        | Secp256r1/P-256 for WebAuthn/Passkey          |
+| `bls12381.feature`  | 30        | BLS12-381 aggregatable signatures             |
+| `hashing.feature`   | 21        | SHA3-256, SHA2-256, domain separation         |

@@ -1,4 +1,5 @@
-@api-clients @preferred
+@api-clients
+@preferred
 Feature: Gas Estimation
   As an SDK user
   I want to estimate gas costs for transactions
@@ -7,7 +8,6 @@ Feature: Gas Estimation
   # =============================================================================
   # Gas Price Estimation
   # =============================================================================
-
   @preferred
   Scenario: Get current gas price estimate
     Given a connected Aptos client
@@ -43,7 +43,6 @@ Feature: Gas Estimation
   # =============================================================================
   # Transaction Simulation for Gas
   # =============================================================================
-
   @preferred
   Scenario: Simulate transaction for gas usage
     Given a valid transaction
@@ -74,7 +73,6 @@ Feature: Gas Estimation
   # =============================================================================
   # Gas Configuration
   # =============================================================================
-
   @preferred
   Scenario: Default gas parameters
     Given a transaction builder with defaults
@@ -103,7 +101,6 @@ Feature: Gas Estimation
   # =============================================================================
   # Gas Calculation
   # =============================================================================
-
   @preferred
   Scenario: Calculate total gas cost
     Given gas_used = 1000 units
@@ -128,7 +125,6 @@ Feature: Gas Estimation
   # =============================================================================
   # Insufficient Gas Handling
   # =============================================================================
-
   @preferred
   Scenario: Transaction fails with insufficient max gas
     Given a transaction requiring 50000 gas
@@ -154,7 +150,6 @@ Feature: Gas Estimation
   # =============================================================================
   # Dynamic Gas Adjustment
   # =============================================================================
-
   @preferred
   Scenario: Auto-estimate gas for transaction
     Given an Aptos client with auto-gas enabled
@@ -178,7 +173,6 @@ Feature: Gas Estimation
   # =============================================================================
   # Network Conditions
   # =============================================================================
-
   @preferred
   Scenario: Gas prices vary by network load
     Given network is under high load
@@ -194,7 +188,6 @@ Feature: Gas Estimation
   # =============================================================================
   # Error Cases
   # =============================================================================
-
   @preferred
   Scenario: Handle gas estimation failure
     Given a network error during estimation
@@ -206,4 +199,3 @@ Feature: Gas Estimation
     Given gas_unit_price = 0
     When I try to submit transaction
     Then it should fail with validation error
-

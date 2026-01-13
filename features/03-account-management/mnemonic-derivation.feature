@@ -1,4 +1,5 @@
-@account-management @preferred
+@account-management
+@preferred
 Feature: Mnemonic-Based Key Derivation
   As an SDK user
   I want to derive accounts from mnemonic phrases
@@ -7,7 +8,6 @@ Feature: Mnemonic-Based Key Derivation
   # =============================================================================
   # Mnemonic Generation
   # =============================================================================
-
   @preferred
   Scenario: Generate 12-word mnemonic
     When I generate a mnemonic with 12 words
@@ -47,7 +47,6 @@ Feature: Mnemonic-Based Key Derivation
   # =============================================================================
   # Mnemonic Parsing
   # =============================================================================
-
   @preferred
   Scenario: Parse valid mnemonic phrase
     Given the mnemonic phrase "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about"
@@ -81,7 +80,6 @@ Feature: Mnemonic-Based Key Derivation
   # =============================================================================
   # Ed25519 Account Derivation
   # =============================================================================
-
   @preferred
   Scenario: Derive Ed25519 account from mnemonic with default path
     Given a valid mnemonic phrase
@@ -125,7 +123,6 @@ Feature: Mnemonic-Based Key Derivation
   # =============================================================================
   # Secp256k1 Account Derivation
   # =============================================================================
-
   @preferred
   Scenario: Derive Secp256k1 account from mnemonic
     Given a valid mnemonic phrase
@@ -143,7 +140,6 @@ Feature: Mnemonic-Based Key Derivation
   # =============================================================================
   # Passphrase Support
   # =============================================================================
-
   @preferred
   Scenario: Derive account with passphrase
     Given a valid mnemonic phrase
@@ -168,7 +164,6 @@ Feature: Mnemonic-Based Key Derivation
   # =============================================================================
   # Test Vectors
   # =============================================================================
-
   @preferred
   Scenario: Known test vector - 12 word mnemonic
     Given mnemonic "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about"
@@ -192,7 +187,6 @@ Feature: Mnemonic-Based Key Derivation
   # =============================================================================
   # Derivation Path Validation
   # =============================================================================
-
   @preferred
   Scenario: Valid derivation path formats
     Given a valid mnemonic phrase
@@ -220,7 +214,6 @@ Feature: Mnemonic-Based Key Derivation
   # =============================================================================
   # Security
   # =============================================================================
-
   @preferred
   Scenario: Mnemonic phrase can be retrieved
     Given a generated mnemonic
@@ -232,4 +225,3 @@ Feature: Mnemonic-Based Key Derivation
     Given a mnemonic phrase
     When I derive an account
     Then the intermediate seed should be zeroized from memory
-

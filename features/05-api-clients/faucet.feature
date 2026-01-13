@@ -1,4 +1,5 @@
-@api-clients @preferred
+@api-clients
+@preferred
 Feature: Faucet Client
   As an SDK user
   I want to fund accounts with test tokens
@@ -7,7 +8,6 @@ Feature: Faucet Client
   # =============================================================================
   # Faucet Configuration (no network required)
   # =============================================================================
-
   @preferred
   Scenario: Faucet client for testnet
     When I create a faucet client for testnet
@@ -38,8 +38,8 @@ Feature: Faucet Client
   # =============================================================================
   # Funding Accounts (requires network)
   # =============================================================================
-
-  @preferred @network
+  @preferred
+  @network
   Scenario: Fund account with default amount
     Given a faucet client for testnet
     And a new account address
@@ -47,14 +47,16 @@ Feature: Faucet Client
     Then the request should succeed
     And I should receive transaction hash(es)
 
-  @preferred @network
+  @preferred
+  @network
   Scenario: Fund account with specific amount
     Given a faucet client for testnet
     And a new account address
     When I request funding for 100_000_000 octas (1 APT)
     Then the request should succeed
 
-  @preferred @network
+  @preferred
+  @network
   Scenario: Fund account creates account if not exists
     Given a faucet client for testnet
     And an address that doesn't exist on-chain
@@ -62,14 +64,16 @@ Feature: Faucet Client
     Then the account should be created
     And the account should have balance
 
-  @preferred @network
+  @preferred
+  @network
   Scenario: Fund existing account adds to balance
     Given a faucet client for testnet
     And an existing account with 1 APT
     When I fund the account with 1 APT more
     Then the balance should increase
 
-  @preferred @network
+  @preferred
+  @network
   Scenario: Multiple funding requests
     Given a faucet client for testnet
     And a new account address
@@ -80,8 +84,8 @@ Feature: Faucet Client
   # =============================================================================
   # Wait for Funding (requires network)
   # =============================================================================
-
-  @preferred @network
+  @preferred
+  @network
   Scenario: Wait for funding transaction
     Given a faucet client
     When I fund an account
@@ -89,7 +93,8 @@ Feature: Faucet Client
     Then the transaction should be confirmed
     And the account should have the funded amount
 
-  @preferred @network
+  @preferred
+  @network
   Scenario: Fund and wait convenience method
     Given a faucet client
     And a new account address
@@ -97,7 +102,8 @@ Feature: Faucet Client
     Then the method should return after confirmation
     And the account should have balance
 
-  @preferred @network
+  @preferred
+  @network
   Scenario: Funding timeout
     Given a faucet client
     And a very short timeout (1ms)
@@ -107,8 +113,8 @@ Feature: Faucet Client
   # =============================================================================
   # Create Funded Account (requires network)
   # =============================================================================
-
-  @preferred @network
+  @preferred
+  @network
   Scenario: Create new funded account
     Given an Aptos client with faucet
     When I call create_funded_account with 100_000_000 octas
@@ -116,14 +122,16 @@ Feature: Faucet Client
     And the account should have 100_000_000 octas balance
     And the account should be usable for signing
 
-  @preferred @network
+  @preferred
+  @network
   Scenario: Create funded Ed25519 account
     Given an Aptos client with faucet
     When I create a funded Ed25519 account
     Then the account should be Ed25519 type
     And it should have balance
 
-  @preferred @network
+  @preferred
+  @network
   Scenario: Create funded Secp256k1 account
     Given an Aptos client with faucet
     When I create a funded Secp256k1 account
@@ -133,7 +141,6 @@ Feature: Faucet Client
   # =============================================================================
   # Error Handling
   # =============================================================================
-
   @preferred
   Scenario: Handle faucet rate limiting
     Given many rapid funding requests
@@ -141,7 +148,8 @@ Feature: Faucet Client
     Then the error should indicate rate limiting
     And should suggest waiting
 
-  @preferred @network
+  @preferred
+  @network
   Scenario: Handle faucet unavailable
     Given a faucet endpoint that is down
     When I try to fund an account
@@ -153,7 +161,8 @@ Feature: Faucet Client
     When I try to fund it
     Then I should receive a validation error
 
-  @preferred @network
+  @preferred
+  @network
   Scenario: Faucet returns transaction hashes
     Given a successful funding request
     When I inspect the response
@@ -163,7 +172,6 @@ Feature: Faucet Client
   # =============================================================================
   # Integration with Aptos Client (mostly no network)
   # =============================================================================
-
   @preferred
   Scenario: Access faucet through Aptos client
     Given an Aptos client configured for testnet
@@ -177,11 +185,11 @@ Feature: Faucet Client
     When I try to access the faucet client
     Then it should be None or unavailable
 
-  @preferred @network
+  @preferred
+  @network
   Scenario: High-level fund_account method
     Given an Aptos client for testnet
     And a new account address
     When I call aptos.fund_account(address, amount)
     Then the account should be funded
     And the method should wait for confirmation
-

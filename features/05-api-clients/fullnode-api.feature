@@ -1,4 +1,5 @@
-@api-clients @required
+@api-clients
+@required
 Feature: Fullnode REST API Client
   As an SDK user
   I want to interact with the Aptos fullnode API
@@ -7,7 +8,6 @@ Feature: Fullnode REST API Client
   # =============================================================================
   # Client Configuration (no network required)
   # =============================================================================
-
   @required
   Scenario: Create client for testnet
     When I create a client with testnet configuration
@@ -34,8 +34,8 @@ Feature: Fullnode REST API Client
   # =============================================================================
   # Ledger Information (requires network)
   # =============================================================================
-
-  @required @network
+  @required
+  @network
   Scenario: Get ledger info
     Given a connected client
     When I request ledger info
@@ -43,7 +43,8 @@ Feature: Fullnode REST API Client
     And I should receive ledger_version
     And I should receive block_height
 
-  @required @network
+  @required
+  @network
   Scenario: Chain ID from ledger info
     Given a client connected to testnet
     When I get the ledger info
@@ -52,8 +53,8 @@ Feature: Fullnode REST API Client
   # =============================================================================
   # Account Queries (requires network)
   # =============================================================================
-
-  @required @network
+  @required
+  @network
   Scenario: Get account info for existing account
     Given a client connected to testnet
     And a known existing account address
@@ -61,14 +62,16 @@ Feature: Fullnode REST API Client
     Then I should receive sequence_number
     And I should receive authentication_key
 
-  @required @network
+  @required
+  @network
   Scenario: Get account info for non-existent account
     Given a client connected to testnet
     And a random unused account address
     When I get account info for the address
     Then I should receive a 404 NotFound error
 
-  @required @network
+  @required
+  @network
   Scenario: Get account resources
     Given a client connected to testnet
     And an account address with resources
@@ -76,7 +79,8 @@ Feature: Fullnode REST API Client
     Then I should receive a list of resources
     And each resource should have a type and data
 
-  @required @network
+  @required
+  @network
   Scenario: Get specific account resource
     Given a client connected to testnet
     And an account with APT balance
@@ -84,14 +88,16 @@ Feature: Fullnode REST API Client
     Then I should receive the coin store resource
     And I should be able to read the balance
 
-  @required @network
+  @required
+  @network
   Scenario: Get non-existent resource
     Given a client connected to testnet
     And an account address
     When I get a resource type that doesn't exist
     Then I should receive a 404 NotFound error
 
-  @preferred @network
+  @preferred
+  @network
   Scenario: Get account modules
     Given a client connected to testnet
     And an account with published modules (e.g., 0x1)
@@ -102,8 +108,8 @@ Feature: Fullnode REST API Client
   # =============================================================================
   # Transaction Queries (requires network)
   # =============================================================================
-
-  @required @network
+  @required
+  @network
   Scenario: Get transaction by hash - existing
     Given a client connected to testnet
     And a known transaction hash
@@ -112,21 +118,24 @@ Feature: Fullnode REST API Client
     And I should see the transaction type
     And I should see the success status
 
-  @required @network
+  @required
+  @network
   Scenario: Get transaction by hash - not found
     Given a client connected to testnet
     And a non-existent transaction hash
     When I get transaction by hash
     Then I should receive a 404 NotFound error
 
-  @required @network
+  @required
+  @network
   Scenario: Get transaction by version
     Given a client connected to testnet
     And a known ledger version
     When I get transaction by version
     Then I should receive the transaction at that version
 
-  @preferred @network
+  @preferred
+  @network
   Scenario: Get account transactions
     Given a client connected to testnet
     And an account with transaction history
@@ -134,7 +143,8 @@ Feature: Fullnode REST API Client
     Then I should receive a list of transactions
     And transactions should be for that account
 
-  @preferred @network
+  @preferred
+  @network
   Scenario: Get account transactions with pagination
     Given a client connected to testnet
     And an account with many transactions
@@ -145,8 +155,8 @@ Feature: Fullnode REST API Client
   # =============================================================================
   # Response Headers (requires network)
   # =============================================================================
-
-  @required @network
+  @required
+  @network
   Scenario: Parse ledger state from response headers
     Given a client connected to testnet
     When I make any API request
@@ -155,7 +165,8 @@ Feature: Fullnode REST API Client
     And ledger state should have ledger_version
     And ledger state should have block_height
 
-  @required @network
+  @required
+  @network
   Scenario: Ledger version increases
     Given a client connected to testnet
     When I get ledger info twice with delay
@@ -164,14 +175,15 @@ Feature: Fullnode REST API Client
   # =============================================================================
   # Error Handling
   # =============================================================================
-
-  @required @network
+  @required
+  @network
   Scenario: Handle network error
     Given a client configured for unreachable URL
     When I try to make a request
     Then I should receive a Network error
 
-  @required @network
+  @required
+  @network
   Scenario: Handle timeout
     Given a client with 1ms timeout
     When I try to make a request
@@ -195,19 +207,19 @@ Feature: Fullnode REST API Client
   # =============================================================================
   # Test Vectors / Known Values (requires network)
   # =============================================================================
-
-  @required @network
+  @required
+  @network
   Scenario: Query framework account
     Given a client connected to any network
     When I get account info for "0x1"
     Then the account should exist
     And it should have resources
 
-  @required @network
+  @required
+  @network
   Scenario: Query AptosCoin type
     Given a client connected to any network
     When I get the CoinInfo resource for AptosCoin
     Then I should see name "Aptos Coin"
     And I should see symbol "APT"
     And I should see decimals 8
-

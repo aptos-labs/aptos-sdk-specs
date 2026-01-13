@@ -1,4 +1,5 @@
-@advanced @optional
+@advanced
+@optional
 Feature: Keyless Accounts (OIDC Authentication)
   As an SDK user
   I want to use OIDC authentication for accounts
@@ -7,7 +8,6 @@ Feature: Keyless Accounts (OIDC Authentication)
   # =============================================================================
   # Ephemeral Key Pair
   # =============================================================================
-
   @optional
   Scenario: Generate ephemeral key pair
     When I generate an ephemeral key pair with 3600 second expiry
@@ -42,7 +42,6 @@ Feature: Keyless Accounts (OIDC Authentication)
   # =============================================================================
   # Keyless Account Creation
   # =============================================================================
-
   @optional
   Scenario: Create keyless account from JWT
     Given an ephemeral key pair
@@ -75,7 +74,6 @@ Feature: Keyless Accounts (OIDC Authentication)
   # =============================================================================
   # Address Derivation
   # =============================================================================
-
   @optional
   Scenario: Keyless address derivation formula
     Given issuer "https://accounts.google.com"
@@ -109,7 +107,6 @@ Feature: Keyless Accounts (OIDC Authentication)
   # =============================================================================
   # Signing
   # =============================================================================
-
   @optional
   Scenario: Sign message with keyless account
     Given a valid keyless account
@@ -136,7 +133,6 @@ Feature: Keyless Accounts (OIDC Authentication)
   # =============================================================================
   # Proof Management
   # =============================================================================
-
   @optional
   Scenario: Check if keyless account is valid
     Given a keyless account with valid proof
@@ -160,7 +156,6 @@ Feature: Keyless Accounts (OIDC Authentication)
   # =============================================================================
   # OIDC Providers
   # =============================================================================
-
   @optional
   Scenario: Google provider configuration
     Given OidcProvider Google
@@ -182,7 +177,6 @@ Feature: Keyless Accounts (OIDC Authentication)
   # =============================================================================
   # Pepper Service
   # =============================================================================
-
   @optional
   Scenario: Get pepper for JWT
     Given a valid JWT
@@ -205,7 +199,6 @@ Feature: Keyless Accounts (OIDC Authentication)
   # =============================================================================
   # Prover Service
   # =============================================================================
-
   @optional
   Scenario: Generate ZK proof
     Given a valid JWT
@@ -224,7 +217,6 @@ Feature: Keyless Accounts (OIDC Authentication)
   # =============================================================================
   # Error Cases
   # =============================================================================
-
   @optional
   Scenario: Reject invalid JWT format
     Given a malformed JWT string
@@ -247,7 +239,6 @@ Feature: Keyless Accounts (OIDC Authentication)
   # =============================================================================
   # Security Considerations
   # =============================================================================
-
   @optional
   Scenario: Ephemeral key expiry is enforced
     Given an ephemeral key with 1 hour expiry
@@ -263,10 +254,8 @@ Feature: Keyless Accounts (OIDC Authentication)
   # =============================================================================
   # Test Vectors
   # =============================================================================
-
   @optional
   Scenario: Known keyless address test vector
     Given JWT claims and pepper from test vectors
     When I derive the address
     Then it should match the expected value from test vectors
-

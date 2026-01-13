@@ -1,4 +1,5 @@
-@advanced @optional
+@advanced
+@optional
 Feature: Multi-Signature Accounts
   As an SDK user
   I want to create and use multi-signature accounts
@@ -7,7 +8,6 @@ Feature: Multi-Signature Accounts
   # =============================================================================
   # MultiEd25519 Account Creation
   # =============================================================================
-
   @optional
   Scenario: Create 2-of-3 multi-sig account
     Given 3 Ed25519 public keys
@@ -55,7 +55,6 @@ Feature: Multi-Signature Accounts
   # =============================================================================
   # Authentication Key Derivation
   # =============================================================================
-
   @optional
   Scenario: Multi-sig authentication key derivation
     Given 3 Ed25519 public keys in order
@@ -80,7 +79,6 @@ Feature: Multi-Signature Accounts
   # =============================================================================
   # Signing
   # =============================================================================
-
   @optional
   Scenario: Sign with enough private keys
     Given a 2-of-3 multi-sig account with 2 private keys
@@ -120,7 +118,6 @@ Feature: Multi-Signature Accounts
   # =============================================================================
   # Multi-Sig Signature Structure
   # =============================================================================
-
   @optional
   Scenario: Multi-sig signature contains indices
     Given a 2-of-3 multi-sig signature from keys 0 and 2
@@ -137,7 +134,6 @@ Feature: Multi-Signature Accounts
   # =============================================================================
   # Signing Transactions
   # =============================================================================
-
   @optional
   Scenario: Sign transaction with multi-sig account
     Given a 2-of-3 multi-sig account with 2 private keys
@@ -156,7 +152,6 @@ Feature: Multi-Signature Accounts
   # =============================================================================
   # Verification
   # =============================================================================
-
   @optional
   Scenario: Verify multi-sig signature
     Given a 2-of-3 multi-sig public key
@@ -181,7 +176,6 @@ Feature: Multi-Signature Accounts
   # =============================================================================
   # Test Vectors
   # =============================================================================
-
   @optional
   Scenario: Known multi-sig address test vector
     Given public keys from test vectors
@@ -194,4 +188,3 @@ Feature: Multi-Signature Accounts
     Given a multi-sig account and message from test vectors
     When I sign with the specified keys
     Then the signature should match expected value from test vectors
-

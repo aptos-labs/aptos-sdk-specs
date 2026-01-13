@@ -1,17 +1,18 @@
 # Behavioral Specification Tests
 
-This directory contains test implementations that validate SDK behavior against the Gherkin specifications.
+This directory contains test implementations that validate SDK behavior against the Gherkin
+specifications.
 
 ## Supported SDKs
 
-| SDK | Framework | Directory | Status |
-|-----|-----------|-----------|--------|
-| TypeScript | Cucumber.js + Bun | `typescript/` | ✅ Ready |
-| Go | Godog | `go/` | ✅ Ready |
-| **Rust** | cucumber-rs | `rust/` | ✅ Ready |
-| Python | Behave | `python/` | 📋 Planned |
-| C# | SpecFlow | `dotnet/` | 📋 Planned |
-| Kotlin | Cucumber-JVM | `kotlin/` | 📋 Planned |
+| SDK        | Framework         | Directory     | Status     |
+| ---------- | ----------------- | ------------- | ---------- |
+| TypeScript | Cucumber.js + Bun | `typescript/` | ✅ Ready   |
+| Go         | Godog             | `go/`         | ✅ Ready   |
+| **Rust**   | cucumber-rs       | `rust/`       | ✅ Ready   |
+| Python     | Behave            | `python/`     | 📋 Planned |
+| C#         | SpecFlow          | `dotnet/`     | 📋 Planned |
+| Kotlin     | Cucumber-JVM      | `kotlin/`     | 📋 Planned |
 
 ## Quick Start
 
@@ -79,6 +80,7 @@ Scenario: Parse short address
 ```
 
 This scenario:
+
 1. Calls `Given` step with input `"0x1"`
 2. Calls `When` step that invokes `AccountAddress.from("0x1")`
 3. Calls `Then` steps that assert the result
@@ -88,18 +90,18 @@ This scenario:
 ### TypeScript Example
 
 ```typescript
-import { Given, When, Then } from '@cucumber/cucumber';
-import { AccountAddress } from '@aptos-labs/ts-sdk';
+import { Given, When, Then } from "@cucumber/cucumber";
+import { AccountAddress } from "@aptos-labs/ts-sdk";
 
-Given('a short address {string}', function(address: string) {
+Given("a short address {string}", function (address: string) {
   this.hexString = address;
 });
 
-When('I parse the address', function() {
+When("I parse the address", function () {
   this.address = AccountAddress.from(this.hexString);
 });
 
-Then('I should get a valid AccountAddress', function() {
+Then("I should get a valid AccountAddress", function () {
   expect(this.address).to.not.be.undefined;
 });
 ```
@@ -147,22 +149,23 @@ fn then_parsing_succeeds(world: &mut TestWorld) {
 
 Use tags to run specific subsets of tests:
 
-| Tag | Description |
-|-----|-------------|
-| `@required` | Must-have features (P0) |
-| `@preferred` | Recommended features (P1) |
-| `@optional` | Nice-to-have features (P2) |
-| `@core-types` | Address, TypeTag, serialization |
-| `@cryptography` | Keys, signatures, hashing |
-| `@accounts` | Account creation, derivation |
-| `@transactions` | Transaction building |
-| `@api-clients` | REST API, faucet, indexer |
-| `@advanced` | Multi-sig, keyless, etc. |
-| `@network` | Requires network connectivity |
+| Tag             | Description                     |
+| --------------- | ------------------------------- |
+| `@required`     | Must-have features (P0)         |
+| `@preferred`    | Recommended features (P1)       |
+| `@optional`     | Nice-to-have features (P2)      |
+| `@core-types`   | Address, TypeTag, serialization |
+| `@cryptography` | Keys, signatures, hashing       |
+| `@accounts`     | Account creation, derivation    |
+| `@transactions` | Transaction building            |
+| `@api-clients`  | REST API, faucet, indexer       |
+| `@advanced`     | Multi-sig, keyless, etc.        |
+| `@network`      | Requires network connectivity   |
 
 ### Running Tests Without Network
 
-Many API client tests require actual network connectivity to testnet/devnet. To skip these tests when running offline:
+Many API client tests require actual network connectivity to testnet/devnet. To skip these tests
+when running offline:
 
 ```bash
 # TypeScript - run only non-network tests
@@ -176,7 +179,8 @@ bun run cucumber-js --tags "@required and not @network"
 bun run cucumber-js --tags "@api-clients and not @network"
 ```
 
-Network-dependent tests have a 5-second timeout and will fail gracefully when network is unavailable.
+Network-dependent tests have a 5-second timeout and will fail gracefully when network is
+unavailable.
 
 ## Test Vectors
 
@@ -184,7 +188,7 @@ Load deterministic test cases from `../test-vectors/*.json`:
 
 ```typescript
 // TypeScript
-import { getAddressParsingVectors } from '../support/vectors';
+import { getAddressParsingVectors } from "../support/vectors";
 const vectors = getAddressParsingVectors();
 for (const v of vectors) {
   const addr = AccountAddress.from(v.input);
@@ -203,11 +207,11 @@ for _, v := range vectors {
 
 ## Coverage Goals
 
-| Priority | Target | Description |
-|----------|--------|-------------|
-| Required (P0) | 100% | All tests must pass |
-| Preferred (P1) | 90%+ | Most tests should pass |
-| Optional (P2) | Best effort | Pass as many as possible |
+| Priority       | Target      | Description              |
+| -------------- | ----------- | ------------------------ |
+| Required (P0)  | 100%        | All tests must pass      |
+| Preferred (P1) | 90%+        | Most tests should pass   |
+| Optional (P2)  | Best effort | Pass as many as possible |
 
 ## Adding a New Language
 
@@ -217,4 +221,3 @@ for _, v := range vectors {
 4. Implement step definitions following existing patterns
 5. Use `../test-vectors/*.json` for deterministic tests
 6. Add to CI pipeline
-

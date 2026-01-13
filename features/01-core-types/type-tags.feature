@@ -1,4 +1,5 @@
-@core-types @required
+@core-types
+@required
 Feature: TypeTag Handling
   As an SDK user
   I want to work with Move type representations
@@ -7,7 +8,6 @@ Feature: TypeTag Handling
   # =============================================================================
   # Primitive Type Parsing
   # =============================================================================
-
   @required
   Scenario Outline: Parse primitive types
     Given a type string "<type_string>"
@@ -17,15 +17,15 @@ Feature: TypeTag Handling
 
     Examples:
       | type_string | variant |
-      | bool | Bool |
-      | u8 | U8 |
-      | u16 | U16 |
-      | u32 | U32 |
-      | u64 | U64 |
-      | u128 | U128 |
-      | u256 | U256 |
-      | address | Address |
-      | signer | Signer |
+      | bool        | Bool    |
+      | u8          | U8      |
+      | u16         | U16     |
+      | u32         | U32     |
+      | u64         | U64     |
+      | u128        | U128    |
+      | u256        | U256    |
+      | address     | Address |
+      | signer      | Signer  |
 
   @required
   Scenario: Format primitive types
@@ -36,7 +36,6 @@ Feature: TypeTag Handling
   # =============================================================================
   # Vector Type Parsing
   # =============================================================================
-
   @required
   Scenario: Parse vector of u8
     Given a type string "vector<u8>"
@@ -70,7 +69,6 @@ Feature: TypeTag Handling
   # =============================================================================
   # Struct Type Parsing
   # =============================================================================
-
   @required
   Scenario: Parse simple struct type
     Given a type string "0x1::aptos_coin::AptosCoin"
@@ -125,7 +123,6 @@ Feature: TypeTag Handling
   # =============================================================================
   # Invalid Type Parsing
   # =============================================================================
-
   @required
   Scenario: Reject empty type string
     Given a type string ""
@@ -165,7 +162,6 @@ Feature: TypeTag Handling
   # =============================================================================
   # MoveModuleId
   # =============================================================================
-
   @required
   Scenario: Parse module ID
     Given a module string "0x1::coin"
@@ -189,7 +185,6 @@ Feature: TypeTag Handling
   # =============================================================================
   # MoveStructTag
   # =============================================================================
-
   @required
   Scenario: Create MoveStructTag from components
     Given address "0x1", module "coin", name "CoinStore", and type args [AptosCoin]
@@ -200,7 +195,6 @@ Feature: TypeTag Handling
   # =============================================================================
   # BCS Serialization
   # =============================================================================
-
   @required
   Scenario: BCS serialize primitive TypeTag
     Given a TypeTag of variant U64
@@ -220,4 +214,3 @@ Feature: TypeTag Handling
     When I parse it as a TypeTag
     And I BCS serialize and deserialize it
     Then the result should equal the original TypeTag
-

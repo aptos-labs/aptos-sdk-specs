@@ -2,7 +2,8 @@
 
 ## Overview
 
-The API clients module provides interfaces for interacting with Aptos network services: the fullnode REST API, the faucet service, and the indexer GraphQL API.
+The API clients module provides interfaces for interacting with Aptos network services: the fullnode
+REST API, the faucet service, and the indexer GraphQL API.
 
 ## Goals
 
@@ -27,25 +28,25 @@ Configuration for connecting to Aptos networks.
 
 ### Pre-configured Networks
 
-| Network | Fullnode URL | Faucet URL | Indexer URL | Chain ID |
-|---------|-------------|------------|-------------|----------|
-| Mainnet | https://fullnode.mainnet.aptoslabs.com/v1 | N/A | https://indexer.mainnet.aptoslabs.com/v1/graphql | 1 |
-| Testnet | https://fullnode.testnet.aptoslabs.com/v1 | https://faucet.testnet.aptoslabs.com | https://indexer.testnet.aptoslabs.com/v1/graphql | 2 |
-| Devnet | https://fullnode.devnet.aptoslabs.com/v1 | https://faucet.devnet.aptoslabs.com | https://indexer.devnet.aptoslabs.com/v1/graphql | ~varies |
-| Localnet | http://localhost:8080/v1 | http://localhost:8081 | N/A | 4 |
+| Network  | Fullnode URL                              | Faucet URL                           | Indexer URL                                      | Chain ID |
+| -------- | ----------------------------------------- | ------------------------------------ | ------------------------------------------------ | -------- |
+| Mainnet  | https://fullnode.mainnet.aptoslabs.com/v1 | N/A                                  | https://indexer.mainnet.aptoslabs.com/v1/graphql | 1        |
+| Testnet  | https://fullnode.testnet.aptoslabs.com/v1 | https://faucet.testnet.aptoslabs.com | https://indexer.testnet.aptoslabs.com/v1/graphql | 2        |
+| Devnet   | https://fullnode.devnet.aptoslabs.com/v1  | https://faucet.devnet.aptoslabs.com  | https://indexer.devnet.aptoslabs.com/v1/graphql  | ~varies  |
+| Localnet | http://localhost:8080/v1                  | http://localhost:8081                | N/A                                              | 4        |
 
 ### Configuration Methods
 
-| Method | Priority | Description |
-|--------|----------|-------------|
-| `mainnet()` | P0 | Pre-configured mainnet |
-| `testnet()` | P0 | Pre-configured testnet |
-| `devnet()` | P1 | Pre-configured devnet |
-| `localnet()` | P1 | Pre-configured localnet |
-| `custom(url)` | P0 | Custom fullnode URL |
-| `with_faucet(url)` | P1 | Add faucet URL |
-| `with_indexer(url)` | P2 | Add indexer URL |
-| `with_timeout(duration)` | P1 | Set request timeout |
+| Method                   | Priority | Description             |
+| ------------------------ | -------- | ----------------------- |
+| `mainnet()`              | P0       | Pre-configured mainnet  |
+| `testnet()`              | P0       | Pre-configured testnet  |
+| `devnet()`               | P1       | Pre-configured devnet   |
+| `localnet()`             | P1       | Pre-configured localnet |
+| `custom(url)`            | P0       | Custom fullnode URL     |
+| `with_faucet(url)`       | P1       | Add faucet URL          |
+| `with_indexer(url)`      | P2       | Add indexer URL         |
+| `with_timeout(duration)` | P1       | Set request timeout     |
 
 ---
 
@@ -53,55 +54,55 @@ Configuration for connecting to Aptos networks.
 
 ### Ledger Information
 
-| Endpoint | Method | Priority | Description |
-|----------|--------|----------|-------------|
-| `/v1` | GET | P0 | Get ledger info (chain ID, version, etc.) |
+| Endpoint | Method | Priority | Description                               |
+| -------- | ------ | -------- | ----------------------------------------- |
+| `/v1`    | GET    | P0       | Get ledger info (chain ID, version, etc.) |
 
 ### Account Endpoints
 
-| Endpoint | Method | Priority | Description |
-|----------|--------|----------|-------------|
-| `/v1/accounts/{address}` | GET | P0 | Get account info |
-| `/v1/accounts/{address}/resources` | GET | P0 | Get all resources |
-| `/v1/accounts/{address}/resource/{type}` | GET | P0 | Get specific resource |
-| `/v1/accounts/{address}/modules` | GET | P1 | Get all modules |
-| `/v1/accounts/{address}/module/{name}` | GET | P1 | Get specific module |
+| Endpoint                                 | Method | Priority | Description           |
+| ---------------------------------------- | ------ | -------- | --------------------- |
+| `/v1/accounts/{address}`                 | GET    | P0       | Get account info      |
+| `/v1/accounts/{address}/resources`       | GET    | P0       | Get all resources     |
+| `/v1/accounts/{address}/resource/{type}` | GET    | P0       | Get specific resource |
+| `/v1/accounts/{address}/modules`         | GET    | P1       | Get all modules       |
+| `/v1/accounts/{address}/module/{name}`   | GET    | P1       | Get specific module   |
 
 ### Transaction Endpoints
 
-| Endpoint | Method | Priority | Description |
-|----------|--------|----------|-------------|
-| `/v1/transactions` | POST | P0 | Submit transaction |
-| `/v1/transactions/by_hash/{hash}` | GET | P0 | Get by hash |
-| `/v1/transactions/by_version/{version}` | GET | P0 | Get by version |
-| `/v1/accounts/{address}/transactions` | GET | P1 | Get account txns |
-| `/v1/transactions/simulate` | POST | P1 | Simulate transaction |
-| `/v1/transactions/encode_submission` | POST | P2 | Encode for signing |
+| Endpoint                                | Method | Priority | Description          |
+| --------------------------------------- | ------ | -------- | -------------------- |
+| `/v1/transactions`                      | POST   | P0       | Submit transaction   |
+| `/v1/transactions/by_hash/{hash}`       | GET    | P0       | Get by hash          |
+| `/v1/transactions/by_version/{version}` | GET    | P0       | Get by version       |
+| `/v1/accounts/{address}/transactions`   | GET    | P1       | Get account txns     |
+| `/v1/transactions/simulate`             | POST   | P1       | Simulate transaction |
+| `/v1/transactions/encode_submission`    | POST   | P2       | Encode for signing   |
 
 ### View Functions
 
-| Endpoint | Method | Priority | Description |
-|----------|--------|----------|-------------|
-| `/v1/view` | POST | P1 | Execute view function |
+| Endpoint   | Method | Priority | Description           |
+| ---------- | ------ | -------- | --------------------- |
+| `/v1/view` | POST   | P1       | Execute view function |
 
 ### Gas Estimation
 
-| Endpoint | Method | Priority | Description |
-|----------|--------|----------|-------------|
-| `/v1/estimate_gas_price` | GET | P1 | Get gas price estimate |
+| Endpoint                 | Method | Priority | Description            |
+| ------------------------ | ------ | -------- | ---------------------- |
+| `/v1/estimate_gas_price` | GET    | P1       | Get gas price estimate |
 
 ### Block Endpoints
 
-| Endpoint | Method | Priority | Description |
-|----------|--------|----------|-------------|
-| `/v1/blocks/by_height/{height}` | GET | P2 | Get block by height |
-| `/v1/blocks/by_version/{version}` | GET | P2 | Get block by version |
+| Endpoint                          | Method | Priority | Description          |
+| --------------------------------- | ------ | -------- | -------------------- |
+| `/v1/blocks/by_height/{height}`   | GET    | P2       | Get block by height  |
+| `/v1/blocks/by_version/{version}` | GET    | P2       | Get block by version |
 
 ### Event Endpoints
 
-| Endpoint | Method | Priority | Description |
-|----------|--------|----------|-------------|
-| `/v1/accounts/{address}/events/{handle}/{field}` | GET | P1 | Get events |
+| Endpoint                                         | Method | Priority | Description |
+| ------------------------------------------------ | ------ | -------- | ----------- |
+| `/v1/accounts/{address}/events/{handle}/{field}` | GET    | P1       | Get events  |
 
 ---
 
@@ -111,22 +112,22 @@ Configuration for connecting to Aptos networks.
 
 All API responses should include:
 
-| Field | Type | Description |
-|-------|------|-------------|
-| data | T | Response payload |
+| Field | Type        | Description               |
+| ----- | ----------- | ------------------------- |
+| data  | T           | Response payload          |
 | state | LedgerState | Ledger state from headers |
 
 ### LedgerState (from headers)
 
-| Header | Field | Type |
-|--------|-------|------|
-| X-Aptos-Chain-Id | chain_id | u8 |
-| X-Aptos-Epoch | epoch | u64 |
-| X-Aptos-Ledger-Version | ledger_version | u64 |
-| X-Aptos-Oldest-Ledger-Version | oldest_ledger_version | u64 |
-| X-Aptos-Ledger-TimestampUsec | ledger_timestamp | u64 |
-| X-Aptos-Block-Height | block_height | u64 |
-| X-Aptos-Oldest-Block-Height | oldest_block_height | u64 |
+| Header                        | Field                 | Type |
+| ----------------------------- | --------------------- | ---- |
+| X-Aptos-Chain-Id              | chain_id              | u8   |
+| X-Aptos-Epoch                 | epoch                 | u64  |
+| X-Aptos-Ledger-Version        | ledger_version        | u64  |
+| X-Aptos-Oldest-Ledger-Version | oldest_ledger_version | u64  |
+| X-Aptos-Ledger-TimestampUsec  | ledger_timestamp      | u64  |
+| X-Aptos-Block-Height          | block_height          | u64  |
+| X-Aptos-Oldest-Block-Height   | oldest_block_height   | u64  |
 
 ---
 
@@ -134,8 +135,8 @@ All API responses should include:
 
 ### Request Format
 
-| Header | Value |
-|--------|-------|
+| Header       | Value                                      |
+| ------------ | ------------------------------------------ |
 | Content-Type | application/x.aptos.signed_transaction+bcs |
 
 Body: BCS-serialized SignedTransaction bytes
@@ -154,6 +155,7 @@ Body: BCS-serialized SignedTransaction bytes
 ### Wait for Transaction
 
 Polling pattern:
+
 1. Submit transaction
 2. Get pending transaction hash
 3. Poll `/v1/transactions/by_hash/{hash}` until:
@@ -172,6 +174,7 @@ Same as submission but without signature validity requirement.
 ### Response
 
 Returns simulated execution result including:
+
 - Gas used
 - VM status
 - Changes
@@ -209,13 +212,14 @@ Client for requesting test tokens on testnet/devnet.
 
 ### Endpoints
 
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/mint` | POST | Fund account |
+| Endpoint | Method | Description  |
+| -------- | ------ | ------------ |
+| `/mint`  | POST   | Fund account |
 
 ### Request
 
 Query parameters:
+
 - `address`: Account address
 - `amount`: Amount in octas (optional, default varies)
 
@@ -233,12 +237,12 @@ Client for querying indexed blockchain data.
 
 ### Common Queries
 
-| Query | Description |
-|-------|-------------|
-| Account tokens | Get NFTs owned by account |
-| Fungible assets | Get FA balances |
-| Transaction history | Get account transactions |
-| Events | Query specific events |
+| Query               | Description               |
+| ------------------- | ------------------------- |
+| Account tokens      | Get NFTs owned by account |
+| Fungible assets     | Get FA balances           |
+| Transaction history | Get account transactions  |
+| Events              | Query specific events     |
 
 ---
 
@@ -246,14 +250,14 @@ Client for querying indexed blockchain data.
 
 ### Error Categories
 
-| Error | HTTP Status | Priority |
-|-------|-------------|----------|
-| Network | N/A | P0 |
-| Timeout | N/A | P0 |
-| NotFound | 404 | P0 |
-| BadRequest | 400 | P0 |
-| InternalError | 500 | P0 |
-| RateLimited | 429 | P1 |
+| Error         | HTTP Status | Priority |
+| ------------- | ----------- | -------- |
+| Network       | N/A         | P0       |
+| Timeout       | N/A         | P0       |
+| NotFound      | 404         | P0       |
+| BadRequest    | 400         | P0       |
+| InternalError | 500         | P0       |
+| RateLimited   | 429         | P1       |
 
 ### API Error Response
 
@@ -291,12 +295,12 @@ Client for querying indexed blockchain data.
 
 ### Configuration
 
-| Setting | Default | Description |
-|---------|---------|-------------|
-| max_retries | 3 | Maximum retry attempts |
-| initial_delay | 100ms | Initial backoff delay |
-| max_delay | 5s | Maximum backoff delay |
-| backoff_factor | 2.0 | Exponential backoff factor |
+| Setting        | Default | Description                |
+| -------------- | ------- | -------------------------- |
+| max_retries    | 3       | Maximum retry attempts     |
+| initial_delay  | 100ms   | Initial backoff delay      |
+| max_delay      | 5s      | Maximum backoff delay      |
+| backoff_factor | 2.0     | Exponential backoff factor |
 
 ---
 
@@ -304,12 +308,12 @@ Client for querying indexed blockchain data.
 
 ### Request Content Types
 
-| Operation | Content-Type |
-|-----------|-------------|
-| Submit Transaction | application/x.aptos.signed_transaction+bcs |
+| Operation            | Content-Type                               |
+| -------------------- | ------------------------------------------ |
+| Submit Transaction   | application/x.aptos.signed_transaction+bcs |
 | Simulate Transaction | application/x.aptos.signed_transaction+bcs |
-| View Function | application/json |
-| Other POST | application/json |
+| View Function        | application/json                           |
+| Other POST           | application/json                           |
 
 ### Response Content Types
 
@@ -329,6 +333,7 @@ All responses are `application/json`.
 ## Cross-SDK Compatibility
 
 All SDKs must:
+
 1. Use the same API endpoints
 2. Send the same request format
 3. Parse responses consistently
@@ -338,13 +343,12 @@ All SDKs must:
 
 ## Related Gherkin Feature Files
 
-| File | Scenarios | Description |
-|------|-----------|-------------|
-| `fullnode-api.feature` | 24 | Core REST API interactions |
-| `view-functions.feature` | 28 | View function calls |
-| `transaction-submission.feature` | 30 | Transaction submission and waiting |
-| `faucet.feature` | 24 | Testnet/devnet funding |
-| `indexer.feature` | 32 | GraphQL indexer queries |
-| `gas-estimation.feature` | 26 | Gas price and usage estimation |
-| `retry.feature` | 27 | Automatic retry and backoff |
-
+| File                             | Scenarios | Description                        |
+| -------------------------------- | --------- | ---------------------------------- |
+| `fullnode-api.feature`           | 24        | Core REST API interactions         |
+| `view-functions.feature`         | 28        | View function calls                |
+| `transaction-submission.feature` | 30        | Transaction submission and waiting |
+| `faucet.feature`                 | 24        | Testnet/devnet funding             |
+| `indexer.feature`                | 32        | GraphQL indexer queries            |
+| `gas-estimation.feature`         | 26        | Gas price and usage estimation     |
+| `retry.feature`                  | 27        | Automatic retry and backoff        |

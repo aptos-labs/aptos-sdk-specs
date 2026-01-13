@@ -1,0 +1,11 @@
+# Dependencies
+node_modules/
+tests/typescript/node_modules/
+
+# Build outputs
+tests/rust/target/
+tests/typescript/reports/
+
+# Lock files
+*.lock
+bun.lockb
