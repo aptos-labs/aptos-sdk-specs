@@ -1,0 +1,48 @@
+{
+  "name": "aptos-sdk-behavioral-tests",
+  "version": "1.0.0",
+  "description": "Behavioral tests for Aptos SDKs using Cucumber.js and Bun",
+  "type": "module",
+  "scripts": {
+    "test": "bun run cucumber-js",
+    "test:required": "bun run cucumber-js --tags @required",
+    "test:preferred": "bun run cucumber-js --tags @preferred",
+    "test:optional": "bun run cucumber-js --tags @optional",
+    "test:core-types": "bun run cucumber-js --tags @core-types",
+    "test:cryptography": "bun run cucumber-js --tags @cryptography",
+    "test:accounts": "bun run cucumber-js --tags @account-management",
+    "test:transactions": "bun run cucumber-js --tags @transaction-building",
+    "test:api-clients": "bun run cucumber-js --tags @api-clients",
+    "test:advanced": "bun run cucumber-js --tags @advanced",
+    "format": "prettier --write \"steps/**/*.ts\" \"support/**/*.ts\"",
+    "lint": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@aptos-labs/ts-sdk": "^5.2.0",
+    "@noble/hashes": "2.0.1",
+    "@noble/curves": "^1.9.7",
+    "@scure/bip39": "^1.5.0",
+    "@scure/bip32": "^1.6.0"
+  },
+  "devDependencies": {
+    "@cucumber/cucumber": "^12.5.0",
+    "@types/bun": "^1.3.5",
+    "prettier": "^3.7.4",
+    "prettier-plugin-gherkin": "^3.1.3",
+    "typescript": "^5.9.3",
+    "chai": "^6.2.2"
+  },
+  "cucumber": {
+    "import": [
+      "steps/**/*.ts",
+      "support/**/*.ts"
+    ],
+    "paths": [
+      "../../features/**/*.feature"
+    ],
+    "format": [
+      "progress-bar",
+      "html:reports/cucumber-report.html"
+    ]
+  }
+}
