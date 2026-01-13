@@ -1,4 +1,5 @@
-@api-clients @preferred
+@api-clients
+@preferred
 Feature: Automatic Retry and Backoff
   As an SDK user
   I want automatic retry for transient failures
@@ -7,7 +8,6 @@ Feature: Automatic Retry and Backoff
   # =============================================================================
   # Retry Configuration
   # =============================================================================
-
   @preferred
   Scenario: Default retry configuration
     Given a new Aptos client
@@ -38,7 +38,6 @@ Feature: Automatic Retry and Backoff
   # =============================================================================
   # Retryable Errors
   # =============================================================================
-
   @preferred
   Scenario: Retry on network timeout
     Given a request that times out
@@ -86,7 +85,6 @@ Feature: Automatic Retry and Backoff
   # =============================================================================
   # Non-Retryable Errors
   # =============================================================================
-
   @preferred
   Scenario: No retry on 400 Bad Request
     Given a request that returns HTTP 400
@@ -121,7 +119,6 @@ Feature: Automatic Retry and Backoff
   # =============================================================================
   # Exponential Backoff
   # =============================================================================
-
   @preferred
   Scenario: Exponential backoff delays
     Given initial_delay=100ms and backoff_factor=2.0
@@ -146,7 +143,6 @@ Feature: Automatic Retry and Backoff
   # =============================================================================
   # Retry Behavior
   # =============================================================================
-
   @preferred
   Scenario: Success after retry
     Given a request that fails twice then succeeds
@@ -178,7 +174,6 @@ Feature: Automatic Retry and Backoff
   # =============================================================================
   # Idempotency Considerations
   # =============================================================================
-
   @preferred
   Scenario: Safe to retry GET requests
     Given a GET request
@@ -201,7 +196,6 @@ Feature: Automatic Retry and Backoff
   # =============================================================================
   # Rate Limit Handling
   # =============================================================================
-
   @preferred
   Scenario: Respect Retry-After header
     Given a 429 response with Retry-After: 5
@@ -224,7 +218,6 @@ Feature: Automatic Retry and Backoff
   # =============================================================================
   # Integration
   # =============================================================================
-
   @preferred
   Scenario: Retry works for all API methods
     Given an Aptos client with retry enabled
@@ -243,4 +236,3 @@ Feature: Automatic Retry and Backoff
     When a retry occurs
     Then the callback should be invoked
     And receive retry attempt number and error
-

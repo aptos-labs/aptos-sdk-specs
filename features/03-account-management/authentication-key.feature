@@ -1,4 +1,5 @@
-@account-management @required
+@account-management
+@required
 Feature: Authentication Key Handling
   As an SDK user
   I want to derive authentication keys from public keys
@@ -7,7 +8,6 @@ Feature: Authentication Key Handling
   # =============================================================================
   # Ed25519 Authentication Key
   # =============================================================================
-
   @required
   Scenario: Derive authentication key from Ed25519 public key
     Given an Ed25519 public key
@@ -37,7 +37,6 @@ Feature: Authentication Key Handling
   # =============================================================================
   # Secp256k1 Authentication Key
   # =============================================================================
-
   @preferred
   Scenario: Derive authentication key from Secp256k1 public key
     Given a Secp256k1 public key (uncompressed, 65 bytes)
@@ -61,7 +60,6 @@ Feature: Authentication Key Handling
   # =============================================================================
   # Generic Authentication Key Derivation
   # =============================================================================
-
   @required
   Scenario: Derive authentication key from arbitrary public key and scheme
     Given public key bytes
@@ -76,17 +74,16 @@ Feature: Authentication Key Handling
     Then the scheme identifier should be <scheme_id>
 
     Examples:
-      | key_type | scheme_id |
-      | Ed25519 | 0x00 |
-      | Secp256k1 | 0x01 |
-      | Secp256r1 | 0x02 |
-      | MultiEd25519 | 0x01 |
-      | MultiKey | 0x03 |
+      | key_type     | scheme_id |
+      | Ed25519      | 0x00      |
+      | Secp256k1    | 0x01      |
+      | Secp256r1    | 0x02      |
+      | MultiEd25519 | 0x01      |
+      | MultiKey     | 0x03      |
 
   # =============================================================================
   # Authentication Key to Address
   # =============================================================================
-
   @required
   Scenario: Convert authentication key to account address
     Given an authentication key
@@ -109,7 +106,6 @@ Feature: Authentication Key Handling
   # =============================================================================
   # Authentication Key Formatting
   # =============================================================================
-
   @required
   Scenario: Authentication key as bytes
     Given an authentication key
@@ -125,7 +121,6 @@ Feature: Authentication Key Handling
   # =============================================================================
   # Cross-SDK Compatibility
   # =============================================================================
-
   @required
   Scenario: Known Ed25519 authentication key test vector
     Given Ed25519 public key from test vectors
@@ -141,7 +136,6 @@ Feature: Authentication Key Handling
   # =============================================================================
   # Edge Cases
   # =============================================================================
-
   @required
   Scenario: Reject invalid authentication key length
     Given 31 bytes
@@ -154,4 +148,3 @@ Feature: Authentication Key Handling
     When I create an authentication key
     Then it should succeed
     And converting to address should give the zero address
-

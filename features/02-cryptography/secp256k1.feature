@@ -1,4 +1,5 @@
-@cryptography @preferred
+@cryptography
+@preferred
 Feature: Secp256k1 ECDSA Cryptography
   As an SDK user
   I want to use Secp256k1 keys for signing
@@ -7,7 +8,6 @@ Feature: Secp256k1 ECDSA Cryptography
   # =============================================================================
   # Key Generation
   # =============================================================================
-
   @preferred
   Scenario: Generate random Secp256k1 key pair
     When I generate a random Secp256k1 key pair
@@ -43,7 +43,6 @@ Feature: Secp256k1 ECDSA Cryptography
   # =============================================================================
   # Public Key Formats
   # =============================================================================
-
   @preferred
   Scenario: Get compressed public key
     Given a Secp256k1 key pair
@@ -68,7 +67,6 @@ Feature: Secp256k1 ECDSA Cryptography
   # =============================================================================
   # Signing
   # =============================================================================
-
   @preferred
   Scenario: Sign a message
     Given a Secp256k1 key pair
@@ -94,7 +92,6 @@ Feature: Secp256k1 ECDSA Cryptography
   # =============================================================================
   # Verification
   # =============================================================================
-
   @preferred
   Scenario: Verify valid signature
     Given a Secp256k1 key pair
@@ -121,7 +118,6 @@ Feature: Secp256k1 ECDSA Cryptography
   # =============================================================================
   # Authentication Key Derivation
   # =============================================================================
-
   @preferred
   Scenario: Derive authentication key from Secp256k1 public key
     Given a Secp256k1 public key (uncompressed)
@@ -138,7 +134,6 @@ Feature: Secp256k1 ECDSA Cryptography
   # =============================================================================
   # Cross-SDK Compatibility
   # =============================================================================
-
   @preferred
   Scenario: Known test vector - key derivation
     Given a known Secp256k1 private key from test vectors
@@ -158,4 +153,3 @@ Feature: Secp256k1 ECDSA Cryptography
     Given a known Secp256k1 private key from test vectors
     When I derive the account address
     Then the address should match the expected value from test vectors
-

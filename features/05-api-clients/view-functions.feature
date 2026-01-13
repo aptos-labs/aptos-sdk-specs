@@ -1,4 +1,5 @@
-@api-clients @preferred
+@api-clients
+@preferred
 Feature: View Function Execution
   As an SDK user
   I want to execute view functions
@@ -7,7 +8,6 @@ Feature: View Function Execution
   # =============================================================================
   # Basic View Function Calls
   # =============================================================================
-
   @preferred
   Scenario: Execute simple view function
     Given a client connected to testnet
@@ -44,7 +44,6 @@ Feature: View Function Execution
   # =============================================================================
   # Argument Encoding
   # =============================================================================
-
   @preferred
   Scenario: Pass address argument
     Given a view function expecting an address
@@ -78,7 +77,6 @@ Feature: View Function Execution
   # =============================================================================
   # Type Argument Handling
   # =============================================================================
-
   @preferred
   Scenario: Single type argument
     Given a view function with one type parameter
@@ -100,7 +98,6 @@ Feature: View Function Execution
   # =============================================================================
   # Return Value Parsing
   # =============================================================================
-
   @preferred
   Scenario: Parse u64 return value
     Given a view function returning u64
@@ -134,7 +131,6 @@ Feature: View Function Execution
   # =============================================================================
   # Error Cases
   # =============================================================================
-
   @preferred
   Scenario: View function not found
     Given a client connected to testnet
@@ -171,7 +167,6 @@ Feature: View Function Execution
   # =============================================================================
   # Common View Functions
   # =============================================================================
-
   @preferred
   Scenario: Get coin balance
     Given a client connected to testnet
@@ -202,7 +197,6 @@ Feature: View Function Execution
   # =============================================================================
   # At Specific Ledger Version
   # =============================================================================
-
   @preferred
   Scenario: Execute view function at specific version
     Given a client connected to testnet
@@ -216,4 +210,3 @@ Feature: View Function Execution
     And a ledger version older than oldest available
     When I try to call a view function at that version
     Then I should receive an error about unavailable state
-

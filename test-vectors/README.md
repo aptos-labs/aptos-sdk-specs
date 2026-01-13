@@ -1,23 +1,28 @@
 # Test Vectors
 
-This directory contains deterministic test vectors for validating SDK implementations. All values in these files should produce identical results across all SDK implementations.
+This directory contains deterministic test vectors for validating SDK implementations. All values in
+these files should produce identical results across all SDK implementations.
 
 ## Overview
 
-Test vectors provide known input/output pairs that every SDK implementation must pass. They ensure cryptographic operations, serialization, and address handling are consistent across languages.
+Test vectors provide known input/output pairs that every SDK implementation must pass. They ensure
+cryptographic operations, serialization, and address handling are consistent across languages.
 
 ## Files
 
 ### Core Types
+
 - **`addresses.json`** - Address parsing, formatting, and BCS serialization vectors
 - **`type-tags.json`** - TypeTag parsing and serialization (primitives, vectors, structs)
 - **`bcs.json`** - Comprehensive BCS encoding vectors for all primitive types
 
 ### Cryptography
+
 - **`signatures.json`** - Ed25519 and Secp256k1 key derivation, signing, verification
 - **`mnemonics.json`** - BIP-39/BIP-44 mnemonic derivation for Aptos (coin type 637)
 
 ### Transactions
+
 - **`transactions.json`** - Transaction building, signing messages, BCS structure
 - **`multi-sig.json`** - Multi-Ed25519, multi-agent, and fee payer transaction vectors
 
@@ -72,23 +77,28 @@ for (const v of vectors.primitives.u64) {
 ## Key Invariants
 
 ### Addresses
+
 - All addresses are exactly 32 bytes when serialized
 - Short form removes leading zeros (e.g., `0x1` not `0x000...001`)
 - Parsing is case-insensitive for hex characters
 - `0x` prefix is optional for parsing
 
 ### BCS Encoding
+
 - Little-endian byte order for multi-byte integers
 - ULEB128 for lengths (vectors, strings)
 - Structs serialized in field declaration order
 - Enums have variant index prefix (ULEB128)
 
 ### Cryptographic Keys
+
 - Ed25519 private keys: 32 bytes (seed), public keys: 32 bytes, signatures: 64 bytes
-- Secp256k1 private keys: 32 bytes, public keys: 33 (compressed) or 65 (uncompressed), signatures: 64 bytes
+- Secp256k1 private keys: 32 bytes, public keys: 33 (compressed) or 65 (uncompressed), signatures:
+  64 bytes
 - Authentication key: SHA3-256(public_key_bytes || scheme_identifier)
 
 ### Mnemonic Derivation
+
 - Uses BIP-39 English wordlist
 - Aptos coin type: 637 (hardened: 637')
 - Default path: `m/44'/637'/0'/0'/0'`
@@ -108,4 +118,3 @@ When adding new test vectors:
 
 - **1.0** - Initial test vectors
 - **1.1** - Expanded with actual computed values and more edge cases
-

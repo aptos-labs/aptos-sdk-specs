@@ -1,10 +1,12 @@
 # Required Features (P0)
 
-These features are **mandatory** for any Aptos SDK implementation. Without these features, an SDK cannot be considered functional for basic blockchain interaction.
+These features are **mandatory** for any Aptos SDK implementation. Without these features, an SDK
+cannot be considered functional for basic blockchain interaction.
 
 ## Criteria for Required Features
 
 A feature is classified as Required if:
+
 1. It is necessary for basic blockchain interaction
 2. All reference SDKs (TypeScript, Python, Go, .NET) implement it
 3. Users cannot reasonably work around its absence
@@ -15,6 +17,7 @@ A feature is classified as Required if:
 ## Core Types
 
 ### AccountAddress
+
 - Parse hex strings with and without `0x` prefix
 - Support short-form addresses (e.g., `0x1`)
 - Format to full 64-character hex string
@@ -25,11 +28,13 @@ A feature is classified as Required if:
 - JSON serialization as hex string
 
 ### ChainId
+
 - Create from numeric value (u8)
 - Provide constants for known networks (MAINNET=1, TESTNET=2, DEVNET=3)
 - BCS serialization as single byte
 
 ### TypeTag
+
 - Parse primitive types (bool, u8, u16, u32, u64, u128, u256, address, signer)
 - Parse vector types (vector<T>)
 - Parse struct types (address::module::Name<T>)
@@ -41,6 +46,7 @@ A feature is classified as Required if:
 ## Cryptography
 
 ### Ed25519
+
 - Generate random key pairs
 - Create key pair from 32-byte seed
 - Create key pair from 64-byte private key (seed + public key)
@@ -50,11 +56,13 @@ A feature is classified as Required if:
 - Export private key as bytes (with appropriate security warnings)
 
 ### Hashing
+
 - SHA3-256 hashing
 - SHA2-256 hashing (for BIP-39 compatibility)
 - Domain-separated hashing for Aptos types
 
 ### AuthenticationKey
+
 - Derive from Ed25519 public key
 - Derive from any public key with scheme identifier
 - Convert to AccountAddress
@@ -64,6 +72,7 @@ A feature is classified as Required if:
 ## Account Management
 
 ### Single-Key Accounts
+
 - Create Ed25519 account from private key
 - Create Ed25519 account from hex-encoded private key
 - Generate new random Ed25519 account
@@ -73,6 +82,7 @@ A feature is classified as Required if:
 - Sign transactions
 
 ### Account Interface
+
 - Unified interface for all account types
 - Get address
 - Get public key bytes
@@ -84,6 +94,7 @@ A feature is classified as Required if:
 ## Transaction Building
 
 ### RawTransaction
+
 - Construct with all required fields:
   - sender address
   - sequence number
@@ -96,6 +107,7 @@ A feature is classified as Required if:
 - Generate signing message (with domain separator)
 
 ### TransactionPayload
+
 - EntryFunction payload construction
 - Specify module ID (address::name)
 - Specify function name
@@ -103,16 +115,19 @@ A feature is classified as Required if:
 - Specify BCS-encoded arguments
 
 ### EntryFunction
+
 - Create APT transfer (0x1::aptos_account::transfer)
 - Create coin transfer with type argument
 - BCS-encode Move arguments
 
 ### SignedTransaction
+
 - Create from RawTransaction and authenticator
 - BCS serialization for submission
 - Compute transaction hash
 
 ### TransactionAuthenticator
+
 - Ed25519 single-signer authenticator
 - Include public key and signature
 
@@ -121,6 +136,7 @@ A feature is classified as Required if:
 ## BCS Serialization
 
 ### Primitives
+
 - Serialize/deserialize bool
 - Serialize/deserialize u8, u16, u32, u64, u128
 - Serialize/deserialize bytes (length-prefixed)
@@ -129,6 +145,7 @@ A feature is classified as Required if:
 - Serialize/deserialize sequences (length-prefixed)
 
 ### Aptos Types
+
 - Serialize/deserialize AccountAddress
 - Serialize/deserialize RawTransaction
 - Serialize/deserialize SignedTransaction
@@ -141,24 +158,29 @@ A feature is classified as Required if:
 ### Fullnode REST API
 
 #### Ledger Info
+
 - Get current ledger information
 - Parse chain ID, ledger version, block height
 
 #### Account Queries
+
 - Get account info (sequence number, authentication key)
 - Get account resources
 - Get specific resource by type
 
 #### Transaction Queries
+
 - Get transaction by hash
 - Get transaction by version
 
 #### Transaction Submission
+
 - Submit signed transaction (BCS format)
 - Handle submission response
 - Parse pending transaction hash
 
 #### Transaction Waiting
+
 - Wait for transaction confirmation
 - Handle timeout
 - Parse final transaction status
@@ -168,6 +190,7 @@ A feature is classified as Required if:
 ## Error Handling
 
 ### Required Error Cases
+
 - Invalid address format
 - Invalid private key
 - Invalid signature
@@ -178,6 +201,7 @@ A feature is classified as Required if:
 - API error responses
 
 ### Error Information
+
 - Error type/code
 - Human-readable message
 - Original error cause (when applicable)
@@ -186,7 +210,8 @@ A feature is classified as Required if:
 
 ## Compliance Checklist
 
-An SDK claiming P0 compliance must pass all Gherkin scenarios tagged with `@required` in the following feature files:
+An SDK claiming P0 compliance must pass all Gherkin scenarios tagged with `@required` in the
+following feature files:
 
 - [ ] `01-core-types/address.feature`
 - [ ] `01-core-types/type-tags.feature`
@@ -200,4 +225,3 @@ An SDK claiming P0 compliance must pass all Gherkin scenarios tagged with `@requ
 - [ ] `04-transaction-building/signing.feature`
 - [ ] `05-api-clients/fullnode-api.feature`
 - [ ] `05-api-clients/transaction-submission.feature`
-

@@ -1,4 +1,5 @@
-@cryptography @optional
+@cryptography
+@optional
 Feature: BLS12-381 Cryptography
   As an SDK user
   I want to use BLS12-381 signatures
@@ -7,7 +8,6 @@ Feature: BLS12-381 Cryptography
   # =============================================================================
   # Key Generation
   # =============================================================================
-
   @optional
   Scenario: Generate random BLS key pair
     When I generate a random BLS12-381 key pair
@@ -36,7 +36,6 @@ Feature: BLS12-381 Cryptography
   # =============================================================================
   # Key Sizes
   # =============================================================================
-
   @optional
   Scenario: BLS public key size
     Given a BLS12-381 key pair
@@ -52,7 +51,6 @@ Feature: BLS12-381 Cryptography
   # =============================================================================
   # Signing
   # =============================================================================
-
   @optional
   Scenario: Sign a message
     Given a BLS12-381 key pair
@@ -85,7 +83,6 @@ Feature: BLS12-381 Cryptography
   # =============================================================================
   # Verification
   # =============================================================================
-
   @optional
   Scenario: Verify valid signature
     Given a BLS12-381 key pair
@@ -115,7 +112,6 @@ Feature: BLS12-381 Cryptography
   # =============================================================================
   # Signature Aggregation
   # =============================================================================
-
   @optional
   Scenario: Aggregate two signatures
     Given two BLS signatures for the same message
@@ -153,7 +149,6 @@ Feature: BLS12-381 Cryptography
   # =============================================================================
   # Public Key Aggregation
   # =============================================================================
-
   @optional
   Scenario: Aggregate two public keys
     Given two BLS public keys
@@ -176,7 +171,6 @@ Feature: BLS12-381 Cryptography
   # =============================================================================
   # Proof of Possession (PoP)
   # =============================================================================
-
   @optional
   Scenario: Generate proof of possession
     Given a BLS12-381 key pair
@@ -205,7 +199,6 @@ Feature: BLS12-381 Cryptography
   # =============================================================================
   # BLS Account
   # =============================================================================
-
   @optional
   Scenario: Create BLS account
     When I create a BLS12-381 account
@@ -229,7 +222,6 @@ Feature: BLS12-381 Cryptography
   # =============================================================================
   # Error Handling
   # =============================================================================
-
   @optional
   Scenario: Reject invalid public key bytes
     Given 47 bytes (wrong length)
@@ -251,7 +243,6 @@ Feature: BLS12-381 Cryptography
   # =============================================================================
   # Test Vectors
   # =============================================================================
-
   @optional
   Scenario: Known BLS key derivation test vector
     Given a known seed from test vectors
@@ -269,4 +260,3 @@ Feature: BLS12-381 Cryptography
     Given signatures from test vectors
     When I aggregate them
     Then the result should match expected aggregated signature
-

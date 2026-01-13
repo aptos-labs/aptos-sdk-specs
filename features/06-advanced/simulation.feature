@@ -1,4 +1,5 @@
-@advanced @preferred
+@advanced
+@preferred
 Feature: Transaction Simulation
   As an SDK user
   I want to simulate transactions before submission
@@ -7,7 +8,6 @@ Feature: Transaction Simulation
   # =============================================================================
   # Basic Simulation
   # =============================================================================
-
   @preferred
   Scenario: Simulate valid transaction
     Given a valid transaction
@@ -33,7 +33,6 @@ Feature: Transaction Simulation
   # =============================================================================
   # Gas Estimation
   # =============================================================================
-
   @preferred
   Scenario: Use simulation for gas estimation
     Given a transaction
@@ -57,7 +56,6 @@ Feature: Transaction Simulation
   # =============================================================================
   # Preview State Changes
   # =============================================================================
-
   @preferred
   Scenario: Preview balance changes
     Given a transfer transaction
@@ -82,7 +80,6 @@ Feature: Transaction Simulation
   # =============================================================================
   # Failure Preview
   # =============================================================================
-
   @preferred
   Scenario: Simulation shows abort
     Given a transaction that would abort
@@ -115,7 +112,6 @@ Feature: Transaction Simulation
   # =============================================================================
   # Simulation Options
   # =============================================================================
-
   @preferred
   Scenario: Simulate at specific version
     Given a historical ledger version
@@ -137,7 +133,6 @@ Feature: Transaction Simulation
   # =============================================================================
   # Multi-Agent Simulation
   # =============================================================================
-
   @preferred
   Scenario: Simulate multi-agent transaction
     Given a multi-agent transaction
@@ -155,7 +150,6 @@ Feature: Transaction Simulation
   # =============================================================================
   # Simulation vs Execution
   # =============================================================================
-
   @preferred
   Scenario: Simulation does not commit changes
     Given a simulation
@@ -179,7 +173,6 @@ Feature: Transaction Simulation
   # =============================================================================
   # Batch Simulation
   # =============================================================================
-
   @optional
   Scenario: Simulate multiple transactions
     Given multiple transactions
@@ -196,7 +189,6 @@ Feature: Transaction Simulation
   # =============================================================================
   # Error Cases
   # =============================================================================
-
   @preferred
   Scenario: Simulation network error
     Given API is unavailable
@@ -214,4 +206,3 @@ Feature: Transaction Simulation
     Given a very complex transaction
     When simulation takes too long
     Then I should get timeout error with suggestion to increase timeout
-

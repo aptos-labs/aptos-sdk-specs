@@ -1,4 +1,5 @@
-@transaction-building @required
+@transaction-building
+@required
 Feature: Entry Function Payload
   As an SDK user
   I want to construct entry function payloads
@@ -7,7 +8,6 @@ Feature: Entry Function Payload
   # =============================================================================
   # EntryFunction Creation
   # =============================================================================
-
   @required
   Scenario: Create EntryFunction with all components
     Given module ID "0x1::aptos_account"
@@ -39,7 +39,6 @@ Feature: Entry Function Payload
   # =============================================================================
   # APT Transfer
   # =============================================================================
-
   @required
   Scenario: Create APT transfer entry function
     Given recipient address "0xabc123..."
@@ -68,7 +67,6 @@ Feature: Entry Function Payload
   # =============================================================================
   # Coin Transfer
   # =============================================================================
-
   @required
   Scenario: Create coin transfer with type argument
     Given coin type "0x1::aptos_coin::AptosCoin"
@@ -91,7 +89,6 @@ Feature: Entry Function Payload
   # =============================================================================
   # Argument Encoding
   # =============================================================================
-
   @required
   Scenario: Encode address argument
     Given an AccountAddress "0x1"
@@ -131,7 +128,6 @@ Feature: Entry Function Payload
   # =============================================================================
   # BCS Serialization
   # =============================================================================
-
   @required
   Scenario: BCS serialize EntryFunction
     Given an EntryFunction for APT transfer
@@ -154,7 +150,6 @@ Feature: Entry Function Payload
   # =============================================================================
   # TransactionPayload Wrapping
   # =============================================================================
-
   @required
   Scenario: Wrap EntryFunction in TransactionPayload
     Given an EntryFunction
@@ -170,7 +165,6 @@ Feature: Entry Function Payload
   # =============================================================================
   # Edge Cases
   # =============================================================================
-
   @required
   Scenario: EntryFunction with empty type args
     Given an EntryFunction with no type arguments
@@ -193,7 +187,6 @@ Feature: Entry Function Payload
   # =============================================================================
   # Test Vectors
   # =============================================================================
-
   @required
   Scenario: Known APT transfer test vector
     Given recipient and amount from test vectors
@@ -207,4 +200,3 @@ Feature: Entry Function Payload
     When I create a coin transfer entry function
     And I BCS serialize it
     Then the bytes should match the expected value from test vectors
-

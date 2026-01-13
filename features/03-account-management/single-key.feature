@@ -1,4 +1,5 @@
-@account-management @required
+@account-management
+@required
 Feature: Single-Key Account Management
   As an SDK user
   I want to create and use single-key accounts
@@ -7,7 +8,6 @@ Feature: Single-Key Account Management
   # =============================================================================
   # Ed25519 Account Creation
   # =============================================================================
-
   @required
   Scenario: Generate random Ed25519 account
     When I generate a random Ed25519 account
@@ -55,7 +55,6 @@ Feature: Single-Key Account Management
   # =============================================================================
   # Account Properties
   # =============================================================================
-
   @required
   Scenario: Get account address
     Given an Ed25519 account
@@ -91,7 +90,6 @@ Feature: Single-Key Account Management
   # =============================================================================
   # Signing
   # =============================================================================
-
   @required
   Scenario: Sign arbitrary message
     Given an Ed25519 account
@@ -124,7 +122,6 @@ Feature: Single-Key Account Management
   # =============================================================================
   # Secp256k1 Account (Preferred)
   # =============================================================================
-
   @preferred
   Scenario: Generate random Secp256k1 account
     When I generate a random Secp256k1 account
@@ -154,7 +151,6 @@ Feature: Single-Key Account Management
   # =============================================================================
   # Account Interface Polymorphism
   # =============================================================================
-
   @required
   Scenario: Use Ed25519 account through Account interface
     Given an Ed25519 account as Account interface
@@ -181,7 +177,6 @@ Feature: Single-Key Account Management
   # =============================================================================
   # AnyAccount Enum
   # =============================================================================
-
   @preferred
   Scenario: Create AnyAccount from Ed25519
     Given an Ed25519 account
@@ -207,7 +202,6 @@ Feature: Single-Key Account Management
   # =============================================================================
   # Test Vectors
   # =============================================================================
-
   @required
   Scenario: Known Ed25519 account test vector
     Given private key "0x..." from test vectors
@@ -220,4 +214,3 @@ Feature: Single-Key Account Management
     Given private key "0x..." from test vectors
     When I create a Secp256k1 account
     Then the address should be "0x..." as specified in test vectors
-

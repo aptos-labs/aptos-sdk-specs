@@ -1,4 +1,5 @@
-@advanced @optional
+@advanced
+@optional
 Feature: Multi-Agent Transactions
   As an SDK user
   I want to create transactions with multiple signers
@@ -7,7 +8,6 @@ Feature: Multi-Agent Transactions
   # =============================================================================
   # Multi-Agent Transaction Creation
   # =============================================================================
-
   @optional
   Scenario: Create multi-agent transaction with one secondary signer
     Given a sender account
@@ -33,7 +33,6 @@ Feature: Multi-Agent Transactions
   # =============================================================================
   # Multi-Agent Signing Message
   # =============================================================================
-
   @optional
   Scenario: Multi-agent signing message differs from single signer
     Given the same RawTransaction
@@ -64,7 +63,6 @@ Feature: Multi-Agent Transactions
   # =============================================================================
   # Multi-Agent Signing
   # =============================================================================
-
   @optional
   Scenario: Sign multi-agent transaction
     Given a RawTransaction
@@ -95,7 +93,6 @@ Feature: Multi-Agent Transactions
   # =============================================================================
   # Partial Signing Workflow
   # =============================================================================
-
   @optional
   Scenario: Collect signatures from multiple parties
     Given a RawTransaction for multi-agent
@@ -126,7 +123,6 @@ Feature: Multi-Agent Transactions
   # =============================================================================
   # Error Cases
   # =============================================================================
-
   @optional
   Scenario: Reject mismatched secondary signer count
     Given 3 secondary signer addresses
@@ -150,7 +146,6 @@ Feature: Multi-Agent Transactions
   # =============================================================================
   # BCS Serialization
   # =============================================================================
-
   @optional
   Scenario: Serialize multi-agent authenticator
     Given a multi-agent authenticator
@@ -169,7 +164,6 @@ Feature: Multi-Agent Transactions
   # =============================================================================
   # Test Vectors
   # =============================================================================
-
   @optional
   Scenario: Known multi-agent signing message test vector
     Given a RawTransaction and secondary addresses from test vectors
@@ -181,4 +175,3 @@ Feature: Multi-Agent Transactions
     Given a multi-agent transaction from test vectors
     When I serialize it
     Then the bytes should match expected value from test vectors
-

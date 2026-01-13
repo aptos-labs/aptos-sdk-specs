@@ -1,4 +1,5 @@
-@transaction @optional
+@transaction
+@optional
 Feature: Script Transactions
   As an SDK user
   I want to execute arbitrary Move scripts
@@ -7,7 +8,6 @@ Feature: Script Transactions
   # =============================================================================
   # Script Payload Construction
   # =============================================================================
-
   @optional
   Scenario: Create script payload from bytecode
     Given compiled Move script bytecode
@@ -38,7 +38,6 @@ Feature: Script Transactions
   # =============================================================================
   # Script Argument Encoding
   # =============================================================================
-
   @optional
   Scenario: Encode address argument for script
     Given a script argument of type address
@@ -72,7 +71,6 @@ Feature: Script Transactions
   # =============================================================================
   # Script Transaction Building
   # =============================================================================
-
   @optional
   Scenario: Build transaction with script payload
     Given a Script payload
@@ -98,7 +96,6 @@ Feature: Script Transactions
   # =============================================================================
   # Script Simulation
   # =============================================================================
-
   @optional
   Scenario: Simulate script execution
     Given a Script transaction
@@ -116,7 +113,6 @@ Feature: Script Transactions
   # =============================================================================
   # Common Scripts
   # =============================================================================
-
   @optional
   Scenario: Execute multi-transfer script
     Given a script that transfers to multiple recipients
@@ -133,7 +129,6 @@ Feature: Script Transactions
   # =============================================================================
   # Script vs Entry Function
   # =============================================================================
-
   @optional
   Scenario: Choose between script and entry function
     Given a simple operation like transfer
@@ -150,7 +145,6 @@ Feature: Script Transactions
   # =============================================================================
   # Script Compilation
   # =============================================================================
-
   @optional
   Scenario: Compile Move script (if SDK provides)
     Given Move script source code
@@ -168,7 +162,6 @@ Feature: Script Transactions
   # =============================================================================
   # Error Handling
   # =============================================================================
-
   @optional
   Scenario: Invalid script bytecode
     Given malformed bytecode
@@ -193,20 +186,18 @@ Feature: Script Transactions
   # =============================================================================
   # BCS Serialization
   # =============================================================================
-
   @optional
   Scenario: Script payload BCS structure
     Given a Script payload
     When I BCS serialize it
     Then structure should be:
-      | Field          | Type                |
-      | code           | vector<u8>          |
-      | type_args      | vector<TypeTag>     |
-      | args           | vector<vector<u8>>  |
+      | Field     | Type               |
+      | code      | vector<u8>         |
+      | type_args | vector<TypeTag>    |
+      | args      | vector<vector<u8>> |
 
   @optional
   Scenario: Deserialize Script payload
     Given BCS-serialized Script payload
     When I deserialize it
     Then I should recover the original Script
-

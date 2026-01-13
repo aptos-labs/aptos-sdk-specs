@@ -1,4 +1,5 @@
-@api-clients @optional
+@api-clients
+@optional
 Feature: Indexer GraphQL Client
   As an SDK user
   I want to query indexed blockchain data
@@ -7,7 +8,6 @@ Feature: Indexer GraphQL Client
   # =============================================================================
   # Client Configuration
   # =============================================================================
-
   @optional
   Scenario: Indexer client for mainnet
     When I create an indexer client for mainnet
@@ -33,7 +33,6 @@ Feature: Indexer GraphQL Client
   # =============================================================================
   # Raw GraphQL Queries
   # =============================================================================
-
   @optional
   Scenario: Execute raw GraphQL query
     Given an indexer client
@@ -59,7 +58,6 @@ Feature: Indexer GraphQL Client
   # =============================================================================
   # Account Tokens (NFTs)
   # =============================================================================
-
   @optional
   Scenario: Get account current tokens
     Given an indexer client
@@ -95,7 +93,6 @@ Feature: Indexer GraphQL Client
   # =============================================================================
   # Fungible Asset Balances
   # =============================================================================
-
   @optional
   Scenario: Get fungible asset balances
     Given an indexer client
@@ -122,7 +119,6 @@ Feature: Indexer GraphQL Client
   # =============================================================================
   # Transaction History
   # =============================================================================
-
   @optional
   Scenario: Get account transaction history
     Given an indexer client
@@ -156,7 +152,6 @@ Feature: Indexer GraphQL Client
   # =============================================================================
   # Collection Queries
   # =============================================================================
-
   @optional
   Scenario: Get collection by address
     Given a collection address
@@ -182,7 +177,6 @@ Feature: Indexer GraphQL Client
   # =============================================================================
   # Event Queries
   # =============================================================================
-
   @optional
   Scenario: Query events by type
     Given an indexer client
@@ -206,7 +200,6 @@ Feature: Indexer GraphQL Client
   # =============================================================================
   # Coin Queries
   # =============================================================================
-
   @optional
   Scenario: Get coin balances (legacy)
     Given an account with coin balances
@@ -222,7 +215,6 @@ Feature: Indexer GraphQL Client
   # =============================================================================
   # Processor Status
   # =============================================================================
-
   @optional
   Scenario: Check indexer processor status
     Given an indexer client
@@ -240,7 +232,6 @@ Feature: Indexer GraphQL Client
   # =============================================================================
   # Error Handling
   # =============================================================================
-
   @optional
   Scenario: Handle indexer unavailable
     Given an unreachable indexer endpoint
@@ -259,4 +250,3 @@ Feature: Indexer GraphQL Client
     Given an unexpected response format
     When I parse the response
     Then I should receive a parse error with context
-

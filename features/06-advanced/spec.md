@@ -2,7 +2,9 @@
 
 ## Overview
 
-Advanced features include multi-signature accounts, multi-agent transactions, fee payer (sponsored) transactions, and keyless accounts. These are optional features that extend SDK capabilities for specific use cases.
+Advanced features include multi-signature accounts, multi-agent transactions, fee payer (sponsored)
+transactions, and keyless accounts. These are optional features that extend SDK capabilities for
+specific use cases.
 
 ## Goals
 
@@ -29,11 +31,11 @@ Accounts requiring M-of-N signatures to authorize transactions.
 
 #### Key Components
 
-| Component | Description |
-|-----------|-------------|
-| public_keys | List of N Ed25519 public keys |
-| threshold | M signatures required |
-| signatures | List of (index, signature) pairs |
+| Component   | Description                      |
+| ----------- | -------------------------------- |
+| public_keys | List of N Ed25519 public keys    |
+| threshold   | M signatures required            |
+| signatures  | List of (index, signature) pairs |
 
 #### Authentication Key Derivation
 
@@ -45,13 +47,13 @@ Where `0x01` is the MultiEd25519 scheme identifier.
 
 #### Requirements
 
-| Method | Priority | Description |
-|--------|----------|-------------|
-| `from_public_keys(keys, threshold)` | P2 | Create from N public keys |
-| `new(private_keys, threshold)` | P2 | Create with M private keys |
-| `threshold()` | P2 | Get required signature count |
-| `can_sign()` | P2 | Check if enough keys for signing |
-| `add_signature(index, sig)` | P2 | Add partial signature |
+| Method                              | Priority | Description                      |
+| ----------------------------------- | -------- | -------------------------------- |
+| `from_public_keys(keys, threshold)` | P2       | Create from N public keys        |
+| `new(private_keys, threshold)`      | P2       | Create with M private keys       |
+| `threshold()`                       | P2       | Get required signature count     |
+| `can_sign()`                        | P2       | Check if enough keys for signing |
+| `add_signature(index, sig)`         | P2       | Add partial signature            |
 
 ### MultiKey (Mixed Key Types)
 
@@ -63,7 +65,7 @@ Accounts with mixed key types (Ed25519 + Secp256k1) and weights.
 
 ```
 auth_key = SHA3-256(
-  ULEB128(N) || 
+  ULEB128(N) ||
   pk1 || pk2 || ... || pkN ||
   threshold ||
   0x03
@@ -95,19 +97,19 @@ message = SHA3-256("APTOS::RawTransactionWithData") || bcs(MultiAgent {
 
 ### Requirements
 
-| Method | Priority | Description |
-|--------|----------|-------------|
-| `sign_multi_agent(raw_txn, sender, secondary_signers)` | P2 | Sign with all parties |
-| `add_secondary_signer(address)` | P2 | Add secondary signer |
-| `collect_signatures()` | P2 | Collect from all signers |
+| Method                                                 | Priority | Description              |
+| ------------------------------------------------------ | -------- | ------------------------ |
+| `sign_multi_agent(raw_txn, sender, secondary_signers)` | P2       | Sign with all parties    |
+| `add_secondary_signer(address)`                        | P2       | Add secondary signer     |
+| `collect_signatures()`                                 | P2       | Collect from all signers |
 
 ### TransactionAuthenticator::MultiAgent
 
-| Field | Type |
-|-------|------|
-| sender | AccountAuthenticator |
-| secondary_signer_addresses | Vec<AccountAddress> |
-| secondary_signers | Vec<AccountAuthenticator> |
+| Field                      | Type                      |
+| -------------------------- | ------------------------- |
+| sender                     | AccountAuthenticator      |
+| secondary_signer_addresses | Vec<AccountAddress>       |
+| secondary_signers          | Vec<AccountAuthenticator> |
 
 ---
 
@@ -135,21 +137,21 @@ message = SHA3-256("APTOS::RawTransactionWithData") || bcs(FeePayer {
 
 ### Requirements
 
-| Method | Priority | Description |
-|--------|----------|-------------|
-| `sign_fee_payer(raw_txn, sender, secondaries, fee_payer)` | P2 | Sign sponsored tx |
-| `set_fee_payer(address)` | P2 | Designate fee payer |
-| `sign_as_fee_payer(txn)` | P2 | Sign as the sponsor |
+| Method                                                    | Priority | Description         |
+| --------------------------------------------------------- | -------- | ------------------- |
+| `sign_fee_payer(raw_txn, sender, secondaries, fee_payer)` | P2       | Sign sponsored tx   |
+| `set_fee_payer(address)`                                  | P2       | Designate fee payer |
+| `sign_as_fee_payer(txn)`                                  | P2       | Sign as the sponsor |
 
 ### TransactionAuthenticator::FeePayer
 
-| Field | Type |
-|-------|------|
-| sender | AccountAuthenticator |
-| secondary_signer_addresses | Vec<AccountAddress> |
-| secondary_signers | Vec<AccountAuthenticator> |
-| fee_payer_address | AccountAddress |
-| fee_payer_signer | AccountAuthenticator |
+| Field                      | Type                      |
+| -------------------------- | ------------------------- |
+| sender                     | AccountAuthenticator      |
+| secondary_signer_addresses | Vec<AccountAddress>       |
+| secondary_signers          | Vec<AccountAuthenticator> |
+| fee_payer_address          | AccountAddress            |
+| fee_payer_signer           | AccountAuthenticator      |
 
 ### Fee Payer Flow
 
@@ -170,19 +172,19 @@ Accounts authenticated via OpenID Connect (OIDC) instead of cryptographic keys.
 
 ### Supported Providers
 
-| Provider | Issuer |
-|----------|--------|
-| Google | https://accounts.google.com |
-| Apple | https://appleid.apple.com |
+| Provider | Issuer                      |
+| -------- | --------------------------- |
+| Google   | https://accounts.google.com |
+| Apple    | https://appleid.apple.com   |
 
 ### Components
 
-| Component | Description |
-|-----------|-------------|
-| EphemeralKeyPair | Short-lived signing key |
-| JWT | OIDC identity token |
-| Pepper | Privacy-preserving salt |
-| ZK Proof | Zero-knowledge proof of identity |
+| Component        | Description                      |
+| ---------------- | -------------------------------- |
+| EphemeralKeyPair | Short-lived signing key          |
+| JWT              | OIDC identity token              |
+| Pepper           | Privacy-preserving salt          |
+| ZK Proof         | Zero-knowledge proof of identity |
 
 ### Authentication Key Derivation
 
@@ -198,28 +200,28 @@ auth_key = SHA3-256(
 
 ### Ephemeral Key Pair
 
-| Property | Description |
-|----------|-------------|
-| expiry | When the key expires |
-| nonce | Used in OIDC flow |
-| public_key | Ed25519 public key |
-| private_key | Ed25519 private key |
+| Property    | Description          |
+| ----------- | -------------------- |
+| expiry      | When the key expires |
+| nonce       | Used in OIDC flow    |
+| public_key  | Ed25519 public key   |
+| private_key | Ed25519 private key  |
 
 ### Services
 
-| Service | Purpose |
-|---------|---------|
+| Service        | Purpose                            |
+| -------------- | ---------------------------------- |
 | Pepper Service | Provides privacy-preserving pepper |
-| Prover Service | Generates ZK proofs |
+| Prover Service | Generates ZK proofs                |
 
 ### Requirements
 
-| Method | Priority | Description |
-|--------|----------|-------------|
-| `EphemeralKeyPair::generate(expiry_secs)` | P2 | Generate ephemeral key |
-| `KeylessAccount::from_jwt(jwt, ephemeral, pepper, proof)` | P2 | Create from OIDC |
-| `refresh_proof(jwt, prover)` | P2 | Refresh ZK proof |
-| `is_valid()` | P2 | Check if proof is valid |
+| Method                                                    | Priority | Description             |
+| --------------------------------------------------------- | -------- | ----------------------- |
+| `EphemeralKeyPair::generate(expiry_secs)`                 | P2       | Generate ephemeral key  |
+| `KeylessAccount::from_jwt(jwt, ephemeral, pepper, proof)` | P2       | Create from OIDC        |
+| `refresh_proof(jwt, prover)`                              | P2       | Refresh ZK proof        |
+| `is_valid()`                                              | P2       | Check if proof is valid |
 
 ### Keyless Flow
 
@@ -237,35 +239,35 @@ auth_key = SHA3-256(
 
 ### Multi-Signature Errors
 
-| Error | Cause |
-|-------|-------|
-| InvalidThreshold | threshold > num_keys or threshold == 0 |
-| InsufficientSignatures | Not enough signatures for threshold |
-| DuplicateSignerIndex | Same signer index used twice |
-| InvalidSignerIndex | Index >= num_keys |
+| Error                  | Cause                                  |
+| ---------------------- | -------------------------------------- |
+| InvalidThreshold       | threshold > num_keys or threshold == 0 |
+| InsufficientSignatures | Not enough signatures for threshold    |
+| DuplicateSignerIndex   | Same signer index used twice           |
+| InvalidSignerIndex     | Index >= num_keys                      |
 
 ### Multi-Agent Errors
 
-| Error | Cause |
-|-------|-------|
+| Error                     | Cause                            |
+| ------------------------- | -------------------------------- |
 | MissingSecondarySignature | Not all secondary signers signed |
 | WrongSecondarySignerCount | Address/signature count mismatch |
 
 ### Fee Payer Errors
 
-| Error | Cause |
-|-------|-------|
-| MissingFeePayer | Fee payer not specified |
-| FeePayerSignatureMissing | Fee payer didn't sign |
+| Error                    | Cause                   |
+| ------------------------ | ----------------------- |
+| MissingFeePayer          | Fee payer not specified |
+| FeePayerSignatureMissing | Fee payer didn't sign   |
 
 ### Keyless Errors
 
-| Error | Cause |
-|-------|-------|
-| EphemeralKeyExpired | Ephemeral key has expired |
-| InvalidJwt | JWT validation failed |
-| ProofGenerationFailed | ZK proof service error |
-| PepperServiceError | Pepper service error |
+| Error                 | Cause                     |
+| --------------------- | ------------------------- |
+| EphemeralKeyExpired   | Ephemeral key has expired |
+| InvalidJwt            | JWT validation failed     |
+| ProofGenerationFailed | ZK proof service error    |
+| PepperServiceError    | Pepper service error      |
 
 ---
 
@@ -302,6 +304,7 @@ auth_key = SHA3-256(
 ## Cross-SDK Compatibility
 
 All SDKs must produce identical:
+
 1. Multi-sig authentication keys for same key sets
 2. Multi-agent signing messages
 3. Fee payer signing messages
@@ -313,13 +316,12 @@ Test vectors for advanced features are in `test-vectors/multi-sig.json`.
 
 ## Related Gherkin Feature Files
 
-| File | Scenarios | Description |
-|------|-----------|-------------|
-| `multi-signature.feature` | 24 | Multi-Ed25519 threshold accounts |
-| `multi-agent.feature` | 22 | Multi-signer transactions |
-| `fee-payer.feature` | 23 | Sponsored/gasless transactions |
-| `keyless.feature` | 28 | OIDC-based authentication |
-| `codegen.feature` | 30 | Code generation from Move ABI |
-| `error-handling.feature` | 28 | Error handling patterns |
-| `simulation.feature` | 23 | Transaction simulation |
-
+| File                      | Scenarios | Description                      |
+| ------------------------- | --------- | -------------------------------- |
+| `multi-signature.feature` | 24        | Multi-Ed25519 threshold accounts |
+| `multi-agent.feature`     | 22        | Multi-signer transactions        |
+| `fee-payer.feature`       | 23        | Sponsored/gasless transactions   |
+| `keyless.feature`         | 28        | OIDC-based authentication        |
+| `codegen.feature`         | 30        | Code generation from Move ABI    |
+| `error-handling.feature`  | 28        | Error handling patterns          |
+| `simulation.feature`      | 23        | Transaction simulation           |

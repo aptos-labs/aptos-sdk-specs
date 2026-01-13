@@ -1,4 +1,5 @@
-@transaction-building @required
+@transaction-building
+@required
 Feature: Transaction Signing
   As an SDK user
   I want to sign transactions
@@ -7,7 +8,6 @@ Feature: Transaction Signing
   # =============================================================================
   # Single Signer - Ed25519
   # =============================================================================
-
   @required
   Scenario: Sign transaction with Ed25519 account
     Given a valid RawTransaction
@@ -54,7 +54,6 @@ Feature: Transaction Signing
   # =============================================================================
   # Single Signer - Secp256k1
   # =============================================================================
-
   @preferred
   Scenario: Sign transaction with Secp256k1 account
     Given a valid RawTransaction
@@ -73,7 +72,6 @@ Feature: Transaction Signing
   # =============================================================================
   # SignedTransaction Serialization
   # =============================================================================
-
   @required
   Scenario: BCS serialize SignedTransaction
     Given a SignedTransaction
@@ -96,7 +94,6 @@ Feature: Transaction Signing
   # =============================================================================
   # Transaction Hash
   # =============================================================================
-
   @required
   Scenario: Compute transaction hash
     Given a SignedTransaction
@@ -124,7 +121,6 @@ Feature: Transaction Signing
   # =============================================================================
   # TransactionAuthenticator
   # =============================================================================
-
   @required
   Scenario: Ed25519 authenticator structure
     Given an Ed25519 TransactionAuthenticator
@@ -147,7 +143,6 @@ Feature: Transaction Signing
   # =============================================================================
   # Sign Helper Functions
   # =============================================================================
-
   @required
   Scenario: sign_transaction helper function
     Given a RawTransaction
@@ -166,7 +161,6 @@ Feature: Transaction Signing
   # =============================================================================
   # Error Handling
   # =============================================================================
-
   @required
   Scenario: Signing with wrong sender fails gracefully
     Given a RawTransaction with sender "0x1"
@@ -178,7 +172,6 @@ Feature: Transaction Signing
   # =============================================================================
   # Test Vectors
   # =============================================================================
-
   @required
   Scenario: Known Ed25519 signing test vector
     Given a RawTransaction and Ed25519 key from test vectors
@@ -197,4 +190,3 @@ Feature: Transaction Signing
     Given a SignedTransaction from test vectors
     When I serialize it to bytes
     Then the bytes should match the expected value from test vectors
-

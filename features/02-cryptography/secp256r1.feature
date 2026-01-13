@@ -1,4 +1,5 @@
-@cryptography @optional
+@cryptography
+@optional
 Feature: Secp256r1 (P-256) ECDSA Cryptography
   As an SDK user
   I want to use Secp256r1 keys for signing
@@ -7,7 +8,6 @@ Feature: Secp256r1 (P-256) ECDSA Cryptography
   # =============================================================================
   # Key Generation
   # =============================================================================
-
   @optional
   Scenario: Generate random Secp256r1 key pair
     When I generate a random Secp256r1 key pair
@@ -43,7 +43,6 @@ Feature: Secp256r1 (P-256) ECDSA Cryptography
   # =============================================================================
   # Public Key Formats
   # =============================================================================
-
   @optional
   Scenario: Get compressed public key
     Given a Secp256r1 key pair
@@ -73,7 +72,6 @@ Feature: Secp256r1 (P-256) ECDSA Cryptography
   # =============================================================================
   # Signing
   # =============================================================================
-
   @optional
   Scenario: Sign a message
     Given a Secp256r1 key pair
@@ -100,7 +98,6 @@ Feature: Secp256r1 (P-256) ECDSA Cryptography
   # =============================================================================
   # Verification
   # =============================================================================
-
   @optional
   Scenario: Verify valid signature
     Given a Secp256r1 key pair
@@ -127,7 +124,6 @@ Feature: Secp256r1 (P-256) ECDSA Cryptography
   # =============================================================================
   # Authentication Key Derivation
   # =============================================================================
-
   @optional
   Scenario: Derive authentication key from Secp256r1 public key
     Given a Secp256r1 public key (uncompressed)
@@ -151,7 +147,6 @@ Feature: Secp256r1 (P-256) ECDSA Cryptography
   # =============================================================================
   # WebAuthn/Passkey Compatibility
   # =============================================================================
-
   @optional
   Scenario: Parse WebAuthn public key
     Given a COSE-encoded P-256 public key from WebAuthn
@@ -175,7 +170,6 @@ Feature: Secp256r1 (P-256) ECDSA Cryptography
   # =============================================================================
   # Account Operations
   # =============================================================================
-
   @optional
   Scenario: Create Secp256r1 account
     When I create a Secp256r1 account
@@ -193,7 +187,6 @@ Feature: Secp256r1 (P-256) ECDSA Cryptography
   # =============================================================================
   # Test Vectors
   # =============================================================================
-
   @optional
   Scenario: Known Secp256r1 key derivation test vector
     Given a known Secp256r1 private key from test vectors
@@ -213,4 +206,3 @@ Feature: Secp256r1 (P-256) ECDSA Cryptography
     Given a known Secp256r1 private key from test vectors
     When I derive the account address
     Then the Secp256r1 address should match the expected value from test vectors
-

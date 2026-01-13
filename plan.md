@@ -2,7 +2,9 @@
 
 ## Overview
 
-This document outlines the methodology for creating language-agnostic behavioral specifications for Aptos SDKs. The goal is to ensure consistent behavior across all SDK implementations through standardized testing.
+This document outlines the methodology for creating language-agnostic behavioral specifications for
+Aptos SDKs. The goal is to ensure consistent behavior across all SDK implementations through
+standardized testing.
 
 ## Objectives
 
@@ -16,16 +18,17 @@ This document outlines the methodology for creating language-agnostic behavioral
 
 ### Reference Implementations
 
-| SDK | Primary Use | Maturity |
-|-----|-------------|----------|
-| **TypeScript** | Web/dApp development | Most complete |
-| **Python** | Scripting, automation | Production ready |
-| **Go** | Backend services | Production ready |
-| **.NET** | Enterprise applications | Growing |
+| SDK            | Primary Use             | Maturity         |
+| -------------- | ----------------------- | ---------------- |
+| **TypeScript** | Web/dApp development    | Most complete    |
+| **Python**     | Scripting, automation   | Production ready |
+| **Go**         | Backend services        | Production ready |
+| **.NET**       | Enterprise applications | Growing          |
 
 ### Analysis Approach
 
 For each SDK, we analyze:
+
 1. Public API surface
 2. Type definitions
 3. Error handling patterns
@@ -37,6 +40,7 @@ For each SDK, we analyze:
 ### Required (P0)
 
 A feature is **Required** if:
+
 - It is necessary for basic blockchain interaction
 - All reference SDKs implement it
 - Users cannot work around its absence
@@ -45,6 +49,7 @@ A feature is **Required** if:
 ### Preferred (P1)
 
 A feature is **Preferred** if:
+
 - It significantly improves developer experience
 - Most reference SDKs implement it
 - Production applications typically need it
@@ -53,6 +58,7 @@ A feature is **Preferred** if:
 ### Optional (P2)
 
 A feature is **Optional** if:
+
 - It provides advanced functionality
 - Only some reference SDKs implement it
 - It serves specific use cases
@@ -68,27 +74,35 @@ Each feature area has a design document containing:
 # Feature Area Name
 
 ## Overview
+
 Brief description of the feature area.
 
 ## Goals
+
 What this feature area provides to SDK users.
 
 ## Non-Goals
+
 What this feature area explicitly does NOT cover.
 
 ## Behaviors
+
 Detailed description of expected behaviors.
 
 ## API Guidelines
+
 Recommended API patterns (language-agnostic).
 
 ## Error Handling
+
 Expected error cases and handling.
 
 ## Security Considerations
+
 Security implications and requirements.
 
 ## Cross-SDK Compatibility
+
 Notes on maintaining compatibility.
 ```
 
@@ -97,7 +111,8 @@ Notes on maintaining compatibility.
 Each behavior has corresponding Gherkin scenarios:
 
 ```gherkin
-@category-tag @priority-tag
+@category-tag
+@priority-tag
 Feature: Specific Behavior
 
   Scenario: Happy path
@@ -131,24 +146,28 @@ Deterministic behaviors include test vectors:
 ## Implementation Phases
 
 ### Phase 1: Foundation
+
 - [x] Create directory structure
 - [x] Write README with guidelines
 - [x] Create this plan document
 - [x] Define category criteria
 
 ### Phase 2: Core Specifications
+
 - [x] Core types (address, type tags, serialization)
 - [x] Cryptography (Ed25519, hashing)
 - [x] Account management (creation, derivation)
 - [x] Test vectors for core features
 
 ### Phase 3: Transaction Specifications
+
 - [x] Transaction building
 - [x] Transaction signing
 - [x] API client behaviors
 - [x] Transaction test vectors
 
 ### Phase 4: Advanced Features
+
 - [x] Multi-signature accounts
 - [x] Multi-agent transactions
 - [x] Fee payer transactions
@@ -160,6 +179,7 @@ Deterministic behaviors include test vectors:
 ### Unit-Level Behaviors
 
 Behaviors that can be tested without network access:
+
 - Type parsing and formatting
 - Cryptographic operations
 - Serialization/deserialization
@@ -168,6 +188,7 @@ Behaviors that can be tested without network access:
 ### Integration-Level Behaviors
 
 Behaviors requiring network interaction:
+
 - API responses
 - Transaction submission
 - Event queries
@@ -176,6 +197,7 @@ Behaviors requiring network interaction:
 ### Cross-SDK Validation
 
 Process for validating consistency:
+
 1. Generate outputs from reference SDK (TypeScript)
 2. Create test vectors from outputs
 3. Validate other SDKs against vectors
@@ -192,6 +214,7 @@ Process for validating consistency:
 ### Test Vector Versioning
 
 Each test vector file includes a version field:
+
 ```json
 {
   "version": "1.0",
@@ -225,4 +248,3 @@ Each test vector file includes a version field:
 - Test vectors validate across 3+ SDKs
 - Gherkin scenarios are executable
 - New SDK implementations use specs as reference
-

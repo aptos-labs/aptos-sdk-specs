@@ -1,4 +1,5 @@
-@advanced @optional
+@advanced
+@optional
 Feature: Code Generation from Move ABI
   As an SDK user
   I want to generate type-safe code from Move ABIs
@@ -7,7 +8,6 @@ Feature: Code Generation from Move ABI
   # =============================================================================
   # ABI Fetching
   # =============================================================================
-
   @optional
   Scenario: Fetch module ABI from chain
     Given a connected Aptos client
@@ -32,7 +32,6 @@ Feature: Code Generation from Move ABI
   # =============================================================================
   # ABI Parsing
   # =============================================================================
-
   @optional
   Scenario: Parse entry functions from ABI
     Given an ABI with entry functions
@@ -66,7 +65,6 @@ Feature: Code Generation from Move ABI
   # =============================================================================
   # TypeScript Code Generation
   # =============================================================================
-
   @optional
   Scenario: Generate TypeScript types for structs
     Given a Move struct "CoinStore<CoinType>"
@@ -99,7 +97,6 @@ Feature: Code Generation from Move ABI
   # =============================================================================
   # Rust Code Generation
   # =============================================================================
-
   @optional
   Scenario: Generate Rust types for structs
     Given a Move struct definition
@@ -126,7 +123,6 @@ Feature: Code Generation from Move ABI
   # =============================================================================
   # Python Code Generation
   # =============================================================================
-
   @optional
   Scenario: Generate Python types for structs
     Given a Move struct definition
@@ -142,7 +138,6 @@ Feature: Code Generation from Move ABI
   # =============================================================================
   # Go Code Generation
   # =============================================================================
-
   @optional
   Scenario: Generate Go types for structs
     Given a Move struct definition
@@ -158,7 +153,6 @@ Feature: Code Generation from Move ABI
   # =============================================================================
   # Argument Encoding
   # =============================================================================
-
   @optional
   Scenario: Generated code handles address encoding
     Given a generated function expecting address
@@ -186,7 +180,6 @@ Feature: Code Generation from Move ABI
   # =============================================================================
   # Type Safety
   # =============================================================================
-
   @optional
   Scenario: Compile-time type checking
     Given generated TypeScript/Rust code
@@ -208,7 +201,6 @@ Feature: Code Generation from Move ABI
   # =============================================================================
   # CLI Code Generation
   # =============================================================================
-
   @optional
   Scenario: Generate code via CLI
     Given a CLI tool for code generation
@@ -233,7 +225,6 @@ Feature: Code Generation from Move ABI
   # =============================================================================
   # Macro-Based Generation (Rust)
   # =============================================================================
-
   @optional
   Scenario: Procedural macro for contract bindings
     Given a Rust procedural macro
@@ -250,7 +241,6 @@ Feature: Code Generation from Move ABI
   # =============================================================================
   # Error Handling in Generated Code
   # =============================================================================
-
   @optional
   Scenario: Generated code surfaces Move errors
     Given a generated function call that aborts
@@ -266,7 +256,6 @@ Feature: Code Generation from Move ABI
   # =============================================================================
   # Documentation Generation
   # =============================================================================
-
   @optional
   Scenario: Generate documentation comments
     Given a Move module with doc comments
@@ -277,4 +266,3 @@ Feature: Code Generation from Move ABI
   Scenario: Include function signatures in docs
     Given generated code
     Then each function should have clear signature documentation
-

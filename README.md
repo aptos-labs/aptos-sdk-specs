@@ -1,6 +1,7 @@
 # Aptos SDK Behavioral Specifications
 
-This directory contains language-agnostic behavioral specifications for Aptos SDK implementations. These specifications ensure consistent behavior across all official and community SDKs.
+This directory contains language-agnostic behavioral specifications for Aptos SDK implementations.
+These specifications ensure consistent behavior across all official and community SDKs.
 
 ## Purpose
 
@@ -95,13 +96,19 @@ specifications/
 ## Feature Categories
 
 ### Required (P0)
-Features every SDK **must** implement to be considered functional. These are the minimum viable features for basic blockchain interaction.
+
+Features every SDK **must** implement to be considered functional. These are the minimum viable
+features for basic blockchain interaction.
 
 ### Preferred (P1)
-Features **recommended** for production SDKs. These enhance developer experience and are expected in mature implementations.
+
+Features **recommended** for production SDKs. These enhance developer experience and are expected in
+mature implementations.
 
 ### Optional (P2)
-**Extended** features for comprehensive SDKs. These provide advanced functionality but are not necessary for basic usage.
+
+**Extended** features for comprehensive SDKs. These provide advanced functionality but are not
+necessary for basic usage.
 
 ## How to Use These Specifications
 
@@ -142,13 +149,15 @@ Feature: Feature Name
   I want to perform some action
   So that I can achieve some goal
 
-  @required @category-tag
+  @required
+  @category-tag
   Scenario: Descriptive scenario name
     Given some precondition
     When I perform an action
     Then I should see expected result
 
-  @required @category-tag
+  @required
+  @category-tag
   Scenario Outline: Parameterized scenario
     Given input "<input>"
     When I process it
@@ -185,12 +194,12 @@ Feature: Feature Name
 
 These specifications are derived from analyzing:
 
-| SDK | Repository | Language |
-|-----|------------|----------|
-| TypeScript | [aptos-labs/aptos-ts-sdk](https://github.com/aptos-labs/aptos-ts-sdk) | TypeScript |
-| Python | [aptos-labs/aptos-python-sdk](https://github.com/aptos-labs/aptos-python-sdk) | Python |
-| Go | [aptos-labs/aptos-go-sdk](https://github.com/aptos-labs/aptos-go-sdk) | Go |
-| .NET | [aptos-labs/aptos-dotnet-sdk](https://github.com/aptos-labs/aptos-dotnet-sdk) | C# |
+| SDK        | Repository                                                                    | Language   |
+| ---------- | ----------------------------------------------------------------------------- | ---------- |
+| TypeScript | [aptos-labs/aptos-ts-sdk](https://github.com/aptos-labs/aptos-ts-sdk)         | TypeScript |
+| Python     | [aptos-labs/aptos-python-sdk](https://github.com/aptos-labs/aptos-python-sdk) | Python     |
+| Go         | [aptos-labs/aptos-go-sdk](https://github.com/aptos-labs/aptos-go-sdk)         | Go         |
+| .NET       | [aptos-labs/aptos-dotnet-sdk](https://github.com/aptos-labs/aptos-dotnet-sdk) | C#         |
 
 ## Contributing
 
@@ -203,4 +212,3 @@ These specifications are derived from analyzing:
 ## License
 
 These specifications are part of the Aptos SDK project and follow the same license terms.
-
