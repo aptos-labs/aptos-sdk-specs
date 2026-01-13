@@ -1,0 +1,266 @@
+{
+  "version": "1.0",
+  "description": "BCS (Binary Canonical Serialization) test vectors for Aptos SDKs",
+  "note": "BCS uses little-endian byte order for multi-byte integers",
+  "primitives": {
+    "bool": [
+      {"value": false, "bcs_hex": "00"},
+      {"value": true, "bcs_hex": "01"}
+    ],
+    "u8": [
+      {"value": 0, "bcs_hex": "00"},
+      {"value": 1, "bcs_hex": "01"},
+      {"value": 127, "bcs_hex": "7f"},
+      {"value": 128, "bcs_hex": "80"},
+      {"value": 255, "bcs_hex": "ff"}
+    ],
+    "u16": [
+      {"value": 0, "bcs_hex": "0000"},
+      {"value": 1, "bcs_hex": "0100"},
+      {"value": 256, "bcs_hex": "0001"},
+      {"value": 65535, "bcs_hex": "ffff"}
+    ],
+    "u32": [
+      {"value": 0, "bcs_hex": "00000000"},
+      {"value": 1, "bcs_hex": "01000000"},
+      {"value": 256, "bcs_hex": "00010000"},
+      {"value": 305419896, "bcs_hex": "78563412", "note": "0x12345678 in big-endian"},
+      {"value": 4294967295, "bcs_hex": "ffffffff"}
+    ],
+    "u64": [
+      {"value": 0, "bcs_hex": "0000000000000000"},
+      {"value": 1, "bcs_hex": "0100000000000000"},
+      {"value": 1000000, "bcs_hex": "40420f0000000000"},
+      {"value": 100000000, "bcs_hex": "00e1f50500000000", "note": "1 APT in octas"},
+      {"value": "18446744073709551615", "bcs_hex": "ffffffffffffffff", "note": "u64 max"}
+    ],
+    "u128": [
+      {"value": 0, "bcs_hex": "00000000000000000000000000000000"},
+      {"value": 1, "bcs_hex": "01000000000000000000000000000000"},
+      {"value": "340282366920938463463374607431768211455", "bcs_hex": "ffffffffffffffffffffffffffffffff", "note": "u128 max"}
+    ],
+    "u256": [
+      {"value": 0, "bcs_hex": "0000000000000000000000000000000000000000000000000000000000000000"},
+      {"value": 1, "bcs_hex": "0100000000000000000000000000000000000000000000000000000000000000"}
+    ]
+  },
+  "uleb128": {
+    "description": "ULEB128 encoding for lengths and indices",
+    "vectors": [
+      {"value": 0, "bcs_hex": "00", "bytes": 1},
+      {"value": 1, "bcs_hex": "01", "bytes": 1},
+      {"value": 127, "bcs_hex": "7f", "bytes": 1},
+      {"value": 128, "bcs_hex": "8001", "bytes": 2},
+      {"value": 255, "bcs_hex": "ff01", "bytes": 2},
+      {"value": 256, "bcs_hex": "8002", "bytes": 2},
+      {"value": 16383, "bcs_hex": "ff7f", "bytes": 2},
+      {"value": 16384, "bcs_hex": "808001", "bytes": 3},
+      {"value": 2097151, "bcs_hex": "ffff7f", "bytes": 3},
+      {"value": 2097152, "bcs_hex": "80808001", "bytes": 4}
+    ]
+  },
+  "bytes_and_strings": {
+    "description": "Bytes and strings are length-prefixed with ULEB128",
+    "vectors": [
+      {
+        "name": "empty_bytes",
+        "value": [],
+        "bcs_hex": "00"
+      },
+      {
+        "name": "single_byte",
+        "value": [42],
+        "bcs_hex": "012a"
+      },
+      {
+        "name": "three_bytes",
+        "value": [1, 2, 3],
+        "bcs_hex": "03010203"
+      },
+      {
+        "name": "empty_string",
+        "value": "",
+        "bcs_hex": "00"
+      },
+      {
+        "name": "hello",
+        "value": "hello",
+        "bcs_hex": "0568656c6c6f"
+      },
+      {
+        "name": "hello_world",
+        "value": "hello world",
+        "bcs_hex": "0b68656c6c6f20776f726c64"
+      },
+      {
+        "name": "unicode_string",
+        "value": "héllo",
+        "bcs_hex": "0668c3a96c6c6f",
+        "note": "UTF-8 encoding, é is 2 bytes"
+      }
+    ]
+  },
+  "option": {
+    "description": "Option<T> serialization",
+    "vectors": [
+      {
+        "name": "none",
+        "value": null,
+        "bcs_hex": "00"
+      },
+      {
+        "name": "some_u64",
+        "value": {"some": 42},
+        "type": "Option<u64>",
+        "bcs_hex": "012a00000000000000"
+      },
+      {
+        "name": "some_bool",
+        "value": {"some": true},
+        "type": "Option<bool>",
+        "bcs_hex": "0101"
+      }
+    ]
+  },
+  "vectors": {
+    "description": "Vector<T> serialization",
+    "vectors": [
+      {
+        "name": "empty_vector_u8",
+        "value": [],
+        "type": "vector<u8>",
+        "bcs_hex": "00"
+      },
+      {
+        "name": "vector_u8",
+        "value": [1, 2, 3, 4, 5],
+        "type": "vector<u8>",
+        "bcs_hex": "050102030405"
+      },
+      {
+        "name": "vector_u64",
+        "value": [1, 2],
+        "type": "vector<u64>",
+        "bcs_hex": "0201000000000000000200000000000000"
+      },
+      {
+        "name": "vector_bool",
+        "value": [true, false, true],
+        "type": "vector<bool>",
+        "bcs_hex": "03010001"
+      },
+      {
+        "name": "nested_vector",
+        "value": [[1, 2], [3, 4]],
+        "type": "vector<vector<u8>>",
+        "bcs_hex": "0202010202030304"
+      }
+    ]
+  },
+  "address": {
+    "description": "AccountAddress is always 32 bytes",
+    "vectors": [
+      {
+        "name": "address_zero",
+        "value": "0x0",
+        "bcs_hex": "0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      {
+        "name": "address_one",
+        "value": "0x1",
+        "bcs_hex": "0000000000000000000000000000000000000000000000000000000000000001"
+      },
+      {
+        "name": "address_full",
+        "value": "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+        "bcs_hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+      }
+    ]
+  },
+  "structs": {
+    "description": "Structs are serialized as fields in declaration order",
+    "examples": [
+      {
+        "name": "simple_struct",
+        "definition": "struct { a: u8, b: u64 }",
+        "value": {"a": 1, "b": 100},
+        "bcs_hex": "016400000000000000",
+        "field_order": ["a", "b"]
+      },
+      {
+        "name": "struct_with_string",
+        "definition": "struct { name: String, value: u64 }",
+        "value": {"name": "test", "value": 42},
+        "bcs_hex": "04746573742a00000000000000"
+      }
+    ]
+  },
+  "enums": {
+    "description": "Enums are serialized as variant index (ULEB128) followed by variant data",
+    "examples": [
+      {
+        "name": "enum_variant_0",
+        "definition": "enum { A, B(u64), C(String) }",
+        "value": "A",
+        "bcs_hex": "00"
+      },
+      {
+        "name": "enum_variant_1",
+        "definition": "enum { A, B(u64), C(String) }",
+        "value": {"B": 42},
+        "bcs_hex": "012a00000000000000"
+      },
+      {
+        "name": "enum_variant_2",
+        "definition": "enum { A, B(u64), C(String) }",
+        "value": {"C": "hello"},
+        "bcs_hex": "020568656c6c6f"
+      }
+    ]
+  },
+  "complex_types": {
+    "entry_function": {
+      "description": "EntryFunction BCS structure",
+      "fields": [
+        {"name": "module_address", "type": "AccountAddress"},
+        {"name": "module_name", "type": "String"},
+        {"name": "function_name", "type": "String"},
+        {"name": "type_args", "type": "vector<TypeTag>"},
+        {"name": "args", "type": "vector<vector<u8>>"}
+      ]
+    },
+    "raw_transaction": {
+      "description": "RawTransaction BCS structure",
+      "fields": [
+        {"name": "sender", "type": "AccountAddress"},
+        {"name": "sequence_number", "type": "u64"},
+        {"name": "payload", "type": "TransactionPayload"},
+        {"name": "max_gas_amount", "type": "u64"},
+        {"name": "gas_unit_price", "type": "u64"},
+        {"name": "expiration_timestamp_secs", "type": "u64"},
+        {"name": "chain_id", "type": "u8"}
+      ]
+    }
+  },
+  "deserialization_errors": [
+    {
+      "name": "truncated_u64",
+      "input_hex": "0102030405",
+      "expected_type": "u64",
+      "error": "unexpected end of input"
+    },
+    {
+      "name": "invalid_bool",
+      "input_hex": "02",
+      "expected_type": "bool",
+      "error": "invalid boolean value"
+    },
+    {
+      "name": "truncated_vector",
+      "input_hex": "05010203",
+      "expected_type": "vector<u8>",
+      "error": "unexpected end of input (length says 5, only 3 bytes)"
+    }
+  ]
+}
+
