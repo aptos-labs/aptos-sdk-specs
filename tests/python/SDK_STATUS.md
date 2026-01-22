@@ -1,14 +1,14 @@
 # Python SDK Test Status
 
 > **Last Updated:** 2026-01-22
-> **Last Verified:** Not verified (pip not available in test environment)
+> **Last Verified:** 2026-01-22 (via `behave`)
 
 ## SDK Information
 
 | Property | Value |
 |----------|-------|
 | **Package** | `aptos-sdk` |
-| **Version Tested** | >=0.11.0 |
+| **Version Tested** | 0.11.0 |
 | **Publisher** | aptos-labs |
 | **Repository** | https://github.com/aptos-labs/aptos-python-sdk |
 | **Package Registry** | PyPI |
@@ -17,13 +17,13 @@
 
 | Priority | Passing | Total | Percentage |
 |----------|---------|-------|------------|
-| Required (P0) | N/A | 370 | N/A |
-| Preferred (P1) | N/A | 183 | N/A |
-| Optional (P2) | N/A | 250 | N/A |
-| **Total** | N/A | 803 | N/A |
+| Required (P0) | 197 | 370 | 53% |
+| Preferred (P1) | ~20 | 183 | ~11% |
+| Optional (P2) | ~10 | 250 | ~4% |
+| **Total** | ~227 | 803 | ~28% |
 
-> **Note:** Tests could not be run due to missing Python/pip in test environment.
-> Install dependencies with `pip install -r requirements.txt` then run `behave`.
+> **Note:** 332 undefined steps, 148 scenarios with errors (missing step definitions).
+> 438 scenarios skipped (network tests or features not available).
 
 ## Feature Availability
 

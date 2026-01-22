@@ -34,7 +34,7 @@
 | Go         | 212/370 (57%) | 20/183 (11%)   | 0/250 (0%)    | 232/803   | Per TO_FIX.md |
 | Rust       | N/A           | N/A            | N/A           | N/A       | SDK path not available |
 | .NET       | 170/370 (46%) | ~10/183 (5%)   | ~5/250 (2%)   | ~185/803  | Verified via `dotnet test` |
-| Python     | N/A           | N/A            | N/A           | N/A       | Dependencies not installed |
+| Python     | 197/370 (53%) | ~20/183 (11%)  | ~10/250 (4%)  | ~227/803  | 332 undefined steps |
 | Java       | 22/370 (6%)   | 0/183 (0%)     | 0/250 (0%)    | 22/803    | Most steps undefined |
 | Kotlin     | 176/370 (48%) | 0/183 (0%)     | 0/250 (0%)    | 176/803   | Community SDK |
 | C++        | 49/306 (16%)  | 0/183 (0%)     | 0/250 (0%)    | 49/739    | In development |
@@ -1163,16 +1163,26 @@ cd tests/rust && cargo test --test specs
 
 ### Python (`aptos-sdk` >=0.11.0) — [Full Status](tests/python/SDK_STATUS.md)
 
-**Status:** Not verified (dependencies not installed)
+**Status:** Good core implementation (197/370 required passing = 53%)
 
-**Issue:** Python/pip not available in test environment.
+**Verified:** 2026-01-22 via `behave`
 
-**To Run:**
-```bash
-cd tests/python
-pip install -r requirements.txt
-behave --tags "@required"
-```
+**Results:**
+- 197 passed, 25 failed, 148 errors (undefined steps)
+- 332 undefined step definitions
+- 438 scenarios skipped (network or feature limitations)
+
+**Well-Implemented:**
+- Address parsing and formatting
+- Ed25519 cryptography
+- Basic account operations
+- BCS serialization primitives
+
+**Needs Work:**
+- TypeTag parsing step definitions
+- Entry function building steps
+- Transaction signing steps
+- API client steps
 
 ---
 
