@@ -1,5 +1,5 @@
 {
-  "name": "aptos-sdk-specs",
+  "name": "@aptos-labs/aptos-sdk-specs",
   "version": "1.0.0",
   "description": "Behavioral specifications for Aptos SDKs",
   "type": "module",
