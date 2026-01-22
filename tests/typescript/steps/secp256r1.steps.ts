@@ -798,7 +798,7 @@ Then(
   },
 );
 
-When("I derive the account address", function (this: AptosWorld) {
+When("I derive the Secp256r1 account address", function (this: AptosWorld) {
   const keyPair = this.testVectors.get("secp256r1KeyPair") as Secp256r1KeyPair;
   const authKey = keyPair.deriveAuthenticationKey();
   const address = AccountAddress.from(authKey);

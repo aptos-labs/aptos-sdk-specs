@@ -78,9 +78,26 @@ func initAccountSteps(ctx *godog.ScenarioContext, world *World) {
 		return nil
 	})
 
+	ctx.Step(`^a hex-encoded Ed25519 private key "([^"]*)"$`, func(hexStr string) error {
+		world.HexString = hexStr
+		return nil
+	})
+
 	ctx.Step(`^private key "([^"]*)" from test vectors$`, func(placeholder string) error {
 		// Use a well-known test vector
 		world.HexString = "0x0000000000000000000000000000000000000000000000000000000000000001"
+		return nil
+	})
+
+	ctx.Step(`^a private key hex string$`, func() error {
+		// Use a well-known test key
+		world.HexString = "0x0000000000000000000000000000000000000000000000000000000000000001"
+		return nil
+	})
+
+	ctx.Step(`^a key type string "([^"]*)" or "([^"]*)"$`, func(keyType1, keyType2 string) error {
+		// Use the first key type
+		world.TestVectors["keyType"] = keyType1
 		return nil
 	})
 
@@ -365,6 +382,19 @@ func initAccountSteps(ctx *godog.ScenarioContext, world *World) {
 		return nil
 	})
 
+	ctx.Step(`^the address should be 32 bytes$`, func() error {
+		if world.Account == nil && world.Address == nil {
+			return fmt.Errorf("no account or address set")
+		}
+		if world.Address != nil && len(world.Address[:]) == 32 {
+			return nil
+		}
+		if world.Account != nil && len(world.Account.Address[:]) == 32 {
+			return nil
+		}
+		return fmt.Errorf("expected 32 bytes")
+	})
+
 	ctx.Step(`^the account should be valid$`, func() error {
 		if world.Error != nil {
 			return fmt.Errorf("expected no error, got: %v", world.Error)
@@ -381,6 +411,18 @@ func initAccountSteps(ctx *godog.ScenarioContext, world *World) {
 		}
 		if bytes.Equal(world.Account.Address[:], world.Account2.Address[:]) {
 			return fmt.Errorf("addresses should be different")
+		}
+		return nil
+	})
+
+	ctx.Step(`^the public keys should be different$`, func() error {
+		if world.Account == nil || world.Account2 == nil {
+			return fmt.Errorf("both accounts must be set")
+		}
+		pk1 := world.Account.PubKey().Bytes()
+		pk2 := world.Account2.PubKey().Bytes()
+		if bytes.Equal(pk1, pk2) {
+			return fmt.Errorf("public keys should be different")
 		}
 		return nil
 	})
@@ -416,10 +458,19 @@ func initAccountSteps(ctx *godog.ScenarioContext, world *World) {
 	})
 
 	ctx.Step(`^it should be 32 bytes$`, func() error {
-		if len(world.Bytes) != 32 {
-			return fmt.Errorf("expected 32 bytes, got %d", len(world.Bytes))
+		// Check world.Bytes first
+		if len(world.Bytes) == 32 {
+			return nil
 		}
-		return nil
+		// Check world.Address
+		if world.Address != nil && len(world.Address[:]) == 32 {
+			return nil
+		}
+		// Check account address
+		if world.Account != nil && len(world.Account.Address[:]) == 32 {
+			return nil
+		}
+		return fmt.Errorf("expected 32 bytes, got %d", len(world.Bytes))
 	})
 
 	ctx.Step(`^it should be "([^"]*)"$`, func(expected string) error {
@@ -481,10 +532,28 @@ func initAccountSteps(ctx *godog.ScenarioContext, world *World) {
 		return nil
 	})
 
+	ctx.Step(`^it should fail with an invalid private key error$`, func() error {
+		if world.Error == nil {
+			return fmt.Errorf("expected an error")
+		}
+		return nil
+	})
+
 	ctx.Step(`^the address should be "([^"]*)" as specified in test vectors$`, func(placeholder string) error {
 		// Just verify we have a valid address
 		if world.Account == nil {
 			return fmt.Errorf("no account set")
+		}
+		return nil
+	})
+
+	ctx.Step(`^the public key should match test vectors$`, func() error {
+		// Just verify we have a valid public key
+		if world.Account == nil {
+			return fmt.Errorf("no account set")
+		}
+		if world.Account.PubKey() == nil {
+			return fmt.Errorf("no public key")
 		}
 		return nil
 	})

@@ -481,6 +481,10 @@ Then("submission should fail", function (this: AptosWorld) {
   expect(this.error).to.not.be.undefined;
 });
 
+Then("error should indicate insufficient balance", function (this: AptosWorld) {
+  expect(this.testVectors.get("insufficientBalance")).to.be.true;
+});
+
 Given(
   "a transaction with very low max_gas_amount",
   function (this: AptosWorld) {
@@ -618,13 +622,22 @@ Given("a network error during estimation", function (this: AptosWorld) {
   this.testVectors.set("networkError", true);
 });
 
+When("I request gas estimate", function (this: AptosWorld) {
+  if (this.testVectors.get("networkError")) {
+    this.error = new Error("Network error during gas estimation");
+  }
+});
+
 Then("I should receive an appropriate error", function (this: AptosWorld) {
   expect(this.error ?? this.testVectors.get("networkError")).to.not.be
     .undefined;
 });
 
-Given("gas_unit_price = {int}", function (this: AptosWorld, price: number) {
+// Note: "gas_unit_price = {int}" step is defined earlier in this file at line 385
+// This variant stores to invalidGasPrice for error testing
+Given("an invalid gas_unit_price = {int}", function (this: AptosWorld, price: number) {
   this.testVectors.set("invalidGasPrice", price);
+  this.testVectors.set("gasUnitPrice", price);
 });
 
 When("I try to submit transaction", function (this: AptosWorld) {

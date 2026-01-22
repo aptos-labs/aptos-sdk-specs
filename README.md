@@ -3,6 +3,18 @@
 This directory contains language-agnostic behavioral specifications for Aptos SDK implementations.
 These specifications ensure consistent behavior across all official and community SDKs.
 
+## SDK Coverage
+
+See **[FEATURE_COVERAGE.md](FEATURE_COVERAGE.md)** for detailed test coverage across all SDKs, including:
+
+- SDK versions and publishers
+- Feature-level compatibility matrix
+- Individual test status per scenario
+- Follow-up actions per SDK
+- Performance benchmarks (planned)
+
+For per-SDK details, see the `SDK_STATUS.md` file in each `tests/<language>/` directory.
+
 ## Purpose
 
 1. **Standardization**: Define expected SDK behaviors that must be consistent across languages

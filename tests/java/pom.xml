@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.aptos</groupId>
+    <artifactId>aptos-sdk-specs</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <name>Aptos SDK Behavioral Specifications (Java)</name>
+    <description>BDD tests for the Aptos Java SDK (japtos) using Cucumber-JVM</description>
+
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <!-- Dependency versions -->
+        <cucumber.version>7.15.0</cucumber.version>
+        <junit.platform.version>1.10.1</junit.platform.version>
+        <gson.version>2.10.1</gson.version>
+        <japtos.version>1.1.8</japtos.version>
+    </properties>
+
+    <repositories>
+        <repository>
+            <id>central</id>
+            <url>https://repo.maven.apache.org/maven2</url>
+        </repository>
+    </repositories>
+
+    <dependencies>
+        <!-- Aptos Java SDK (japtos) -->
+        <dependency>
+            <groupId>io.github.aptos-labs</groupId>
+            <artifactId>japtos</artifactId>
+            <version>${japtos.version}</version>
+        </dependency>
+
+        <!-- Cucumber BDD Framework -->
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-java</artifactId>
+            <version>${cucumber.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-junit-platform-engine</artifactId>
+            <version>${cucumber.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-picocontainer</artifactId>
+            <version>${cucumber.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- JUnit 5 Platform -->
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-suite</artifactId>
+            <version>${junit.platform.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.10.1</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- JSON parsing for test vectors -->
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>${gson.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- AssertJ for fluent assertions -->
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>3.25.1</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- Compiler plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.12.1</version>
+                <configuration>
+                    <source>17</source>
+                    <target>17</target>
+                </configuration>
+            </plugin>
+
+            <!-- Surefire plugin for running tests -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.2.3</version>
+                <configuration>
+                    <properties>
+                        <configurationParameters>
+                            cucumber.junit-platform.naming-strategy=long
+                            cucumber.plugin=pretty,html:target/cucumber-reports/cucumber.html,json:target/cucumber-reports/cucumber.json
+                            cucumber.features=../../features
+                            cucumber.glue=com.aptos.specs.steps,com.aptos.specs.support
+                        </configurationParameters>
+                    </properties>
+                    <systemPropertyVariables>
+                        <cucumber.filter.tags>${cucumber.filter.tags}</cucumber.filter.tags>
+                    </systemPropertyVariables>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <!-- Profile for running only required tests -->
+        <profile>
+            <id>required</id>
+            <properties>
+                <cucumber.filter.tags>@required</cucumber.filter.tags>
+            </properties>
+        </profile>
+
+        <!-- Profile for running preferred tests -->
+        <profile>
+            <id>preferred</id>
+            <properties>
+                <cucumber.filter.tags>@preferred</cucumber.filter.tags>
+            </properties>
+        </profile>
+
+        <!-- Profile for running optional tests -->
+        <profile>
+            <id>optional</id>
+            <properties>
+                <cucumber.filter.tags>@optional</cucumber.filter.tags>
+            </properties>
+        </profile>
+
+        <!-- Profile for core-types tests -->
+        <profile>
+            <id>core-types</id>
+            <properties>
+                <cucumber.filter.tags>@core-types</cucumber.filter.tags>
+            </properties>
+        </profile>
+
+        <!-- Profile for cryptography tests -->
+        <profile>
+            <id>cryptography</id>
+            <properties>
+                <cucumber.filter.tags>@cryptography</cucumber.filter.tags>
+            </properties>
+        </profile>
+
+        <!-- Profile for transaction tests -->
+        <profile>
+            <id>transactions</id>
+            <properties>
+                <cucumber.filter.tags>@transactions</cucumber.filter.tags>
+            </properties>
+        </profile>
+
+        <!-- Profile for non-network tests -->
+        <profile>
+            <id>offline</id>
+            <properties>
+                <cucumber.filter.tags>not @network</cucumber.filter.tags>
+            </properties>
+        </profile>
+    </profiles>
+</project>

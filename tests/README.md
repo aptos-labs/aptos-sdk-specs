@@ -5,14 +5,16 @@ specifications.
 
 ## Supported SDKs
 
-| SDK        | Framework         | Directory     | Status     |
-| ---------- | ----------------- | ------------- | ---------- |
-| TypeScript | Cucumber.js + Bun | `typescript/` | ✅ Ready   |
-| Go         | Godog             | `go/`         | ✅ Ready   |
-| **Rust**   | cucumber-rs       | `rust/`       | ✅ Ready   |
-| Python     | Behave            | `python/`     | 📋 Planned |
-| C#         | SpecFlow          | `dotnet/`     | 📋 Planned |
-| Kotlin     | Cucumber-JVM      | `kotlin/`     | 📋 Planned |
+| SDK        | Framework         | Directory     | Status        |
+| ---------- | ----------------- | ------------- | ------------- |
+| TypeScript | Cucumber.js + Bun | `typescript/` | ✅ Ready      |
+| Go         | Godog             | `go/`         | ✅ Ready      |
+| **Rust**   | cucumber-rs       | `rust/`       | ✅ Ready      |
+| **Java**   | Cucumber-JVM      | `java/`       | 🚧 Phase 1    |
+| **C++**    | CWT-Cucumber      | `cpp/`        | 🚧 Scaffold   |
+| Python     | Behave            | `python/`     | 📋 Planned    |
+| C#         | SpecFlow          | `dotnet/`     | 📋 Planned    |
+| Kotlin     | Cucumber-JVM      | `kotlin/`     | 📋 Planned    |
 
 ## Quick Start
 
@@ -41,6 +43,27 @@ make test-cryptography      # Run @cryptography tests
 ```bash
 cd rust
 cargo test --test specs     # Run all tests
+make test-required          # Run only @required tests
+make test-cryptography      # Run @cryptography tests
+```
+
+### Java (tests `japtos`)
+
+```bash
+cd java
+mvn dependency:resolve      # Install dependencies
+make test                   # Run all tests
+make test-required          # Run only @required tests
+make test-core-types        # Run @core-types tests
+```
+
+### C++ (tests Aptos C++/Unreal SDK)
+
+```bash
+cd cpp
+make install-deps           # Install Conan dependencies
+make build                  # Build tests
+make test                   # Run all tests
 make test-required          # Run only @required tests
 make test-cryptography      # Run @cryptography tests
 ```
@@ -142,6 +165,65 @@ fn when_parse_address(world: &mut TestWorld) {
 #[then("the parsing should succeed")]
 fn then_parsing_succeeds(world: &mut TestWorld) {
     assert!(world.address.is_some());
+}
+```
+
+### Java Example
+
+```java
+import io.cucumber.java.en.*;
+import com.aptos.japtos.AccountAddress;
+
+public class AddressSteps {
+    private final World world;
+    
+    public AddressSteps(World world) {
+        this.world = world;
+    }
+    
+    @Given("a hex string {string}")
+    public void givenHexString(String hex) {
+        world.setHexString(hex);
+    }
+    
+    @When("I parse it as an AccountAddress")
+    public void whenParseAddress() {
+        try {
+            world.setAddress(AccountAddress.fromString(world.getHexString()));
+        } catch (Exception e) {
+            world.setError(e);
+        }
+    }
+    
+    @Then("the parsing should succeed")
+    public void thenParsingShouldSucceed() {
+        assertThat(world.getError()).isNull();
+        assertThat(world.getAddress()).isNotNull();
+    }
+}
+```
+
+### C++ Example
+
+```cpp
+#include <cwt/cucumber.hpp>
+#include "support/world.hpp"
+
+using namespace aptos::specs;
+
+GIVEN("a hex string {string}") {
+    auto& world = get_world();
+    world.hex_string = CUKE_ARG(1);
+}
+
+WHEN("I parse it as an AccountAddress") {
+    auto& world = get_world();
+    world.address = AccountAddress::from_hex(*world.hex_string);
+}
+
+THEN("the parsing should succeed") {
+    auto& world = get_world();
+    cuke::is_true(world.address.has_value());
 }
 ```
 

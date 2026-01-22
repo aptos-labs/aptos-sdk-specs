@@ -1,0 +1,24 @@
+# Aptos SDK
+aptos-sdk>=0.11.0
+
+# BDD testing framework
+behave>=1.2.6
+
+# Cryptographic utilities
+pynacl>=1.5.0
+ecdsa>=0.19.0
+
+# Hex/bytes utilities  
+hexbytes>=1.0.0
+
+# Async support
+asyncio
+
+# JSON handling
+ujson>=5.9.0
+
+# BIP-39 mnemonic support
+mnemonic>=0.21
+
+# BIP-32 HD derivation
+bip32utils>=0.3.0
