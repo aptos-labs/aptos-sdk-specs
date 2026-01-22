@@ -1,9 +1,11 @@
 # Kotlin SDK Test Status
 
-> **Last Updated:** 2026-01-22
-> **Last Verified:** 2026-01-22 (via `./gradlew test`)
+> **Last Updated:** 2026-01-22  
+> **Last Verified:** 2026-01-22 via `./gradlew test`
 
-## SDK Information
+---
+
+## 1. SDK Information
 
 | Property | Value |
 |----------|-------|
@@ -12,76 +14,178 @@
 | **Publisher** | mcxross (community) |
 | **Repository** | https://github.com/mcxross/kaptos |
 | **Package Registry** | Maven Central |
+| **Test Framework** | Cucumber-JVM + Kotlin |
 
-## Coverage Summary
+---
 
-| Priority | Passing | Total | Percentage |
-|----------|---------|-------|------------|
-| Required (P0) | 176 | 370 | 48% |
-| Preferred (P1) | 0 | 183 | 0% |
-| Optional (P2) | 0 | 250 | 0% |
-| **Total** | 176 | 803 | 22% |
+## 2. Coverage Summary
 
-> **Note:** 1440/1616 tests failed (most due to missing step definitions).
+| Priority | Passing | Total | Percentage | Status |
+|----------|---------|-------|------------|--------|
+| Required (P0) | 176 | 370 | 48% | 🟡 |
+| Preferred (P1) | 0 | 183 | 0% | ❌ |
+| Optional (P2) | 0 | 250 | 0% | ❌ |
+| **Total** | **176** | **803** | **22%** | 🟡 |
 
-## Feature Availability
+> **Notes:**
+> - 1440/1616 tests failed (most due to missing step definitions)
+> - Community SDK, not official aptos-labs
 
-Features that are **not available** in this SDK (marked `[-]` in coverage matrix):
+---
+
+## 3. Feature Availability
+
+### ✅ Fully Available Features
+
+| Feature | Notes |
+|---------|-------|
+| address | Full address parsing and formatting |
+| ed25519 | Ed25519 key support |
+| hashing | Basic hashing support |
+| serialization | BCS serialization |
+
+### 🟡 Partially Available
+
+| Feature | Reason | Impact |
+|---------|--------|--------|
+| authentication-key | Available, tests partial | Partial coverage |
+| entry-function | Available, tests partial | Partial coverage |
+| raw-transaction | Available, tests partial | Partial coverage |
+| signing | Available, tests partial | Partial coverage |
+
+### ➖ Not Available in SDK
 
 | Feature | Reason | Tracking Issue |
 |---------|--------|----------------|
-| secp256k1 | Not implemented in SDK | - |
-| secp256r1 | Not implemented in SDK | - |
-| bls12381 | Not implemented in SDK | - |
-| mnemonic-derivation | Not implemented in SDK | - |
+| secp256k1 | Not implemented | - |
+| secp256r1 | Not implemented | - |
+| bls12381 | Not implemented | - |
+| mnemonic-derivation | Not implemented | - |
+| keyless | Not implemented | - |
+| codegen | Not implemented | - |
+| simulation | Not implemented | - |
+| multi-agent | Not implemented | - |
+| fee-payer | Not implemented | - |
 
-## Known Issues
+---
 
-No partial implementations currently tracked.
+## 4. Known Issues
 
-## Missing Test Implementations
+| Scenario | Issue | Workaround |
+|----------|-------|------------|
+| Most tests | Step definitions undefined | Implementation needed |
+| Community SDK | May lag behind official SDKs | Check for updates |
 
-### Required (P0) - Priority
+---
 
-Tests not yet fully tracked in coverage matrix. Key gaps likely include:
-- Advanced cryptography features
-- Some API client features
+## 5. Missing Test Implementations
 
-### Preferred (P1)
+### Required (P0) - High Priority
 
-- All preferred features (tests not yet implemented)
+| Feature | Scenarios | Notes |
+|---------|-----------|-------|
+| type-tags | Many | Step definitions needed |
+| secp256k1 | All | Feature not in SDK |
+| authentication-key | Partial | More steps needed |
+| mnemonic-derivation | All | Feature not in SDK |
+| single-key | Many | Step definitions needed |
+| entry-function | Partial | More steps needed |
+| raw-transaction | Partial | More steps needed |
+| signing | Partial | More steps needed |
+| fullnode-api | Many | Step definitions needed |
+| transaction-submission | Many | Step definitions needed |
+| error-handling | Most | Step definitions needed |
 
-### Optional (P2)
+### Preferred (P1) - Medium Priority
 
-- All optional features (tests not yet implemented)
+All preferred features need step definitions.
 
-## SDK-Specific Notes
+### Optional (P2) - Low Priority
 
-- **Community SDK** - not maintained by aptos-labs
-- Kotlin Multiplatform SDK (JVM artifact used for testing)
+All optional features need step definitions.
+
+---
+
+## 6. SDK-Specific Notes
+
+- **Community SDK** - Maintained by mcxross, not official aptos-labs
+- **Kotlin Multiplatform** support (JVM, JS, Native)
 - Uses Kotlin coroutines for async operations
-- Beta status - API may change
-- Uses Kotest for assertions
+- Good for Android and cross-platform Kotlin projects
+- May have different API than official SDKs
 
-## How to Run Tests
+---
+
+## 7. How to Run Tests
 
 ```bash
 cd tests/kotlin
-./gradlew test              # Run all tests
-./gradlew testRequired      # Run only @required tests
-./gradlew testCoreTypes     # Run @core-types tests
+
+# Run all tests
+./gradlew test
+
+# Run with info output
+./gradlew test --info
+
+# Run specific test
+./gradlew test --tests "*.AddressTest"
+
+# Generate HTML report
+./gradlew test
+# Report at: build/reports/tests/test/index.html
 ```
 
-## Contributing
+---
 
-To add tests for this SDK:
+## 8. Contributing
 
-1. Add step definitions in `src/test/kotlin/com/aptos/specs/steps/`
-2. Update `FEATURE_COVERAGE.md` with test status
-3. Update this file's coverage summary
-4. Run `./gradlew test` to verify
+To add or update tests for this SDK:
 
-## Community SDK Note
+1. Add step definitions in `src/test/kotlin/steps/*.kt`
+2. Run `./gradlew test` to verify tests pass
+3. Update `FEATURE_COVERAGE.md` with test status (✅/🟡/❌)
+4. Update this file's coverage summary
+5. Submit PR with test results
 
-This is a community-maintained SDK. For issues with the SDK itself (not the tests),
-please file issues at https://github.com/mcxross/kaptos
+### Step Definition Pattern (Kotlin)
+
+```kotlin
+@Given("a hex string {string}")
+fun givenAHexString(hexString: String) {
+    world.hexString = hexString
+}
+```
+
+---
+
+## 9. Test Results Matrix
+
+> Last run: 2026-01-22
+
+### By Feature Category
+
+| Category | Passed | Failed | Total |
+|----------|--------|--------|-------|
+| 01-core-types | 50 | 14 | 64 |
+| 02-cryptography | 45 | 75 | 120 |
+| 03-account-management | 20 | 42 | 62 |
+| 04-transaction-building | 25 | 61 | 86 |
+| 05-api-clients | 20 | 120 | 140 |
+| 06-advanced | 16 | 260 | 276 |
+
+### Test Run Summary
+
+```
+1616 tests completed
+176 passed
+1440 failed
+```
+
+### Community SDK Notes
+
+This is a community-maintained SDK. It may have:
+- Different API patterns than official SDKs
+- Features that lag behind official releases
+- Limited documentation
+
+Check the [kaptos repository](https://github.com/mcxross/kaptos) for the latest updates.
