@@ -81,7 +81,12 @@ func initTypeTagSteps(ctx *godog.ScenarioContext, world *World) {
 	})
 
 	ctx.Step(`^I create a MoveStructTag$`, func() error {
-		// Create from stored values or defaults
+		// If a typeTag was already set (e.g., by parsing step), use it
+		if tag, ok := world.TestVectors["typeTag"].(*aptos.TypeTag); ok {
+			_ = tag // Already set, nothing to do
+			return nil
+		}
+		// Otherwise create from stored values or defaults
 		addr := aptos.AccountOne
 		structTag := &aptos.StructTag{
 			Address:    addr,

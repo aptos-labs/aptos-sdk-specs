@@ -4,18 +4,19 @@ This document tracks test failures and issues that need to be addressed.
 
 ## Current Status
 
-- **Passed**: 212/370 required scenarios (57%)
+- **Passed**: 239/370 required scenarios (65%)
 - **Failed**: 8 scenarios
   - 4 known local issues (Secp256r1/MultiEd25519/MultiKey keys, coin module)
   - 4 network-dependent scenarios (need client connection in prior steps)
-- **Undefined**: 154 scenarios (mostly network-dependent API tests)
+- **Undefined**: 127 scenarios (mostly network-dependent API tests)
 
-Last updated: Cleaned up API client steps - removed mock/placeholder implementations, keeping only real SDK calls:
-- Client configuration (testnet/devnet/mainnet/custom URL)
-- Account operations (info, resources, balance via real API calls)
-- Transaction operations (submit, wait, simulate via real API calls)
-- Faucet funding (real faucet calls)
-- Gas estimation (real API calls)
+Last updated: Fixed serialization tests:
+- Added TypeTag struct creation steps
+- Added AccountAddress formatting steps (short/long hex)
+- Added address constant steps (ZERO, ONE, THREE, FOUR)
+- Added address equality comparison steps
+- Fixed MoveStructTag creation to preserve type arguments
+- Fixed short string format to use StringShort() method
 
 ## Failed Tests
 

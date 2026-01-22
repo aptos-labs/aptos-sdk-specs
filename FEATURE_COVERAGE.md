@@ -20,7 +20,8 @@
 | Kotlin | `kaptos` | 0.1.2-beta | mcxross | [kaptos](https://github.com/mcxross/kaptos) | [Details](tests/kotlin/SDK_STATUS.md) |
 | Python | `aptos-sdk` | >=0.11.0 | aptos-labs | [aptos-python-sdk](https://github.com/aptos-labs/aptos-python-sdk) | [Details](tests/python/SDK_STATUS.md) |
 | .NET | `Aptos` | 0.0.x-beta | aptos-labs | [aptos-dotnet-sdk](https://github.com/aptos-labs/aptos-dotnet-sdk) | [Details](tests/dotnet/SDK_STATUS.md) |
-| C++ | `Aptos-Cpp-SDK` | dev | VAR-META-Tech | [Aptos-Cpp-SDK](https://github.com/VAR-META-Tech/Aptos-Cpp-SDK) | [Details](tests/cpp/PLAN.md) |
+| C++ | `Aptos-Cpp-SDK` | dev | VAR-META-Tech | [Aptos-Cpp-SDK](https://github.com/VAR-META-Tech/Aptos-Cpp-SDK) | [Details](tests/cpp/SDK_STATUS.md) |
+| Swift | `aptos-swift-sdk` | main | ALCOVE-LAB | [aptos-swift-sdk](https://github.com/ALCOVE-LAB/aptos-swift-sdk) | [Details](tests/swift/SDK_STATUS.md) |
 
 ---
 
@@ -31,13 +32,14 @@
 | SDK        | Required (P0) | Preferred (P1) | Optional (P2) | Total     | Notes |
 | ---------- | ------------- | -------------- | ------------- | --------- | ----- |
 | TypeScript | 320/370 (86%) | ~100/183 (55%) | 131/252 (52%) | ~551/805  | Some keyless/script tests mocked |
-| Go         | 212/370 (57%) | 20/183 (11%)   | 0/250 (0%)    | 232/803   | Per TO_FIX.md |
+| Go         | 239/370 (65%) | 20/183 (11%)   | 0/250 (0%)    | 259/803   | Per TO_FIX.md |
 | Rust       | N/A           | N/A            | N/A           | N/A       | SDK path not available |
 | .NET       | 170/370 (46%) | ~10/183 (5%)   | ~5/250 (2%)   | ~185/803  | Verified via `dotnet test` |
 | Python     | 197/370 (53%) | ~20/183 (11%)  | ~10/250 (4%)  | ~227/803  | 332 undefined steps |
 | Java       | 22/370 (6%)   | 0/183 (0%)     | 0/250 (0%)    | 22/803    | Most steps undefined |
 | Kotlin     | 176/370 (48%) | 0/183 (0%)     | 0/250 (0%)    | 176/803   | Community SDK |
-| C++        | 49/306 (16%)  | 0/183 (0%)     | 0/250 (0%)    | 49/739    | In development |
+| C++        | 49/370 (13%)  | 0/183 (0%)     | 0/250 (0%)    | 49/803    | In development |
+| Swift      | 286/370 (77%) | 0/183 (0%)     | 0/250 (0%)    | 286/803   | Community SDK |
 
 ---
 
@@ -45,17 +47,17 @@
 
 ### Test Status
 
-- `[x]` - **Passing** - Test implemented and passing
-- `[~]` - **Partial** - Partially implemented or known issues
-- `[ ]` - **Not Implemented** - Test step definitions not yet written
-- `[-]` - **N/A** - Feature not available in SDK (cannot be tested)
+- ✅ **Passing** - Test implemented and passing
+- 🟡 **Partial** - Partially implemented or known issues
+- ❌ **Not Implemented** - Test step definitions not yet written
+- ➖ **N/A** - Feature not available in SDK (cannot be tested)
 
 ### Feature-Level Status
 
-- **Full** - All tests passing (100%)
-- **Partial** - Some tests passing (1-99%)
-- **None** - No tests passing (0%)
-- **N/A** - Feature not available in SDK
+- ✅ **Full** - All tests passing (100%)
+- 🟡 **Partial** - Some tests passing (1-99%)
+- ❌ **None** - No tests passing (0%)
+- ➖ **N/A** - Feature not available in SDK
 
 ---
 
@@ -63,90 +65,90 @@
 
 ### Feature Summary
 
-| Feature | TypeScript | Go | Rust | Java | Kotlin | Python | .NET | C++ |
-|---------|------------|-----|------|------|--------|--------|------|-----|
-| **address** | Full (22/22) | Full (22/22) | Partial (20/22) | Full (22/22) | Partial | Full (22/22) | Partial | Partial (21/22) |
-| **serialization** | Full (18/18) | None (0/18) | Full (18/18) | Full (18/18) | None | Partial (16/18) | None | Partial (1/18) |
-| **type-tags** | Full (24/24) | None (0/24) | Full (24/24) | Full (24/24) | None | Partial (22/24) | None | None (0/24) |
+| Feature | TS | Go | Rust | Java | Kotlin | Python | .NET | C++ | Swift |
+|---------|-----|-----|------|------|--------|--------|------|-----|-------|
+| **address** | ✅ 22/22 | ✅ 22/22 | 🟡 20/22 | ✅ 22/22 | 🟡 | ✅ 22/22 | 🟡 | 🟡 21/22 | ✅ 32 |
+| **serialization** | ✅ 18/18 | ❌ 0/18 | ✅ 18/18 | ✅ 18/18 | ❌ | 🟡 16/18 | ❌ | 🟡 1/18 | ✅ 23 |
+| **type-tags** | ✅ 24/24 | ❌ 0/24 | ✅ 24/24 | ✅ 24/24 | ❌ | 🟡 22/24 | ❌ | ❌ 0/24 | ✅ 32 |
 
 ### address.feature `@required`
 
-| # | Scenario | TypeScript | Go | Rust | Java | Python | C++ |
-|---|----------|------------|-----|------|------|--------|-----|
-| 1 | Parse hex address with 0x prefix | [x] | [x] | [x] | [x] | [x] | [x] |
-| 2 | Parse hex address without 0x prefix | [x] | [x] | [x] | [x] | [x] | [x] |
-| 3 | Parse full 64-character hex address | [x] | [x] | [x] | [x] | [x] | [x] |
-| 4 | Parse uppercase hex address | [x] | [x] | [x] | [x] | [x] | [x] |
-| 5 | Parse mixed case hex address | [x] | [x] | [x] | [x] | [x] | [x] |
-| 6 | Reject empty string | [x] | [x] | [~] | [x] | [x] | [x] |
-| 7 | Reject just 0x prefix | [x] | [x] | [~] | [x] | [x] | [x] |
-| 8 | Reject non-hex characters | [x] | [x] | [x] | [x] | [x] | [x] |
-| 9 | Reject address too long | [x] | [x] | [x] | [x] | [x] | [x] |
-| 10 | Reject address with spaces | [x] | [x] | [x] | [x] | [x] | [x] |
-| 11 | Format address to full hex | [x] | [x] | [x] | [x] | [x] | [x] |
-| 12 | Format address to short string | [x] | [x] | [x] | [x] | [x] | [x] |
-| 13 | Format zero address | [x] | [x] | [x] | [x] | [x] | [x] |
-| 14 | ZERO address constant | [x] | [x] | [x] | [x] | [x] | [x] |
-| 15 | ONE address constant (framework) | [x] | [x] | [x] | [x] | [x] | [x] |
-| 16 | THREE address constant (token) | [x] | [x] | [x] | [x] | [x] | [x] |
-| 17 | FOUR address constant (objects) | [x] | [x] | [x] | [x] | [x] | [x] |
-| 18 | Addresses parsed from equivalent inputs are equal | [x] | [x] | [x] | [x] | [x] | [x] |
-| 19 | Different addresses are not equal | [x] | [x] | [x] | [x] | [x] | [ ] |
-| 20 | BCS serialize address | [x] | [x] | [x] | [x] | [x] | [x] |
-| 21 | BCS deserialize address | [x] | [x] | [x] | [x] | [x] | [x] |
-| 22 | BCS round-trip | [x] | [x] | [x] | [x] | [x] | [x] |
+| # | Scenario | TS | Go | Rust | Java | Kotlin | Python | .NET | C++ | Swift |
+|---|----------|-----|-----|------|------|--------|--------|------|-----|-------|
+| 1 | Parse hex address with 0x prefix | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 2 | Parse hex address without 0x prefix | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 3 | Parse full 64-character hex address | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 4 | Parse uppercase hex address | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 5 | Parse mixed case hex address | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 6 | Reject empty string | ✅ | ✅ | 🟡 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 7 | Reject just 0x prefix | ✅ | ✅ | 🟡 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 8 | Reject non-hex characters | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 9 | Reject address too long | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 10 | Reject address with spaces | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 11 | Format address to full hex | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 12 | Format address to short string | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 13 | Format zero address | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 14 | ZERO address constant | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 15 | ONE address constant (framework) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 16 | THREE address constant (token) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 17 | FOUR address constant (objects) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 18 | Addresses parsed from equivalent inputs are equal | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 19 | Different addresses are not equal | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ |
+| 20 | BCS serialize address | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 21 | BCS deserialize address | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 22 | BCS round-trip | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 
 ### serialization.feature `@required`
 
-| # | Scenario | TypeScript | Go | Rust | Java | Python | C++ |
-|---|----------|------------|-----|------|------|--------|-----|
-| 1 | ULEB128 round-trip | [x] | [ ] | [x] | [x] | [x] | [ ] |
-| 2 | Serialize empty bytes | [x] | [ ] | [x] | [x] | [x] | [ ] |
-| 3 | Serialize short bytes | [x] | [ ] | [x] | [x] | [x] | [ ] |
-| 4 | Serialize string | [x] | [ ] | [x] | [x] | [x] | [x] |
-| 5 | Serialize empty string | [x] | [ ] | [x] | [x] | [x] | [ ] |
-| 6 | Serialize string with unicode | [x] | [ ] | [x] | [x] | [x] | [ ] |
-| 7 | Serialize None option | [x] | [ ] | [x] | [x] | [x] | [ ] |
-| 8 | Serialize Some option with u64 | [x] | [ ] | [x] | [x] | [x] | [ ] |
-| 9 | Serialize empty vector | [x] | [ ] | [x] | [x] | [x] | [ ] |
-| 10 | Serialize vector of u8 | [x] | [ ] | [x] | [x] | [x] | [ ] |
-| 11 | Serialize vector of u64 | [x] | [ ] | [x] | [x] | [x] | [ ] |
-| 12 | Serialize nested vector | [x] | [ ] | [x] | [x] | [~] | [ ] |
-| 13 | Serialize AccountAddress | [x] | [ ] | [x] | [x] | [x] | [ ] |
-| 14 | Deserialize AccountAddress | [x] | [ ] | [x] | [x] | [x] | [ ] |
-| 15 | Serialize struct with multiple fields | [x] | [ ] | [x] | [x] | [~] | [ ] |
-| 16 | Fail to deserialize truncated data | [x] | [ ] | [x] | [x] | [x] | [ ] |
-| 17 | Fail to deserialize invalid boolean | [x] | [ ] | [x] | [x] | [x] | [ ] |
-| 18 | Fail to deserialize sequence with invalid length | [x] | [ ] | [x] | [x] | [x] | [ ] |
+| # | Scenario | TS | Go | Rust | Java | Kotlin | Python | .NET | C++ | Swift |
+|---|----------|-----|-----|------|------|--------|--------|------|-----|-------|
+| 1 | ULEB128 round-trip | ✅ | ❌ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ✅ |
+| 2 | Serialize empty bytes | ✅ | ❌ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ✅ |
+| 3 | Serialize short bytes | ✅ | ❌ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ✅ |
+| 4 | Serialize string | ✅ | ❌ | ✅ | ✅ | ❌ | ✅ | ❌ | ✅ | ✅ |
+| 5 | Serialize empty string | ✅ | ❌ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ✅ |
+| 6 | Serialize string with unicode | ✅ | ❌ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ✅ |
+| 7 | Serialize None option | ✅ | ❌ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ✅ |
+| 8 | Serialize Some option with u64 | ✅ | ❌ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ✅ |
+| 9 | Serialize empty vector | ✅ | ❌ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ✅ |
+| 10 | Serialize vector of u8 | ✅ | ❌ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ✅ |
+| 11 | Serialize vector of u64 | ✅ | ❌ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ✅ |
+| 12 | Serialize nested vector | ✅ | ❌ | ✅ | ✅ | ❌ | 🟡 | ❌ | ❌ | ✅ |
+| 13 | Serialize AccountAddress | ✅ | ❌ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ✅ |
+| 14 | Deserialize AccountAddress | ✅ | ❌ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ✅ |
+| 15 | Serialize struct with multiple fields | ✅ | ❌ | ✅ | ✅ | ❌ | 🟡 | ❌ | ❌ | ✅ |
+| 16 | Fail to deserialize truncated data | ✅ | ❌ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ✅ |
+| 17 | Fail to deserialize invalid boolean | ✅ | ❌ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ✅ |
+| 18 | Fail to deserialize sequence with invalid length | ✅ | ❌ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ✅ |
 
 ### type-tags.feature `@required`
 
-| # | Scenario | TypeScript | Go | Rust | Java | Python | C++ |
-|---|----------|------------|-----|------|------|--------|-----|
-| 1 | Format primitive types | [x] | [ ] | [x] | [x] | [x] | [ ] |
-| 2 | Parse vector of u8 | [x] | [ ] | [x] | [x] | [x] | [ ] |
-| 3 | Parse nested vector | [x] | [ ] | [x] | [x] | [x] | [ ] |
-| 4 | Parse vector of struct | [x] | [ ] | [x] | [x] | [x] | [ ] |
-| 5 | Format vector type | [x] | [ ] | [x] | [x] | [x] | [ ] |
-| 6 | Parse simple struct type | [x] | [ ] | [x] | [x] | [x] | [ ] |
-| 7 | Parse struct with type argument | [x] | [ ] | [x] | [x] | [x] | [ ] |
-| 8 | Parse struct with multiple type arguments | [x] | [ ] | [x] | [x] | [x] | [ ] |
-| 9 | Parse struct with full address | [x] | [ ] | [x] | [x] | [x] | [ ] |
-| 10 | Format struct type without type args | [x] | [ ] | [x] | [x] | [x] | [ ] |
-| 11 | Format struct type with type args | [x] | [ ] | [x] | [x] | [x] | [ ] |
-| 12 | Reject empty type string | [x] | [ ] | [x] | [x] | [x] | [ ] |
-| 13 | Reject unknown primitive | [x] | [ ] | [x] | [x] | [x] | [ ] |
-| 14 | Reject malformed vector | [x] | [ ] | [x] | [x] | [x] | [ ] |
-| 15 | Reject unclosed vector bracket | [x] | [ ] | [x] | [x] | [x] | [ ] |
-| 16 | Reject invalid struct format | [x] | [ ] | [x] | [x] | [x] | [ ] |
-| 17 | Reject struct with invalid address | [x] | [ ] | [x] | [x] | [x] | [ ] |
-| 18 | Parse module ID | [x] | [ ] | [x] | [x] | [x] | [ ] |
-| 19 | Format module ID | [x] | [ ] | [x] | [x] | [x] | [ ] |
-| 20 | Reject invalid module ID | [x] | [ ] | [x] | [x] | [x] | [ ] |
-| 21 | Create MoveStructTag from components | [x] | [ ] | [x] | [x] | [x] | [ ] |
-| 22 | BCS serialize primitive TypeTag | [x] | [ ] | [x] | [x] | [~] | [ ] |
-| 23 | BCS serialize struct TypeTag | [x] | [ ] | [x] | [x] | [x] | [ ] |
-| 24 | BCS round-trip for complex TypeTag | [x] | [ ] | [x] | [x] | [~] | [ ] |
+| # | Scenario | TS | Go | Rust | Java | Kotlin | Python | .NET | C++ | Swift |
+|---|----------|-----|-----|------|------|--------|--------|------|-----|-------|
+| 1 | Format primitive types | ✅ | ❌ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ✅ |
+| 2 | Parse vector of u8 | ✅ | ❌ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ✅ |
+| 3 | Parse nested vector | ✅ | ❌ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ✅ |
+| 4 | Parse vector of struct | ✅ | ❌ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ✅ |
+| 5 | Format vector type | ✅ | ❌ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ✅ |
+| 6 | Parse simple struct type | ✅ | ❌ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ✅ |
+| 7 | Parse struct with type argument | ✅ | ❌ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ✅ |
+| 8 | Parse struct with multiple type arguments | ✅ | ❌ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ✅ |
+| 9 | Parse struct with full address | ✅ | ❌ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ✅ |
+| 10 | Format struct type without type args | ✅ | ❌ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ✅ |
+| 11 | Format struct type with type args | ✅ | ❌ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ✅ |
+| 12 | Reject empty type string | ✅ | ❌ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ✅ |
+| 13 | Reject unknown primitive | ✅ | ❌ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ✅ |
+| 14 | Reject malformed vector | ✅ | ❌ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ✅ |
+| 15 | Reject unclosed vector bracket | ✅ | ❌ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ✅ |
+| 16 | Reject invalid struct format | ✅ | ❌ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ✅ |
+| 17 | Reject struct with invalid address | ✅ | ❌ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ✅ |
+| 18 | Parse module ID | ✅ | ❌ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ✅ |
+| 19 | Format module ID | ✅ | ❌ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ✅ |
+| 20 | Reject invalid module ID | ✅ | ❌ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ✅ |
+| 21 | Create MoveStructTag from components | ✅ | ❌ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ✅ |
+| 22 | BCS serialize primitive TypeTag | ✅ | ❌ | ✅ | ✅ | ❌ | 🟡 | ❌ | ❌ | ✅ |
+| 23 | BCS serialize struct TypeTag | ✅ | ❌ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ✅ |
+| 24 | BCS round-trip for complex TypeTag | ✅ | ❌ | ✅ | ✅ | ❌ | 🟡 | ❌ | ❌ | ✅ |
 
 ---
 
@@ -154,163 +156,163 @@
 
 ### Feature Summary
 
-| Feature | TypeScript | Go | Rust | Java | Kotlin | Python | .NET | C++ |
-|---------|------------|-----|------|------|--------|--------|------|-----|
-| **ed25519** `@required` | Full (25/25) | Partial (23/25) | Full (25/25) | Full (25/25) | Partial | Partial (23/25) | Partial | Partial (20/25) |
-| **hashing** `@required` | Full (20/20) | Partial (8/20) | Full (20/20) | Full (20/20) | Partial | Partial (19/20) | Partial | Partial (7/20) |
-| **secp256k1** `@preferred` | Full (19/19) | N/A | Full (19/19) | N/A | N/A | None (0/19) | N/A | N/A |
-| **secp256r1** `@optional` | Full (26/26) | N/A | Partial (23/26) | N/A | N/A | None (0/26) | N/A | N/A |
-| **bls12381** `@optional` | None (0/35) | N/A | None (0/35) | N/A | N/A | None (0/35) | N/A | N/A |
+| Feature | TS | Go | Rust | Java | Kotlin | Python | .NET | C++ | Swift |
+|---------|-----|-----|------|------|--------|--------|------|-----|-------|
+| **ed25519** `@required` | ✅ 25/25 | 🟡 23/25 | ✅ 25/25 | ✅ 25/25 | 🟡 | 🟡 23/25 | 🟡 | 🟡 20/25 | ✅ 18 |
+| **hashing** `@required` | ✅ 20/20 | 🟡 8/20 | ✅ 20/20 | ✅ 20/20 | 🟡 | 🟡 19/20 | 🟡 | 🟡 7/20 | ✅ 9 |
+| **secp256k1** `@preferred` | ✅ 19/19 | ➖ | ✅ 19/19 | ➖ | ➖ | ❌ 0/19 | ➖ | ➖ | ✅ 18 |
+| **secp256r1** `@optional` | ✅ 26/26 | ➖ | 🟡 23/26 | ➖ | ➖ | ❌ 0/26 | ➖ | ➖ | ➖ |
+| **bls12381** `@optional` | ❌ 0/35 | ➖ | ❌ 0/35 | ➖ | ➖ | ❌ 0/35 | ➖ | ➖ | ➖ |
 
 ### ed25519.feature `@required`
 
-| # | Scenario | TypeScript | Go | Rust | Java | Python | C++ |
-|---|----------|------------|-----|------|------|--------|-----|
-| 1 | Generate random Ed25519 key pair | [x] | [x] | [x] | [x] | [x] | [x] |
-| 2 | Generate unique key pairs | [x] | [x] | [x] | [x] | [x] | [x] |
-| 3 | Create key pair from 32-byte seed | [x] | [x] | [x] | [x] | [x] | [x] |
-| 4 | Create key pair from 64-byte private key | [x] | [x] | [x] | [x] | [x] | [x] |
-| 5 | Create key pair from hex string | [x] | [x] | [x] | [x] | [x] | [x] |
-| 6 | Reject invalid private key length | [x] | [x] | [x] | [x] | [x] | [x] |
-| 7 | Sign a message | [x] | [x] | [x] | [x] | [x] | [x] |
-| 8 | Sign empty message | [x] | [x] | [x] | [x] | [x] | [x] |
-| 9 | Sign produces deterministic signatures | [x] | [x] | [x] | [x] | [x] | [x] |
-| 10 | Different messages produce different signatures | [x] | [x] | [x] | [x] | [x] | [x] |
-| 11 | Different keys produce different signatures | [x] | [x] | [x] | [x] | [x] | [x] |
-| 12 | Verify valid signature | [x] | [x] | [x] | [x] | [x] | [x] |
-| 13 | Reject signature from wrong key | [x] | [x] | [x] | [x] | [x] | [x] |
-| 14 | Reject signature for wrong message | [x] | [x] | [x] | [x] | [x] | [x] |
-| 15 | Reject malformed signature | [x] | [x] | [x] | [x] | [x] | [x] |
-| 16 | Reject truncated signature | [x] | [x] | [x] | [x] | [x] | [x] |
-| 17 | Export public key bytes | [x] | [x] | [x] | [x] | [x] | [x] |
-| 18 | Export private key bytes | [x] | [x] | [x] | [x] | [x] | [x] |
-| 19 | Export keys as hex | [x] | [x] | [x] | [x] | [x] | [x] |
-| 20 | Derive authentication key from Ed25519 public key | [x] | [x] | [x] | [x] | [x] | [x] |
-| 21 | Derive account address from authentication key | [x] | [x] | [x] | [x] | [x] | [ ] |
-| 22 | Known test vector - key derivation | [x] | [x] | [x] | [x] | [x] | [ ] |
-| 23 | Known test vector - signing | [x] | [x] | [x] | [x] | [x] | [ ] |
-| 24 | Private key is zeroized on drop | [x] | [ ] | [x] | [x] | [-] | [-] |
-| 25 | Private key does not appear in debug output | [x] | [ ] | [x] | [x] | [-] | [-] |
+| # | Scenario | TS | Go | Rust | Java | Kotlin | Python | .NET | C++ | Swift |
+|---|----------|-----|-----|------|------|--------|--------|------|-----|-------|
+| 1 | Generate random Ed25519 key pair | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 2 | Generate unique key pairs | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 3 | Create key pair from 32-byte seed | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 4 | Create key pair from 64-byte private key | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 5 | Create key pair from hex string | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 6 | Reject invalid private key length | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 7 | Sign a message | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 8 | Sign empty message | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 9 | Sign produces deterministic signatures | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 10 | Different messages produce different signatures | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 11 | Different keys produce different signatures | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 12 | Verify valid signature | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 13 | Reject signature from wrong key | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 14 | Reject signature for wrong message | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 15 | Reject malformed signature | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 16 | Reject truncated signature | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 17 | Export public key bytes | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 18 | Export private key bytes | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 19 | Export keys as hex | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ |
+| 20 | Derive auth key from Ed25519 public key | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ |
+| 21 | Derive account address from auth key | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ |
+| 22 | Known test vector - key derivation | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ |
+| 23 | Known test vector - signing | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ |
+| 24 | Private key is zeroized on drop | ✅ | ❌ | ✅ | ✅ | ➖ | ➖ | ➖ | ➖ | ➖ |
+| 25 | Private key not in debug output | ✅ | ❌ | ✅ | ✅ | ➖ | ➖ | ➖ | ➖ | ➖ |
 
 ### hashing.feature `@required`
 
-| # | Scenario | TypeScript | Go | Rust | Java | Python | C++ |
-|---|----------|------------|-----|------|------|--------|-----|
-| 1 | Compute SHA3-256 of empty data | [x] | [x] | [x] | [x] | [x] | [x] |
-| 2 | Compute SHA3-256 of "hello" | [x] | [x] | [x] | [x] | [x] | [x] |
-| 3 | SHA3-256 produces different hashes for different inputs | [x] | [x] | [x] | [x] | [x] | [x] |
-| 4 | SHA3-256 is deterministic | [x] | [x] | [x] | [x] | [x] | [x] |
-| 5 | Compute SHA3-256 of multiple parts | [x] | [x] | [x] | [x] | [x] | [ ] |
-| 6 | Compute SHA2-256 of empty data | [x] | [x] | [x] | [x] | [x] | [x] |
-| 7 | Compute SHA2-256 of "hello" | [x] | [x] | [x] | [x] | [x] | [x] |
-| 8 | SHA2-256 differs from SHA3-256 | [x] | [x] | [x] | [x] | [x] | [x] |
-| 9 | Domain-separated hash for RawTransaction | [x] | [ ] | [x] | [x] | [x] | [ ] |
-| 10 | Different domains produce different hashes | [x] | [ ] | [x] | [x] | [x] | [ ] |
-| 11 | Domain hash prefix is computed correctly | [x] | [ ] | [x] | [x] | [x] | [ ] |
-| 12 | Create HashValue from bytes | [x] | [ ] | [x] | [x] | [x] | [ ] |
-| 13 | Create HashValue from hex | [x] | [ ] | [x] | [x] | [x] | [ ] |
-| 14 | Reject invalid HashValue length | [x] | [ ] | [x] | [x] | [x] | [ ] |
-| 15 | HashValue ZERO constant | [x] | [ ] | [x] | [x] | [x] | [ ] |
-| 16 | Format HashValue as hex | [x] | [ ] | [x] | [x] | [x] | [ ] |
-| 17 | HashValue equality | [x] | [ ] | [x] | [x] | [x] | [ ] |
-| 18 | HashValue from SHA3-256 | [x] | [ ] | [x] | [x] | [x] | [ ] |
-| 19 | Compute HMAC-SHA512 for BIP-39 seed derivation | [x] | [ ] | [x] | [x] | [ ] | [ ] |
-| 20 | Hashing large data | [x] | [ ] | [x] | [x] | [x] | [ ] |
+| # | Scenario | TS | Go | Rust | Java | Kotlin | Python | .NET | C++ | Swift |
+|---|----------|-----|-----|------|------|--------|--------|------|-----|-------|
+| 1 | Compute SHA3-256 of empty data | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 2 | Compute SHA3-256 of "hello" | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 3 | SHA3-256 different hashes for different inputs | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 4 | SHA3-256 is deterministic | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 5 | Compute SHA3-256 of multiple parts | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ |
+| 6 | Compute SHA2-256 of empty data | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 7 | Compute SHA2-256 of "hello" | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 8 | SHA2-256 differs from SHA3-256 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 9 | Domain-separated hash for RawTransaction | ✅ | ❌ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ❌ |
+| 10 | Different domains produce different hashes | ✅ | ❌ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ❌ |
+| 11 | Domain hash prefix computed correctly | ✅ | ❌ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ❌ |
+| 12 | Create HashValue from bytes | ✅ | ❌ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ❌ |
+| 13 | Create HashValue from hex | ✅ | ❌ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ❌ |
+| 14 | Reject invalid HashValue length | ✅ | ❌ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ❌ |
+| 15 | HashValue ZERO constant | ✅ | ❌ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ❌ |
+| 16 | Format HashValue as hex | ✅ | ❌ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ❌ |
+| 17 | HashValue equality | ✅ | ❌ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ❌ |
+| 18 | HashValue from SHA3-256 | ✅ | ❌ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ❌ |
+| 19 | HMAC-SHA512 for BIP-39 seed derivation | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 20 | Hashing large data | ✅ | ❌ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ✅ |
 
 ### secp256k1.feature `@preferred`
 
-| # | Scenario | TypeScript | Go | Rust | Java | Python |
-|---|----------|------------|-----|------|------|--------|
-| 1 | Generate random Secp256k1 key pair | [x] | [ ] | [x] | [ ] | [x] |
-| 2 | Create key pair from 32-byte private key | [x] | [ ] | [x] | [ ] | [x] |
-| 3 | Create key pair from hex string | [x] | [ ] | [x] | [ ] | [x] |
-| 4 | Reject invalid private key (zero) | [x] | [ ] | [x] | [ ] | [x] |
-| 5 | Reject invalid private key (greater than curve order) | [x] | [ ] | [x] | [ ] | [x] |
-| 6 | Get compressed public key | [x] | [ ] | [x] | [ ] | [x] |
-| 7 | Get uncompressed public key | [x] | [ ] | [x] | [ ] | [x] |
-| 8 | Compressed and uncompressed represent same key | [x] | [ ] | [x] | [ ] | [x] |
-| 9 | Sign a message | [x] | [ ] | [x] | [ ] | [x] |
-| 10 | Sign produces deterministic signatures (RFC 6979) | [x] | [ ] | [x] | [ ] | [x] |
-| 11 | Sign pre-hashed message | [x] | [ ] | [x] | [ ] | [x] |
-| 12 | Verify valid signature | [x] | [ ] | [x] | [ ] | [x] |
-| 13 | Reject signature from wrong key | [x] | [ ] | [x] | [ ] | [x] |
-| 14 | Reject malformed signature | [x] | [ ] | [x] | [ ] | [x] |
-| 15 | Derive authentication key from Secp256k1 public key | [x] | [ ] | [x] | [ ] | [x] |
-| 16 | Authentication key uses scheme identifier 0x01 | [x] | [ ] | [x] | [ ] | [x] |
-| 17 | Known test vector - key derivation | [x] | [ ] | [x] | [ ] | [x] |
-| 18 | Known test vector - signing | [x] | [ ] | [x] | [ ] | [x] |
-| 19 | Known test vector - address derivation | [x] | [ ] | [x] | [ ] | [x] |
+| # | Scenario | TS | Go | Rust | Java | Kotlin | Python | .NET | C++ | Swift |
+|---|----------|-----|-----|------|------|--------|--------|------|-----|-------|
+| 1 | Generate random Secp256k1 key pair | ✅ | ➖ | ✅ | ➖ | ➖ | ❌ | ➖ | ➖ | ✅ |
+| 2 | Create key pair from 32-byte private key | ✅ | ➖ | ✅ | ➖ | ➖ | ❌ | ➖ | ➖ | ✅ |
+| 3 | Create key pair from hex string | ✅ | ➖ | ✅ | ➖ | ➖ | ❌ | ➖ | ➖ | ✅ |
+| 4 | Reject invalid private key (zero) | ✅ | ➖ | ✅ | ➖ | ➖ | ❌ | ➖ | ➖ | ✅ |
+| 5 | Reject invalid private key (> curve order) | ✅ | ➖ | ✅ | ➖ | ➖ | ❌ | ➖ | ➖ | ✅ |
+| 6 | Get compressed public key | ✅ | ➖ | ✅ | ➖ | ➖ | ❌ | ➖ | ➖ | ✅ |
+| 7 | Get uncompressed public key | ✅ | ➖ | ✅ | ➖ | ➖ | ❌ | ➖ | ➖ | ✅ |
+| 8 | Compressed/uncompressed same key | ✅ | ➖ | ✅ | ➖ | ➖ | ❌ | ➖ | ➖ | ✅ |
+| 9 | Sign a message | ✅ | ➖ | ✅ | ➖ | ➖ | ❌ | ➖ | ➖ | ✅ |
+| 10 | Deterministic signatures (RFC 6979) | ✅ | ➖ | ✅ | ➖ | ➖ | ❌ | ➖ | ➖ | ✅ |
+| 11 | Sign pre-hashed message | ✅ | ➖ | ✅ | ➖ | ➖ | ❌ | ➖ | ➖ | ✅ |
+| 12 | Verify valid signature | ✅ | ➖ | ✅ | ➖ | ➖ | ❌ | ➖ | ➖ | ✅ |
+| 13 | Reject signature from wrong key | ✅ | ➖ | ✅ | ➖ | ➖ | ❌ | ➖ | ➖ | ✅ |
+| 14 | Reject malformed signature | ✅ | ➖ | ✅ | ➖ | ➖ | ❌ | ➖ | ➖ | ✅ |
+| 15 | Derive auth key from Secp256k1 | ✅ | ➖ | ✅ | ➖ | ➖ | ❌ | ➖ | ➖ | ✅ |
+| 16 | Auth key uses scheme 0x01 | ✅ | ➖ | ✅ | ➖ | ➖ | ❌ | ➖ | ➖ | ✅ |
+| 17 | Test vector - key derivation | ✅ | ➖ | ✅ | ➖ | ➖ | ❌ | ➖ | ➖ | ✅ |
+| 18 | Test vector - signing | ✅ | ➖ | ✅ | ➖ | ➖ | ❌ | ➖ | ➖ | ✅ |
+| 19 | Test vector - address derivation | ✅ | ➖ | ✅ | ➖ | ➖ | ❌ | ➖ | ➖ | ❌ |
 
 ### secp256r1.feature `@optional`
 
-| # | Scenario | TypeScript | Go | Rust | Java | Python |
-|---|----------|------------|-----|------|------|--------|
-| 1 | Generate random Secp256r1 key pair | [x] | [ ] | [x] | [ ] | [x] |
-| 2 | Create key pair from 32-byte private key | [x] | [ ] | [x] | [ ] | [x] |
-| 3 | Create key pair from hex string | [x] | [ ] | [x] | [ ] | [x] |
-| 4 | Reject invalid private key (zero) | [x] | [ ] | [x] | [ ] | [x] |
-| 5 | Reject invalid private key (greater than curve order) | [x] | [ ] | [x] | [ ] | [x] |
-| 6 | Get compressed public key | [x] | [ ] | [x] | [ ] | [x] |
-| 7 | Get uncompressed public key | [x] | [ ] | [x] | [ ] | [x] |
-| 8 | Parse compressed public key | [x] | [ ] | [x] | [ ] | [x] |
-| 9 | Parse uncompressed public key | [x] | [ ] | [x] | [ ] | [x] |
-| 10 | Sign a message | [x] | [ ] | [x] | [ ] | [x] |
-| 11 | Sign produces deterministic signatures (RFC 6979) | [x] | [ ] | [x] | [ ] | [x] |
-| 12 | Sign with SHA-256 pre-hash | [x] | [ ] | [x] | [ ] | [x] |
-| 13 | Verify valid signature | [x] | [ ] | [x] | [ ] | [x] |
-| 14 | Reject signature from wrong key | [x] | [ ] | [x] | [ ] | [x] |
-| 15 | Reject malformed signature | [x] | [ ] | [x] | [ ] | [x] |
-| 16 | Derive authentication key from Secp256r1 public key | [x] | [ ] | [x] | [ ] | [x] |
-| 17 | Secp256r1 uses scheme identifier 0x02 | [x] | [ ] | [x] | [ ] | [x] |
-| 18 | Secp256r1 address differs from Secp256k1 | [x] | [ ] | [x] | [ ] | [x] |
-| 19 | Parse WebAuthn public key | [x] | [ ] | [ ] | [ ] | [x] |
-| 20 | Verify WebAuthn assertion signature | [x] | [ ] | [ ] | [ ] | [x] |
-| 21 | Signature format compatibility | [x] | [ ] | [ ] | [ ] | [x] |
-| 22 | Create Secp256r1 account | [x] | [ ] | [x] | [ ] | [x] |
-| 23 | Sign transaction with Secp256r1 account | [x] | [ ] | [x] | [ ] | [x] |
-| 24 | Known Secp256r1 key derivation test vector | [x] | [ ] | [x] | [ ] | [x] |
-| 25 | Known Secp256r1 signing test vector | [x] | [ ] | [x] | [ ] | [x] |
-| 26 | Known Secp256r1 address test vector | [x] | [ ] | [x] | [ ] | [x] |
+| # | Scenario | TS | Go | Rust | Java | Kotlin | Python | .NET | C++ | Swift |
+|---|----------|-----|-----|------|------|--------|--------|------|-----|-------|
+| 1 | Generate random Secp256r1 key pair | ✅ | ➖ | ✅ | ➖ | ➖ | ❌ | ➖ | ➖ | ➖ |
+| 2 | Create key pair from 32-byte private key | ✅ | ➖ | ✅ | ➖ | ➖ | ❌ | ➖ | ➖ | ➖ |
+| 3 | Create key pair from hex string | ✅ | ➖ | ✅ | ➖ | ➖ | ❌ | ➖ | ➖ | ➖ |
+| 4 | Reject invalid private key (zero) | ✅ | ➖ | ✅ | ➖ | ➖ | ❌ | ➖ | ➖ | ➖ |
+| 5 | Reject invalid private key (> curve order) | ✅ | ➖ | ✅ | ➖ | ➖ | ❌ | ➖ | ➖ | ➖ |
+| 6 | Get compressed public key | ✅ | ➖ | ✅ | ➖ | ➖ | ❌ | ➖ | ➖ | ➖ |
+| 7 | Get uncompressed public key | ✅ | ➖ | ✅ | ➖ | ➖ | ❌ | ➖ | ➖ | ➖ |
+| 8 | Parse compressed public key | ✅ | ➖ | ✅ | ➖ | ➖ | ❌ | ➖ | ➖ | ➖ |
+| 9 | Parse uncompressed public key | ✅ | ➖ | ✅ | ➖ | ➖ | ❌ | ➖ | ➖ | ➖ |
+| 10 | Sign a message | ✅ | ➖ | ✅ | ➖ | ➖ | ❌ | ➖ | ➖ | ➖ |
+| 11 | Deterministic signatures (RFC 6979) | ✅ | ➖ | ✅ | ➖ | ➖ | ❌ | ➖ | ➖ | ➖ |
+| 12 | Sign with SHA-256 pre-hash | ✅ | ➖ | ✅ | ➖ | ➖ | ❌ | ➖ | ➖ | ➖ |
+| 13 | Verify valid signature | ✅ | ➖ | ✅ | ➖ | ➖ | ❌ | ➖ | ➖ | ➖ |
+| 14 | Reject signature from wrong key | ✅ | ➖ | ✅ | ➖ | ➖ | ❌ | ➖ | ➖ | ➖ |
+| 15 | Reject malformed signature | ✅ | ➖ | ✅ | ➖ | ➖ | ❌ | ➖ | ➖ | ➖ |
+| 16 | Derive auth key from Secp256r1 | ✅ | ➖ | ✅ | ➖ | ➖ | ❌ | ➖ | ➖ | ➖ |
+| 17 | Secp256r1 uses scheme 0x02 | ✅ | ➖ | ✅ | ➖ | ➖ | ❌ | ➖ | ➖ | ➖ |
+| 18 | Secp256r1 addr differs from Secp256k1 | ✅ | ➖ | ✅ | ➖ | ➖ | ❌ | ➖ | ➖ | ➖ |
+| 19 | Parse WebAuthn public key | ✅ | ➖ | ❌ | ➖ | ➖ | ❌ | ➖ | ➖ | ➖ |
+| 20 | Verify WebAuthn assertion signature | ✅ | ➖ | ❌ | ➖ | ➖ | ❌ | ➖ | ➖ | ➖ |
+| 21 | Signature format compatibility | ✅ | ➖ | ❌ | ➖ | ➖ | ❌ | ➖ | ➖ | ➖ |
+| 22 | Create Secp256r1 account | ✅ | ➖ | ✅ | ➖ | ➖ | ❌ | ➖ | ➖ | ➖ |
+| 23 | Sign transaction with Secp256r1 | ✅ | ➖ | ✅ | ➖ | ➖ | ❌ | ➖ | ➖ | ➖ |
+| 24 | Test vector - key derivation | ✅ | ➖ | ✅ | ➖ | ➖ | ❌ | ➖ | ➖ | ➖ |
+| 25 | Test vector - signing | ✅ | ➖ | ✅ | ➖ | ➖ | ❌ | ➖ | ➖ | ➖ |
+| 26 | Test vector - address | ✅ | ➖ | ✅ | ➖ | ➖ | ❌ | ➖ | ➖ | ➖ |
 
 ### bls12381.feature `@optional`
 
-| # | Scenario | TypeScript | Go | Rust | Java | Python |
-|---|----------|------------|-----|------|------|--------|
-| 1 | Generate random BLS key pair | [ ] | [ ] | [ ] | [ ] | [x] |
-| 2 | Create key pair from 32-byte seed | [ ] | [ ] | [ ] | [ ] | [x] |
-| 3 | Create key pair from hex string | [ ] | [ ] | [ ] | [ ] | [x] |
-| 4 | Reject invalid private key | [ ] | [ ] | [ ] | [ ] | [x] |
-| 5 | BLS public key size | [ ] | [ ] | [ ] | [ ] | [x] |
-| 6 | BLS signature size | [ ] | [ ] | [ ] | [ ] | [x] |
-| 7 | Sign a message | [ ] | [ ] | [ ] | [ ] | [x] |
-| 8 | Signing is deterministic | [ ] | [ ] | [ ] | [ ] | [x] |
-| 9 | Different messages produce different signatures | [ ] | [ ] | [ ] | [ ] | [x] |
-| 10 | Different keys produce different signatures | [ ] | [ ] | [ ] | [ ] | [x] |
-| 11 | Verify valid signature | [ ] | [ ] | [ ] | [ ] | [x] |
-| 12 | Reject signature from wrong key | [ ] | [ ] | [ ] | [ ] | [x] |
-| 13 | Reject signature for wrong message | [ ] | [ ] | [ ] | [ ] | [x] |
-| 14 | Reject malformed signature | [ ] | [ ] | [ ] | [ ] | [x] |
-| 15 | Aggregate two signatures | [ ] | [ ] | [ ] | [ ] | [x] |
-| 16 | Aggregate multiple signatures | [ ] | [ ] | [ ] | [ ] | [x] |
-| 17 | Verify aggregated signature | [ ] | [ ] | [ ] | [ ] | [x] |
-| 18 | Aggregation is deterministic | [ ] | [ ] | [ ] | [ ] | [x] |
-| 19 | Cannot aggregate signatures for different messages | [ ] | [ ] | [ ] | [ ] | [x] |
-| 20 | Aggregate two public keys | [ ] | [ ] | [ ] | [ ] | [x] |
-| 21 | Aggregate multiple public keys | [ ] | [ ] | [ ] | [ ] | [x] |
-| 22 | Aggregated key verification | [ ] | [ ] | [ ] | [ ] | [x] |
-| 23 | Generate proof of possession | [ ] | [ ] | [ ] | [ ] | [x] |
-| 24 | Verify valid proof of possession | [ ] | [ ] | [ ] | [ ] | [x] |
-| 25 | Reject invalid proof of possession | [ ] | [ ] | [ ] | [ ] | [x] |
-| 26 | PoP prevents rogue key attacks | [ ] | [ ] | [ ] | [ ] | [x] |
-| 27 | Create BLS account | [ ] | [ ] | [ ] | [ ] | [x] |
-| 28 | BLS authentication key derivation | [ ] | [ ] | [ ] | [ ] | [x] |
-| 29 | Sign transaction with BLS account | [ ] | [ ] | [ ] | [ ] | [x] |
-| 30 | Reject invalid public key bytes | [ ] | [ ] | [ ] | [ ] | [x] |
-| 31 | Reject invalid signature bytes | [ ] | [ ] | [ ] | [ ] | [x] |
-| 32 | Reject point not on curve | [ ] | [ ] | [ ] | [ ] | [x] |
-| 33 | Known BLS key derivation test vector | [ ] | [ ] | [ ] | [ ] | [x] |
-| 34 | Known BLS signing test vector | [ ] | [ ] | [ ] | [ ] | [x] |
-| 35 | Known BLS aggregation test vector | [ ] | [ ] | [ ] | [ ] | [x] |
+| # | Scenario | TS | Go | Rust | Java | Kotlin | Python | .NET | C++ | Swift |
+|---|----------|-----|-----|------|------|--------|--------|------|-----|-------|
+| 1 | Generate random BLS key pair | ❌ | ➖ | ❌ | ➖ | ➖ | ❌ | ➖ | ➖ | ➖ |
+| 2 | Create key pair from 32-byte seed | ❌ | ➖ | ❌ | ➖ | ➖ | ❌ | ➖ | ➖ | ➖ |
+| 3 | Create key pair from hex string | ❌ | ➖ | ❌ | ➖ | ➖ | ❌ | ➖ | ➖ | ➖ |
+| 4 | Reject invalid private key | ❌ | ➖ | ❌ | ➖ | ➖ | ❌ | ➖ | ➖ | ➖ |
+| 5 | BLS public key size | ❌ | ➖ | ❌ | ➖ | ➖ | ❌ | ➖ | ➖ | ➖ |
+| 6 | BLS signature size | ❌ | ➖ | ❌ | ➖ | ➖ | ❌ | ➖ | ➖ | ➖ |
+| 7 | Sign a message | ❌ | ➖ | ❌ | ➖ | ➖ | ❌ | ➖ | ➖ | ➖ |
+| 8 | Signing is deterministic | ❌ | ➖ | ❌ | ➖ | ➖ | ❌ | ➖ | ➖ | ➖ |
+| 9 | Different messages different sigs | ❌ | ➖ | ❌ | ➖ | ➖ | ❌ | ➖ | ➖ | ➖ |
+| 10 | Different keys different sigs | ❌ | ➖ | ❌ | ➖ | ➖ | ❌ | ➖ | ➖ | ➖ |
+| 11 | Verify valid signature | ❌ | ➖ | ❌ | ➖ | ➖ | ❌ | ➖ | ➖ | ➖ |
+| 12 | Reject signature from wrong key | ❌ | ➖ | ❌ | ➖ | ➖ | ❌ | ➖ | ➖ | ➖ |
+| 13 | Reject signature for wrong message | ❌ | ➖ | ❌ | ➖ | ➖ | ❌ | ➖ | ➖ | ➖ |
+| 14 | Reject malformed signature | ❌ | ➖ | ❌ | ➖ | ➖ | ❌ | ➖ | ➖ | ➖ |
+| 15 | Aggregate two signatures | ❌ | ➖ | ❌ | ➖ | ➖ | ❌ | ➖ | ➖ | ➖ |
+| 16 | Aggregate multiple signatures | ❌ | ➖ | ❌ | ➖ | ➖ | ❌ | ➖ | ➖ | ➖ |
+| 17 | Verify aggregated signature | ❌ | ➖ | ❌ | ➖ | ➖ | ❌ | ➖ | ➖ | ➖ |
+| 18 | Aggregation is deterministic | ❌ | ➖ | ❌ | ➖ | ➖ | ❌ | ➖ | ➖ | ➖ |
+| 19 | Cannot aggregate different msgs | ❌ | ➖ | ❌ | ➖ | ➖ | ❌ | ➖ | ➖ | ➖ |
+| 20 | Aggregate two public keys | ❌ | ➖ | ❌ | ➖ | ➖ | ❌ | ➖ | ➖ | ➖ |
+| 21 | Aggregate multiple public keys | ❌ | ➖ | ❌ | ➖ | ➖ | ❌ | ➖ | ➖ | ➖ |
+| 22 | Aggregated key verification | ❌ | ➖ | ❌ | ➖ | ➖ | ❌ | ➖ | ➖ | ➖ |
+| 23 | Generate proof of possession | ❌ | ➖ | ❌ | ➖ | ➖ | ❌ | ➖ | ➖ | ➖ |
+| 24 | Verify valid PoP | ❌ | ➖ | ❌ | ➖ | ➖ | ❌ | ➖ | ➖ | ➖ |
+| 25 | Reject invalid PoP | ❌ | ➖ | ❌ | ➖ | ➖ | ❌ | ➖ | ➖ | ➖ |
+| 26 | PoP prevents rogue key attacks | ❌ | ➖ | ❌ | ➖ | ➖ | ❌ | ➖ | ➖ | ➖ |
+| 27 | Create BLS account | ❌ | ➖ | ❌ | ➖ | ➖ | ❌ | ➖ | ➖ | ➖ |
+| 28 | BLS auth key derivation | ❌ | ➖ | ❌ | ➖ | ➖ | ❌ | ➖ | ➖ | ➖ |
+| 29 | Sign transaction with BLS | ❌ | ➖ | ❌ | ➖ | ➖ | ❌ | ➖ | ➖ | ➖ |
+| 30 | Reject invalid public key bytes | ❌ | ➖ | ❌ | ➖ | ➖ | ❌ | ➖ | ➖ | ➖ |
+| 31 | Reject invalid signature bytes | ❌ | ➖ | ❌ | ➖ | ➖ | ❌ | ➖ | ➖ | ➖ |
+| 32 | Reject point not on curve | ❌ | ➖ | ❌ | ➖ | ➖ | ❌ | ➖ | ➖ | ➖ |
+| 33 | Test vector - key derivation | ❌ | ➖ | ❌ | ➖ | ➖ | ❌ | ➖ | ➖ | ➖ |
+| 34 | Test vector - signing | ❌ | ➖ | ❌ | ➖ | ➖ | ❌ | ➖ | ➖ | ➖ |
+| 35 | Test vector - aggregation | ❌ | ➖ | ❌ | ➖ | ➖ | ❌ | ➖ | ➖ | ➖ |
 
 ---
 
@@ -318,100 +320,100 @@
 
 ### Feature Summary
 
-| Feature | TypeScript | Go | Rust | Java | Kotlin | Python | .NET | C++ |
-|---------|------------|-----|------|------|--------|--------|------|-----|
-| **authentication-key** `@required` | Full (17/17) | Partial (12/17) | Full (17/17) | Full (17/17) | Partial | Partial (9/17) | Partial | None (0/17) |
-| **single-key** `@required` | Full (28/28) | Partial (17/28) | Partial (26/28) | Full (28/28) | Partial | Partial (13/28) | Partial | None (0/28) |
-| **mnemonic-derivation** `@preferred` | Full (29/29) | N/A | Full (29/29) | N/A | N/A | None (0/29) | N/A | None (0/29) |
+| Feature | TS | Go | Rust | Java | Kotlin | Python | .NET | C++ | Swift |
+|---------|-----|-----|------|------|--------|--------|------|-----|-------|
+| **authentication-key** `@required` | ✅ 17/17 | 🟡 12/17 | ✅ 17/17 | ✅ 17/17 | 🟡 | 🟡 9/17 | 🟡 | ❌ 0/17 | ✅ 8 |
+| **single-key** `@required` | ✅ 28/28 | 🟡 17/28 | 🟡 26/28 | ✅ 28/28 | 🟡 | 🟡 13/28 | 🟡 | ❌ 0/28 | ✅ 22 |
+| **mnemonic-derivation** `@preferred` | ✅ 29/29 | ➖ | ✅ 29/29 | ➖ | ➖ | ❌ 0/29 | ➖ | ❌ 0/29 | ✅ 9 |
 
 ### authentication-key.feature `@required`
 
-| # | Scenario | TypeScript | Go | Rust | Java | Python |
-|---|----------|------------|-----|------|------|--------|
-| 1 | Derive authentication key from Ed25519 public key | [x] | [x] | [x] | [x] | [x] |
-| 2 | Authentication key uses Ed25519 scheme identifier | [x] | [x] | [x] | [x] | [x] |
-| 3 | Same public key produces same authentication key | [x] | [x] | [x] | [x] | [x] |
-| 4 | Different public keys produce different authentication keys | [x] | [x] | [x] | [x] | [x] |
-| 5 | Derive authentication key from Secp256k1 public key | [x] | [ ] | [x] | [x] | [ ] |
-| 6 | Secp256k1 uses uncompressed public key | [x] | [ ] | [x] | [x] | [ ] |
-| 7 | Secp256k1 uses scheme identifier 0x01 | [x] | [ ] | [x] | [x] | [ ] |
-| 8 | Derive authentication key from arbitrary public key and scheme | [x] | [ ] | [x] | [x] | [x] |
-| 9 | Convert authentication key to account address | [x] | [x] | [x] | [x] | [x] |
-| 10 | New account address equals authentication key | [x] | [x] | [x] | [x] | [x] |
-| 11 | Authentication key from_bytes | [x] | [x] | [x] | [x] | [x] |
-| 12 | Authentication key as bytes | [x] | [x] | [x] | [x] | [x] |
-| 13 | Authentication key to hex | [x] | [x] | [x] | [x] | [x] |
-| 14 | Known Ed25519 authentication key test vector | [x] | [x] | [x] | [x] | [~] |
-| 15 | Known Secp256k1 authentication key test vector | [x] | [ ] | [x] | [x] | [ ] |
-| 16 | Reject invalid authentication key length | [x] | [x] | [x] | [x] | [x] |
-| 17 | Handle all-zero authentication key | [x] | [x] | [x] | [x] | [x] |
+| # | Scenario | TS | Go | Rust | Java | Kotlin | Python | .NET | C++ | Swift |
+|---|----------|-----|-----|------|------|--------|--------|------|-----|-------|
+| 1 | Derive auth key from Ed25519 pubkey | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ |
+| 2 | Auth key uses Ed25519 scheme id | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ |
+| 3 | Same pubkey produces same auth key | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ |
+| 4 | Different pubkeys different auth keys | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ |
+| 5 | Derive auth key from Secp256k1 | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ✅ |
+| 6 | Secp256k1 uses uncompressed pubkey | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ✅ |
+| 7 | Secp256k1 uses scheme 0x01 | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ✅ |
+| 8 | Derive auth key from arbitrary key/scheme | ✅ | ❌ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ✅ |
+| 9 | Convert auth key to account address | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ |
+| 10 | New account addr equals auth key | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ |
+| 11 | Auth key from_bytes | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ |
+| 12 | Auth key as bytes | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ |
+| 13 | Auth key to hex | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ |
+| 14 | Test vector - Ed25519 auth key | ✅ | ✅ | ✅ | ✅ | ✅ | 🟡 | ✅ | ❌ | ❌ |
+| 15 | Test vector - Secp256k1 auth key | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 16 | Reject invalid auth key length | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ |
+| 17 | Handle all-zero auth key | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ |
 
 ### single-key.feature `@required`
 
-| # | Scenario | TypeScript | Go | Rust | Java | Python |
-|---|----------|------------|-----|------|------|--------|
-| 1 | Generate random Ed25519 account | [x] | [x] | [x] | [x] | [x] |
-| 2 | Generated accounts are unique | [x] | [x] | [x] | [x] | [x] |
-| 3 | Create Ed25519 account from private key bytes | [x] | [x] | [x] | [x] | [~] |
-| 4 | Create Ed25519 account from hex string | [x] | [x] | [x] | [x] | [~] |
-| 5 | Create Ed25519 account from 64-byte expanded key | [x] | [x] | [x] | [x] | [ ] |
-| 6 | Load account from AIP-80 compliant string | [x] | [ ] | [x] | [x] | [ ] |
-| 7 | Export account to AIP-80 compliant string | [x] | [ ] | [x] | [x] | [ ] |
-| 8 | Ed25519 account public key | [x] | [x] | [x] | [x] | [~] |
-| 9 | Ed25519 account authentication key | [x] | [x] | [x] | [x] | [x] |
-| 10 | Ed25519 account address | [x] | [x] | [x] | [x] | [x] |
-| 11 | Sign message with Ed25519 account | [x] | [x] | [x] | [x] | [~] |
-| 12 | Sign transaction with Ed25519 account | [x] | [x] | [x] | [x] | [ ] |
-| 13 | Verify signature from Ed25519 account | [x] | [x] | [x] | [x] | [ ] |
-| 14 | Reject signature from different Ed25519 account | [x] | [x] | [x] | [x] | [x] |
-| 15 | Generate random Secp256k1 account | [x] | [ ] | [x] | [x] | [x] |
-| 16 | Create Secp256k1 account from private key | [x] | [ ] | [x] | [x] | [x] |
-| 17 | Secp256k1 account address differs from Ed25519 | [x] | [ ] | [x] | [x] | [~] |
-| 18 | Sign message with Secp256k1 account | [x] | [ ] | [x] | [x] | [~] |
-| 19 | Sign transaction with Secp256k1 account | [x] | [ ] | [x] | [x] | [ ] |
-| 20 | Secp256k1 signature is recoverable | [x] | [ ] | [ ] | [x] | [ ] |
-| 21 | Known Ed25519 account test vector | [x] | [x] | [x] | [x] | [ ] |
-| 22 | Known Secp256k1 account test vector | [x] | [ ] | [x] | [x] | [ ] |
-| 23 | Reject invalid private key length | [x] | [x] | [x] | [x] | [x] |
-| 24 | Reject invalid hex string | [x] | [x] | [x] | [x] | [x] |
-| 25 | Account equality by address | [x] | [x] | [x] | [x] | [x] |
-| 26 | Private key is not exposed accidentally | [x] | [ ] | [x] | [x] | [ ] |
-| 27 | Private key export requires explicit method | [x] | [ ] | [x] | [x] | [ ] |
-| 28 | AIP-80 format is ed25519-priv-... for Ed25519 | [x] | [ ] | [x] | [x] | [ ] |
+| # | Scenario | TS | Go | Rust | Java | Kotlin | Python | .NET | C++ | Swift |
+|---|----------|-----|-----|------|------|--------|--------|------|-----|-------|
+| 1 | Generate random Ed25519 account | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ |
+| 2 | Generated accounts are unique | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ |
+| 3 | Create Ed25519 account from privkey bytes | ✅ | ✅ | ✅ | ✅ | ✅ | 🟡 | ✅ | ❌ | ✅ |
+| 4 | Create Ed25519 account from hex string | ✅ | ✅ | ✅ | ✅ | ✅ | 🟡 | ✅ | ❌ | ✅ |
+| 5 | Create Ed25519 from 64-byte expanded key | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ✅ |
+| 6 | Load account from AIP-80 string | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ✅ |
+| 7 | Export account to AIP-80 string | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ✅ |
+| 8 | Ed25519 account public key | ✅ | ✅ | ✅ | ✅ | ✅ | 🟡 | ✅ | ❌ | ✅ |
+| 9 | Ed25519 account auth key | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ |
+| 10 | Ed25519 account address | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ |
+| 11 | Sign message with Ed25519 account | ✅ | ✅ | ✅ | ✅ | ✅ | 🟡 | ✅ | ❌ | ✅ |
+| 12 | Sign transaction with Ed25519 | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ✅ |
+| 13 | Verify signature from Ed25519 | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ✅ |
+| 14 | Reject sig from different Ed25519 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ |
+| 15 | Generate random Secp256k1 account | ✅ | ❌ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ✅ |
+| 16 | Create Secp256k1 from private key | ✅ | ❌ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ✅ |
+| 17 | Secp256k1 addr differs from Ed25519 | ✅ | ❌ | ✅ | ✅ | ❌ | 🟡 | ❌ | ❌ | ✅ |
+| 18 | Sign message with Secp256k1 | ✅ | ❌ | ✅ | ✅ | ❌ | 🟡 | ❌ | ❌ | ✅ |
+| 19 | Sign transaction with Secp256k1 | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 20 | Secp256k1 signature is recoverable | ✅ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 21 | Test vector - Ed25519 account | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 22 | Test vector - Secp256k1 account | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 23 | Reject invalid private key length | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ |
+| 24 | Reject invalid hex string | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ |
+| 25 | Account equality by address | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ |
+| 26 | Private key not exposed accidentally | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 27 | Private key export requires explicit | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 28 | AIP-80 format is ed25519-priv-... | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
 
 ### mnemonic-derivation.feature `@preferred`
 
-| # | Scenario | TypeScript | Go | Rust | Java | Python |
-|---|----------|------------|-----|------|------|--------|
-| 1 | Generate 12-word mnemonic | [x] | [ ] | [x] | [ ] | [ ] |
-| 2 | Generate 24-word mnemonic | [x] | [ ] | [x] | [ ] | [ ] |
-| 3 | Generated mnemonics are unique | [x] | [ ] | [x] | [ ] | [ ] |
-| 4 | Mnemonic words are from BIP-39 wordlist | [x] | [ ] | [x] | [ ] | [ ] |
-| 5 | Parse valid mnemonic phrase | [x] | [ ] | [x] | [ ] | [ ] |
-| 6 | Mnemonic parsing is case-insensitive | [x] | [ ] | [x] | [ ] | [ ] |
-| 7 | Reject invalid mnemonic word | [x] | [ ] | [x] | [ ] | [ ] |
-| 8 | Reject mnemonic with wrong word count | [x] | [ ] | [x] | [ ] | [ ] |
-| 9 | Reject mnemonic with invalid checksum | [x] | [ ] | [x] | [ ] | [ ] |
-| 10 | Derive Ed25519 account from mnemonic with default path | [x] | [ ] | [x] | [ ] | [ ] |
-| 11 | Derive Ed25519 account with custom path | [x] | [ ] | [x] | [ ] | [ ] |
-| 12 | Same mnemonic produces same account | [x] | [ ] | [x] | [ ] | [ ] |
-| 13 | Different mnemonics produce different accounts | [x] | [ ] | [x] | [ ] | [ ] |
-| 14 | Different paths produce different accounts | [x] | [ ] | [x] | [ ] | [ ] |
-| 15 | Derive multiple accounts from one mnemonic | [x] | [ ] | [x] | [ ] | [ ] |
-| 16 | Derive Secp256k1 account from mnemonic | [x] | [ ] | [x] | [ ] | [ ] |
-| 17 | Ed25519 and Secp256k1 from same mnemonic have different addresses | [x] | [ ] | [x] | [ ] | [ ] |
-| 18 | Derive account with passphrase | [x] | [ ] | [x] | [ ] | [ ] |
-| 19 | Different passphrases produce different accounts | [x] | [ ] | [x] | [ ] | [ ] |
-| 20 | No passphrase is same as empty passphrase | [x] | [ ] | [x] | [ ] | [ ] |
-| 21 | Known test vector - 12 word mnemonic | [x] | [ ] | [x] | [ ] | [ ] |
-| 22 | Known test vector - with passphrase | [x] | [ ] | [x] | [ ] | [ ] |
-| 23 | Known test vector - multiple indices | [x] | [ ] | [x] | [ ] | [ ] |
-| 24 | Valid derivation path formats | [x] | [ ] | [x] | [ ] | [ ] |
-| 25 | Reject invalid derivation path - missing m | [x] | [ ] | [x] | [ ] | [ ] |
-| 26 | Reject invalid derivation path - wrong coin type | [x] | [ ] | [x] | [ ] | [ ] |
-| 27 | Reject invalid derivation path - non-hardened where required | [x] | [ ] | [x] | [ ] | [ ] |
-| 28 | Mnemonic phrase can be retrieved | [x] | [ ] | [x] | [ ] | [ ] |
-| 29 | Seed is zeroized after derivation | [x] | [ ] | [x] | [ ] | [ ] |
+| # | Scenario | TS | Go | Rust | Java | Kotlin | Python | .NET | C++ | Swift |
+|---|----------|-----|-----|------|------|--------|--------|------|-----|-------|
+| 1 | Generate 12-word mnemonic | ✅ | ➖ | ✅ | ➖ | ➖ | ❌ | ➖ | ❌ | ✅ |
+| 2 | Generate 24-word mnemonic | ✅ | ➖ | ✅ | ➖ | ➖ | ❌ | ➖ | ❌ | ✅ |
+| 3 | Generated mnemonics are unique | ✅ | ➖ | ✅ | ➖ | ➖ | ❌ | ➖ | ❌ | ✅ |
+| 4 | Mnemonic words from BIP-39 wordlist | ✅ | ➖ | ✅ | ➖ | ➖ | ❌ | ➖ | ❌ | ✅ |
+| 5 | Parse valid mnemonic phrase | ✅ | ➖ | ✅ | ➖ | ➖ | ❌ | ➖ | ❌ | ✅ |
+| 6 | Mnemonic parsing case-insensitive | ✅ | ➖ | ✅ | ➖ | ➖ | ❌ | ➖ | ❌ | ✅ |
+| 7 | Reject invalid mnemonic word | ✅ | ➖ | ✅ | ➖ | ➖ | ❌ | ➖ | ❌ | ✅ |
+| 8 | Reject mnemonic wrong word count | ✅ | ➖ | ✅ | ➖ | ➖ | ❌ | ➖ | ❌ | ✅ |
+| 9 | Reject mnemonic invalid checksum | ✅ | ➖ | ✅ | ➖ | ➖ | ❌ | ➖ | ❌ | ✅ |
+| 10 | Derive Ed25519 from mnemonic default | ✅ | ➖ | ✅ | ➖ | ➖ | ❌ | ➖ | ❌ | ❌ |
+| 11 | Derive Ed25519 with custom path | ✅ | ➖ | ✅ | ➖ | ➖ | ❌ | ➖ | ❌ | ❌ |
+| 12 | Same mnemonic same account | ✅ | ➖ | ✅ | ➖ | ➖ | ❌ | ➖ | ❌ | ❌ |
+| 13 | Different mnemonics different accounts | ✅ | ➖ | ✅ | ➖ | ➖ | ❌ | ➖ | ❌ | ❌ |
+| 14 | Different paths different accounts | ✅ | ➖ | ✅ | ➖ | ➖ | ❌ | ➖ | ❌ | ❌ |
+| 15 | Derive multiple accounts from one | ✅ | ➖ | ✅ | ➖ | ➖ | ❌ | ➖ | ❌ | ❌ |
+| 16 | Derive Secp256k1 from mnemonic | ✅ | ➖ | ✅ | ➖ | ➖ | ❌ | ➖ | ❌ | ❌ |
+| 17 | Ed25519/Secp256k1 same mnemonic diff addr | ✅ | ➖ | ✅ | ➖ | ➖ | ❌ | ➖ | ❌ | ❌ |
+| 18 | Derive account with passphrase | ✅ | ➖ | ✅ | ➖ | ➖ | ❌ | ➖ | ❌ | ❌ |
+| 19 | Different passphrases different accounts | ✅ | ➖ | ✅ | ➖ | ➖ | ❌ | ➖ | ❌ | ❌ |
+| 20 | No passphrase = empty passphrase | ✅ | ➖ | ✅ | ➖ | ➖ | ❌ | ➖ | ❌ | ❌ |
+| 21 | Test vector - 12 word mnemonic | ✅ | ➖ | ✅ | ➖ | ➖ | ❌ | ➖ | ❌ | ❌ |
+| 22 | Test vector - with passphrase | ✅ | ➖ | ✅ | ➖ | ➖ | ❌ | ➖ | ❌ | ❌ |
+| 23 | Test vector - multiple indices | ✅ | ➖ | ✅ | ➖ | ➖ | ❌ | ➖ | ❌ | ❌ |
+| 24 | Valid derivation path formats | ✅ | ➖ | ✅ | ➖ | ➖ | ❌ | ➖ | ❌ | ❌ |
+| 25 | Reject path - missing m | ✅ | ➖ | ✅ | ➖ | ➖ | ❌ | ➖ | ❌ | ❌ |
+| 26 | Reject path - wrong coin type | ✅ | ➖ | ✅ | ➖ | ➖ | ❌ | ➖ | ❌ | ❌ |
+| 27 | Reject path - non-hardened required | ✅ | ➖ | ✅ | ➖ | ➖ | ❌ | ➖ | ❌ | ❌ |
+| 28 | Mnemonic phrase retrievable | ✅ | ➖ | ✅ | ➖ | ➖ | ❌ | ➖ | ❌ | ❌ |
+| 29 | Seed zeroized after derivation | ✅ | ➖ | ✅ | ➖ | ➖ | ❌ | ➖ | ❌ | ❌ |
 
 ---
 
@@ -419,126 +421,126 @@
 
 ### Feature Summary
 
-| Feature | TypeScript | Go | Rust | Java | Kotlin | Python | .NET | C++ |
-|---------|------------|-----|------|------|--------|--------|------|-----|
-| **entry-function** `@required` | Full (24/24) | Partial (22/24) | Full (24/24) | Full (24/24) | Partial | None (0/24) | Partial | None (0/24) |
-| **raw-transaction** `@required` | Full (21/21) | Partial (18/21) | Full (21/21) | Full (21/21) | Partial | None (0/21) | Partial | None (0/21) |
-| **signing** `@required` | Full (24/24) | Partial (17/24) | Full (24/24) | Full (24/24) | Partial | None (0/24) | Partial | None (0/24) |
-| **script** `@optional` | Partial (15/25) | None (0/25) | None (0/25) | None (0/25) | None | None (0/25) | None | None (0/25) |
+| Feature | TS | Go | Rust | Java | Kotlin | Python | .NET | C++ | Swift |
+|---------|-----|-----|------|------|--------|--------|------|-----|-------|
+| **entry-function** `@required` | ✅ 24/24 | 🟡 22/24 | ✅ 24/24 | ✅ 24/24 | 🟡 | ❌ 0/24 | 🟡 | ❌ 0/24 | ❌ |
+| **raw-transaction** `@required` | ✅ 21/21 | 🟡 18/21 | ✅ 21/21 | ✅ 21/21 | 🟡 | ❌ 0/21 | 🟡 | ❌ 0/21 | ❌ |
+| **signing** `@required` | ✅ 24/24 | 🟡 17/24 | ✅ 24/24 | ✅ 24/24 | 🟡 | ❌ 0/24 | 🟡 | ❌ 0/24 | ❌ |
+| **script** `@optional` | 🟡 15/25 | ❌ 0/25 | ❌ 0/25 | ❌ 0/25 | ❌ | ❌ 0/25 | ❌ | ❌ 0/25 | ❌ |
 
 ### entry-function.feature `@required`
 
-| # | Scenario | TypeScript | Go | Rust | Java | Python |
-|---|----------|------------|-----|------|------|--------|
-| 1 | Create entry function payload with no arguments | [x] | [x] | [x] | [x] | [ ] |
-| 2 | Create entry function payload with u64 argument | [x] | [x] | [x] | [x] | [ ] |
-| 3 | Create entry function payload with address argument | [x] | [x] | [x] | [x] | [ ] |
-| 4 | Create entry function payload with string argument | [x] | [x] | [x] | [x] | [ ] |
-| 5 | Create entry function payload with vector argument | [x] | [x] | [x] | [x] | [ ] |
-| 6 | Create entry function payload with bool argument | [x] | [x] | [x] | [x] | [ ] |
-| 7 | Create entry function payload with multiple arguments | [x] | [x] | [x] | [x] | [ ] |
-| 8 | Create entry function with type arguments | [x] | [x] | [x] | [x] | [ ] |
-| 9 | Create entry function with multiple type arguments | [x] | [x] | [x] | [x] | [ ] |
-| 10 | BCS serialize entry function payload | [x] | [x] | [x] | [x] | [ ] |
-| 11 | BCS deserialize entry function payload | [x] | [x] | [x] | [x] | [ ] |
-| 12 | Entry function serialization is deterministic | [x] | [x] | [x] | [x] | [ ] |
-| 13 | Serialize u8 argument | [x] | [x] | [x] | [x] | [ ] |
-| 14 | Serialize u16 argument | [x] | [x] | [x] | [x] | [ ] |
-| 15 | Serialize u32 argument | [x] | [x] | [x] | [x] | [ ] |
-| 16 | Serialize u64 argument | [x] | [x] | [x] | [x] | [ ] |
-| 17 | Serialize u128 argument | [x] | [x] | [x] | [x] | [ ] |
-| 18 | Serialize u256 argument | [x] | [x] | [x] | [x] | [ ] |
-| 19 | Serialize nested vector argument | [x] | [x] | [x] | [x] | [ ] |
-| 20 | Serialize optional argument (Some) | [x] | [ ] | [x] | [x] | [ ] |
-| 21 | Serialize optional argument (None) | [x] | [ ] | [x] | [x] | [ ] |
-| 22 | Reject invalid module address | [x] | [x] | [x] | [x] | [ ] |
-| 23 | Reject empty function name | [x] | [x] | [x] | [x] | [ ] |
-| 24 | Known entry function test vector | [x] | [x] | [x] | [x] | [ ] |
+| # | Scenario | TS | Go | Rust | Java | Kotlin | Python | .NET | C++ | Swift |
+|---|----------|-----|-----|------|------|--------|--------|------|-----|-------|
+| 1 | Entry func payload no args | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 2 | Entry func payload u64 arg | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 3 | Entry func payload address arg | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 4 | Entry func payload string arg | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 5 | Entry func payload vector arg | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 6 | Entry func payload bool arg | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 7 | Entry func payload multiple args | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 8 | Entry func with type args | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 9 | Entry func multiple type args | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 10 | BCS serialize entry func payload | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 11 | BCS deserialize entry func payload | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 12 | Entry func serialization deterministic | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 13 | Serialize u8 argument | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 14 | Serialize u16 argument | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 15 | Serialize u32 argument | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 16 | Serialize u64 argument | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 17 | Serialize u128 argument | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 18 | Serialize u256 argument | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 19 | Serialize nested vector arg | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 20 | Serialize optional arg (Some) | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 21 | Serialize optional arg (None) | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 22 | Reject invalid module address | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 23 | Reject empty function name | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 24 | Test vector - entry function | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
 
 ### raw-transaction.feature `@required`
 
-| # | Scenario | TypeScript | Go | Rust | Java | Python |
-|---|----------|------------|-----|------|------|--------|
-| 1 | Create raw transaction with required fields | [x] | [x] | [x] | [x] | [ ] |
-| 2 | Raw transaction has correct sender | [x] | [x] | [x] | [x] | [ ] |
-| 3 | Raw transaction has correct sequence number | [x] | [x] | [x] | [x] | [ ] |
-| 4 | Raw transaction has correct max gas | [x] | [x] | [x] | [x] | [ ] |
-| 5 | Raw transaction has correct gas unit price | [x] | [x] | [x] | [x] | [ ] |
-| 6 | Raw transaction has correct expiration | [x] | [x] | [x] | [x] | [ ] |
-| 7 | Raw transaction has correct chain ID | [x] | [x] | [x] | [x] | [ ] |
-| 8 | BCS serialize raw transaction | [x] | [x] | [x] | [x] | [ ] |
-| 9 | BCS deserialize raw transaction | [x] | [x] | [x] | [x] | [ ] |
-| 10 | Raw transaction serialization is deterministic | [x] | [x] | [x] | [x] | [ ] |
-| 11 | Compute signing message from raw transaction | [x] | [x] | [x] | [x] | [ ] |
-| 12 | Signing message uses domain separation | [x] | [x] | [x] | [x] | [ ] |
-| 13 | Signing message is deterministic | [x] | [x] | [x] | [x] | [ ] |
-| 14 | Different transactions have different signing messages | [x] | [x] | [x] | [x] | [ ] |
-| 15 | Set expiration from duration | [x] | [ ] | [x] | [x] | [ ] |
-| 16 | Set expiration from timestamp | [x] | [ ] | [x] | [x] | [ ] |
-| 17 | Reject zero max gas | [x] | [x] | [x] | [x] | [ ] |
-| 18 | Reject zero gas unit price | [x] | [x] | [x] | [x] | [ ] |
-| 19 | Reject expired transaction | [x] | [ ] | [x] | [x] | [ ] |
-| 20 | Known raw transaction test vector | [x] | [x] | [x] | [x] | [ ] |
-| 21 | Known signing message test vector | [x] | [x] | [x] | [x] | [ ] |
+| # | Scenario | TS | Go | Rust | Java | Kotlin | Python | .NET | C++ | Swift |
+|---|----------|-----|-----|------|------|--------|--------|------|-----|-------|
+| 1 | Create raw tx with required fields | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 2 | Raw tx has correct sender | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 3 | Raw tx has correct sequence number | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 4 | Raw tx has correct max gas | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 5 | Raw tx has correct gas unit price | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 6 | Raw tx has correct expiration | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 7 | Raw tx has correct chain ID | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 8 | BCS serialize raw tx | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 9 | BCS deserialize raw tx | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 10 | Raw tx serialization deterministic | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 11 | Compute signing message from raw tx | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 12 | Signing message uses domain separation | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 13 | Signing message is deterministic | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 14 | Different txs different signing msgs | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 15 | Set expiration from duration | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 16 | Set expiration from timestamp | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 17 | Reject zero max gas | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 18 | Reject zero gas unit price | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 19 | Reject expired transaction | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 20 | Test vector - raw transaction | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 21 | Test vector - signing message | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
 
 ### signing.feature `@required`
 
-| # | Scenario | TypeScript | Go | Rust | Java | Python |
-|---|----------|------------|-----|------|------|--------|
-| 1 | Sign raw transaction with Ed25519 account | [x] | [x] | [x] | [x] | [ ] |
-| 2 | Signed transaction contains original raw transaction | [x] | [x] | [x] | [x] | [ ] |
-| 3 | Signed transaction contains authenticator | [x] | [x] | [x] | [x] | [ ] |
-| 4 | Ed25519 authenticator structure | [x] | [x] | [x] | [x] | [ ] |
-| 5 | BCS serialize signed transaction | [x] | [x] | [x] | [x] | [ ] |
-| 6 | BCS deserialize signed transaction | [x] | [x] | [x] | [x] | [ ] |
-| 7 | Signed transaction serialization is deterministic | [x] | [x] | [x] | [x] | [ ] |
-| 8 | Compute transaction hash | [x] | [x] | [x] | [x] | [ ] |
-| 9 | Transaction hash is deterministic | [x] | [x] | [x] | [x] | [ ] |
-| 10 | Transaction hash uses signed transaction bytes | [x] | [x] | [x] | [x] | [ ] |
-| 11 | Different signed transactions have different hashes | [x] | [x] | [x] | [x] | [ ] |
-| 12 | Verify signed transaction signature | [x] | [x] | [x] | [x] | [ ] |
-| 13 | Reject tampered transaction | [x] | [x] | [x] | [x] | [ ] |
-| 14 | Reject wrong signer | [x] | [x] | [x] | [x] | [ ] |
-| 15 | Sign with Secp256k1 account | [x] | [ ] | [x] | [x] | [ ] |
-| 16 | Secp256k1 authenticator structure | [x] | [ ] | [x] | [x] | [ ] |
-| 17 | Verify Secp256k1 signed transaction | [x] | [ ] | [x] | [x] | [ ] |
-| 18 | SingleKey authenticator wrapper | [x] | [ ] | [x] | [x] | [ ] |
-| 19 | Sign transaction twice produces same result | [x] | [x] | [x] | [x] | [ ] |
-| 20 | Cannot sign with wrong chain ID | [x] | [x] | [x] | [x] | [ ] |
-| 21 | Known Ed25519 signing test vector | [x] | [x] | [x] | [x] | [ ] |
-| 22 | Known transaction hash test vector | [x] | [x] | [x] | [x] | [ ] |
-| 23 | Known Secp256k1 signing test vector | [x] | [ ] | [x] | [x] | [ ] |
-| 24 | Known SingleKey authenticator test vector | [x] | [ ] | [x] | [x] | [ ] |
+| # | Scenario | TS | Go | Rust | Java | Kotlin | Python | .NET | C++ | Swift |
+|---|----------|-----|-----|------|------|--------|--------|------|-----|-------|
+| 1 | Sign raw tx with Ed25519 | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 2 | Signed tx contains original raw tx | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 3 | Signed tx contains authenticator | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 4 | Ed25519 authenticator structure | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 5 | BCS serialize signed tx | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 6 | BCS deserialize signed tx | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 7 | Signed tx serialization deterministic | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 8 | Compute transaction hash | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 9 | Tx hash is deterministic | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 10 | Tx hash uses signed tx bytes | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 11 | Different signed txs different hashes | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 12 | Verify signed tx signature | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 13 | Reject tampered transaction | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 14 | Reject wrong signer | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 15 | Sign with Secp256k1 account | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 16 | Secp256k1 authenticator structure | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 17 | Verify Secp256k1 signed tx | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 18 | SingleKey authenticator wrapper | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 19 | Sign tx twice same result | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 20 | Cannot sign with wrong chain ID | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 21 | Test vector - Ed25519 signing | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 22 | Test vector - tx hash | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 23 | Test vector - Secp256k1 signing | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 24 | Test vector - SingleKey auth | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
 
 ### script.feature `@optional`
 
-| # | Scenario | TypeScript | Go | Rust | Java | Python |
-|---|----------|------------|-----|------|------|--------|
-| 1 | Create script payload from bytecode | [x] | [ ] | [ ] | [ ] | [x] |
-| 2 | Script payload with no arguments | [x] | [ ] | [ ] | [ ] | [x] |
-| 3 | Script payload with arguments | [x] | [ ] | [ ] | [ ] | [x] |
-| 4 | Script payload with type arguments | [x] | [ ] | [ ] | [ ] | [x] |
-| 5 | BCS serialize script payload | [x] | [ ] | [ ] | [ ] | [x] |
-| 6 | BCS deserialize script payload | [x] | [ ] | [ ] | [ ] | [x] |
-| 7 | Script serialization is deterministic | [x] | [ ] | [ ] | [ ] | [x] |
-| 8 | Compile Move script | [ ] | [ ] | [ ] | [ ] | [x] |
-| 9 | Compile script with dependencies | [ ] | [ ] | [ ] | [ ] | [x] |
-| 10 | Compile script with arguments | [ ] | [ ] | [ ] | [ ] | [x] |
-| 11 | Reject invalid Move script | [ ] | [ ] | [ ] | [ ] | [x] |
-| 12 | Load script from file | [ ] | [ ] | [ ] | [ ] | [x] |
-| 13 | Load script from hex string | [x] | [ ] | [ ] | [ ] | [x] |
-| 14 | Create raw transaction with script payload | [x] | [ ] | [ ] | [ ] | [x] |
-| 15 | Sign and submit script transaction | [x] | [ ] | [ ] | [ ] | [x] |
-| 16 | Script with signer argument | [x] | [ ] | [ ] | [ ] | [x] |
-| 17 | Script accesses sender | [x] | [ ] | [ ] | [ ] | [x] |
-| 18 | Script with multiple signers | [ ] | [ ] | [ ] | [ ] | [x] |
-| 19 | Script timeout and gas | [x] | [ ] | [ ] | [ ] | [x] |
-| 20 | Inline script in transaction | [x] | [ ] | [ ] | [ ] | [x] |
-| 21 | Complex script with loops | [ ] | [ ] | [ ] | [ ] | [x] |
-| 22 | Script calling module functions | [ ] | [ ] | [ ] | [ ] | [x] |
-| 23 | Script with abort | [x] | [ ] | [ ] | [ ] | [x] |
-| 24 | Script return values | [ ] | [ ] | [ ] | [ ] | [x] |
-| 25 | Known script payload test vector | [x] | [ ] | [ ] | [ ] | [x] |
+| # | Scenario | TS | Go | Rust | Java | Kotlin | Python | .NET | C++ | Swift |
+|---|----------|-----|-----|------|------|--------|--------|------|-----|-------|
+| 1 | Create script payload from bytecode | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 2 | Script payload with no arguments | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 3 | Script payload with arguments | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 4 | Script payload with type arguments | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 5 | BCS serialize script payload | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 6 | BCS deserialize script payload | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 7 | Script serialization deterministic | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 8 | Compile Move script | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 9 | Compile script with dependencies | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 10 | Compile script with arguments | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 11 | Reject invalid Move script | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 12 | Load script from file | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 13 | Load script from hex string | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 14 | Create raw tx with script payload | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 15 | Sign and submit script tx | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 16 | Script with signer argument | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 17 | Script accesses sender | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 18 | Script with multiple signers | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 19 | Script timeout and gas | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 20 | Inline script in transaction | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 21 | Complex script with loops | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 22 | Script calling module functions | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 23 | Script with abort | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 24 | Script return values | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 25 | Test vector - script payload | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 
 ---
 
@@ -546,243 +548,243 @@
 
 ### Feature Summary
 
-| Feature | TypeScript | Go | Rust | Java | Kotlin | Python | .NET | C++ |
-|---------|------------|-----|------|------|--------|--------|------|-----|
-| **fullnode-api** `@required` | Full (25/25) | Partial (19/25) | Full (25/25) | Full (25/25) | Partial | None (0/25) | Partial | None (0/25) |
-| **transaction-submission** `@required` | Partial (27/28) | Partial (18/28) | Full (28/28) | Full (28/28) | Partial | None (0/28) | Partial | None (0/28) |
-| **faucet** `@preferred` | Full (23/23) | None (0/23) | None (0/23) | None (0/23) | None | None (0/23) | None | None (0/23) |
-| **gas-estimation** `@preferred` | Partial (24/26) | None (0/26) | None (0/26) | None (0/26) | None | None (0/26) | None | None (0/26) |
-| **view-functions** `@preferred` | Full (28/28) | None (0/28) | None (0/28) | None (0/28) | None | None (0/28) | None | None (0/28) |
-| **retry** `@preferred` | Partial (25/32) | None (0/32) | None (0/32) | None (0/32) | None | None (0/32) | None | None (0/32) |
-| **indexer** `@optional` | Full (31/31) | None (0/31) | None (0/31) | None (0/31) | None | None (0/31) | None | None (0/31) |
+| Feature | TS | Go | Rust | Java | Kotlin | Python | .NET | C++ | Swift |
+|---------|-----|-----|------|------|--------|--------|------|-----|-------|
+| **fullnode-api** `@required` | ✅ 25/25 | 🟡 19/25 | ✅ 25/25 | ✅ 25/25 | 🟡 | ❌ 0/25 | 🟡 | ❌ 0/25 | ✅ 19 |
+| **transaction-submission** `@required` | 🟡 27/28 | 🟡 18/28 | ✅ 28/28 | ✅ 28/28 | 🟡 | ❌ 0/28 | 🟡 | ❌ 0/28 | ❌ |
+| **faucet** `@preferred` | ✅ 23/23 | ❌ 0/23 | ❌ 0/23 | ❌ 0/23 | ❌ | ❌ 0/23 | ❌ | ❌ 0/23 | ❌ |
+| **gas-estimation** `@preferred` | 🟡 24/26 | ❌ 0/26 | ❌ 0/26 | ❌ 0/26 | ❌ | ❌ 0/26 | ❌ | ❌ 0/26 | ❌ |
+| **view-functions** `@preferred` | ✅ 28/28 | ❌ 0/28 | ❌ 0/28 | ❌ 0/28 | ❌ | ❌ 0/28 | ❌ | ❌ 0/28 | ❌ |
+| **retry** `@preferred` | 🟡 25/32 | ❌ 0/32 | ❌ 0/32 | ❌ 0/32 | ❌ | ❌ 0/32 | ❌ | ❌ 0/32 | ❌ |
+| **indexer** `@optional` | ✅ 31/31 | ❌ 0/31 | ❌ 0/31 | ❌ 0/31 | ❌ | ❌ 0/31 | ❌ | ❌ 0/31 | ❌ |
 
 ### fullnode-api.feature `@required`
 
-| # | Scenario | TypeScript | Go | Rust | Java | Python |
-|---|----------|------------|-----|------|------|--------|
-| 1 | Create API client with URL | [x] | [x] | [x] | [x] | [ ] |
-| 2 | API client URL normalization | [x] | [ ] | [x] | [x] | [ ] |
-| 3 | API client with custom headers | [x] | [ ] | [x] | [x] | [ ] |
-| 4 | Get ledger info | [x] | [x] | [x] | [x] | [ ] |
-| 5 | Ledger info contains chain ID | [x] | [x] | [x] | [x] | [ ] |
-| 6 | Ledger info contains epoch | [x] | [x] | [x] | [x] | [ ] |
-| 7 | Ledger info contains ledger version | [x] | [x] | [x] | [x] | [ ] |
-| 8 | Get account info | [x] | [x] | [x] | [x] | [ ] |
-| 9 | Account info contains sequence number | [x] | [x] | [x] | [x] | [ ] |
-| 10 | Account info contains authentication key | [x] | [x] | [x] | [x] | [ ] |
-| 11 | Get account not found | [x] | [x] | [x] | [x] | [ ] |
-| 12 | Get account resources | [x] | [x] | [x] | [x] | [ ] |
-| 13 | Get specific account resource | [x] | [x] | [x] | [x] | [ ] |
-| 14 | Get account modules | [x] | [ ] | [x] | [x] | [ ] |
-| 15 | Get transaction by hash | [x] | [x] | [x] | [x] | [ ] |
-| 16 | Get transaction by version | [x] | [x] | [x] | [x] | [ ] |
-| 17 | Get transactions | [x] | [x] | [x] | [x] | [ ] |
-| 18 | Get account transactions | [x] | [x] | [x] | [x] | [ ] |
-| 19 | Check transaction success | [x] | [x] | [x] | [x] | [ ] |
-| 20 | Check transaction failure | [x] | [x] | [x] | [x] | [ ] |
-| 21 | Get events by event key | [x] | [ ] | [x] | [x] | [ ] |
-| 22 | Get events by creation number | [x] | [ ] | [x] | [x] | [ ] |
-| 23 | Handle API 404 error | [x] | [x] | [x] | [x] | [ ] |
-| 24 | Handle API 400 error | [x] | [x] | [x] | [x] | [ ] |
-| 25 | Handle network error | [x] | [ ] | [x] | [x] | [ ] |
+| # | Scenario | TS | Go | Rust | Java | Kotlin | Python | .NET | C++ | Swift |
+|---|----------|-----|-----|------|------|--------|--------|------|-----|-------|
+| 1 | Create API client with URL | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ✅ |
+| 2 | API client URL normalization | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ✅ |
+| 3 | API client with custom headers | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ✅ |
+| 4 | Get ledger info | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ✅ |
+| 5 | Ledger info contains chain ID | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ✅ |
+| 6 | Ledger info contains epoch | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ✅ |
+| 7 | Ledger info contains ledger version | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ✅ |
+| 8 | Get account info | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ✅ |
+| 9 | Account info contains seq number | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ✅ |
+| 10 | Account info contains auth key | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ✅ |
+| 11 | Get account not found | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ✅ |
+| 12 | Get account resources | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ✅ |
+| 13 | Get specific account resource | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ✅ |
+| 14 | Get account modules | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ✅ |
+| 15 | Get transaction by hash | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ✅ |
+| 16 | Get transaction by version | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ✅ |
+| 17 | Get transactions | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ✅ |
+| 18 | Get account transactions | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ✅ |
+| 19 | Check transaction success | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ✅ |
+| 20 | Check transaction failure | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 21 | Get events by event key | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 22 | Get events by creation number | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 23 | Handle API 404 error | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 24 | Handle API 400 error | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 25 | Handle network error | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
 
 ### transaction-submission.feature `@required`
 
-| # | Scenario | TypeScript | Go | Rust | Java | Python |
-|---|----------|------------|-----|------|------|--------|
-| 1 | Submit valid signed transaction | [x] | [x] | [x] | [x] | [ ] |
-| 2 | Submit transaction with correct content type | [x] | [x] | [x] | [x] | [ ] |
-| 3 | Submit transaction returns hash | [x] | [x] | [x] | [x] | [ ] |
-| 4 | Reject invalid transaction format | [x] | [x] | [x] | [x] | [ ] |
-| 5 | Reject transaction with invalid signature | [x] | [x] | [x] | [x] | [ ] |
-| 6 | Reject transaction with wrong chain ID | [x] | [x] | [x] | [x] | [ ] |
-| 7 | Reject expired transaction | [x] | [ ] | [x] | [x] | [ ] |
-| 8 | Wait for transaction success | [x] | [x] | [x] | [x] | [ ] |
-| 9 | Wait for transaction timeout | [x] | [ ] | [x] | [x] | [ ] |
-| 10 | Wait returns success status | [x] | [x] | [x] | [x] | [ ] |
-| 11 | Wait returns failure status | [x] | [x] | [x] | [x] | [ ] |
-| 12 | Wait polls until completion | [x] | [ ] | [x] | [x] | [ ] |
-| 13 | Submit and wait for transaction | [x] | [x] | [x] | [x] | [ ] |
-| 14 | Sign, submit, and wait | [x] | [x] | [x] | [x] | [ ] |
-| 15 | Simulate transaction | [x] | [ ] | [x] | [x] | [ ] |
-| 16 | Simulate shows gas estimate | [x] | [ ] | [x] | [x] | [ ] |
-| 17 | Simulate shows VM error for failing tx | [~] | [ ] | [x] | [x] | [ ] |
-| 18 | Simulate with insufficient balance | [x] | [ ] | [x] | [x] | [ ] |
-| 19 | Simulate doesn't require valid signature | [x] | [ ] | [x] | [x] | [ ] |
-| 20 | Get gas price estimate | [x] | [ ] | [x] | [x] | [ ] |
-| 21 | Use gas estimate for transaction | [x] | [ ] | [x] | [x] | [ ] |
-| 22 | Get current sequence number | [x] | [x] | [x] | [x] | [ ] |
-| 23 | Submit with correct sequence number | [x] | [x] | [x] | [x] | [ ] |
-| 24 | Reject wrong sequence number | [x] | [x] | [x] | [x] | [ ] |
-| 25 | Submit multiple transactions in sequence | [x] | [ ] | [x] | [x] | [ ] |
-| 26 | Handle submission network error | [x] | [ ] | [x] | [x] | [ ] |
-| 27 | Handle VM error in response | [x] | [ ] | [x] | [x] | [ ] |
-| 28 | Transaction hash is predictable | [x] | [x] | [x] | [x] | [ ] |
+| # | Scenario | TS | Go | Rust | Java | Kotlin | Python | .NET | C++ | Swift |
+|---|----------|-----|-----|------|------|--------|--------|------|-----|-------|
+| 1 | Submit valid signed tx | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 2 | Submit tx correct content type | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 3 | Submit tx returns hash | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 4 | Reject invalid tx format | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 5 | Reject tx with invalid signature | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 6 | Reject tx with wrong chain ID | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 7 | Reject expired transaction | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 8 | Wait for tx success | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 9 | Wait for tx timeout | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 10 | Wait returns success status | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 11 | Wait returns failure status | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 12 | Wait polls until completion | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 13 | Submit and wait for tx | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 14 | Sign, submit, and wait | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 15 | Simulate transaction | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 16 | Simulate shows gas estimate | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 17 | Simulate shows VM error | 🟡 | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 18 | Simulate with insufficient balance | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 19 | Simulate no valid sig required | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 20 | Get gas price estimate | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 21 | Use gas estimate for tx | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 22 | Get current sequence number | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 23 | Submit with correct seq number | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 24 | Reject wrong sequence number | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 25 | Submit multiple txs in sequence | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 26 | Handle submission network error | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 27 | Handle VM error in response | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 28 | Tx hash is predictable | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
 
 ### faucet.feature `@preferred`
 
-| # | Scenario | TypeScript | Go | Rust | Java | Python |
-|---|----------|------------|-----|------|------|--------|
-| 1 | Fund account with default amount | [x] | [ ] | [ ] | [ ] | [x] |
-| 2 | Fund account with specific amount | [x] | [ ] | [ ] | [ ] | [x] |
-| 3 | Faucet returns transaction hashes | [x] | [ ] | [ ] | [ ] | [x] |
-| 4 | Fund creates account if not exists | [x] | [ ] | [ ] | [ ] | [x] |
-| 5 | Fund adds to existing balance | [x] | [ ] | [ ] | [ ] | [x] |
-| 6 | Configure faucet URL | [x] | [ ] | [ ] | [ ] | [x] |
-| 7 | Use devnet faucet | [x] | [ ] | [ ] | [ ] | [x] |
-| 8 | Use testnet faucet | [x] | [ ] | [ ] | [ ] | [x] |
-| 9 | Faucet not available on mainnet | [x] | [ ] | [ ] | [ ] | [x] |
-| 10 | Wait for faucet transaction | [x] | [ ] | [ ] | [ ] | [x] |
-| 11 | Fund and wait in one call | [x] | [ ] | [ ] | [ ] | [x] |
-| 12 | Handle faucet rate limiting | [x] | [ ] | [ ] | [ ] | [x] |
-| 13 | Handle faucet service unavailable | [x] | [ ] | [ ] | [ ] | [x] |
-| 14 | Faucet timeout | [x] | [ ] | [ ] | [ ] | [x] |
-| 15 | Fund multiple accounts | [x] | [ ] | [ ] | [ ] | [x] |
-| 16 | Fund with authentication | [x] | [ ] | [ ] | [ ] | [x] |
-| 17 | Balance after funding | [x] | [ ] | [ ] | [ ] | [x] |
-| 18 | New account with zero initial balance | [x] | [ ] | [ ] | [ ] | [x] |
-| 19 | Fund non-existent address format | [x] | [ ] | [ ] | [ ] | [x] |
-| 20 | Reject invalid faucet URL | [x] | [ ] | [ ] | [ ] | [x] |
-| 21 | Faucet transaction is coin transfer | [x] | [ ] | [ ] | [ ] | [x] |
-| 22 | Fund integration test accounts | [x] | [ ] | [ ] | [ ] | [x] |
-| 23 | Parallel funding | [x] | [ ] | [ ] | [ ] | [x] |
+| # | Scenario | TS | Go | Rust | Java | Kotlin | Python | .NET | C++ | Swift |
+|---|----------|-----|-----|------|------|--------|--------|------|-----|-------|
+| 1 | Fund account default amount | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 2 | Fund account specific amount | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 3 | Faucet returns tx hashes | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 4 | Fund creates account if not exists | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 5 | Fund adds to existing balance | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 6 | Configure faucet URL | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 7 | Use devnet faucet | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 8 | Use testnet faucet | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 9 | Faucet not available on mainnet | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 10 | Wait for faucet transaction | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 11 | Fund and wait in one call | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 12 | Handle faucet rate limiting | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 13 | Handle faucet service unavailable | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 14 | Faucet timeout | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 15 | Fund multiple accounts | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 16 | Fund with authentication | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 17 | Balance after funding | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 18 | New account zero initial balance | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 19 | Fund non-existent address format | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 20 | Reject invalid faucet URL | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 21 | Faucet tx is coin transfer | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 22 | Fund integration test accounts | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 23 | Parallel funding | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 
 ### gas-estimation.feature `@preferred`
 
-| # | Scenario | TypeScript | Go | Rust | Java | Python |
-|---|----------|------------|-----|------|------|--------|
-| 1 | Get current gas price | [x] | [ ] | [ ] | [ ] | [x] |
-| 2 | Gas price is in octas | [x] | [ ] | [ ] | [ ] | [x] |
-| 3 | Gas price varies by network load | [x] | [ ] | [ ] | [ ] | [x] |
-| 4 | Estimate gas for simple transfer | [x] | [ ] | [ ] | [ ] | [x] |
-| 5 | Estimate gas for entry function call | [x] | [ ] | [ ] | [ ] | [x] |
-| 6 | Estimate gas for complex transaction | [x] | [ ] | [ ] | [ ] | [x] |
-| 7 | Gas estimate via simulation | [x] | [ ] | [ ] | [ ] | [x] |
-| 8 | Simulation returns gas_used | [x] | [ ] | [ ] | [ ] | [x] |
-| 9 | Add buffer to gas estimate | [x] | [ ] | [ ] | [ ] | [x] |
-| 10 | Calculate total fee from gas | [x] | [ ] | [ ] | [ ] | [x] |
-| 11 | Prioritized gas price | [x] | [ ] | [ ] | [ ] | [x] |
-| 12 | Deprioritized gas price | [x] | [ ] | [ ] | [ ] | [x] |
-| 13 | Auto-set gas unit price | [x] | [ ] | [ ] | [ ] | [x] |
-| 14 | Auto-set max gas amount | [x] | [ ] | [ ] | [ ] | [x] |
-| 15 | Override auto gas settings | [x] | [ ] | [ ] | [ ] | [x] |
-| 16 | Estimate fails for invalid transaction | [x] | [ ] | [ ] | [ ] | [x] |
-| 17 | Estimate for multi-agent transaction | [x] | [ ] | [ ] | [ ] | [x] |
-| 18 | Estimate for fee payer transaction | [x] | [ ] | [ ] | [ ] | [x] |
-| 19 | Historical gas prices | [ ] | [ ] | [ ] | [ ] | [x] |
-| 20 | Gas price percentiles | [ ] | [ ] | [ ] | [ ] | [x] |
-| 21 | Min and max gas price bounds | [x] | [ ] | [ ] | [ ] | [x] |
-| 22 | Gas estimation timeout | [x] | [ ] | [ ] | [ ] | [x] |
-| 23 | Estimate with specific account | [x] | [ ] | [ ] | [ ] | [x] |
-| 24 | Estimate without account (simulation only) | [x] | [ ] | [ ] | [ ] | [x] |
-| 25 | Gas varies by payload size | [x] | [ ] | [ ] | [ ] | [x] |
-| 26 | Storage gas costs | [x] | [ ] | [ ] | [ ] | [x] |
+| # | Scenario | TS | Go | Rust | Java | Kotlin | Python | .NET | C++ | Swift |
+|---|----------|-----|-----|------|------|--------|--------|------|-----|-------|
+| 1 | Get current gas price | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 2 | Gas price is in octas | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 3 | Gas price varies by network load | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 4 | Estimate gas for simple transfer | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 5 | Estimate gas for entry func call | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 6 | Estimate gas for complex tx | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 7 | Gas estimate via simulation | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 8 | Simulation returns gas_used | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 9 | Add buffer to gas estimate | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 10 | Calculate total fee from gas | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 11 | Prioritized gas price | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 12 | Deprioritized gas price | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 13 | Auto-set gas unit price | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 14 | Auto-set max gas amount | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 15 | Override auto gas settings | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 16 | Estimate fails for invalid tx | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 17 | Estimate for multi-agent tx | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 18 | Estimate for fee payer tx | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 19 | Historical gas prices | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 20 | Gas price percentiles | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 21 | Min and max gas price bounds | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 22 | Gas estimation timeout | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 23 | Estimate with specific account | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 24 | Estimate w/o account (sim only) | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 25 | Gas varies by payload size | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 26 | Storage gas costs | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 
 ### view-functions.feature `@preferred`
 
-| # | Scenario | TypeScript | Go | Rust | Java | Python |
-|---|----------|------------|-----|------|------|--------|
-| 1 | Execute simple view function | [x] | [ ] | [ ] | [ ] | [x] |
-| 2 | Execute view function without type arguments | [x] | [ ] | [ ] | [ ] | [x] |
-| 3 | Execute view function without arguments | [x] | [ ] | [ ] | [ ] | [x] |
-| 4 | Execute view function with multiple return values | [x] | [ ] | [ ] | [ ] | [x] |
-| 5 | Pass address argument | [x] | [ ] | [ ] | [ ] | [x] |
-| 6 | Pass u64 argument | [x] | [ ] | [ ] | [ ] | [x] |
-| 7 | Pass string argument | [x] | [ ] | [ ] | [ ] | [x] |
-| 8 | Pass vector argument | [x] | [ ] | [ ] | [ ] | [x] |
-| 9 | Pass bool argument | [x] | [ ] | [ ] | [ ] | [x] |
-| 10 | Single type argument | [x] | [ ] | [ ] | [ ] | [x] |
-| 11 | Multiple type arguments | [x] | [ ] | [ ] | [ ] | [x] |
-| 12 | Nested type argument | [x] | [ ] | [ ] | [ ] | [x] |
-| 13 | Parse u64 return value | [x] | [ ] | [ ] | [ ] | [x] |
-| 14 | Parse string return value | [x] | [ ] | [ ] | [ ] | [x] |
-| 15 | Parse bool return value | [x] | [ ] | [ ] | [ ] | [x] |
-| 16 | Parse vector return value | [x] | [ ] | [ ] | [ ] | [x] |
-| 17 | Parse struct return value | [x] | [ ] | [ ] | [ ] | [x] |
-| 18 | View function not found | [x] | [ ] | [ ] | [ ] | [x] |
-| 19 | Invalid arguments | [x] | [ ] | [ ] | [ ] | [x] |
-| 20 | Wrong number of arguments | [x] | [ ] | [ ] | [ ] | [x] |
-| 21 | Wrong number of type arguments | [x] | [ ] | [ ] | [ ] | [x] |
-| 22 | View function aborts | [x] | [ ] | [ ] | [ ] | [x] |
-| 23 | Get coin balance | [x] | [ ] | [ ] | [ ] | [x] |
-| 24 | Check account exists | [x] | [ ] | [ ] | [ ] | [x] |
-| 25 | Get current timestamp | [x] | [ ] | [ ] | [ ] | [x] |
-| 26 | Get coin supply | [x] | [ ] | [ ] | [ ] | [x] |
-| 27 | Execute view function at specific version | [x] | [ ] | [ ] | [ ] | [x] |
-| 28 | View function at too old version | [x] | [ ] | [ ] | [ ] | [x] |
+| # | Scenario | TS | Go | Rust | Java | Kotlin | Python | .NET | C++ | Swift |
+|---|----------|-----|-----|------|------|--------|--------|------|-----|-------|
+| 1 | Execute simple view function | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 2 | View func without type args | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 3 | View func without args | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 4 | View func with multiple returns | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 5 | Pass address argument | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 6 | Pass u64 argument | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 7 | Pass string argument | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 8 | Pass vector argument | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 9 | Pass bool argument | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 10 | Single type argument | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 11 | Multiple type arguments | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 12 | Nested type argument | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 13 | Parse u64 return value | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 14 | Parse string return value | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 15 | Parse bool return value | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 16 | Parse vector return value | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 17 | Parse struct return value | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 18 | View function not found | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 19 | Invalid arguments | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 20 | Wrong number of arguments | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 21 | Wrong number of type arguments | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 22 | View function aborts | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 23 | Get coin balance | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 24 | Check account exists | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 25 | Get current timestamp | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 26 | Get coin supply | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 27 | View func at specific version | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 28 | View func at too old version | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 
 ### retry.feature `@preferred`
 
-| # | Scenario | TypeScript | Go | Rust | Java | Python |
-|---|----------|------------|-----|------|------|--------|
-| 1 | Retry on network timeout | [x] | [ ] | [ ] | [ ] | [x] |
-| 2 | Retry on connection refused | [x] | [ ] | [ ] | [ ] | [x] |
-| 3 | Retry on 5xx server error | [x] | [ ] | [ ] | [ ] | [x] |
-| 4 | No retry on 4xx client error | [x] | [ ] | [ ] | [ ] | [x] |
-| 5 | Configure max retry attempts | [x] | [ ] | [ ] | [ ] | [x] |
-| 6 | Configure retry delay | [x] | [ ] | [ ] | [ ] | [x] |
-| 7 | Exponential backoff | [x] | [ ] | [ ] | [ ] | [x] |
-| 8 | Jitter in retry delay | [x] | [ ] | [ ] | [ ] | [x] |
-| 9 | Max retry delay cap | [x] | [ ] | [ ] | [ ] | [x] |
-| 10 | Retry callback/hook | [x] | [ ] | [ ] | [ ] | [x] |
-| 11 | Custom retry condition | [x] | [ ] | [ ] | [ ] | [x] |
-| 12 | Retry specific status codes | [x] | [ ] | [ ] | [ ] | [x] |
-| 13 | No retry by default | [x] | [ ] | [ ] | [ ] | [x] |
-| 14 | Retry preserves request | [x] | [ ] | [ ] | [ ] | [x] |
-| 15 | Total timeout across retries | [x] | [ ] | [ ] | [ ] | [x] |
-| 16 | Circuit breaker pattern | [ ] | [ ] | [ ] | [ ] | [x] |
-| 17 | Retry on rate limit (429) | [x] | [ ] | [ ] | [ ] | [x] |
-| 18 | Respect Retry-After header | [x] | [ ] | [ ] | [ ] | [x] |
-| 19 | Retry only idempotent operations | [x] | [ ] | [ ] | [ ] | [x] |
-| 20 | No retry on submit (non-idempotent) | [x] | [ ] | [ ] | [ ] | [x] |
-| 21 | Retry with fresh data | [x] | [ ] | [ ] | [ ] | [x] |
-| 22 | Log retry attempts | [x] | [ ] | [ ] | [ ] | [x] |
-| 23 | Retry statistics | [ ] | [ ] | [ ] | [ ] | [x] |
-| 24 | Abort retry on fatal error | [x] | [ ] | [ ] | [ ] | [x] |
-| 25 | Graceful degradation | [ ] | [ ] | [ ] | [ ] | [x] |
-| 26 | Retry for wait_for_transaction | [x] | [ ] | [ ] | [ ] | [x] |
-| 27 | Transaction not found during retry | [x] | [ ] | [ ] | [ ] | [x] |
-| 28 | Health check before retry | [ ] | [ ] | [ ] | [ ] | [x] |
-| 29 | Per-endpoint retry config | [ ] | [ ] | [ ] | [ ] | [x] |
-| 30 | Retry context propagation | [ ] | [ ] | [ ] | [ ] | [x] |
-| 31 | Retry metrics/telemetry | [ ] | [ ] | [ ] | [ ] | [x] |
-| 32 | Concurrent request retry | [x] | [ ] | [ ] | [ ] | [x] |
+| # | Scenario | TS | Go | Rust | Java | Kotlin | Python | .NET | C++ | Swift |
+|---|----------|-----|-----|------|------|--------|--------|------|-----|-------|
+| 1 | Retry on network timeout | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 2 | Retry on connection refused | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 3 | Retry on 5xx server error | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 4 | No retry on 4xx client error | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 5 | Configure max retry attempts | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 6 | Configure retry delay | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 7 | Exponential backoff | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 8 | Jitter in retry delay | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 9 | Max retry delay cap | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 10 | Retry callback/hook | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 11 | Custom retry condition | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 12 | Retry specific status codes | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 13 | No retry by default | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 14 | Retry preserves request | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 15 | Total timeout across retries | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 16 | Circuit breaker pattern | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 17 | Retry on rate limit (429) | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 18 | Respect Retry-After header | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 19 | Retry only idempotent ops | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 20 | No retry on submit | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 21 | Retry with fresh data | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 22 | Log retry attempts | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 23 | Retry statistics | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 24 | Abort retry on fatal error | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 25 | Graceful degradation | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 26 | Retry for wait_for_transaction | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 27 | Tx not found during retry | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 28 | Health check before retry | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 29 | Per-endpoint retry config | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 30 | Retry context propagation | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 31 | Retry metrics/telemetry | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 32 | Concurrent request retry | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 
 ### indexer.feature `@optional`
 
-| # | Scenario | TypeScript | Go | Rust | Java | Python |
-|---|----------|------------|-----|------|------|--------|
-| 1 | Create indexer client | [x] | [ ] | [ ] | [ ] | [x] |
-| 2 | Configure indexer URL | [x] | [ ] | [ ] | [ ] | [x] |
-| 3 | Query account tokens | [x] | [ ] | [ ] | [ ] | [x] |
-| 4 | Query token by ID | [x] | [ ] | [ ] | [ ] | [x] |
-| 5 | Query collection | [x] | [ ] | [ ] | [ ] | [x] |
-| 6 | Query account NFTs | [x] | [ ] | [ ] | [ ] | [x] |
-| 7 | Query fungible asset balances | [x] | [ ] | [ ] | [ ] | [x] |
-| 8 | Query fungible asset metadata | [x] | [ ] | [ ] | [ ] | [x] |
-| 9 | Query coin activities | [x] | [ ] | [ ] | [ ] | [x] |
-| 10 | Query token activities | [x] | [ ] | [ ] | [ ] | [x] |
-| 11 | Query events by type | [x] | [ ] | [ ] | [ ] | [x] |
-| 12 | Query events by account | [x] | [ ] | [ ] | [ ] | [x] |
-| 13 | Query transactions by account | [x] | [ ] | [ ] | [ ] | [x] |
-| 14 | Query transactions by function | [x] | [ ] | [ ] | [ ] | [x] |
-| 15 | Query with pagination | [x] | [ ] | [ ] | [ ] | [x] |
-| 16 | Query with limit | [x] | [ ] | [ ] | [ ] | [x] |
-| 17 | Query with offset | [x] | [ ] | [ ] | [ ] | [x] |
-| 18 | Query with ordering | [x] | [ ] | [ ] | [ ] | [x] |
-| 19 | Query with filtering | [x] | [ ] | [ ] | [ ] | [x] |
-| 20 | Query with multiple filters | [x] | [ ] | [ ] | [ ] | [x] |
-| 21 | Raw GraphQL query | [x] | [ ] | [ ] | [ ] | [x] |
-| 22 | GraphQL query variables | [x] | [ ] | [ ] | [ ] | [x] |
-| 23 | Handle indexer lag | [x] | [ ] | [ ] | [ ] | [x] |
-| 24 | Handle indexer unavailable | [x] | [ ] | [ ] | [ ] | [x] |
-| 25 | Handle invalid query | [x] | [ ] | [ ] | [ ] | [x] |
-| 26 | Account current holdings | [x] | [ ] | [ ] | [ ] | [x] |
-| 27 | Account transaction history | [x] | [ ] | [ ] | [ ] | [x] |
-| 28 | Get ANS name for address | [x] | [ ] | [ ] | [ ] | [x] |
-| 29 | Get address for ANS name | [x] | [ ] | [ ] | [ ] | [x] |
-| 30 | Query processor status | [x] | [ ] | [ ] | [ ] | [x] |
-| 31 | Query latest indexed version | [x] | [ ] | [ ] | [ ] | [x] |
+| # | Scenario | TS | Go | Rust | Java | Kotlin | Python | .NET | C++ | Swift |
+|---|----------|-----|-----|------|------|--------|--------|------|-----|-------|
+| 1 | Create indexer client | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 2 | Configure indexer URL | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 3 | Query account tokens | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 4 | Query token by ID | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 5 | Query collection | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 6 | Query account NFTs | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 7 | Query fungible asset balances | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 8 | Query fungible asset metadata | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 9 | Query coin activities | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 10 | Query token activities | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 11 | Query events by type | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 12 | Query events by account | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 13 | Query txs by account | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 14 | Query txs by function | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 15 | Query with pagination | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 16 | Query with limit | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 17 | Query with offset | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 18 | Query with ordering | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 19 | Query with filtering | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 20 | Query with multiple filters | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 21 | Raw GraphQL query | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 22 | GraphQL query variables | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 23 | Handle indexer lag | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 24 | Handle indexer unavailable | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 25 | Handle invalid query | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 26 | Account current holdings | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 27 | Account tx history | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 28 | Get ANS name for address | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 29 | Get address for ANS name | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 30 | Query processor status | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 31 | Query latest indexed version | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 
 ---
 
@@ -790,239 +792,239 @@
 
 ### Feature Summary
 
-| Feature | TypeScript | Go | Rust | Java | Kotlin | Python | .NET | C++ |
-|---------|------------|-----|------|------|--------|--------|------|-----|
-| **error-handling** `@required` | Partial (28/30) | Partial (1/30) | Partial (27/30) | Partial (28/30) | Partial | None (0/30) | Partial | None (0/30) |
-| **simulation** `@preferred` | Partial (21/26) | None (0/26) | None (0/26) | None (0/26) | None | None (0/26) | None | None (0/26) |
-| **multi-agent** `@optional` | Full (20/20) | None (0/20) | None (0/20) | None (0/20) | None | None (0/20) | None | None (0/20) |
-| **fee-payer** `@optional` | Full (23/23) | None (0/23) | None (0/23) | None (0/23) | None | None (0/23) | None | None (0/23) |
-| **multi-signature** `@optional` | Full (23/23) | None (0/23) | None (0/23) | None (0/23) | None | None (0/23) | None | None (0/23) |
-| **keyless** `@optional` | Full (33/33) | None (0/33) | None (0/33) | None (0/33) | None | None (0/33) | None | None (0/33) |
-| **codegen** `@optional` | None (0/34) | None (0/34) | None (0/34) | None (0/34) | None | None (0/34) | None | None (0/34) |
+| Feature | TS | Go | Rust | Java | Kotlin | Python | .NET | C++ | Swift |
+|---------|-----|-----|------|------|--------|--------|------|-----|-------|
+| **error-handling** `@required` | 🟡 28/30 | 🟡 1/30 | 🟡 27/30 | 🟡 28/30 | 🟡 | ❌ 0/30 | 🟡 | ❌ 0/30 | ❌ |
+| **simulation** `@preferred` | 🟡 21/26 | ❌ 0/26 | ❌ 0/26 | ❌ 0/26 | ❌ | ❌ 0/26 | ❌ | ❌ 0/26 | ❌ |
+| **multi-agent** `@optional` | ✅ 20/20 | ❌ 0/20 | ❌ 0/20 | ❌ 0/20 | ❌ | ❌ 0/20 | ❌ | ❌ 0/20 | ❌ |
+| **fee-payer** `@optional` | ✅ 23/23 | ❌ 0/23 | ❌ 0/23 | ❌ 0/23 | ❌ | ❌ 0/23 | ❌ | ❌ 0/23 | ❌ |
+| **multi-signature** `@optional` | ✅ 23/23 | ❌ 0/23 | ❌ 0/23 | ❌ 0/23 | ❌ | ❌ 0/23 | ❌ | ❌ 0/23 | ❌ |
+| **keyless** `@optional` | ✅ 33/33 | ❌ 0/33 | ❌ 0/33 | ❌ 0/33 | ❌ | ❌ 0/33 | ❌ | ❌ 0/33 | ❌ |
+| **codegen** `@optional` | ❌ 0/34 | ❌ 0/34 | ❌ 0/34 | ❌ 0/34 | ❌ | ❌ 0/34 | ❌ | ❌ 0/34 | ❌ |
 
 ### error-handling.feature `@required`
 
-| # | Scenario | TypeScript | Go | Rust | Java | Python |
-|---|----------|------------|-----|------|------|--------|
-| 1 | Network errors are distinguishable | [x] | [ ] | [x] | [x] | [ ] |
-| 2 | API errors include status code | [x] | [ ] | [x] | [x] | [ ] |
-| 3 | Validation errors are informative | [x] | [ ] | [x] | [x] | [ ] |
-| 4 | Transaction errors include details | [x] | [ ] | [x] | [x] | [ ] |
-| 5 | Parse success status | [x] | [ ] | [x] | [x] | [ ] |
-| 6 | Parse execution failure | [x] | [ ] | [x] | [x] | [ ] |
-| 7 | Parse out of gas failure | [x] | [ ] | [x] | [x] | [ ] |
-| 8 | Parse sequence number error | [x] | [ ] | [x] | [x] | [ ] |
-| 9 | Parse insufficient balance error | [x] | [ ] | [x] | [x] | [ ] |
-| 10 | Recognize standard abort codes | [x] | [ ] | [x] | [x] | [ ] |
-| 11 | Custom module abort codes | [x] | [ ] | [x] | [x] | [ ] |
-| 12 | Errors include operation context | [x] | [ ] | [x] | [x] | [ ] |
-| 13 | Errors are chainable | [x] | [ ] | [x] | [x] | [ ] |
-| 14 | Errors include request ID | [x] | [ ] | [x] | [x] | [ ] |
-| 15 | TypeScript uses typed errors | [x] | [ ] | [ ] | [x] | [ ] |
-| 16 | Rust uses Result types | [ ] | [ ] | [x] | [x] | [ ] |
-| 17 | Python uses exceptions | [ ] | [ ] | [ ] | [x] | [ ] |
-| 18 | Go uses error interface | [ ] | [x] | [ ] | [x] | [ ] |
-| 19 | Identify retryable errors | [x] | [ ] | [x] | [x] | [ ] |
-| 20 | Identify permanent failures | [x] | [ ] | [x] | [x] | [ ] |
-| 21 | Simulation failure with details | [x] | [ ] | [x] | [x] | [ ] |
-| 22 | Simulation gas estimation | [x] | [ ] | [x] | [x] | [ ] |
-| 23 | Transaction not found during wait | [x] | [ ] | [x] | [x] | [ ] |
-| 24 | Transaction failed during wait | [x] | [ ] | [x] | [x] | [ ] |
-| 25 | Error messages are actionable | [x] | [ ] | [x] | [x] | [ ] |
-| 26 | No internal jargon in user-facing errors | [x] | [ ] | [x] | [x] | [ ] |
-| 27 | Errors are loggable | [x] | [ ] | [x] | [x] | [ ] |
-| 28 | Sequence number recovery | [x] | [ ] | [x] | [x] | [ ] |
-| 29 | Gas estimation recovery | [x] | [ ] | [x] | [x] | [ ] |
-| 30 | Rate limit recovery | [x] | [ ] | [x] | [x] | [ ] |
+| # | Scenario | TS | Go | Rust | Java | Kotlin | Python | .NET | C++ | Swift |
+|---|----------|-----|-----|------|------|--------|--------|------|-----|-------|
+| 1 | Network errors distinguishable | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 2 | API errors include status code | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 3 | Validation errors informative | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 4 | Tx errors include details | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 5 | Parse success status | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 6 | Parse execution failure | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 7 | Parse out of gas failure | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 8 | Parse sequence number error | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 9 | Parse insufficient balance error | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 10 | Recognize standard abort codes | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 11 | Custom module abort codes | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 12 | Errors include operation context | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 13 | Errors are chainable | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 14 | Errors include request ID | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 15 | TypeScript uses typed errors | ✅ | ➖ | ➖ | ➖ | ➖ | ➖ | ➖ | ➖ | ➖ |
+| 16 | Rust uses Result types | ➖ | ➖ | ✅ | ➖ | ➖ | ➖ | ➖ | ➖ | ➖ |
+| 17 | Python uses exceptions | ➖ | ➖ | ➖ | ➖ | ➖ | ❌ | ➖ | ➖ | ➖ |
+| 18 | Go uses error interface | ➖ | ✅ | ➖ | ➖ | ➖ | ➖ | ➖ | ➖ | ➖ |
+| 19 | Identify retryable errors | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 20 | Identify permanent failures | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 21 | Simulation failure with details | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 22 | Simulation gas estimation | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 23 | Tx not found during wait | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 24 | Tx failed during wait | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 25 | Error messages actionable | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 26 | No internal jargon in errors | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 27 | Errors are loggable | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 28 | Sequence number recovery | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 29 | Gas estimation recovery | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 30 | Rate limit recovery | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
 
 ### simulation.feature `@preferred`
 
-| # | Scenario | TypeScript | Go | Rust | Java | Python |
-|---|----------|------------|-----|------|------|--------|
-| 1 | Simulate valid transaction | [x] | [ ] | [ ] | [ ] | [x] |
-| 2 | Simulate without signing | [x] | [ ] | [ ] | [ ] | [x] |
-| 3 | Simulation result includes changes | [x] | [ ] | [ ] | [ ] | [x] |
-| 4 | Use simulation for gas estimation | [x] | [ ] | [ ] | [ ] | [x] |
-| 5 | Simulation shows max_gas_amount needed | [x] | [ ] | [ ] | [ ] | [x] |
-| 6 | Gas varies by transaction complexity | [x] | [ ] | [ ] | [ ] | [x] |
-| 7 | Preview balance changes | [x] | [ ] | [ ] | [ ] | [x] |
-| 8 | Preview resource changes | [x] | [ ] | [ ] | [ ] | [x] |
-| 9 | Preview events | [x] | [ ] | [ ] | [ ] | [x] |
-| 10 | Simulation shows abort | [x] | [ ] | [ ] | [ ] | [x] |
-| 11 | Simulation shows insufficient balance | [x] | [ ] | [ ] | [ ] | [x] |
-| 12 | Simulation shows type errors | [x] | [ ] | [ ] | [ ] | [x] |
-| 13 | Simulation catches access errors | [x] | [ ] | [ ] | [ ] | [x] |
-| 14 | Simulate at specific version | [x] | [ ] | [ ] | [ ] | [x] |
-| 15 | Simulate with gas override | [x] | [ ] | [ ] | [ ] | [x] |
-| 16 | Simulate with gas price override | [x] | [ ] | [ ] | [ ] | [x] |
-| 17 | Simulate multi-agent transaction | [x] | [ ] | [ ] | [ ] | [x] |
-| 18 | Simulate fee payer transaction | [x] | [ ] | [ ] | [ ] | [x] |
-| 19 | Simulation does not commit changes | [x] | [ ] | [ ] | [ ] | [x] |
-| 20 | Simulation results may differ from execution | [x] | [ ] | [ ] | [ ] | [x] |
-| 21 | Simulation with current sequence number | [x] | [ ] | [ ] | [ ] | [x] |
-| 22 | Simulate multiple transactions | [ ] | [ ] | [ ] | [ ] | [x] |
-| 23 | Simulate transaction sequence | [ ] | [ ] | [ ] | [ ] | [x] |
-| 24 | Simulation network error | [ ] | [ ] | [ ] | [ ] | [x] |
-| 25 | Invalid transaction for simulation | [ ] | [ ] | [ ] | [ ] | [x] |
-| 26 | Simulation timeout | [ ] | [ ] | [ ] | [ ] | [x] |
+| # | Scenario | TS | Go | Rust | Java | Kotlin | Python | .NET | C++ | Swift |
+|---|----------|-----|-----|------|------|--------|--------|------|-----|-------|
+| 1 | Simulate valid transaction | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 2 | Simulate without signing | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 3 | Simulation result includes changes | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 4 | Use simulation for gas estimation | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 5 | Simulation shows max_gas_amount | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 6 | Gas varies by tx complexity | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 7 | Preview balance changes | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 8 | Preview resource changes | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 9 | Preview events | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 10 | Simulation shows abort | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 11 | Simulation shows insufficient balance | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 12 | Simulation shows type errors | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 13 | Simulation catches access errors | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 14 | Simulate at specific version | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 15 | Simulate with gas override | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 16 | Simulate with gas price override | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 17 | Simulate multi-agent tx | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 18 | Simulate fee payer tx | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 19 | Simulation doesn't commit | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 20 | Simulation may differ from exec | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 21 | Simulation with current seq | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 22 | Simulate multiple txs | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 23 | Simulate tx sequence | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 24 | Simulation network error | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 25 | Invalid tx for simulation | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 26 | Simulation timeout | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 
 ### multi-agent.feature `@optional`
 
-| # | Scenario | TypeScript | Go | Rust | Java | Python |
-|---|----------|------------|-----|------|------|--------|
-| 1 | Create multi-agent transaction with one secondary signer | [x] | [ ] | [ ] | [ ] | [x] |
-| 2 | Create multi-agent transaction with multiple secondary signers | [x] | [ ] | [ ] | [ ] | [x] |
-| 3 | Secondary signer addresses are preserved | [x] | [ ] | [ ] | [ ] | [x] |
-| 4 | Multi-agent signing message differs from single signer | [x] | [ ] | [ ] | [ ] | [x] |
-| 5 | Multi-agent signing message includes secondary addresses | [x] | [ ] | [ ] | [ ] | [x] |
-| 6 | Multi-agent signing message uses correct domain | [x] | [ ] | [ ] | [ ] | [x] |
-| 7 | All parties sign the same message | [x] | [ ] | [ ] | [ ] | [x] |
-| 8 | Sign multi-agent transaction | [x] | [ ] | [ ] | [ ] | [x] |
-| 9 | Multi-agent authenticator structure | [x] | [ ] | [ ] | [ ] | [x] |
-| 10 | Multi-agent with mixed account types | [x] | [ ] | [ ] | [ ] | [x] |
-| 11 | Collect signatures from multiple parties | [x] | [ ] | [ ] | [ ] | [x] |
-| 12 | Signatures can be collected in any order | [x] | [ ] | [ ] | [ ] | [x] |
-| 13 | Reject incomplete signature collection | [x] | [ ] | [ ] | [ ] | [x] |
-| 14 | Reject mismatched secondary signer count | [x] | [ ] | [ ] | [ ] | [x] |
-| 15 | Reject empty secondary signers | [x] | [ ] | [ ] | [ ] | [x] |
-| 16 | Secondary signer address must match signature | [x] | [ ] | [ ] | [ ] | [x] |
-| 17 | Serialize multi-agent authenticator | [x] | [ ] | [ ] | [ ] | [x] |
-| 18 | Multi-agent transaction serialization is deterministic | [x] | [ ] | [ ] | [ ] | [x] |
-| 19 | Known multi-agent signing message test vector | [x] | [ ] | [ ] | [ ] | [x] |
-| 20 | Known multi-agent transaction test vector | [x] | [ ] | [ ] | [ ] | [x] |
+| # | Scenario | TS | Go | Rust | Java | Kotlin | Python | .NET | C++ | Swift |
+|---|----------|-----|-----|------|------|--------|--------|------|-----|-------|
+| 1 | Multi-agent tx with one secondary | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 2 | Multi-agent tx with multiple secondary | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 3 | Secondary signer addrs preserved | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 4 | Multi-agent msg differs from single | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 5 | Multi-agent msg includes secondary addrs | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 6 | Multi-agent msg correct domain | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 7 | All parties sign same message | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 8 | Sign multi-agent tx | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 9 | Multi-agent authenticator structure | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 10 | Multi-agent with mixed account types | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 11 | Collect sigs from multiple parties | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 12 | Sigs can be collected any order | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 13 | Reject incomplete sig collection | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 14 | Reject mismatched secondary count | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 15 | Reject empty secondary signers | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 16 | Secondary addr must match sig | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 17 | Serialize multi-agent authenticator | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 18 | Multi-agent tx serialization deterministic | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 19 | Test vector - multi-agent signing msg | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 20 | Test vector - multi-agent tx | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 
 ### fee-payer.feature `@optional`
 
-| # | Scenario | TypeScript | Go | Rust | Java | Python |
-|---|----------|------------|-----|------|------|--------|
-| 1 | Create fee payer transaction with sponsor | [x] | [ ] | [ ] | [ ] | [x] |
-| 2 | Create fee payer transaction with secondary signers | [x] | [ ] | [ ] | [ ] | [x] |
-| 3 | Fee payer address is preserved | [x] | [ ] | [ ] | [ ] | [x] |
-| 4 | Fee payer signing message differs from multi-agent | [x] | [ ] | [ ] | [ ] | [x] |
-| 5 | Fee payer signing message includes fee payer address | [x] | [ ] | [ ] | [ ] | [x] |
-| 6 | Fee payer signing message uses correct domain | [x] | [ ] | [ ] | [ ] | [x] |
-| 7 | All parties (including fee payer) sign the same message | [x] | [ ] | [ ] | [ ] | [x] |
-| 8 | Sign fee payer transaction | [x] | [ ] | [ ] | [ ] | [x] |
-| 9 | Fee payer authenticator structure | [x] | [ ] | [ ] | [ ] | [x] |
-| 10 | Fee payer with no secondary signers | [x] | [ ] | [ ] | [ ] | [x] |
-| 11 | Fee payer with mixed account types | [x] | [ ] | [ ] | [ ] | [x] |
-| 12 | Sender initiates sponsored transaction | [x] | [ ] | [ ] | [ ] | [x] |
-| 13 | Sponsor completes sponsored transaction | [x] | [ ] | [ ] | [ ] | [x] |
-| 14 | Signatures can be collected in any order | [x] | [ ] | [ ] | [ ] | [x] |
-| 15 | Fee payer pays gas regardless of sender gas fields | [x] | [ ] | [ ] | [ ] | [x] |
-| 16 | Transaction fails if fee payer has insufficient gas | [x] | [ ] | [ ] | [ ] | [x] |
-| 17 | Reject missing fee payer signature | [x] | [ ] | [ ] | [ ] | [x] |
-| 18 | Reject missing sender signature | [x] | [ ] | [ ] | [ ] | [x] |
-| 19 | Fee payer address must match signature | [x] | [ ] | [ ] | [ ] | [x] |
-| 20 | Serialize fee payer authenticator | [x] | [ ] | [ ] | [ ] | [x] |
-| 21 | Fee payer transaction serialization is deterministic | [x] | [ ] | [ ] | [ ] | [x] |
-| 22 | Known fee payer signing message test vector | [x] | [ ] | [ ] | [ ] | [x] |
-| 23 | Known fee payer transaction test vector | [x] | [ ] | [ ] | [ ] | [x] |
+| # | Scenario | TS | Go | Rust | Java | Kotlin | Python | .NET | C++ | Swift |
+|---|----------|-----|-----|------|------|--------|--------|------|-----|-------|
+| 1 | Create fee payer tx with sponsor | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 2 | Fee payer tx with secondary signers | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 3 | Fee payer addr preserved | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 4 | Fee payer msg differs from multi-agent | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 5 | Fee payer msg includes fee payer addr | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 6 | Fee payer msg correct domain | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 7 | All parties sign same message | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 8 | Sign fee payer tx | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 9 | Fee payer authenticator structure | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 10 | Fee payer with no secondary | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 11 | Fee payer with mixed account types | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 12 | Sender initiates sponsored tx | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 13 | Sponsor completes sponsored tx | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 14 | Sigs can be collected any order | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 15 | Fee payer pays gas always | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 16 | Tx fails if fee payer insufficient gas | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 17 | Reject missing fee payer sig | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 18 | Reject missing sender sig | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 19 | Fee payer addr must match sig | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 20 | Serialize fee payer authenticator | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 21 | Fee payer tx serialization deterministic | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 22 | Test vector - fee payer signing msg | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 23 | Test vector - fee payer tx | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 
 ### multi-signature.feature `@optional`
 
-| # | Scenario | TypeScript | Go | Rust | Java | Python |
-|---|----------|------------|-----|------|------|--------|
-| 1 | Create 2-of-3 multi-sig account | [x] | [ ] | [ ] | [ ] | [x] |
-| 2 | Create 1-of-1 multi-sig account | [x] | [ ] | [ ] | [ ] | [x] |
-| 3 | Create multi-sig with all keys required | [x] | [ ] | [ ] | [ ] | [x] |
-| 4 | Reject threshold of 0 | [x] | [ ] | [ ] | [ ] | [x] |
-| 5 | Reject threshold greater than key count | [x] | [ ] | [ ] | [ ] | [x] |
-| 6 | Reject empty key list | [x] | [ ] | [ ] | [ ] | [x] |
-| 7 | Multi-sig authentication key derivation | [x] | [ ] | [ ] | [ ] | [x] |
-| 8 | Key order affects authentication key | [x] | [ ] | [ ] | [ ] | [x] |
-| 9 | Same keys same order produce same address | [x] | [ ] | [ ] | [ ] | [x] |
-| 10 | Sign with enough private keys | [x] | [ ] | [ ] | [ ] | [x] |
-| 11 | Cannot sign without enough keys | [x] | [ ] | [ ] | [ ] | [x] |
-| 12 | Collect signatures from multiple parties | [x] | [ ] | [ ] | [ ] | [x] |
-| 13 | Reject duplicate signer indices | [x] | [ ] | [ ] | [ ] | [x] |
-| 14 | Reject invalid signer index | [x] | [ ] | [ ] | [ ] | [x] |
-| 15 | Multi-sig signature contains indices | [x] | [ ] | [ ] | [ ] | [x] |
-| 16 | Signatures are ordered by index | [x] | [ ] | [ ] | [ ] | [x] |
-| 17 | Sign transaction with multi-sig account | [x] | [ ] | [ ] | [ ] | [x] |
-| 18 | Multi-sig transaction authenticator structure | [x] | [ ] | [ ] | [ ] | [x] |
-| 19 | Verify multi-sig signature | [x] | [ ] | [ ] | [ ] | [x] |
-| 20 | Reject signature with insufficient signers | [x] | [ ] | [ ] | [ ] | [x] |
-| 21 | Reject signature with wrong signers | [x] | [ ] | [ ] | [ ] | [x] |
-| 22 | Known multi-sig address test vector | [x] | [ ] | [ ] | [ ] | [x] |
-| 23 | Known multi-sig signature test vector | [x] | [ ] | [ ] | [ ] | [x] |
+| # | Scenario | TS | Go | Rust | Java | Kotlin | Python | .NET | C++ | Swift |
+|---|----------|-----|-----|------|------|--------|--------|------|-----|-------|
+| 1 | Create 2-of-3 multi-sig account | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 2 | Create 1-of-1 multi-sig account | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 3 | Multi-sig with all keys required | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 4 | Reject threshold of 0 | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 5 | Reject threshold > key count | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 6 | Reject empty key list | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 7 | Multi-sig auth key derivation | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 8 | Key order affects auth key | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 9 | Same keys same order same addr | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 10 | Sign with enough private keys | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 11 | Cannot sign without enough keys | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 12 | Collect sigs from multiple parties | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 13 | Reject duplicate signer indices | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 14 | Reject invalid signer index | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 15 | Multi-sig signature contains indices | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 16 | Sigs are ordered by index | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 17 | Sign tx with multi-sig account | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 18 | Multi-sig tx authenticator structure | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 19 | Verify multi-sig signature | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 20 | Reject sig with insufficient signers | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 21 | Reject sig with wrong signers | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 22 | Test vector - multi-sig addr | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 23 | Test vector - multi-sig signature | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 
 ### keyless.feature `@optional`
 
-| # | Scenario | TypeScript | Go | Rust | Java | Python |
-|---|----------|------------|-----|------|------|--------|
-| 1 | Generate ephemeral key pair | [x] | [ ] | [ ] | [ ] | [ ] |
-| 2 | Ephemeral key pair generates unique nonce | [x] | [ ] | [ ] | [ ] | [ ] |
-| 3 | Check ephemeral key expiry | [x] | [ ] | [ ] | [ ] | [ ] |
-| 4 | Fresh ephemeral key is not expired | [x] | [ ] | [ ] | [ ] | [ ] |
-| 5 | Get ephemeral nonce for OIDC flow | [x] | [ ] | [ ] | [ ] | [ ] |
-| 6 | Create keyless account from JWT | [x] | [ ] | [ ] | [ ] | [ ] |
-| 7 | Keyless account has correct provider | [x] | [ ] | [ ] | [ ] | [ ] |
-| 8 | Keyless account address is deterministic | [x] | [ ] | [ ] | [ ] | [ ] |
-| 9 | Different users have different addresses | [x] | [ ] | [ ] | [ ] | [ ] |
-| 10 | Keyless address derivation formula | [x] | [ ] | [ ] | [ ] | [ ] |
-| 11 | Different issuers produce different addresses | [x] | [ ] | [ ] | [ ] | [ ] |
-| 12 | Different audiences produce different addresses | [x] | [ ] | [ ] | [ ] | [ ] |
-| 13 | Pepper affects address | [x] | [ ] | [ ] | [ ] | [ ] |
-| 14 | Sign message with keyless account | [x] | [ ] | [ ] | [ ] | [ ] |
-| 15 | Sign transaction with keyless account | [x] | [ ] | [ ] | [ ] | [ ] |
-| 16 | Reject signing with expired ephemeral key | [x] | [ ] | [ ] | [ ] | [ ] |
-| 17 | Check if keyless account is valid | [x] | [ ] | [ ] | [ ] | [ ] |
-| 18 | Keyless account with expired proof | [x] | [ ] | [ ] | [ ] | [ ] |
-| 19 | Refresh proof | [x] | [ ] | [ ] | [ ] | [ ] |
-| 20 | Google provider configuration | [x] | [ ] | [ ] | [ ] | [ ] |
-| 21 | Apple provider configuration | [x] | [ ] | [ ] | [ ] | [ ] |
-| 22 | Custom OIDC provider | [x] | [ ] | [ ] | [ ] | [ ] |
-| 23 | Get pepper for JWT | [x] | [ ] | [ ] | [ ] | [ ] |
-| 24 | Same JWT produces same pepper | [x] | [ ] | [ ] | [ ] | [ ] |
-| 25 | Handle pepper service error | [x] | [ ] | [ ] | [ ] | [ ] |
-| 26 | Generate ZK proof | [x] | [ ] | [ ] | [ ] | [ ] |
-| 27 | Handle prover service error | [x] | [ ] | [ ] | [ ] | [ ] |
-| 28 | Reject invalid JWT format | [x] | [ ] | [ ] | [ ] | [ ] |
-| 29 | Reject JWT with wrong nonce | [x] | [ ] | [ ] | [ ] | [ ] |
-| 30 | Reject expired JWT | [x] | [ ] | [ ] | [ ] | [ ] |
-| 31 | Ephemeral key expiry is enforced | [x] | [ ] | [ ] | [ ] | [ ] |
-| 32 | Pepper is not exposed in account | [x] | [ ] | [ ] | [ ] | [ ] |
-| 33 | Known keyless address test vector | [x] | [ ] | [ ] | [ ] | [ ] |
+| # | Scenario | TS | Go | Rust | Java | Kotlin | Python | .NET | C++ | Swift |
+|---|----------|-----|-----|------|------|--------|--------|------|-----|-------|
+| 1 | Generate ephemeral key pair | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 2 | Ephemeral key pair unique nonce | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 3 | Check ephemeral key expiry | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 4 | Fresh ephemeral key not expired | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 5 | Get ephemeral nonce for OIDC | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 6 | Create keyless account from JWT | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 7 | Keyless account correct provider | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 8 | Keyless address is deterministic | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 9 | Different users different addresses | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 10 | Keyless address derivation formula | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 11 | Different issuers different addresses | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 12 | Different audiences different addresses | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 13 | Pepper affects address | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 14 | Sign message with keyless account | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 15 | Sign tx with keyless account | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 16 | Reject signing expired ephemeral | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 17 | Check if keyless account valid | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 18 | Keyless account expired proof | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 19 | Refresh proof | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 20 | Google provider configuration | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 21 | Apple provider configuration | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 22 | Custom OIDC provider | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 23 | Get pepper for JWT | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 24 | Same JWT produces same pepper | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 25 | Handle pepper service error | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 26 | Generate ZK proof | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 27 | Handle prover service error | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 28 | Reject invalid JWT format | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 29 | Reject JWT with wrong nonce | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 30 | Reject expired JWT | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 31 | Ephemeral key expiry enforced | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 32 | Pepper not exposed in account | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 33 | Test vector - keyless address | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 
 ### codegen.feature `@optional`
 
-| # | Scenario | TypeScript | Go | Rust | Java | Python |
-|---|----------|------------|-----|------|------|--------|
-| 1 | Fetch module ABI from chain | [ ] | [ ] | [ ] | [ ] | [ ] |
-| 2 | Fetch ABI for multiple modules | [ ] | [ ] | [ ] | [ ] | [ ] |
-| 3 | Handle module not found | [ ] | [ ] | [ ] | [ ] | [ ] |
-| 4 | Parse entry functions from ABI | [ ] | [ ] | [ ] | [ ] | [ ] |
-| 5 | Parse view functions from ABI | [ ] | [ ] | [ ] | [ ] | [ ] |
-| 6 | Parse struct definitions from ABI | [ ] | [ ] | [ ] | [ ] | [ ] |
-| 7 | Parse generic types | [ ] | [ ] | [ ] | [ ] | [ ] |
-| 8 | Generate TypeScript types for structs | [ ] | [ ] | [ ] | [ ] | [ ] |
-| 9 | Generate TypeScript function wrappers | [ ] | [ ] | [ ] | [ ] | [ ] |
-| 10 | Generate TypeScript view function wrappers | [ ] | [ ] | [ ] | [ ] | [ ] |
-| 11 | Map Move types to TypeScript | [ ] | [ ] | [ ] | [ ] | [ ] |
-| 12 | Generate Rust types for structs | [ ] | [ ] | [ ] | [ ] | [ ] |
-| 13 | Generate Rust function wrappers | [ ] | [ ] | [ ] | [ ] | [ ] |
-| 14 | Map Move types to Rust | [ ] | [ ] | [ ] | [ ] | [ ] |
-| 15 | Generate Python types for structs | [ ] | [ ] | [ ] | [ ] | [ ] |
-| 16 | Generate Python function wrappers | [ ] | [ ] | [ ] | [ ] | [ ] |
-| 17 | Generate Go types for structs | [ ] | [ ] | [ ] | [ ] | [ ] |
-| 18 | Generate Go function wrappers | [ ] | [ ] | [ ] | [ ] | [ ] |
-| 19 | Generated code handles address encoding | [ ] | [ ] | [ ] | [ ] | [ ] |
-| 20 | Generated code handles u64 encoding | [ ] | [ ] | [ ] | [ ] | [ ] |
-| 21 | Generated code handles vector encoding | [ ] | [ ] | [ ] | [ ] | [ ] |
-| 22 | Generated code handles struct encoding | [ ] | [ ] | [ ] | [ ] | [ ] |
-| 23 | Compile-time type checking | [ ] | [ ] | [ ] | [ ] | [ ] |
-| 24 | Type inference for generics | [ ] | [ ] | [ ] | [ ] | [ ] |
-| 25 | Optional parameters handling | [ ] | [ ] | [ ] | [ ] | [ ] |
-| 26 | Generate code via CLI | [ ] | [ ] | [ ] | [ ] | [ ] |
-| 27 | CLI supports multiple output formats | [ ] | [ ] | [ ] | [ ] | [ ] |
-| 28 | CLI from local ABI file | [ ] | [ ] | [ ] | [ ] | [ ] |
-| 29 | Procedural macro for contract bindings | [ ] | [ ] | [ ] | [ ] | [ ] |
-| 30 | Macro fetches ABI at build time | [ ] | [ ] | [ ] | [ ] | [ ] |
-| 31 | Generated code surfaces Move errors | [ ] | [ ] | [ ] | [ ] | [ ] |
-| 32 | Generated code validates arguments | [ ] | [ ] | [ ] | [ ] | [ ] |
-| 33 | Generate documentation comments | [ ] | [ ] | [ ] | [ ] | [ ] |
-| 34 | Include function signatures in docs | [ ] | [ ] | [ ] | [ ] | [ ] |
+| # | Scenario | TS | Go | Rust | Java | Kotlin | Python | .NET | C++ | Swift |
+|---|----------|-----|-----|------|------|--------|--------|------|-----|-------|
+| 1 | Fetch module ABI from chain | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 2 | Fetch ABI for multiple modules | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 3 | Handle module not found | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 4 | Parse entry functions from ABI | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 5 | Parse view functions from ABI | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 6 | Parse struct definitions from ABI | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 7 | Parse generic types | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 8 | Generate TS types for structs | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 9 | Generate TS function wrappers | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 10 | Generate TS view func wrappers | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 11 | Map Move types to TS | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 12 | Generate Rust types for structs | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 13 | Generate Rust func wrappers | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 14 | Map Move types to Rust | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 15 | Generate Python types for structs | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 16 | Generate Python func wrappers | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 17 | Generate Go types for structs | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 18 | Generate Go func wrappers | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 19 | Code handles address encoding | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 20 | Code handles u64 encoding | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 21 | Code handles vector encoding | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 22 | Code handles struct encoding | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 23 | Compile-time type checking | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 24 | Type inference for generics | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 25 | Optional parameters handling | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 26 | Generate code via CLI | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 27 | CLI multiple output formats | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 28 | CLI from local ABI file | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 29 | Procedural macro for bindings | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 30 | Macro fetches ABI at build | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 31 | Code surfaces Move errors | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 32 | Code validates arguments | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 33 | Generate documentation comments | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 34 | Include func signatures in docs | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 
 ---
 
