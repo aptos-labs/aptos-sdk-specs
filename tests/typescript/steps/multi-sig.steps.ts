@@ -370,7 +370,13 @@ When("I check can_sign\\(\\)", function (this: AptosWorld) {
 });
 
 Then("it should return false", function (this: AptosWorld) {
-  expect(this.result).to.be.false;
+  // Check both testVectors (for keyless is_expired) and this.result
+  const isExpired = this.testVectors.get("isExpired");
+  if (isExpired !== undefined) {
+    expect(isExpired).to.be.false;
+  } else {
+    expect(this.result).to.be.false;
+  }
 });
 
 // =============================================================================

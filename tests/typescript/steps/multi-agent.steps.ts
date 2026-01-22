@@ -17,6 +17,7 @@ import {
   ChainId,
   SignedTransaction,
   MultiAgentTransaction,
+  FeePayerRawTransaction,
   TransactionAuthenticatorMultiAgent,
   AccountAuthenticator,
   AccountAuthenticatorEd25519,
@@ -328,7 +329,7 @@ Given("a multi-agent transaction", function (this: AptosWorld) {
 Then(
   /^it should start with SHA3-256\("APTOS::RawTransactionWithData"\)$/,
   function (this: AptosWorld) {
-    const expectedPrefix = sha3_256("APTOS::RawTransactionWithData");
+    const expectedPrefix = sha3_256(new TextEncoder().encode("APTOS::RawTransactionWithData"));
     const actual = this.bytes!.slice(0, 32);
 
     expect(bytesToHex(actual)).to.equal(bytesToHex(expectedPrefix));
@@ -922,10 +923,22 @@ Given(
 );
 
 When("I serialize it", function (this: AptosWorld) {
-  const multiAgentTxn = this.testVectors.get(
-    "multiAgentTransaction",
-  ) as MultiAgentTransaction;
-  this.bytes = multiAgentTxn.bcsToBytes();
+  // Try multiple sources in order of specificity
+  const multiAgentTxn = this.testVectors.get("multiAgentTransaction") as MultiAgentTransaction | undefined;
+  const feePayerTxn = this.testVectors.get("feePayerTransaction") as FeePayerRawTransaction | undefined;
+  const signedTxn = this.signedTransaction ?? this.testVectors.get("signedTransaction") as SignedTransaction | undefined;
+
+  if (multiAgentTxn) {
+    this.bytes = multiAgentTxn.bcsToBytes();
+  } else if (feePayerTxn) {
+    this.bytes = feePayerTxn.bcsToBytes();
+  } else if (signedTxn) {
+    const serializer = new Serializer();
+    signedTxn.serialize(serializer);
+    this.bytes = serializer.toUint8Array();
+  } else {
+    throw new Error("No transaction found to serialize");
+  }
 });
 
 Then(

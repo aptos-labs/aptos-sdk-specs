@@ -266,11 +266,17 @@ Then("it should include the fee payer address", function (this: AptosWorld) {
 });
 
 Given("a fee payer transaction", function (this: AptosWorld) {
-  const sender = AccountAddress.from("0x1");
+  // Create actual accounts so subsequent steps can sign
+  const senderPrivate = Ed25519PrivateKey.generate();
+  const sender = Account.fromPrivateKey({ privateKey: senderPrivate });
+
+  const feePayerPrivate = Ed25519PrivateKey.generate();
+  const feePayer = Account.fromPrivateKey({ privateKey: feePayerPrivate });
+
   const payload = createTransferPayload(AccountAddress.from("0x2"), BigInt(1000));
 
   const rawTxn = new RawTransaction(
-    sender,
+    sender.accountAddress,
     BigInt(0),
     payload,
     BigInt(100000),
@@ -279,24 +285,36 @@ Given("a fee payer transaction", function (this: AptosWorld) {
     new ChainId(1),
   );
 
-  const feePayerAddress = AccountAddress.from(
-    "0x5555555555555555555555555555555555555555555555555555555555555555",
-  );
+  const feePayerTxn = new FeePayerRawTransaction(rawTxn, [], feePayer.accountAddress);
 
-  const feePayerTxn = new FeePayerRawTransaction(rawTxn, [], feePayerAddress);
-
+  // Store in testVectors for step compatibility
   this.testVectors.set("rawTransaction", rawTxn);
-  this.testVectors.set("feePayerAddress", feePayerAddress);
+  this.testVectors.set("senderAccount", sender);
+  this.testVectors.set("feePayerAccount", feePayer);
+  this.testVectors.set("feePayerAddress", feePayer.accountAddress);
   this.testVectors.set("feePayerTransaction", feePayerTxn);
+
+  // Also store on world for other step patterns
+  this.rawTransaction = rawTxn;
+  this.account = sender;
 });
 
 When("I generate the fee payer signing message", function (this: AptosWorld) {
-  const rawTxn = this.testVectors.get("rawTransaction") as RawTransaction;
+  // Check both storage locations for rawTransaction
+  const rawTxn = (this.testVectors.get("rawTransaction") as RawTransaction) ?? this.rawTransaction;
+  if (!rawTxn) {
+    throw new Error("No rawTransaction found in testVectors or on world");
+  }
+
   const secondaryAddresses =
     (this.testVectors.get("secondaryAddresses") as AccountAddress[]) ?? [];
   const feePayerAddress = this.testVectors.get(
     "feePayerAddress",
   ) as AccountAddress;
+
+  if (!feePayerAddress) {
+    throw new Error("No feePayerAddress found - ensure 'a fee payer address' step ran first");
+  }
 
   const message = generateSigningMessageForTransaction({
     rawTransaction: rawTxn,
@@ -510,9 +528,31 @@ Given("no secondary signers", function (this: AptosWorld) {
 });
 
 When("I sign the fee payer transaction", function (this: AptosWorld) {
-  const sender = this.testVectors.get("senderAccount") as Account;
-  const rawTxn = this.testVectors.get("rawTransaction") as RawTransaction;
+  // Check both storage locations
+  const sender = (this.testVectors.get("senderAccount") as Account) ?? this.account;
+  let rawTxn = (this.testVectors.get("rawTransaction") as RawTransaction) ?? this.rawTransaction;
   const feePayer = this.testVectors.get("feePayerAccount") as Account;
+
+  if (!sender || !feePayer) {
+    throw new Error("Missing required data: sender or feePayerAccount");
+  }
+
+  // Create a RawTransaction if not already created
+  if (!rawTxn) {
+    const payload = createTransferPayload(AccountAddress.from("0x2"), BigInt(1000));
+    rawTxn = new RawTransaction(
+      sender.accountAddress,
+      BigInt(0),
+      payload,
+      BigInt(100000),
+      BigInt(100),
+      BigInt(Math.floor(Date.now() / 1000) + 600),
+      new ChainId(1),
+    );
+    this.rawTransaction = rawTxn;
+    this.testVectors.set("rawTransaction", rawTxn);
+  }
+
   const secondaries =
     (this.testVectors.get("secondaryAccounts") as Account[]) ?? [];
 
@@ -550,6 +590,7 @@ When("I sign the fee payer transaction", function (this: AptosWorld) {
 
   const signedTxn = new SignedTransaction(rawTxn, feePayerAuthenticator);
 
+  this.signedTransaction = signedTxn;
   this.testVectors.set("signedTransaction", signedTxn);
   this.testVectors.set("feePayerAuthenticator", feePayerAuthenticator);
   this.result = signedTxn;
@@ -911,6 +952,8 @@ Given("the same fee payer transaction", function (this: AptosWorld) {
 
   const signedTxn = new SignedTransaction(rawTxn, feePayerAuthenticator);
 
+  // Store in both locations for compatibility
+  this.signedTransaction = signedTxn;
   this.testVectors.set("signedTransaction", signedTxn);
 });
 

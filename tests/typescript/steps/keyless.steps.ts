@@ -156,7 +156,9 @@ Then("it should return true", function (this: AptosWorld) {
   expect(this.testVectors.get("isExpired")).to.be.true;
 });
 
-Then("it should return false", function (this: AptosWorld) {
+// Note: Generic "it should return false" is in multi-sig.steps.ts
+// This version handles the specific case of is_expired check
+Then("it should return false for ephemeral key expiry", function (this: AptosWorld) {
   expect(this.testVectors.get("isExpired")).to.be.false;
 });
 
@@ -606,14 +608,15 @@ Given("a valid keyless account", function (this: AptosWorld) {
 });
 
 Given("a message to sign", function (this: AptosWorld) {
-  this.message = new TextEncoder().encode("test message for keyless signing");
+  this.testVectors.set("messageToSign", new TextEncoder().encode("test message for keyless signing"));
 });
 
 When("I sign the message with an ephemeral key pair", function (this: AptosWorld) {
   const account = this.testVectors.get("keylessAccount") as any;
-  if (account && this.message) {
+  const message = this.testVectors.get("messageToSign") as Uint8Array;
+  if (account && message) {
     // Mock signing with ephemeral key
-    const ephemeralSig = account.ephemeralKeyPair.sign(this.message);
+    const ephemeralSig = account.ephemeralKeyPair.sign(message);
     this.testVectors.set("keylessSignature", {
       ephemeralSignature: ephemeralSig,
       zkProof: account.zkProof,
