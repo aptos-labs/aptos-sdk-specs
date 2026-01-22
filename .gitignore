@@ -130,3 +130,13 @@ dist
 .pnp.*
 
 .idea/
+
+# Symlinks for Python behave tests
+features/steps
+features/support
+features/environment.py
+
+# Python virtual environments
+.venv/
+venv/
+tests/python/.venv/
