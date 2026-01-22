@@ -23,6 +23,7 @@ All agents share this foundational knowledge about the repository.
   - `tests/kotlin/` - Cucumber-JVM (tests kaptos)
   - `tests/python/` - Behave (tests aptos-sdk)
   - `tests/dotnet/` - Reqnroll (tests Aptos .NET SDK)
+  - `tests/swift/` - CucumberSwift (tests aptos-swift-sdk)
 - `FEATURE_COVERAGE.md` - **Coverage tracking matrix** (keep this updated!)
 - `tests/<language>/SDK_STATUS.md` - **Per-SDK status documents** (keep these updated!)
 
@@ -48,6 +49,34 @@ When writing tests or features, **always update these files**:
 - **Required (P0)**: Tagged `@required` - every SDK must implement these
 - **Preferred (P1)**: Tagged `@preferred` - expected in production SDKs
 - **Optional (P2)**: Tagged `@optional` - for comprehensive SDKs
+
+### Coverage Tracking Rules
+
+**CRITICAL: Coverage means PASSING tests, not just step definitions.**
+
+When updating `FEATURE_COVERAGE.md`:
+
+1. **Only mark `[x]` for scenarios that PASS** when tests are run
+2. **Placeholder/mock implementations do NOT count as coverage**
+3. **Run actual tests** before claiming coverage:
+   ```bash
+   # Run tests and count passing scenarios
+   cd tests/<language> && make test
+   ```
+4. **Step definitions without real SDK integration = `[ ]`** (not implemented)
+5. **Partially working tests = `[~]`** (partial implementation)
+
+**What counts as coverage:**
+- Test runs against the real SDK
+- Test makes actual SDK API calls
+- Test validates actual SDK behavior
+- Test passes (green)
+
+**What does NOT count:**
+- Step definitions that exist but use mocks/placeholders
+- Steps that return hardcoded values
+- Steps that simulate behavior without SDK calls
+- Tests that are skipped or pending
 
 ### Key Commands
 

@@ -47,29 +47,76 @@ def step_given_multiple_secondary_signers(context):
     ]
 
 
+@given("3 secondary signer accounts")
+def step_given_three_secondary_signers(context):
+    context.world.test_vectors["secondary_signers"] = [
+        Account.generate(),
+        Account.generate(),
+        Account.generate()
+    ]
+
+
+@given("secondary signer addresses [A, B, C]")
+def step_given_secondary_addresses_abc(context):
+    signers = [Account.generate() for _ in range(3)]
+    context.world.test_vectors["secondary_signers"] = signers
+    context.world.test_vectors["secondary_addresses"] = [s.address() for s in signers]
+
+
+@given("secondary signer addresses")
+def step_given_secondary_addresses(context):
+    if context.world.account_2:
+        context.world.test_vectors["secondary_addresses"] = [context.world.account_2.address()]
+    else:
+        signer = Account.generate()
+        context.world.account_2 = signer
+        context.world.test_vectors["secondary_addresses"] = [signer.address()]
+
+
+@given("the same RawTransaction")
+def step_given_same_raw_transaction(context):
+    # Use existing raw transaction
+    pass
+
+
+@given("a multi-agent transaction")
+def step_given_multi_agent_transaction(context):
+    if context.world.account is None:
+        context.world.account = Account.generate()
+    if context.world.account_2 is None:
+        context.world.account_2 = Account.generate()
+    
+    step_given_multi_agent_payload(context)
+    step_create_multi_agent_raw_tx(context)
+
+
+@given("a multi-agent transaction with sender and 2 secondary signers")
+def step_given_multi_agent_with_2_secondary(context):
+    context.world.account = Account.generate()
+    context.world.test_vectors["secondary_signers"] = [
+        Account.generate(),
+        Account.generate()
+    ]
+    step_given_multi_agent_payload(context)
+    step_create_multi_agent_raw_tx(context)
+
+
 @given("a multi-agent transaction payload")
 def step_given_multi_agent_payload(context):
+    from aptos_sdk.transactions import TransactionArgument
+    
     sender = context.world.account.address()
     secondary = context.world.account_2.address() if context.world.account_2 else Account.generate().address()
     
     # Create a payload that requires multiple signers
-    encoded_args = []
-    
-    # First signer's address
-    serializer = Serializer()
-    serializer.struct(secondary)
-    encoded_args.append(serializer.output())
-    
-    # Amount
-    serializer = Serializer()
-    serializer.u64(1000)
-    encoded_args.append(serializer.output())
+    addr_arg = TransactionArgument(secondary, Serializer.struct)
+    amount_arg = TransactionArgument(1000, Serializer.u64)
     
     payload = EntryFunction.natural(
         "0x1::aptos_account",
         "transfer",
         [],
-        encoded_args
+        [addr_arg, amount_arg]
     )
     
     context.world.raw_transaction = RawTransaction(
@@ -106,6 +153,49 @@ def step_create_multi_agent_raw_tx(context):
         context.world.clear_error()
     except Exception as e:
         context.world.set_error(e)
+
+
+@when("I create a multi-agent transaction")
+def step_create_multi_agent_transaction(context):
+    step_create_multi_agent_raw_tx(context)
+
+
+@when("I build a multi-agent transaction")
+def step_build_multi_agent_transaction(context):
+    step_create_multi_agent_raw_tx(context)
+
+
+@when("I generate single-signer signing message")
+def step_generate_single_signer_message(context):
+    try:
+        domain = b"APTOS::RawTransaction"
+        domain_hash = hashlib.sha3_256(domain).digest()
+        
+        serializer = Serializer()
+        context.world.raw_transaction.serialize(serializer)
+        
+        context.world.test_vectors["single_signer_message"] = domain_hash + serializer.output()
+        context.world.clear_error()
+    except Exception as e:
+        context.world.set_error(e)
+
+
+@when("I generate multi-agent signing message with secondary signers")
+def step_generate_multi_agent_message_with_secondary(context):
+    step_compute_multi_agent_signing_message(context)
+
+
+@when("I generate the multi-agent signing message")
+def step_generate_multi_agent_message(context):
+    step_compute_multi_agent_signing_message(context)
+
+
+@when("each party generates their signing message")
+def step_each_party_generates_message(context):
+    step_compute_multi_agent_signing_message(context)
+    # All parties get the same message
+    msg = context.world.test_vectors.get("multi_agent_signing_message")
+    context.world.test_vectors["party_messages"] = [msg, msg, msg]
 
 
 @when("I compute the multi-agent signing message")
@@ -255,6 +345,62 @@ def step_bcs_deserialize_multi_agent(context):
 def step_multi_agent_created(context):
     assert context.world.error is None
     assert context.world.multi_agent_tx is not None
+
+
+@then("the transaction should include both signers")
+def step_transaction_includes_both_signers(context):
+    assert context.world.multi_agent_tx is not None
+    assert len(context.world.multi_agent_tx.secondary_signers) >= 1
+
+
+@then("the transaction should include all 4 signers")
+def step_transaction_includes_all_4_signers(context):
+    assert context.world.multi_agent_tx is not None
+    # 1 primary + 3 secondary = 4 total
+    assert len(context.world.multi_agent_tx.secondary_signers) == 3
+
+
+@then("the secondary_signer_addresses should be [A, B, C] in order")
+def step_secondary_addresses_in_order(context):
+    expected = context.world.test_vectors.get("secondary_addresses", [])
+    actual = context.world.multi_agent_tx.secondary_signers
+    assert len(actual) == len(expected)
+    for i, addr in enumerate(expected):
+        assert actual[i] == addr
+
+
+@then("the single and multi-agent messages should be different")
+def step_single_multi_messages_different(context):
+    single = context.world.test_vectors.get("single_signer_message")
+    multi = context.world.test_vectors.get("multi_agent_signing_message")
+    assert single != multi
+
+
+@then("it should include the raw transaction")
+def step_should_include_raw_tx(context):
+    msg = context.world.test_vectors.get("multi_agent_signing_message")
+    assert msg is not None
+    assert len(msg) > 32  # More than just domain hash
+
+
+@then("it should include the secondary signer addresses")
+def step_should_include_secondary_addresses(context):
+    msg = context.world.test_vectors.get("multi_agent_signing_message")
+    assert msg is not None
+
+
+@then('it should start with SHA3-256("APTOS::RawTransactionWithData")')
+def step_should_start_with_domain(context):
+    msg = context.world.test_vectors.get("multi_agent_signing_message")
+    expected_domain = hashlib.sha3_256(b"APTOS::RawTransactionWithData").digest()
+    assert msg[:32] == expected_domain
+
+
+@then("all 3 messages should be identical")
+def step_all_3_messages_identical(context):
+    messages = context.world.test_vectors.get("party_messages", [])
+    assert len(messages) >= 3
+    assert messages[0] == messages[1] == messages[2]
 
 
 @then("the multi-agent transaction should have the primary sender")

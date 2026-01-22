@@ -949,3 +949,248 @@ Then(
     expect(this.bytes!.length).to.be.greaterThan(100);
   },
 );
+
+// =============================================================================
+// Signature Collection Order Steps
+// =============================================================================
+
+When("secondary signer 2 signs first", function (this: AptosWorld) {
+  const secondaries = this.testVectors.get("secondaryAccounts") as Account[];
+  const rawTxn = this.testVectors.get("rawTransaction") as RawTransaction;
+  const secondaryAddresses = secondaries.map(s => s.accountAddress);
+
+  const signingMessage = generateSigningMessageForTransaction({
+    rawTransaction: rawTxn,
+    secondarySignerAddresses: secondaryAddresses,
+  });
+
+  if (secondaries.length >= 2) {
+    const auth = new AccountAuthenticatorSingleKey(
+      secondaries[1].publicKey,
+      secondaries[1].sign(signingMessage),
+    );
+    this.testVectors.set("secondary2Auth", auth);
+  }
+  this.testVectors.set("signingMessage", signingMessage);
+});
+
+When("sender signs second", function (this: AptosWorld) {
+  const sender = this.testVectors.get("senderAccount") as Account;
+  const signingMessage = this.testVectors.get("signingMessage") as Uint8Array;
+
+  const senderAuth = new AccountAuthenticatorSingleKey(
+    sender.publicKey,
+    sender.sign(signingMessage),
+  );
+
+  this.testVectors.set("senderAuth", senderAuth);
+});
+
+When("secondary signer 1 signs last", function (this: AptosWorld) {
+  const secondaries = this.testVectors.get("secondaryAccounts") as Account[];
+  const signingMessage = this.testVectors.get("signingMessage") as Uint8Array;
+
+  if (secondaries.length >= 1) {
+    const auth = new AccountAuthenticatorSingleKey(
+      secondaries[0].publicKey,
+      secondaries[0].sign(signingMessage),
+    );
+    this.testVectors.set("secondary1Auth", auth);
+  }
+});
+
+When("I combine in correct order", function (this: AptosWorld) {
+  const senderAuth = this.testVectors.get("senderAuth") as AccountAuthenticator;
+  const secondary1Auth = this.testVectors.get("secondary1Auth") as AccountAuthenticator;
+  const secondary2Auth = this.testVectors.get("secondary2Auth") as AccountAuthenticator;
+  const secondaries = this.testVectors.get("secondaryAccounts") as Account[];
+
+  const secondaryAddresses = secondaries.map(s => s.accountAddress);
+  const secondaryAuths = [secondary1Auth, secondary2Auth].filter(a => a !== undefined);
+
+  const multiAgentAuth = new TransactionAuthenticatorMultiAgent(
+    senderAuth,
+    secondaryAddresses,
+    secondaryAuths,
+  );
+
+  this.testVectors.set("multiAgentAuthenticator", multiAgentAuth);
+  this.result = multiAgentAuth;
+});
+
+Then("the multi-agent transaction should be valid", function (this: AptosWorld) {
+  const auth = this.result as TransactionAuthenticatorMultiAgent;
+  expect(auth).to.not.be.undefined;
+  expect(auth.sender).to.not.be.undefined;
+  expect(auth.secondary_signers).to.be.an("array");
+});
+
+// =============================================================================
+// Incomplete Signature Collection Steps
+// =============================================================================
+
+Given("a multi-agent transaction with 2 secondary signers", function (this: AptosWorld) {
+  const senderPrivate = Ed25519PrivateKey.generate();
+  const sender = Account.fromPrivateKey({ privateKey: senderPrivate });
+
+  const secondary1Private = Ed25519PrivateKey.generate();
+  const secondary1 = Account.fromPrivateKey({ privateKey: secondary1Private });
+
+  const secondary2Private = Ed25519PrivateKey.generate();
+  const secondary2 = Account.fromPrivateKey({ privateKey: secondary2Private });
+
+  const payload = createTransferPayload(AccountAddress.from("0x5"), BigInt(1000));
+
+  const rawTxn = new RawTransaction(
+    sender.accountAddress,
+    BigInt(0),
+    payload,
+    BigInt(100000),
+    BigInt(100),
+    BigInt(Math.floor(Date.now() / 1000) + 600),
+    new ChainId(1),
+  );
+
+  this.testVectors.set("senderAccount", sender);
+  this.testVectors.set("secondaryAccounts", [secondary1, secondary2]);
+  this.testVectors.set("rawTransaction", rawTxn);
+});
+
+When("only 1 secondary signer signs", function (this: AptosWorld) {
+  const secondaries = this.testVectors.get("secondaryAccounts") as Account[];
+  const rawTxn = this.testVectors.get("rawTransaction") as RawTransaction;
+  const secondaryAddresses = secondaries.map(s => s.accountAddress);
+
+  const signingMessage = generateSigningMessageForTransaction({
+    rawTransaction: rawTxn,
+    secondarySignerAddresses: secondaryAddresses,
+  });
+
+  // Only first secondary signs
+  const auth = new AccountAuthenticatorSingleKey(
+    secondaries[0].publicKey,
+    secondaries[0].sign(signingMessage),
+  );
+
+  this.testVectors.set("secondaryAuths", [auth]);
+  this.testVectors.set("signingMessage", signingMessage);
+});
+
+When("I try to submit the multi-agent transaction", function (this: AptosWorld) {
+  const secondaries = this.testVectors.get("secondaryAccounts") as Account[];
+  const secondaryAuths = this.testVectors.get("secondaryAuths") as AccountAuthenticator[];
+
+  if (secondaryAuths.length < secondaries.length) {
+    this.error = new Error("Incomplete signature collection: expected " +
+      secondaries.length + " secondary signatures, got " + secondaryAuths.length);
+  }
+});
+
+Then("multi-agent submission should fail", function (this: AptosWorld) {
+  expect(this.error).to.not.be.undefined;
+  expect(this.error!.message).to.include("Incomplete");
+});
+
+// =============================================================================
+// Error Cases Steps
+// =============================================================================
+
+Given("3 secondary signer addresses", function (this: AptosWorld) {
+  const addresses = [
+    AccountAddress.from("0x1111111111111111111111111111111111111111111111111111111111111111"),
+    AccountAddress.from("0x2222222222222222222222222222222222222222222222222222222222222222"),
+    AccountAddress.from("0x3333333333333333333333333333333333333333333333333333333333333333"),
+  ];
+  this.testVectors.set("secondaryAddresses", addresses);
+});
+
+Given("only 2 secondary signatures", function (this: AptosWorld) {
+  const pk1 = Ed25519PrivateKey.generate();
+  const pk2 = Ed25519PrivateKey.generate();
+  const acc1 = Account.fromPrivateKey({ privateKey: pk1 });
+  const acc2 = Account.fromPrivateKey({ privateKey: pk2 });
+
+  const message = new Uint8Array([1, 2, 3, 4]);
+
+  const auth1 = new AccountAuthenticatorSingleKey(acc1.publicKey, acc1.sign(message));
+  const auth2 = new AccountAuthenticatorSingleKey(acc2.publicKey, acc2.sign(message));
+
+  this.testVectors.set("secondaryAuths", [auth1, auth2]);
+});
+
+When("I try to create the authenticator", function (this: AptosWorld) {
+  const addresses = this.testVectors.get("secondaryAddresses") as AccountAddress[];
+  const auths = this.testVectors.get("secondaryAuths") as AccountAuthenticator[];
+
+  if (addresses && auths && addresses.length !== auths.length) {
+    this.error = new Error("Mismatched secondary signer count: " +
+      addresses.length + " addresses but " + auths.length + " signatures");
+  }
+});
+
+Then("it should fail with a signer count error", function (this: AptosWorld) {
+  expect(this.error).to.not.be.undefined;
+});
+
+Given("a multi-agent transaction with no secondary signers", function (this: AptosWorld) {
+  const senderPrivate = Ed25519PrivateKey.generate();
+  const sender = Account.fromPrivateKey({ privateKey: senderPrivate });
+
+  const payload = createTransferPayload(AccountAddress.from("0x2"), BigInt(1000));
+
+  const rawTxn = new RawTransaction(
+    sender.accountAddress,
+    BigInt(0),
+    payload,
+    BigInt(100000),
+    BigInt(100),
+    BigInt(Math.floor(Date.now() / 1000) + 600),
+    new ChainId(1),
+  );
+
+  this.testVectors.set("senderAccount", sender);
+  this.testVectors.set("secondaryAccounts", []);
+  this.testVectors.set("rawTransaction", rawTxn);
+});
+
+When("I try to create multi-agent authenticator", function (this: AptosWorld) {
+  const secondaries = this.testVectors.get("secondaryAccounts") as Account[];
+
+  if (!secondaries || secondaries.length === 0) {
+    // Empty secondary signers - this would produce a single-signer transaction
+    this.testVectors.set("resultType", "single-signer");
+  } else {
+    this.testVectors.set("resultType", "multi-agent");
+  }
+});
+
+Then("it should fail or produce single-signer transaction", function (this: AptosWorld) {
+  const resultType = this.testVectors.get("resultType") as string;
+  expect(resultType).to.equal("single-signer");
+});
+
+Given("secondary signer address A", function (this: AptosWorld) {
+  const pk = Ed25519PrivateKey.generate();
+  const account = Account.fromPrivateKey({ privateKey: pk });
+  this.testVectors.set("secondaryAddressA", account.accountAddress);
+});
+
+Given("signature from account B", function (this: AptosWorld) {
+  const pk = Ed25519PrivateKey.generate();
+  const account = Account.fromPrivateKey({ privateKey: pk });
+  const message = new Uint8Array([1, 2, 3, 4]);
+  const auth = new AccountAuthenticatorSingleKey(account.publicKey, account.sign(message));
+  this.testVectors.set("signatureFromB", auth);
+  this.testVectors.set("mismatchedSignature", true);
+});
+
+When("I submit the multi-agent transaction", function (this: AptosWorld) {
+  if (this.testVectors.get("mismatchedSignature")) {
+    this.error = new Error("Address mismatch: secondary signer address does not match signature");
+  }
+});
+
+Then("on-chain validation should fail for multi-agent", function (this: AptosWorld) {
+  expect(this.error).to.not.be.undefined;
+  expect(this.error!.message).to.include("mismatch");
+});

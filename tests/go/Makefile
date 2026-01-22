@@ -51,3 +51,11 @@ snippets:
 test-verbose:
 	go test -v ./...
 
+# Run network tests (requires testnet connection)
+test-network:
+	GODOG_TAGS="@api-clients or @fullnode-api or @transaction-submission" go test -v ./...
+
+# Run local-only tests (no network required)
+test-local:
+	GODOG_TAGS="@core-types or @cryptography or @transactions" go test -v ./...
+

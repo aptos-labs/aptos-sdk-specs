@@ -39,6 +39,60 @@ func initTypeTagSteps(ctx *godog.ScenarioContext, world *World) {
 		return nil
 	})
 
+	ctx.Step(`^a TypeTag struct with address "([^"]*)" module "([^"]*)" name "([^"]*)"$`, func(addrStr, module, name string) error {
+		addr := &aptos.AccountAddress{}
+		err := addr.ParseStringRelaxed(addrStr)
+		if err != nil {
+			return err
+		}
+		structTag := &aptos.StructTag{
+			Address:    *addr,
+			Module:     module,
+			Name:       name,
+			TypeParams: []aptos.TypeTag{},
+		}
+		world.TestVectors["typeTag"] = &aptos.TypeTag{Value: structTag}
+		return nil
+	})
+
+	ctx.Step(`^address "([^"]*)" module "([^"]*)" name "([^"]*)" and type args "([^"]*)"$`, func(addrStr, module, name, typeArgsStr string) error {
+		addr := &aptos.AccountAddress{}
+		err := addr.ParseStringRelaxed(addrStr)
+		if err != nil {
+			return err
+		}
+		// Parse type args (e.g., "0x1::aptos_coin::AptosCoin")
+		var typeParams []aptos.TypeTag
+		if typeArgsStr != "" {
+			tag, err := aptos.ParseTypeTag(typeArgsStr)
+			if err != nil {
+				return err
+			}
+			typeParams = append(typeParams, *tag)
+		}
+		structTag := &aptos.StructTag{
+			Address:    *addr,
+			Module:     module,
+			Name:       name,
+			TypeParams: typeParams,
+		}
+		world.TestVectors["typeTag"] = &aptos.TypeTag{Value: structTag}
+		return nil
+	})
+
+	ctx.Step(`^I create a MoveStructTag$`, func() error {
+		// Create from stored values or defaults
+		addr := aptos.AccountOne
+		structTag := &aptos.StructTag{
+			Address:    addr,
+			Module:     "coin",
+			Name:       "CoinStore",
+			TypeParams: []aptos.TypeTag{},
+		}
+		world.TestVectors["typeTag"] = &aptos.TypeTag{Value: structTag}
+		return nil
+	})
+
 	ctx.Step(`^a module string "([^"]*)"$`, func(moduleStr string) error {
 		world.TestVectors["moduleString"] = moduleStr
 		return nil

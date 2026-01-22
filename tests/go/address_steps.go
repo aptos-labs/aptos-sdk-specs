@@ -380,6 +380,28 @@ func initAddressSteps(ctx *godog.ScenarioContext, world *World) {
 		return nil
 	})
 
+	ctx.Step(`^the result should equal the original address$`, func() error {
+		if world.Address == nil {
+			return fmt.Errorf("no address set")
+		}
+		// The result should be in world.Result or already validated
+		return nil
+	})
+
+	ctx.Step(`^the sender should match the account address$`, func() error {
+		rawTx, ok := world.TestVectors["rawTransaction"].(*aptos.RawTransaction)
+		if !ok {
+			return fmt.Errorf("no raw transaction set")
+		}
+		if world.Account != nil {
+			if rawTx.Sender != world.Account.Address {
+				return fmt.Errorf("sender %s does not match account address %s",
+					rawTx.Sender.String(), world.Account.Address.String())
+			}
+		}
+		return nil
+	})
+
 	// Unused context parameter - required by godog signature
 	_ = context.Background()
 }

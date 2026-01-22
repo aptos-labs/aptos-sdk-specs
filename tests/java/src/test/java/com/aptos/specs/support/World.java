@@ -1,21 +1,20 @@
 package com.aptos.specs.support;
 
-import com.aptoslabs.japtos.account.Ed25519Account;
-import com.aptoslabs.japtos.crypto.Ed25519PrivateKey;
-import com.aptoslabs.japtos.crypto.Ed25519PublicKey;
-import com.aptoslabs.japtos.crypto.Ed25519Signature;
-import com.aptoslabs.japtos.types.AccountAddress;
-import com.aptoslabs.japtos.types.AuthenticationKey;
-import com.aptoslabs.japtos.types.HashValue;
-import com.aptoslabs.japtos.client.AptosClient;
-import com.aptoslabs.japtos.api.AptosConfig;
-
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import com.aptoslabs.japtos.account.Ed25519Account;
+import com.aptoslabs.japtos.api.AptosConfig;
+import com.aptoslabs.japtos.client.AptosClient;
+import com.aptoslabs.japtos.core.AccountAddress;
+import com.aptoslabs.japtos.core.AuthenticationKey;
+import com.aptoslabs.japtos.core.crypto.Ed25519PrivateKey;
+import com.aptoslabs.japtos.core.crypto.Ed25519PublicKey;
+import com.aptoslabs.japtos.core.crypto.Signature;
 
 /**
  * World class holds test context/state between Cucumber steps.
@@ -46,8 +45,8 @@ public class World {
     private Ed25519PrivateKey ed25519PrivateKey2;
     private Ed25519PublicKey ed25519PublicKey;
     private Ed25519PublicKey ed25519PublicKey2;
-    private Ed25519Signature ed25519Signature;
-    private Ed25519Signature ed25519Signature2;
+    private Signature ed25519Signature;
+    private Signature ed25519Signature2;
     
     // ==========================================================================
     // Accounts
@@ -64,7 +63,7 @@ public class World {
     // ==========================================================================
     // Hashing
     // ==========================================================================
-    private HashValue hashValue;
+    private byte[] hashValue;
     
     // ==========================================================================
     // Transactions
@@ -146,25 +145,12 @@ public class World {
         this.address = address;
     }
     
-    // Generic setter for compatibility with placeholder code
-    public void setAddress(Object address) {
-        if (address instanceof AccountAddress) {
-            this.address = (AccountAddress) address;
-        }
-    }
-    
     public AccountAddress getAddress2() {
         return address2;
     }
     
     public void setAddress2(AccountAddress address2) {
         this.address2 = address2;
-    }
-    
-    public void setAddress2(Object address2) {
-        if (address2 instanceof AccountAddress) {
-            this.address2 = (AccountAddress) address2;
-        }
     }
     
     public List<AccountAddress> getAddresses() {
@@ -191,11 +177,11 @@ public class World {
         this.ed25519PublicKey = ed25519PublicKey;
     }
     
-    public Ed25519Signature getEd25519Signature() {
+    public Signature getEd25519Signature() {
         return ed25519Signature;
     }
     
-    public void setEd25519Signature(Ed25519Signature ed25519Signature) {
+    public void setEd25519Signature(Signature ed25519Signature) {
         this.ed25519Signature = ed25519Signature;
     }
     
@@ -227,11 +213,11 @@ public class World {
         this.authenticationKey = authenticationKey;
     }
     
-    public HashValue getHashValue() {
+    public byte[] getHashValue() {
         return hashValue;
     }
     
-    public void setHashValue(HashValue hashValue) {
+    public void setHashValue(byte[] hashValue) {
         this.hashValue = hashValue;
     }
     

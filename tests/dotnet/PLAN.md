@@ -41,7 +41,17 @@ tests/dotnet/
 │   ├── FeePayerSteps.cs         # Fee payer transactions
 │   ├── SimulationSteps.cs       # Transaction simulation
 │   ├── MultiAgentSteps.cs       # Multi-agent transactions
-│   └── ViewFunctionSteps.cs     # View function calls
+│   ├── ViewFunctionSteps.cs     # View function calls
+│   ├── GasEstimationSteps.cs    # Gas price/usage estimation
+│   ├── RetrySteps.cs            # Retry with exponential backoff
+│   ├── ScriptSteps.cs           # Script transactions
+│   ├── Secp256r1Steps.cs        # P-256 (WebAuthn/Passkey)
+│   ├── TransactionSubmissionSteps.cs # Transaction submission
+│   ├── ClientSteps.cs           # Fullnode API client (mocked)
+│   ├── FaucetSteps.cs           # Faucet integration (mocked)
+│   ├── IndexerSteps.cs          # GraphQL indexer client
+│   ├── KeylessSteps.cs          # Keyless/OIDC (NOT SUPPORTED)
+│   └── BLSSteps.cs              # BLS12-381 & codegen (NOT SUPPORTED)
 ├── Support/
 │   ├── TestWorld.cs             # Scenario context/state
 │   ├── Vectors.cs               # Test vector loading utilities
@@ -98,16 +108,35 @@ tests/dotnet/
 - [x] `MultiAgentSteps.cs` - Multi-agent transactions
 - [x] `ViewFunctionSteps.cs` - View function calls
 
-**Current Status: 165 tests passing / 808 total**
+**Current Status: 385 tests passing / 808 total (48%)**
+
+### Phase 7: Gas, Retry, Scripts, and Advanced Crypto - Complete
+
+- [x] `GasEstimationSteps.cs` - Gas price and usage estimation
+- [x] `RetrySteps.cs` - Automatic retry with exponential backoff
+- [x] `ScriptSteps.cs` - Script transaction support
+- [x] `Secp256r1Steps.cs` - P-256/NIST curve (WebAuthn/Passkey)
+- [x] `TransactionSubmissionSteps.cs` - Transaction submission flows
+
+### Phase 8: API Clients - Complete (Mocked for network isolation)
+
+- [x] `ClientSteps.cs` - Fullnode API client (mocked - no network)
+- [x] `FaucetSteps.cs` - Faucet integration (mocked - no network)
+- [x] `IndexerSteps.cs` - GraphQL indexer client (mocked - no network)
+
+### Unsupported Features (Throw NotImplementedException)
+
+The following features are **not currently supported** by the Aptos .NET SDK and
+will throw `NotImplementedException`:
+
+- **Keyless Accounts (OIDC)** - `KeylessSteps.cs` - Ephemeral keys, JWT/OIDC flow, ZK proofs
+- **BLS12-381 Cryptography** - `BLSSteps.cs` - BLS key pairs, signatures, PoP
+- **Code Generation** - ABI parsing, Move struct codegen (external tooling)
 
 ### Remaining Work
 
-- [ ] `ClientSteps.cs` - Fullnode API client (requires network)
-- [ ] `FaucetSteps.cs` - Faucet integration (requires network)
-- [ ] `ScriptSteps.cs` - Script transaction support
-- [ ] `KeylessSteps.cs` - Keyless authentication (if supported)
-- [ ] Full BCS serialization with actual SDK APIs
-- [ ] Network-dependent integration tests
+- [ ] Network-dependent integration tests (requires live testnet)
+- [ ] Review API client steps for actual SDK integration when available
 
 ## Dependencies
 

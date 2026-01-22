@@ -9,6 +9,7 @@ import {
   Secp256k1Signature,
   Hex,
 } from "@aptos-labs/ts-sdk";
+import { sha256 } from "@noble/hashes/sha2.js";
 import type { AptosWorld } from "../support/world.js";
 import {
   hexToBytes,
@@ -841,13 +842,9 @@ Then("the authentication keys should match", function (this: AptosWorld) {
 
 // Secp256k1 Signing
 Given("a SHA256 hash of a message", function (this: AptosWorld) {
-  // Create a pre-hashed message (32 bytes)
+  // Create a real SHA256 hash of a message
   const message = new TextEncoder().encode("test message for hashing");
-  // Use a mock hash for testing
-  this.bytes = new Uint8Array(32);
-  for (let i = 0; i < 32; i++) {
-    this.bytes[i] = message[i % message.length] ^ 0x5a;
-  }
+  this.bytes = sha256(message);
   this.testVectors.set("preHashedMessage", this.bytes);
 });
 

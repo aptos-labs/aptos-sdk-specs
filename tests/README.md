@@ -11,10 +11,11 @@ specifications.
 | Go         | Godog             | `go/`         | ✅ Ready      |
 | **Rust**   | cucumber-rs       | `rust/`       | ✅ Ready      |
 | **Java**   | Cucumber-JVM      | `java/`       | 🚧 Phase 1    |
-| **C++**    | CWT-Cucumber      | `cpp/`        | 🚧 Scaffold   |
+| **C++**    | CWT-Cucumber      | `cpp/`        | 🚧 Integrated |
 | Python     | Behave            | `python/`     | 📋 Planned    |
-| C#         | SpecFlow          | `dotnet/`     | 📋 Planned    |
+| C#         | Reqnroll          | `dotnet/`     | 📋 Planned    |
 | Kotlin     | Cucumber-JVM      | `kotlin/`     | 📋 Planned    |
+| **Swift**  | CucumberSwift     | `swift/`      | 📋 Planned    |
 
 ## Quick Start
 
@@ -206,23 +207,28 @@ public class AddressSteps {
 ### C++ Example
 
 ```cpp
-#include <cwt/cucumber.hpp>
+#include <cucumber.hpp>
 #include "support/world.hpp"
 
 using namespace aptos::specs;
 
-GIVEN("a hex string {string}") {
-    auto& world = get_world();
-    world.hex_string = CUKE_ARG(1);
+GIVEN(given_hex_string, "a hex string {string}") {
+    auto& world = cuke::context<TestWorld>();
+    std::string value = CUKE_ARG(1);
+    world.hex_string = value;
 }
 
-WHEN("I parse it as an AccountAddress") {
-    auto& world = get_world();
-    world.address = AccountAddress::from_hex(*world.hex_string);
+WHEN(when_parse_address, "I parse it as an AccountAddress") {
+    auto& world = cuke::context<TestWorld>();
+    try {
+        world.address = AccountAddress::FromHex(*world.hex_string);
+    } catch (const std::exception& e) {
+        world.set_error(e.what());
+    }
 }
 
-THEN("the parsing should succeed") {
-    auto& world = get_world();
+THEN(then_parsing_succeeds, "the parsing should succeed") {
+    auto& world = cuke::context<TestWorld>();
     cuke::is_true(world.address.has_value());
 }
 ```

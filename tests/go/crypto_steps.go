@@ -376,7 +376,21 @@ func initCryptoSteps(ctx *godog.ScenarioContext, world *World) {
 				world.SetError(err)
 				return nil
 			}
-			world.Ed25519Signature = sig.(*crypto.Ed25519Signature)
+			// Handle different signature types
+			switch s := sig.(type) {
+			case *crypto.Ed25519Signature:
+				world.Ed25519Signature = s
+			case *crypto.AnySignature:
+				world.TestVectors["anySignature"] = s
+				// Try to extract inner signature
+				if innerSig, ok := s.Signature.(*crypto.Secp256k1Signature); ok {
+					world.Secp256k1Signature = innerSig
+				}
+			case *crypto.Secp256k1Signature:
+				world.Secp256k1Signature = s
+			default:
+				world.TestVectors["signature"] = sig
+			}
 			world.ClearError()
 			return nil
 		}
@@ -416,8 +430,18 @@ func initCryptoSteps(ctx *godog.ScenarioContext, world *World) {
 			if err != nil {
 				return err
 			}
-			world.Ed25519Signature = sig1.(*crypto.Ed25519Signature)
-			world.Ed25519Signature2 = sig2.(*crypto.Ed25519Signature)
+			// Handle different signature types
+			switch s := sig1.(type) {
+			case *crypto.Ed25519Signature:
+				world.Ed25519Signature = s
+				world.Ed25519Signature2 = sig2.(*crypto.Ed25519Signature)
+			case *crypto.AnySignature:
+				world.TestVectors["anySignature1"] = s
+				world.TestVectors["anySignature2"] = sig2.(*crypto.AnySignature)
+			case *crypto.Secp256k1Signature:
+				world.Secp256k1Signature = s
+				world.Secp256k1Signature2 = sig2.(*crypto.Secp256k1Signature)
+			}
 			return nil
 		}
 		// Try Secp256k1
@@ -854,12 +878,20 @@ func initCryptoSteps(ctx *godog.ScenarioContext, world *World) {
 		if world.Error != nil {
 			return fmt.Errorf("expected no error, got: %v", world.Error)
 		}
-		// Check Secp256k1 first
+		// Check AnySignature (from Secp256k1 accounts)
+		if _, ok := world.TestVectors["anySignature"]; ok {
+			return nil
+		}
+		// Check Secp256k1
 		if world.Secp256k1Signature != nil {
 			return nil
 		}
 		// Check Ed25519
 		if world.Ed25519Signature != nil {
+			return nil
+		}
+		// Check generic signature
+		if _, ok := world.TestVectors["signature"]; ok {
 			return nil
 		}
 		return fmt.Errorf("expected signature to be set")

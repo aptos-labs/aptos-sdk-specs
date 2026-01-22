@@ -11,9 +11,8 @@ Rust implementations.
 
 ## Context
 
-The Aptos C++ SDK (built by Var Meta) is listed as an official SDK on aptos.dev but has limited
-public documentation and no publicly accessible GitHub repository at this time. This scaffold is
-prepared to be connected once the SDK API is clarified.
+The Aptos C++ SDK (built by Var Meta) is available at https://github.com/VAR-META-Tech/Aptos-Cpp-SDK.
+The SDK has been cloned into the `sdk/` directory and integrated with conditional compilation.
 
 ## Architecture
 
@@ -24,6 +23,10 @@ tests/cpp/
 ├── Makefile                # Convenience commands (test, test-required, etc.)
 ├── README.md               # Setup and usage documentation
 ├── PLAN.md                 # This file
+├── sdk/                    # Cloned Var Meta Aptos C++ SDK
+│   ├── Src/                # SDK source code
+│   ├── ThirdParty/bip3x/   # BIP-39/32 submodule
+│   └── build/              # SDK build output
 ├── src/
 │   └── main.cpp            # Test runner entry point
 ├── steps/
@@ -34,38 +37,49 @@ tests/cpp/
 │   ├── account_steps.cpp
 │   └── transaction_steps.cpp
 └── support/
-    ├── world.hpp           # TestWorld struct (state between steps)
+    ├── world.hpp           # TestWorld struct (SDK + placeholder types)
+    ├── placeholders.cpp    # Placeholder implementations (fallback)
     ├── vectors.hpp         # Test vector type definitions
     └── vectors.cpp         # Test vector loading utilities
 ```
 
 ## Implementation Status
 
-### Completed
+### Completed - Infrastructure
 
 - [x] CMakeLists.txt - Build configuration with C++20, Conan, FetchContent fallback
 - [x] conanfile.txt - Conan package dependencies
 - [x] Makefile - Make targets for building and running tests
 - [x] src/main.cpp - CWT-Cucumber test runner
-- [x] support/world.hpp - Test world with placeholder types
+- [x] support/world.hpp - Test world with SDK and placeholder types
 - [x] support/vectors.hpp - Test vector type definitions
 - [x] support/vectors.cpp - JSON vector loading from test-vectors/
-- [x] steps/address_steps.cpp - Address parsing steps (scaffold)
-- [x] steps/cryptography_steps.cpp - Ed25519/Secp256k1/r1 steps (scaffold)
-- [x] steps/serialization_steps.cpp - BCS serialization steps (scaffold)
+- [x] README.md - Setup and usage documentation
+
+### Completed - SDK Integration
+
+- [x] Clone SDK into `sdk/` directory
+- [x] Build SDK with Conan dependencies (cryptopp, cpprestsdk, Boost, OpenSSL)
+- [x] Configure CMakeLists.txt to find and link SDK
+- [x] Update world.hpp with conditional SDK types
+- [x] Update step definitions with SDK API calls (ifdef guards)
+- [x] Successfully build and test with SDK
+
+### Completed - Step Definitions (Basic)
+
+- [x] steps/address_steps.cpp - Address parsing (SDK: FromHex, ToString)
+- [x] steps/cryptography_steps.cpp - Ed25519 (SDK: Random, FromHex, Sign, GetPublicKey)
+- [x] steps/serialization_steps.cpp - BCS serialization (scaffold)
 - [x] steps/hashing_steps.cpp - SHA3-256, SHA2-256, etc. (scaffold)
 - [x] steps/account_steps.cpp - Mnemonic derivation, auth keys (scaffold)
 - [x] steps/transaction_steps.cpp - Transaction building/signing (scaffold)
-- [x] README.md - Setup and usage documentation
 
-### Pending SDK Integration
+### Remaining Work
 
-- [ ] Obtain Aptos C++ SDK repository access
-- [ ] Add SDK dependency to CMakeLists.txt
-- [ ] Replace placeholder types in world.hpp with actual SDK types
-- [ ] Implement step definitions with real SDK API calls
-- [ ] Run and debug tests against the SDK
+- [ ] Implement additional step definitions for full feature coverage
+- [ ] Handle SDK-specific behaviors (AIP-40 short addresses)
 - [ ] Update FEATURE_COVERAGE.md with passing tests
+- [ ] Add more error handling and edge cases
 
 ## SDK Integration Notes
 
@@ -90,16 +104,15 @@ The SDK requires several third-party libraries:
 
 ### Current Integration Setup
 
-The CMakeLists.txt includes four integration options (all currently commented out):
-
-1. **Option A: Local path** - For development with a local SDK clone
-2. **Option B: FetchContent** - Once GitHub repo is public
-3. **Option C: find_package** - If SDK provides CMake config
-4. **Option D: Conan** - If SDK is published to Conan
+The SDK is cloned into `sdk/` and built with Conan. The CMakeLists.txt automatically:
+1. Detects if SDK is built (`sdk/build/build/Release/libAptos.dylib`)
+2. Sets `APTOS_SDK_AVAILABLE=1` compile definition
+3. Adds SDK include paths (`Src/`, `ThirdParty/bip3x/include`, toolbox)
+4. Links against `libAptos.dylib`
 
 The `support/world.hpp` uses conditional compilation:
-- `APTOS_SDK_AVAILABLE=1` → Uses actual SDK types
-- Not defined → Uses placeholder types (allows scaffold to compile)
+- `APTOS_SDK_AVAILABLE=1` → Uses actual SDK types (Aptos::Accounts::*, etc.)
+- Not defined → Uses placeholder types (allows scaffold to compile without SDK)
 
 ### Integration Steps
 
@@ -123,37 +136,54 @@ The `support/world.hpp` uses conditional compilation:
 
 4. Update step definitions to use actual SDK APIs
 
-### Known Issues
+### Known Issues / Behaviors
 
-- CWT-Cucumber may crash with complex feature files from this repository
-- The framework works with simple test scenarios (verified)
-- May need to investigate Gherkin syntax compatibility or add more step definitions
-- Consider using `--verbose` and `--dry-run` flags to debug step matching
+1. **AIP-40 Short Addresses**: The SDK's `ToString()` returns short format for special addresses (e.g., "0x1" instead of full 64-char). This is correct per AIP-40 but differs from some test expectations.
 
-### Expected SDK Types
+2. **Step Coverage**: Many feature file scenarios use steps that aren't yet defined. Use `--dry-run` to identify missing steps.
 
-Based on other Aptos SDKs, the C++ SDK likely provides:
+3. **SDK Build Dependency**: The SDK must be built before tests can compile. Run the SDK build commands first.
+
+4. **Conditional Compilation**: Step definitions use `#ifdef APTOS_SDK_AVAILABLE` to support both SDK and placeholder modes.
+
+### Actual SDK Types
+
+The Var Meta SDK provides these types (in `Aptos::` namespace):
 
 ```cpp
-// Account address
-class AccountAddress {
-    static AccountAddress from_hex(const std::string& hex);
-    std::string to_string_long() const;
-    std::string to_string_short() const;
-};
+// Accounts/AccountAddress.h
+namespace Aptos::Accounts {
+    class AccountAddress {
+        static AccountAddress FromHex(std::string address);  // throws on error
+        std::string ToString() const;  // AIP-40 compliant (short for special)
+        CryptoPP::SecByteBlock addressBytes() const;
+    };
+}
 
-// Ed25519 cryptography
-class Ed25519PrivateKey {
-    static Ed25519PrivateKey generate();
-    Ed25519PublicKey public_key() const;
-    Ed25519Signature sign(const std::vector<uint8_t>& message) const;
-};
+// Accounts/Ed25519/PrivateKey.h
+namespace Aptos::Accounts::Ed25519 {
+    class PrivateKey {
+        static PrivateKey Random();
+        static PrivateKey FromHex(std::string key);
+        PublicKey GetPublicKey();
+        Ed25519Signature Sign(CryptoPP::SecByteBlock message);
+    };
+}
 
-// Transactions
-class RawTransaction {
-    std::vector<uint8_t> signing_message() const;
-    SignedTransaction sign(const Ed25519PrivateKey& key) const;
-};
+// HDWallet/Wallet.h
+namespace Aptos::HDWallet {
+    class Wallet {
+        explicit Wallet(const std::string& mnemonicWords, ...);
+        Accounts::Account Account() const;
+    };
+}
+
+// BCS/Rawtransaction.h (note: in BCS namespace, not Transactions)
+namespace Aptos::BCS {
+    class RawTransaction { ... };
+    class SignedTransaction { ... };
+    class TransactionPayload { ... };
+}
 ```
 
 ## Key Design Decisions

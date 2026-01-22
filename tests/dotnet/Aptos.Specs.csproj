@@ -28,6 +28,7 @@
     
     <!-- Crypto utilities (SHA3) -->
     <PackageReference Include="BouncyCastle.Cryptography" Version="2.*" />
+    <PackageReference Include="System.Reflection" Version="4.3.0" />
   </ItemGroup>
 
   <!-- Feature files from local symlinked directory -->

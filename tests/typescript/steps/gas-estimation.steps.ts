@@ -65,19 +65,10 @@ Given("gas price estimates", async function (this: AptosWorld) {
     this.testVectors.set("aptosClient", aptosClient);
   }
 
-  try {
-    const estimate = await (
-      this.testVectors.get("aptosClient") as Aptos
-    ).getGasPriceEstimation();
-    this.testVectors.set("gasEstimate", estimate);
-  } catch (e) {
-    // Use mock values if network unavailable
-    this.testVectors.set("gasEstimate", {
-      gas_estimate: 100,
-      prioritized_gas_estimate: 150,
-      deprioritized_gas_estimate: 75,
-    });
-  }
+  const estimate = await (
+    this.testVectors.get("aptosClient") as Aptos
+  ).getGasPriceEstimation();
+  this.testVectors.set("gasEstimate", estimate);
 });
 
 When("I compare prioritized vs standard", function (this: AptosWorld) {
@@ -124,34 +115,23 @@ When("I simulate the transaction for gas", async function (this: AptosWorld) {
   const account = this.testVectors.get("signingAccount") as Account;
 
   if (!account) {
-    // Create a mock simulation result
-    this.testVectors.set("simulationResult", [
-      { gas_used: "1000", success: true },
-    ]);
-    return;
+    throw new Error("No signing account available - this test requires network access");
   }
 
-  try {
-    const txn = await client.transaction.build.simple({
-      sender: account.accountAddress,
-      data: {
-        function: "0x1::aptos_account::transfer",
-        functionArguments: [account.accountAddress, 100],
-      },
-    });
+  const txn = await client.transaction.build.simple({
+    sender: account.accountAddress,
+    data: {
+      function: "0x1::aptos_account::transfer",
+      functionArguments: [account.accountAddress, 100],
+    },
+  });
 
-    const simulation = await client.transaction.simulate.simple({
-      signerPublicKey: account.publicKey,
-      transaction: txn,
-    });
+  const simulation = await client.transaction.simulate.simple({
+    signerPublicKey: account.publicKey,
+    transaction: txn,
+  });
 
-    this.testVectors.set("simulationResult", simulation);
-  } catch (e) {
-    this.error = e as Error;
-    this.testVectors.set("simulationResult", [
-      { gas_used: "1000", success: true },
-    ]);
-  }
+  this.testVectors.set("simulationResult", simulation);
 });
 
 Then("I should receive gas_used", function (this: AptosWorld) {
@@ -173,11 +153,8 @@ Then("gas_used represents actual consumption", function (this: AptosWorld) {
   }
 });
 
-Given("a transaction simulation result", function (this: AptosWorld) {
-  this.testVectors.set("simulationResult", [
-    { gas_used: "5000", success: true },
-  ]);
-});
+// NOTE: "a transaction simulation result" requires actual network simulation.
+// This test needs testnet/devnet access to get real simulation results.
 
 When("I extract gas_used", function (this: AptosWorld) {
   const result = this.testVectors.get("simulationResult") as any;

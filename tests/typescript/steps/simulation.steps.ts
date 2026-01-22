@@ -508,18 +508,9 @@ Given("sender public key", function (this: AptosWorld) {
   }
 });
 
-When("I submit for simulation", async function (this: AptosWorld) {
-  // Mock simulation result
-  this.testVectors.set("simulationResponse", [
-    {
-      success: true,
-      gas_used: "500",
-      vm_status: "Executed successfully",
-      changes: [],
-      events: [],
-    },
-  ]);
-});
+// NOTE: "I submit for simulation" requires network access to call the simulation API.
+// This is an integration test that needs testnet/devnet access.
+// See features/06-advanced/simulation.feature
 
 Then(
   "I should receive simulation results without broadcasting",

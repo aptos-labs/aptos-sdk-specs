@@ -1,84 +1,75 @@
-# Java SDK Test Status
+# Java SDK (japtos) Test Status
 
-> **Last Updated:** 2026-01-22
+## Current Status: PARTIALLY WORKING
 
-## SDK Information
-
-| Property | Value |
-|----------|-------|
-| **Package** | `io.github.aptos-labs:japtos` |
-| **Version Tested** | 1.1.8 |
-| **Publisher** | aptos-labs |
-| **Repository** | https://github.com/aptos-labs/aptos-java-sdk |
-| **Package Registry** | Maven Central |
+The Java SDK tests are now compiling and running. Initial step definitions have been implemented
+for core address parsing, formatting, and basic Ed25519 cryptography.
 
 ## Coverage Summary
 
-| Priority | Passing | Total | Percentage |
-|----------|---------|-------|------------|
-| Required (P0) | 306 | 306 | 100% |
-| Preferred (P1) | 0 | 183 | 0% |
-| Optional (P2) | 0 | 250 | 0% |
-| **Total** | 306 | 739 | 41% |
+| Category | Status |
+|----------|--------|
+| Required (P0) | 11/306 (4%) |
+| Preferred (P1) | 0/183 (0%) |
+| Optional (P2) | 0/250 (0%) |
+| **Total** | **11/739** |
 
-## Feature Availability
+## Passing Tests
 
-Features that are **not available** in this SDK (marked `[-]` in coverage matrix):
+### Core Types (Address)
+- Parse hex address without 0x prefix
+- Parse full 64-character hex address
+- Parse various valid address formats (6 scenarios)
+- Parse uppercase hex address
+- Parse mixed case hex address
 
-| Feature | Reason | Tracking Issue |
-|---------|--------|----------------|
-| secp256k1 | Not implemented in SDK | - |
-| secp256r1 | Not implemented in SDK | - |
-| bls12381 | Not implemented in SDK | - |
-| mnemonic-derivation | Not implemented in SDK | - |
+### Cryptography (Ed25519)
+- Generate random Ed25519 key pair
 
-## Known Issues
+## SDK Details
 
-No partial implementations currently tracked.
+- **Package**: `io.github.aptos-labs:japtos`
+- **Version**: 1.1.8
+- **Repository**: [aptos-labs/japtos](https://github.com/aptos-labs/japtos)
 
-## Missing Test Implementations
+## API Notes
 
-### Required (P0) - Priority
+The japtos SDK has some differences from the TypeScript SDK:
 
-**All required tests are passing!** This is the only SDK with 100% required coverage.
+1. **Address Parsing**: `AccountAddress.fromHex()` requires full 64-character hex strings.
+   Short addresses like "0x1" need to be padded before parsing.
 
-### Preferred (P1)
+2. **Hex Output**: `toHexString()` returns hex without the "0x" prefix.
 
-- `mnemonic-derivation.feature` - All 29 scenarios (feature not in SDK)
-- `secp256k1.feature` - All 19 scenarios (feature not in SDK)
-- `faucet.feature` - All 23 scenarios (tests not implemented)
-- `gas-estimation.feature` - All 26 scenarios (tests not implemented)
-- `view-functions.feature` - All 28 scenarios (tests not implemented)
-- `retry.feature` - All 32 scenarios (tests not implemented)
-- `simulation.feature` - All 26 scenarios (tests not implemented)
+3. **Package Structure**:
+   - `com.aptoslabs.japtos.core.AccountAddress` - Account addresses
+   - `com.aptoslabs.japtos.core.AuthenticationKey` - Auth key derivation
+   - `com.aptoslabs.japtos.core.crypto.*` - Ed25519 keys and signatures
+   - `com.aptoslabs.japtos.account.Ed25519Account` - Account abstraction
+   - `com.aptoslabs.japtos.bcs.*` - BCS serialization
+   - `com.aptoslabs.japtos.utils.*` - Hex utilities
 
-### Optional (P2)
+## Next Steps
 
-- All optional features (tests not implemented)
+1. Implement step definitions for more address scenarios (invalid inputs, BCS)
+2. Add TypeTag parsing step definitions
+3. Add BCS serialization step definitions
+4. Implement account management steps
+5. Add Ed25519 signing/verification steps
 
-## SDK-Specific Notes
-
-- 100% required feature coverage - most complete for P0
-- Uses Java idioms (exceptions, Builder pattern)
-- JDK 17+ required
-- Uses Cucumber-JVM for BDD testing
-- Strong focus on core functionality
-
-## How to Run Tests
+## Running Tests
 
 ```bash
 cd tests/java
-mvn dependency:resolve      # Install dependencies
-make test                   # Run all tests
-make test-required          # Run only @required tests
-make test-core-types        # Run @core-types tests
+mvn test
+
+# Run only core-types
+mvn test -Dcucumber.filter.tags="@core-types"
+
+# Run only required tests
+mvn test -Dcucumber.filter.tags="@required"
 ```
 
-## Contributing
+## Last Updated
 
-To add tests for this SDK:
-
-1. Add step definitions in `src/test/java/com/aptos/specs/steps/`
-2. Update `FEATURE_COVERAGE.md` with test status
-3. Update this file's coverage summary
-4. Run `mvn test` to verify
+2026-01-22

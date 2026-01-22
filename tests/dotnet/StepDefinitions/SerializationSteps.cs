@@ -1,3 +1,4 @@
+using System.Numerics;
 using Aptos;
 using Aptos.Specs.Support;
 using FluentAssertions;
@@ -7,7 +8,7 @@ namespace Aptos.Specs.StepDefinitions;
 
 /// <summary>
 /// Step definitions for BCS serialization and deserialization.
-/// Note: Many serialization steps are placeholders pending SDK API investigation.
+/// Uses the actual Aptos SDK Serializer class.
 /// </summary>
 [Binding]
 public class SerializationSteps
@@ -75,19 +76,25 @@ public class SerializationSteps
     [Given(@"a u128 value (\w+)")]
     public void GivenAU128Value(string value)
     {
-        _world.TestVectors["u128Value"] = value;
+        var numValue = value.StartsWith("0x")
+            ? BigInteger.Parse(value[2..], System.Globalization.NumberStyles.HexNumber)
+            : BigInteger.Parse(value);
+        _world.TestVectors["u128Value"] = numValue;
     }
 
     [Given(@"a u256 value (\w+)")]
     public void GivenAU256Value(string value)
     {
-        _world.TestVectors["u256Value"] = value;
+        var numValue = value.StartsWith("0x")
+            ? BigInteger.Parse(value[2..], System.Globalization.NumberStyles.HexNumber)
+            : BigInteger.Parse(value);
+        _world.TestVectors["u256Value"] = numValue;
     }
 
     [Given(@"a length value (\d+)")]
     public void GivenALengthValue(int value)
     {
-        _world.TestVectors["lengthValue"] = value;
+        _world.TestVectors["lengthValue"] = (uint)value;
     }
 
     // =========================================================================
@@ -123,12 +130,14 @@ public class SerializationSteps
     public void GivenAnOptionWithNoValue()
     {
         _world.TestVectors["optionValue"] = null!;
+        _world.TestVectors["optionHasValue"] = false;
     }
 
     [Given(@"an Option containing u64 value (\d+)")]
     public void GivenAnOptionContainingU64Value(ulong value)
     {
         _world.TestVectors["optionValue"] = value;
+        _world.TestVectors["optionHasValue"] = true;
     }
 
     // =========================================================================
@@ -153,6 +162,16 @@ public class SerializationSteps
         _world.TestVectors["vectorU64"] = new[] { a, b };
     }
 
+    [Given(@"a vector \[\[(\d+), (\d+)\], \[(\d+), (\d+)\]\] of vectors of u8")]
+    public void GivenNestedVectorOfU8(int a1, int a2, int b1, int b2)
+    {
+        _world.TestVectors["nestedVector"] = new[]
+        {
+            new byte[] { (byte)a1, (byte)a2 },
+            new byte[] { (byte)b1, (byte)b2 }
+        };
+    }
+
     // =========================================================================
     // Given Steps - AccountAddress
     // =========================================================================
@@ -160,7 +179,7 @@ public class SerializationSteps
     [Given(@"an AccountAddress ""(.*)""")]
     public void GivenAnAccountAddress(string addressStr)
     {
-        _world.Address = AccountAddress.FromString(addressStr);
+        _world.Address = AccountAddress.FromString(addressStr, maxMissingChars: 62);
     }
 
     [Given(@"(\d+) bytes with byte (\d+) = (0x[0-9a-fA-F]+)")]
@@ -172,8 +191,33 @@ public class SerializationSteps
     }
 
     // =========================================================================
-    // When Steps - BCS Serialization
-    // Note: These are simplified placeholders - SDK API may differ
+    // Given Steps - Complex Structs
+    // =========================================================================
+
+    [Given(@"a struct with fields:")]
+    public void GivenAStructWithFields(Table dataTable)
+    {
+        var fields = dataTable.Rows.Select(r => new {
+            field = r["field"],
+            type = r["type"],
+            value = r["value"]
+        }).ToList();
+        _world.TestVectors["structFields"] = fields;
+    }
+
+    // =========================================================================
+    // Given Steps - Error Cases
+    // =========================================================================
+
+    [Given(@"bytes \[(0x[0-9a-fA-F]+), (0x[0-9a-fA-F]+)\] intended for u64")]
+    public void GivenBytesIntendedForU64(string b1, string b2)
+    {
+        _world.Bytes = new[] { Convert.ToByte(b1, 16), Convert.ToByte(b2, 16) };
+        _world.TestVectors["intendedType"] = "u64";
+    }
+
+    // =========================================================================
+    // When Steps - BCS Serialization using actual SDK Serializer
     // =========================================================================
 
     [When(@"I BCS serialize it")]
@@ -181,54 +225,111 @@ public class SerializationSteps
     {
         try
         {
-            // Simplified serialization - just handle basic types
+            var serializer = new Serializer();
+
             if (_world.TestVectors.TryGetValue("boolValue", out var boolVal))
             {
-                _world.Bytes = new byte[] { (bool)boolVal ? (byte)0x01 : (byte)0x00 };
+                serializer.Bool((bool)boolVal);
             }
             else if (_world.TestVectors.TryGetValue("u8Value", out var u8Val))
             {
-                _world.Bytes = new byte[] { (byte)u8Val };
+                serializer.U8((byte)u8Val);
             }
             else if (_world.TestVectors.TryGetValue("u16Value", out var u16Val))
             {
-                _world.Bytes = BitConverter.GetBytes((ushort)u16Val);
+                serializer.U16((ushort)u16Val);
             }
             else if (_world.TestVectors.TryGetValue("u32Value", out var u32Val))
             {
-                _world.Bytes = BitConverter.GetBytes((uint)u32Val);
+                serializer.U32((uint)u32Val);
             }
             else if (_world.TestVectors.TryGetValue("u64Value", out var u64Val))
             {
-                _world.Bytes = BitConverter.GetBytes((ulong)u64Val);
+                serializer.U64((ulong)u64Val);
+            }
+            else if (_world.TestVectors.TryGetValue("u128Value", out var u128Val))
+            {
+                serializer.U128((BigInteger)u128Val);
+            }
+            else if (_world.TestVectors.TryGetValue("u256Value", out var u256Val))
+            {
+                serializer.U256((BigInteger)u256Val);
             }
             else if (_world.TestVectors.TryGetValue("stringValue", out var strVal))
             {
-                var strBytes = System.Text.Encoding.UTF8.GetBytes((string)strVal);
-                // BCS string is length-prefixed
-                var result = new byte[strBytes.Length + 1];
-                result[0] = (byte)strBytes.Length;
-                Array.Copy(strBytes, 0, result, 1, strBytes.Length);
-                _world.Bytes = result;
+                serializer.String((string)strVal);
+            }
+            else if (_world.TestVectors.TryGetValue("optionHasValue", out var hasOpt))
+            {
+                if ((bool)hasOpt)
+                {
+                    serializer.Bool(true);
+                    serializer.U64((ulong)_world.TestVectors["optionValue"]);
+                }
+                else
+                {
+                    serializer.Bool(false);
+                }
             }
             else if (_world.TestVectors.TryGetValue("vectorU8", out var vecU8))
             {
-                var bytes = (byte[])vecU8;
-                // BCS vector is length-prefixed
-                var result = new byte[bytes.Length + 1];
-                result[0] = (byte)bytes.Length;
-                Array.Copy(bytes, 0, result, 1, bytes.Length);
-                _world.Bytes = result;
+                serializer.Bytes((byte[])vecU8);
+            }
+            else if (_world.TestVectors.TryGetValue("vectorU64", out var vecU64))
+            {
+                var vec = (ulong[])vecU64;
+                serializer.U32AsUleb128((uint)vec.Length);
+                foreach (var v in vec)
+                {
+                    serializer.U64(v);
+                }
+            }
+            else if (_world.TestVectors.TryGetValue("nestedVector", out var nestedVec))
+            {
+                var vec = (byte[][])nestedVec;
+                serializer.U32AsUleb128((uint)vec.Length);
+                foreach (var inner in vec)
+                {
+                    serializer.Bytes(inner);
+                }
+            }
+            else if (_world.TestVectors.TryGetValue("structFields", out var structFields))
+            {
+                // Serialize struct fields in order
+                var fields = (IEnumerable<dynamic>)structFields;
+                foreach (var f in fields)
+                {
+                    string fieldType = f.type;
+                    string fieldValue = f.value;
+                    if (fieldType == "address")
+                    {
+                        var addr = AccountAddress.FromString(fieldValue, maxMissingChars: 62);
+                        serializer.Serialize(addr);
+                    }
+                    else if (fieldType == "u64")
+                    {
+                        serializer.U64(ulong.Parse(fieldValue));
+                    }
+                    else if (fieldType == "u8")
+                    {
+                        serializer.U8(byte.Parse(fieldValue));
+                    }
+                }
             }
             else if (_world.Bytes != null)
             {
-                // Already have bytes, just use them
+                serializer.Bytes(_world.Bytes);
             }
             else if (_world.Address != null)
             {
-                _world.Bytes = _world.Address.ToByteArray();
+                serializer.Serialize(_world.Address);
             }
-            
+            else
+            {
+                throw new NotImplementedException("BCS serialization not implemented for this type");
+            }
+
+            _world.Bytes = serializer.ToBytes();
             _world.ClearError();
         }
         catch (Exception ex)
@@ -242,23 +343,10 @@ public class SerializationSteps
     {
         try
         {
-            var value = (int)_world.TestVectors["lengthValue"];
-            // Simple ULEB128 encoding for small values
-            if (value < 128)
-            {
-                _world.Bytes = new byte[] { (byte)value };
-            }
-            else
-            {
-                var bytes = new List<byte>();
-                while (value >= 0x80)
-                {
-                    bytes.Add((byte)((value & 0x7F) | 0x80));
-                    value >>= 7;
-                }
-                bytes.Add((byte)value);
-                _world.Bytes = bytes.ToArray();
-            }
+            var value = (uint)_world.TestVectors["lengthValue"];
+            var serializer = new Serializer();
+            serializer.U32AsUleb128(value);
+            _world.Bytes = serializer.ToBytes();
             _world.ClearError();
         }
         catch (Exception ex)
@@ -272,11 +360,14 @@ public class SerializationSteps
     {
         try
         {
-            var originalValue = (int)_world.TestVectors["lengthValue"];
-            WhenIULEB128EncodeIt();
+            var originalValue = (uint)_world.TestVectors["lengthValue"];
             
-            // Decode
-            var bytes = _world.Bytes!;
+            // Encode using SDK
+            var serializer = new Serializer();
+            serializer.U32AsUleb128(originalValue);
+            var bytes = serializer.ToBytes();
+            
+            // Decode manually (SDK may not have Deserializer exposed)
             uint result = 0;
             int shift = 0;
             foreach (var b in bytes)
@@ -285,6 +376,7 @@ public class SerializationSteps
                 if ((b & 0x80) == 0) break;
                 shift += 7;
             }
+            
             _world.Result = result;
             _world.TestVectors["originalValue"] = originalValue;
             _world.ClearError();
@@ -297,6 +389,7 @@ public class SerializationSteps
 
     // =========================================================================
     // When Steps - BCS Deserialization
+    // Note: Deserializer may not be publicly exposed in SDK
     // =========================================================================
 
     [When(@"I BCS deserialize as boolean")]
@@ -304,7 +397,17 @@ public class SerializationSteps
     {
         try
         {
-            _world.Result = _world.Bytes![0] != 0;
+            if (_world.Bytes == null || _world.Bytes.Length == 0)
+                throw new InvalidOperationException("No bytes to deserialize");
+            
+            // BCS boolean: 0x00 = false, 0x01 = true
+            if (_world.Bytes[0] == 0x00)
+                _world.Result = false;
+            else if (_world.Bytes[0] == 0x01)
+                _world.Result = true;
+            else
+                throw new InvalidOperationException($"Invalid boolean byte: {_world.Bytes[0]}");
+            
             _world.ClearError();
         }
         catch (Exception ex)
@@ -318,7 +421,10 @@ public class SerializationSteps
     {
         try
         {
-            _world.Result = BitConverter.ToUInt64(_world.Bytes!, 0);
+            if (_world.Bytes == null || _world.Bytes.Length < 8)
+                throw new InvalidOperationException("Not enough bytes for u64 deserialization");
+            
+            _world.Result = BitConverter.ToUInt64(_world.Bytes, 0);
             _world.ClearError();
         }
         catch (Exception ex)
@@ -332,8 +438,11 @@ public class SerializationSteps
     {
         try
         {
-            // Assume first byte is length
-            var length = _world.Bytes![0];
+            if (_world.Bytes == null || _world.Bytes.Length == 0)
+                throw new InvalidOperationException("No bytes to deserialize");
+            
+            // First byte(s) is ULEB128 length
+            var length = _world.Bytes[0]; // Simplified: assuming length < 128
             _world.Result = _world.Bytes.Skip(1).Take(length).ToArray();
             _world.ClearError();
         }
@@ -364,7 +473,7 @@ public class SerializationSteps
         _world.Bytes!.Length.Should().Be(expected.Length);
         for (int i = 0; i < expected.Length; i++)
         {
-            _world.Bytes[i].Should().Be(expected[i]);
+            _world.Bytes[i].Should().Be(expected[i], $"byte {i} mismatch");
         }
     }
 
@@ -417,8 +526,25 @@ public class SerializationSteps
         _world.Bytes[1].Should().Be(Convert.ToByte(b2, 16));
     }
 
+    [Then(@"the result should be \[(0x[0-9a-fA-F]+), (0x[0-9a-fA-F]+), (0x[0-9a-fA-F]+)\]")]
+    public void ThenTheResultShouldBeThreeBytes(string b1, string b2, string b3)
+    {
+        _world.Bytes.Should().NotBeNull();
+        _world.Bytes!.Length.Should().Be(3);
+        _world.Bytes[0].Should().Be(Convert.ToByte(b1, 16));
+        _world.Bytes[1].Should().Be(Convert.ToByte(b2, 16));
+        _world.Bytes[2].Should().Be(Convert.ToByte(b3, 16));
+    }
+
     [Then(@"the first byte should be (0x[0-9a-fA-F]+) \(length\)")]
     public void ThenTheFirstByteShouldBeLength(string expected)
+    {
+        _world.Bytes.Should().NotBeNull();
+        _world.Bytes![0].Should().Be(Convert.ToByte(expected, 16));
+    }
+
+    [Then(@"the first byte should be (0x[0-9a-fA-F]+) \(UTF-8 byte length\)")]
+    public void ThenTheFirstByteShouldBeUtf8Length(string expected)
     {
         _world.Bytes.Should().NotBeNull();
         _world.Bytes![0].Should().Be(Convert.ToByte(expected, 16));
@@ -433,6 +559,15 @@ public class SerializationSteps
         {
             _world.Bytes![i + 1].Should().Be(encoded[i]);
         }
+    }
+
+    [Then(@"the remaining bytes should be \[(0x[0-9a-fA-F]+), (0x[0-9a-fA-F]+), (0x[0-9a-fA-F]+)\]")]
+    public void ThenTheRemainingBytesShouldBe(string b1, string b2, string b3)
+    {
+        _world.Bytes.Should().NotBeNull();
+        _world.Bytes![1].Should().Be(Convert.ToByte(b1, 16));
+        _world.Bytes[2].Should().Be(Convert.ToByte(b2, 16));
+        _world.Bytes[3].Should().Be(Convert.ToByte(b3, 16));
     }
 
     [Then(@"the result should be exactly (\d+) bytes")]
@@ -465,5 +600,40 @@ public class SerializationSteps
     public void ThenTheDeserializationShouldFailWithAnError()
     {
         _world.Error.Should().NotBeNull();
+    }
+
+    [Then(@"the fields should be serialized in order")]
+    public void ThenTheFieldsShouldBeSerializedInOrder()
+    {
+        _world.Bytes.Should().NotBeNull();
+        _world.Bytes!.Length.Should().BeGreaterThan(0);
+    }
+
+    [Then(@"each inner vector should be length-prefixed")]
+    public void ThenEachInnerVectorShouldBeLengthPrefixed()
+    {
+        _world.Bytes.Should().NotBeNull();
+        _world.Bytes!.Length.Should().BeGreaterThan(2);
+    }
+
+    [Then(@"the remaining (\d+) bytes should be the u64 value")]
+    public void ThenTheRemainingBytesShouldBeTheU64Value(int count)
+    {
+        _world.Bytes.Should().NotBeNull();
+        _world.Bytes!.Length.Should().Be(count + 1); // 1 for the option flag
+    }
+
+    [Then(@"the remaining bytes should be two u64 values in little-endian")]
+    public void ThenTheRemainingBytesShouldBeTwoU64Values()
+    {
+        _world.Bytes.Should().NotBeNull();
+        _world.Bytes!.Length.Should().Be(17); // 1 for length + 2*8 for u64s
+    }
+
+    [Then(@"the total length should be (\d+) bytes \((\d+) \+ (\d+)\)")]
+    public void ThenTheTotalLengthShouldBeBytes(int total, int a, int b)
+    {
+        _world.Bytes.Should().NotBeNull();
+        _world.Bytes!.Length.Should().Be(total);
     }
 }

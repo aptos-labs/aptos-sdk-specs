@@ -1,6 +1,7 @@
 # .NET SDK Test Status
 
 > **Last Updated:** 2026-01-22
+> **Last Verified:** 2026-01-22 (via `dotnet test`)
 
 ## SDK Information
 
@@ -16,10 +17,12 @@
 
 | Priority | Passing | Total | Percentage |
 |----------|---------|-------|------------|
-| Required (P0) | 95 | 306 | 31% |
-| Preferred (P1) | 26 | 183 | 14% |
-| Optional (P2) | 10 | 250 | 4% |
-| **Total** | 131 | 739 | 18% |
+| Required (P0) | 170 | 370 | 46% |
+| Preferred (P1) | ~10 | 183 | ~5% |
+| Optional (P2) | ~5 | 250 | ~2% |
+| **Total** | ~185 | 803 | ~23% |
+
+> **Note:** 200 required tests failed (most due to missing step definitions).
 
 ## Feature Availability
 

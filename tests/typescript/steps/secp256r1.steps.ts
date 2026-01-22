@@ -210,6 +210,10 @@ Given("a Secp256r1 key pair", function (this: AptosWorld) {
   );
 });
 
+Given("a message", function (this: AptosWorld) {
+  this.message = new TextEncoder().encode("test message for signing");
+});
+
 When("I get the compressed public key", function (this: AptosWorld) {
   const keyPair = this.testVectors.get("secp256r1KeyPair") as Secp256r1KeyPair;
   this.result = keyPair.publicKeyCompressed;
@@ -578,6 +582,16 @@ When("I parse it as Secp256r1 public key", function (this: AptosWorld) {
   this.testVectors.set("parseSucceeded", true);
 });
 
+Then("I should get a valid public key", function (this: AptosWorld) {
+  const parsed = this.testVectors.get("parsedPublicKey") as Uint8Array;
+  expect(parsed).to.not.be.undefined;
+  expect(parsed.length).to.equal(65);
+  expect(parsed[0]).to.equal(0x04);
+  // Verify it's a valid point on the curve
+  const point = p256.ProjectivePoint.fromHex(parsed);
+  expect(point).to.not.be.undefined;
+});
+
 Given("a WebAuthn assertion signature", function (this: AptosWorld) {
   const keyPair = Secp256r1KeyPair.generate();
   this.testVectors.set("secp256r1KeyPair", keyPair);
@@ -813,3 +827,6 @@ Then(
     expect(address.toUint8Array().length).to.equal(32);
   },
 );
+
+// Note: Pre-hash signing steps are defined earlier in this file (around line 345)
+// Note: COSE/WebAuthn steps are defined earlier in this file (around line 553)

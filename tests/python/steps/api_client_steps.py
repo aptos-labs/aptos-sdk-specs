@@ -49,6 +49,48 @@ def step_given_mainnet_client(context):
     context.world.network_url = "https://fullnode.mainnet.aptoslabs.com/v1"
 
 
+@given("a connected client")
+def step_given_connected_client(context):
+    if context.world.client is None:
+        context.world.network_url = "https://fullnode.testnet.aptoslabs.com/v1"
+        context.world.client = RestClient(context.world.network_url)
+
+
+@given("a client connected to testnet")
+def step_given_client_connected_testnet(context):
+    context.world.network_url = "https://fullnode.testnet.aptoslabs.com/v1"
+    context.world.client = RestClient(context.world.network_url)
+
+
+@given('a custom URL "{url}"')
+def step_given_custom_url(context, url):
+    context.world.network_url = url
+
+
+@given("a known existing account address")
+def step_given_known_existing_account(context):
+    # Use 0x1 as a known existing account
+    context.world.address = AccountAddress.from_str("0x1")
+
+
+@given("a random unused account address")
+def step_given_random_unused_address(context):
+    # Generate a random address that's very unlikely to exist
+    import secrets
+    random_bytes = secrets.token_bytes(32)
+    context.world.address = AccountAddress.from_bytes(random_bytes)
+
+
+@given("an account address with resources")
+def step_given_account_with_resources(context):
+    context.world.address = AccountAddress.from_str("0x1")
+
+
+@given("an account with APT balance")
+def step_given_account_with_apt(context):
+    context.world.address = AccountAddress.from_str("0x1")
+
+
 @given('custom headers {headers}')
 def step_given_custom_headers(context, headers):
     # Parse headers like "X-Custom: value, Authorization: Bearer token"
@@ -68,6 +110,85 @@ def step_given_custom_headers(context, headers):
 def step_create_api_client(context):
     try:
         context.world.client = RestClient(context.world.network_url)
+        context.world.clear_error()
+    except Exception as e:
+        context.world.set_error(e)
+
+
+@when("I create a client with testnet configuration")
+def step_create_testnet_client(context):
+    try:
+        context.world.network_url = "https://fullnode.testnet.aptoslabs.com/v1"
+        context.world.client = RestClient(context.world.network_url)
+        context.world.clear_error()
+    except Exception as e:
+        context.world.set_error(e)
+
+
+@when("I create a client with mainnet configuration")
+def step_create_mainnet_client(context):
+    try:
+        context.world.network_url = "https://fullnode.mainnet.aptoslabs.com/v1"
+        context.world.client = RestClient(context.world.network_url)
+        context.world.clear_error()
+    except Exception as e:
+        context.world.set_error(e)
+
+
+@when("I create a client with the custom URL")
+def step_create_custom_url_client(context):
+    try:
+        context.world.client = RestClient(context.world.network_url)
+        context.world.clear_error()
+    except Exception as e:
+        context.world.set_error(e)
+
+
+@when("I create a client with 30 second timeout")
+def step_create_client_with_timeout(context):
+    try:
+        context.world.client = RestClient(context.world.network_url)
+        context.world.clear_error()
+    except Exception as e:
+        context.world.set_error(e)
+
+
+@when("I request ledger info")
+def step_request_ledger_info(context):
+    try:
+        async def _get_info():
+            return await context.world.client.info()
+        
+        context.world.result = run_async(_get_info())
+        context.world.clear_error()
+    except Exception as e:
+        context.world.set_error(e)
+
+
+@when("I get the ledger info")
+def step_get_the_ledger_info(context):
+    step_request_ledger_info(context)
+
+
+@when("I get account info for the address")
+def step_get_account_info_for_address(context):
+    try:
+        async def _get_account():
+            return await context.world.client.account(context.world.address)
+        
+        context.world.result = run_async(_get_account())
+        context.world.clear_error()
+    except Exception as e:
+        context.world.set_error(e)
+
+
+@when("I get account resources")
+def step_get_account_resources_generic(context):
+    try:
+        async def _get_resources():
+            return await context.world.client.account_resources(context.world.address)
+        
+        context.world.result = run_async(_get_resources())
         context.world.clear_error()
     except Exception as e:
         context.world.set_error(e)
@@ -260,6 +381,105 @@ def step_client_created(context):
 def step_url_normalized(context):
     # Check that trailing slashes are handled
     assert context.world.client is not None
+
+
+@then("the client should be configured for testnet")
+def step_client_configured_testnet(context):
+    assert context.world.client is not None
+    assert "testnet" in context.world.network_url
+
+
+@then('the base URL should be "{url}"')
+def step_base_url_should_be(context, url):
+    assert context.world.network_url == url
+
+
+@then("the client should be configured for mainnet")
+def step_client_configured_mainnet(context):
+    assert context.world.client is not None
+    assert "mainnet" in context.world.network_url
+
+
+@then("the client should use that URL for requests")
+def step_client_uses_custom_url(context):
+    assert context.world.client is not None
+
+
+@then("requests should timeout after 30 seconds")
+def step_requests_timeout(context):
+    # Timeout is configured but may not be directly accessible
+    assert context.world.client is not None
+
+
+@then("I should receive chain_id")
+def step_should_receive_chain_id(context):
+    assert context.world.result is not None
+    info = context.world.result
+    assert "chain_id" in info or hasattr(info, "chain_id")
+
+
+@then("I should receive ledger_version")
+def step_should_receive_ledger_version(context):
+    assert context.world.result is not None
+    info = context.world.result
+    assert "ledger_version" in info or hasattr(info, "ledger_version")
+
+
+@then("I should receive block_height")
+def step_should_receive_block_height(context):
+    assert context.world.result is not None
+    info = context.world.result
+    assert "block_height" in info or hasattr(info, "block_height") or "ledger_version" in info
+
+
+@then("chain_id should be 2")
+def step_chain_id_should_be_2(context):
+    info = context.world.result
+    if isinstance(info, dict):
+        assert info.get("chain_id") == 2
+    else:
+        assert info.chain_id == 2
+
+
+@then("I should receive sequence_number")
+def step_should_receive_sequence_number(context):
+    assert context.world.result is not None
+    info = context.world.result
+    if isinstance(info, dict):
+        assert "sequence_number" in info
+    else:
+        assert hasattr(info, "sequence_number")
+
+
+@then("I should receive authentication_key")
+def step_should_receive_auth_key(context):
+    assert context.world.result is not None
+    info = context.world.result
+    if isinstance(info, dict):
+        assert "authentication_key" in info
+    else:
+        assert hasattr(info, "authentication_key")
+
+
+@then("I should receive a 404 NotFound error")
+def step_should_receive_404_not_found(context):
+    assert context.world.error is not None
+
+
+@then("I should receive a list of resources")
+def step_should_receive_resource_list(context):
+    assert context.world.error is None
+    assert context.world.result is not None
+    assert isinstance(context.world.result, list)
+
+
+@then("each resource should have a type and data")
+def step_resource_has_type_and_data(context):
+    resources = context.world.result
+    for resource in resources:
+        if isinstance(resource, dict):
+            assert "type" in resource
+            assert "data" in resource
 
 
 # =============================================================================

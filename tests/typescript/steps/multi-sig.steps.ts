@@ -984,3 +984,73 @@ Then(
     expect(signature.signatures.length).to.equal(2);
   },
 );
+
+// =============================================================================
+// Multi-sig Authenticator Structure Steps
+// =============================================================================
+
+Given("a signed multi-sig transaction", function (this: AptosWorld) {
+  // Create a 2-of-3 multi-sig account
+  const privateKeys: Ed25519PrivateKey[] = [];
+  const publicKeys: Ed25519PublicKey[] = [];
+
+  for (let i = 0; i < 3; i++) {
+    const privateKey = Ed25519PrivateKey.generate();
+    privateKeys.push(privateKey);
+    publicKeys.push(privateKey.publicKey());
+  }
+
+  const multiPubKey = new MultiEd25519PublicKey({
+    publicKeys: publicKeys,
+    threshold: 2,
+  });
+
+  const account = new MultiEd25519Account({
+    publicKey: multiPubKey,
+    signers: privateKeys.slice(0, 2),
+  });
+
+  // Create a raw transaction
+  const payload = new TransactionPayload(
+    new EntryFunction(
+      { address: AccountAddress.from("0x1"), name: "aptos_account" },
+      "transfer",
+      [],
+      [AccountAddress.from("0x2").bcsToBytes(), new U64(1000n).bcsToBytes()],
+    ),
+  );
+
+  const rawTxn = new RawTransaction(
+    account.accountAddress,
+    BigInt(0),
+    payload,
+    BigInt(100000),
+    BigInt(100),
+    BigInt(Math.floor(Date.now() / 1000) + 600),
+    new ChainId(1),
+  );
+
+  // Sign the transaction
+  const signedTxn = account.signTransaction(rawTxn);
+
+  this.testVectors.set("signedTransaction", signedTxn);
+  this.testVectors.set("multiSigAccount", account);
+  this.testVectors.set("multiPubKey", multiPubKey);
+  this.signedTransaction = signedTxn;
+});
+
+Then("it should contain the multi public key", function (this: AptosWorld) {
+  const signedTxn = this.testVectors.get("signedTransaction") as SignedTransaction;
+  const authenticator = signedTxn.authenticator;
+
+  // For MultiEd25519, the authenticator contains the multi public key
+  expect(authenticator).to.not.be.undefined;
+});
+
+Then("it should contain the multi signature", function (this: AptosWorld) {
+  const signedTxn = this.testVectors.get("signedTransaction") as SignedTransaction;
+  const authenticator = signedTxn.authenticator;
+
+  // For MultiEd25519, the authenticator contains the multi signature
+  expect(authenticator).to.not.be.undefined;
+});

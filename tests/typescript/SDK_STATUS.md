@@ -1,6 +1,7 @@
 # TypeScript SDK Test Status
 
 > **Last Updated:** 2026-01-22
+> **Last Verified:** 2026-01-22 (via `bun run cucumber-js`)
 
 ## SDK Information
 
@@ -16,14 +17,25 @@
 
 | Priority | Passing | Total | Percentage |
 |----------|---------|-------|------------|
-| Required (P0) | 280 | 306 | 92% |
-| Preferred (P1) | 150 | 183 | 82% |
-| Optional (P2) | 80 | 250 | 32% |
-| **Total** | 510 | 739 | 69% |
+| Required (P0) | 320 | 370 | 86% |
+| Preferred (P1) | ~100 | 183 | ~55% |
+| Optional (P2) | 131 | 252 | 52% |
+| **Total** | ~551 | 805 | ~68% |
+
+> **Note:** 46 required scenarios require network access (@network tag). 
+> Some keyless and script tests use mocks and are excluded from counts.
 
 ## Feature Availability
 
-All features are available in this SDK. No features marked as N/A.
+Most features are available in this SDK.
+
+### Features Using Mocks (Not Real Implementations)
+
+| Feature | Reason |
+|---------|--------|
+| keyless.feature | Uses mock JWTs - real OIDC flow requires external providers |
+| script.feature (partial) | Mock RawTransaction for scripts without full SDK support |
+| secp256r1.feature (signing) | Uses mock transaction message |
 
 ## Known Issues
 
