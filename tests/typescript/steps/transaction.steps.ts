@@ -900,8 +900,14 @@ Then("both messages should be identical", function (this: AptosWorld) {
 });
 
 Then("the messages should be different", function (this: AptosWorld) {
-  const msg1 = this.testVectors.get("signingMessage1") as Uint8Array;
-  const msg2 = this.testVectors.get("signingMessage2") as Uint8Array;
+  // Support both naming conventions
+  const msg1 = (this.testVectors.get("signingMessage1") ?? this.testVectors.get("multiAgentMessage")) as Uint8Array;
+  const msg2 = (this.testVectors.get("signingMessage2") ?? this.testVectors.get("feePayerMessage")) as Uint8Array;
+  
+  if (!msg1 || !msg2) {
+    throw new Error("Missing message data for comparison - check step names match");
+  }
+  
   expect(bytesToHex(msg1)).to.not.equal(bytesToHex(msg2));
 });
 
@@ -1092,7 +1098,7 @@ Given("a RawTransaction", function (this: AptosWorld) {
 
   const payload = new TransactionPayloadEntryFunction(entryFunction);
 
-  this.rawTransaction = new RawTransaction(
+  const rawTxn = new RawTransaction(
     sender,
     sequenceNumber,
     payload,
@@ -1101,6 +1107,10 @@ Given("a RawTransaction", function (this: AptosWorld) {
     expirationTimestamp,
     chainId,
   );
+
+  // Store in both locations for compatibility with different step patterns
+  this.rawTransaction = rawTxn;
+  this.testVectors.set("rawTransaction", rawTxn);
 });
 
 // Note: "two different Ed25519 accounts" step is in account.steps.ts
