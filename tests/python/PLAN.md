@@ -16,14 +16,14 @@ against the behavioral specifications in `/features/`.
 
 | Feature Category       | Scenarios Passing | Notes                                    |
 | ---------------------- | ----------------- | ---------------------------------------- |
-| 01-core-types          | 119/121           | 2 errors (SDK limitations)               |
+| 01-core-types          | 112/121           | 9 errors (SDK limitations)               |
 | 02-cryptography        | 45/127            | Ed25519, hashing complete; secp* partial |
-| 03-account-management  | 15/84             | Basic account ops work; many undefined   |
-| 04-transaction-building| 0/X               | Needs step implementation                |
-| 05-api-clients         | 0/X               | Needs step implementation                |
-| 06-advanced            | 0/X               | Needs step implementation                |
+| 03-account-management  | 22/84             | Account basics improved; mnemonic missing |
+| 04-transaction-building| 15/94             | Signing and entry function steps         |
+| 05-api-clients         | 4/193             | Basic fullnode API steps working         |
+| 06-advanced            | 12/189            | Multi-agent, fee-payer, multi-sig added  |
 
-**Total Passing: ~179 scenarios**
+**Total Passing: ~210 scenarios**
 
 ### Core Types (Complete)
 
@@ -47,9 +47,9 @@ against the behavioral specifications in `/features/`.
 
 | Feature                    | Status      | Passing | Notes                              |
 | -------------------------- | ----------- | ------- | ---------------------------------- |
-| authentication-key.feature | [ ] Partial | ~10/17  | Basic auth key derivation works    |
-| single-key.feature         | [ ] Partial | ~5/36   | Ed25519 account basics work        |
-| mnemonic-derivation.feature| [ ] Partial | 0/31    | Needs BIP-39 step implementation   |
+| authentication-key.feature | [ ] Partial | 9/17    | Basic auth key derivation works    |
+| single-key.feature         | [ ] Partial | 13/28   | Ed25519 account basics work        |
+| mnemonic-derivation.feature| [ ] Partial | 0/29    | Needs BIP-39 step implementation   |
 
 ### SDK Discoveries
 

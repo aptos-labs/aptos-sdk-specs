@@ -1,6 +1,7 @@
 # Kotlin SDK Test Status
 
 > **Last Updated:** 2026-01-22
+> **Last Verified:** 2026-01-22 (via `./gradlew test`)
 
 ## SDK Information
 
@@ -16,10 +17,12 @@
 
 | Priority | Passing | Total | Percentage |
 |----------|---------|-------|------------|
-| Required (P0) | 176 | 306 | 58% |
+| Required (P0) | 176 | 370 | 48% |
 | Preferred (P1) | 0 | 183 | 0% |
 | Optional (P2) | 0 | 250 | 0% |
-| **Total** | 176 | 739 | 24% |
+| **Total** | 176 | 803 | 22% |
+
+> **Note:** 1440/1616 tests failed (most due to missing step definitions).
 
 ## Feature Availability
 

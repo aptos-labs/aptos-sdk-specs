@@ -1,13 +1,14 @@
 # Rust SDK Test Status
 
 > **Last Updated:** 2026-01-22
+> **Last Verified:** Not verified (SDK path not available locally)
 
 ## SDK Information
 
 | Property | Value |
 |----------|-------|
 | **Package** | `aptos-rust-sdk-v2` |
-| **Version Tested** | dev (local) |
+| **Version Tested** | dev (local path) |
 | **Publisher** | aptos-labs |
 | **Repository** | https://github.com/aptos-labs/aptos-rust-sdk |
 | **Package Registry** | crates.io (when published) |
@@ -16,10 +17,13 @@
 
 | Priority | Passing | Total | Percentage |
 |----------|---------|-------|------------|
-| Required (P0) | 200 | 306 | 65% |
-| Preferred (P1) | 60 | 183 | 33% |
-| Optional (P2) | 20 | 250 | 8% |
-| **Total** | 280 | 739 | 38% |
+| Required (P0) | N/A | 370 | N/A |
+| Preferred (P1) | N/A | 183 | N/A |
+| Optional (P2) | N/A | 250 | N/A |
+| **Total** | N/A | 803 | N/A |
+
+> **Note:** Tests cannot run - SDK depends on local path `../../../crates/aptos-rust-sdk-v2`
+> which is not available. Update Cargo.toml to use published crate or git dependency.
 
 ## Feature Availability
 

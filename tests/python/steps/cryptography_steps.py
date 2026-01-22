@@ -405,8 +405,21 @@ def step_private_keys_different(context):
 
 @then("the public keys should be different")
 def step_public_keys_different(context):
-    key1 = bytes(context.world.ed25519_public_key.key)
-    key2 = bytes(context.world.ed25519_public_key_2.key)
+    # Handle both direct public key and account-based scenarios
+    if context.world.ed25519_public_key is not None:
+        key1 = bytes(context.world.ed25519_public_key.key)
+    elif context.world.account is not None:
+        key1 = bytes(context.world.account.public_key().key)
+    else:
+        raise AssertionError("No public key found")
+    
+    if hasattr(context.world, 'ed25519_public_key_2') and context.world.ed25519_public_key_2 is not None:
+        key2 = bytes(context.world.ed25519_public_key_2.key)
+    elif hasattr(context.world, 'account_2') and context.world.account_2 is not None:
+        key2 = bytes(context.world.account_2.public_key().key)
+    else:
+        raise AssertionError("No second public key found")
+    
     assert key1 != key2
 
 

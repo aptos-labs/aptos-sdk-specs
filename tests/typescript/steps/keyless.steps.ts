@@ -638,8 +638,12 @@ Then("the signature should include the ZK proof", function (this: AptosWorld) {
 });
 
 // Note: "a RawTransaction" is defined in transaction.steps.ts
-// Note: "I sign the transaction" is defined in transaction.steps.ts  
 // Note: "I should get a SignedTransaction" is defined in transaction.steps.ts
+
+// NOTE: "I sign the transaction with an ephemeral key pair" requires
+// actual keyless SDK integration with pepper service and ZK prover.
+// This is an integration test that needs external services.
+// See features/06-advanced/keyless.feature line 119
 
 Then(
   "the authenticator should be Keyless variant",

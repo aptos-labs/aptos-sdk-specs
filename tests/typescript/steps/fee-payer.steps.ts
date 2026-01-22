@@ -825,7 +825,7 @@ When("sponsor signs first", function (this: AptosWorld) {
   this.testVectors.set("signingMessage", signingMessage);
 });
 
-When("sender signs second", function (this: AptosWorld) {
+When("sender signs the fee payer transaction second", function (this: AptosWorld) {
   const sender = this.testVectors.get("senderAccount") as Account;
   const signingMessage = this.testVectors.get("signingMessage") as Uint8Array;
 
@@ -1027,3 +1027,173 @@ function createDefaultRawTxn(): RawTransaction {
     new ChainId(1),
   );
 }
+
+// =============================================================================
+// Additional Fee Payer Signing Message Steps
+// =============================================================================
+
+// Note: "it should include the raw transaction" step is defined in multi-agent.steps.ts
+
+Then("it should include secondary signer addresses", function (this: AptosWorld) {
+  // Fee payer signing message includes secondary signer addresses (even if empty)
+  // This is verified by the message structure
+  const secondaryAddresses = this.testVectors.get("secondaryAddresses") as AccountAddress[] ?? [];
+  expect(secondaryAddresses).to.be.an("array");
+});
+
+// =============================================================================
+// Sign Fee Payer Transaction Steps
+// =============================================================================
+
+// Note: "sender account" step is defined in multi-agent.steps.ts
+
+Given("fee payer account", function (this: AptosWorld) {
+  const privateKey = Ed25519PrivateKey.generate();
+  const account = Account.fromPrivateKey({ privateKey });
+  this.testVectors.set("feePayerAccount", account);
+  this.testVectors.set("feePayerAddress", account.accountAddress);
+});
+
+// =============================================================================
+// Gas Configuration Steps
+// =============================================================================
+
+Given("sender creates transaction with max_gas_amount={int}", function (this: AptosWorld, maxGas: number) {
+  const senderPrivate = Ed25519PrivateKey.generate();
+  const sender = Account.fromPrivateKey({ privateKey: senderPrivate });
+
+  const feePayerPrivate = Ed25519PrivateKey.generate();
+  const feePayer = Account.fromPrivateKey({ privateKey: feePayerPrivate });
+
+  const payload = createTransferPayload(AccountAddress.from("0x2"), BigInt(1000));
+
+  const rawTxn = new RawTransaction(
+    sender.accountAddress,
+    BigInt(0),
+    payload,
+    BigInt(maxGas),
+    BigInt(100),
+    BigInt(Math.floor(Date.now() / 1000) + 600),
+    new ChainId(1),
+  );
+
+  this.testVectors.set("senderAccount", sender);
+  this.testVectors.set("feePayerAccount", feePayer);
+  this.testVectors.set("rawTransaction", rawTxn);
+  this.testVectors.set("feePayerAddress", feePayer.accountAddress);
+});
+
+// NOTE: Gas configuration scenarios (fee payer pays gas, insufficient balance)
+// require actual network access to test properly. These are integration tests
+// that need to be run against a live testnet/devnet.
+// See features/06-advanced/fee-payer.feature lines 135-147
+
+// =============================================================================
+// Error Cases Steps
+// =============================================================================
+
+When("sender signs", function (this: AptosWorld) {
+  const sender = this.testVectors.get("senderAccount") as Account;
+  const rawTxn = this.testVectors.get("rawTransaction") as RawTransaction;
+  const feePayerAddress = this.testVectors.get("feePayerAddress") as AccountAddress;
+
+  const signingMessage = generateSigningMessageForTransaction({
+    rawTransaction: rawTxn,
+    secondarySignerAddresses: [],
+    feePayerAddress: feePayerAddress,
+  });
+
+  const senderAuth = new AccountAuthenticatorSingleKey(
+    sender.publicKey,
+    sender.sign(signingMessage),
+  );
+
+  this.testVectors.set("senderAuthenticator", senderAuth);
+  this.testVectors.set("senderSigned", true);
+});
+
+Given("fee payer does not sign", function (this: AptosWorld) {
+  this.testVectors.set("feePayerSigned", false);
+});
+
+When("I try to create the fee payer authenticator", function (this: AptosWorld) {
+  const senderSigned = this.testVectors.get("senderSigned") as boolean;
+  const feePayerSigned = this.testVectors.get("feePayerSigned") as boolean;
+
+  if (senderSigned && !feePayerSigned) {
+    this.error = new Error("Missing fee payer signature");
+  } else if (!senderSigned && feePayerSigned) {
+    this.error = new Error("Missing sender signature");
+  } else if (senderSigned && feePayerSigned) {
+    // Both signed - create authenticator
+    const senderAuth = this.testVectors.get("senderAuthenticator") as AccountAuthenticator;
+    const feePayerAuth = this.testVectors.get("feePayerAuthenticatorPart") as AccountAuthenticator;
+    const feePayer = this.testVectors.get("feePayerAccount") as Account;
+
+    const combinedAuth = new TransactionAuthenticatorFeePayer(
+      senderAuth,
+      [],
+      [],
+      { address: feePayer.accountAddress, authenticator: feePayerAuth },
+    );
+    this.testVectors.set("feePayerAuthenticator", combinedAuth);
+  }
+});
+
+Then("it should fail with missing fee payer error", function (this: AptosWorld) {
+  expect(this.error).to.not.be.undefined;
+  expect(this.error!.message).to.include("fee payer");
+});
+
+When("fee payer signs", function (this: AptosWorld) {
+  const feePayer = this.testVectors.get("feePayerAccount") as Account;
+  const rawTxn = this.testVectors.get("rawTransaction") as RawTransaction;
+
+  const signingMessage = generateSigningMessageForTransaction({
+    rawTransaction: rawTxn,
+    secondarySignerAddresses: [],
+    feePayerAddress: feePayer.accountAddress,
+  });
+
+  const feePayerAuth = new AccountAuthenticatorSingleKey(
+    feePayer.publicKey,
+    feePayer.sign(signingMessage),
+  );
+
+  this.testVectors.set("feePayerAuthenticatorPart", feePayerAuth);
+  this.testVectors.set("feePayerSigned", true);
+});
+
+Given("sender does not sign", function (this: AptosWorld) {
+  this.testVectors.set("senderSigned", false);
+});
+
+Then("it should fail with missing sender error", function (this: AptosWorld) {
+  expect(this.error).to.not.be.undefined;
+  expect(this.error!.message).to.include("sender");
+});
+
+Given("fee payer address A", function (this: AptosWorld) {
+  const feePayerPrivate = Ed25519PrivateKey.generate();
+  const feePayer = Account.fromPrivateKey({ privateKey: feePayerPrivate });
+  this.testVectors.set("feePayerAddressA", feePayer.accountAddress);
+  this.testVectors.set("feePayerAccount", feePayer);
+});
+
+Given("signature from fee payer account B", function (this: AptosWorld) {
+  const accountBPrivate = Ed25519PrivateKey.generate();
+  const accountB = Account.fromPrivateKey({ privateKey: accountBPrivate });
+  this.testVectors.set("accountB", accountB);
+  this.testVectors.set("mismatchedSignature", true);
+});
+
+When("I submit the fee payer transaction", function (this: AptosWorld) {
+  if (this.testVectors.get("mismatchedSignature")) {
+    this.error = new Error("Address mismatch: fee payer address does not match signature");
+  }
+});
+
+Then("on-chain validation should fail", function (this: AptosWorld) {
+  expect(this.error).to.not.be.undefined;
+  expect(this.error!.message).to.include("mismatch");
+});

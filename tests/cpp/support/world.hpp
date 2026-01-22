@@ -19,22 +19,25 @@
 // Otherwise, use placeholder types that allow the test scaffold to compile.
 
 #ifdef APTOS_SDK_AVAILABLE
-// Include actual Aptos C++ SDK headers
-// Adjust these paths based on the actual SDK structure once available
-#include <aptos/account_address.hpp>
-#include <aptos/crypto/ed25519.hpp>
-#include <aptos/crypto/secp256k1.hpp>
-#include <aptos/crypto/secp256r1.hpp>
-#include <aptos/transaction.hpp>
-#include <aptos/bcs.hpp>
+// Include actual Aptos C++ SDK headers (Var Meta SDK)
+#include "Accounts/AccountAddress.h"
+#include "Accounts/Account.h"
+#include "Accounts/AuthenticationKey.h"
+#include "Accounts/Ed25519/PrivateKey.h"
+#include "Accounts/Ed25519/PublicKey.h"
+#include "Accounts/Ed25519Signature.h"
+#include "HDWallet/Wallet.h"
+#include "BCS/BCS.h"
+#include "BCS/Serialization.h"
+#include "BCS/Deserialization.h"
+#include "Transactions/Rawtransaction.h"
+#include "Transactions/SignedTransaction.h"
+#include "Transactions/TransactionPayload.h"
 #endif
 
 namespace aptos::specs {
 
-#ifndef APTOS_SDK_AVAILABLE
-/// Placeholder types until the Aptos C++ SDK is integrated.
-/// These allow the test scaffold to compile without the SDK.
-/// Once SDK is available, set APTOS_SDK_AVAILABLE=1 in CMake.
+/// Placeholder types for features not yet in the SDK or when SDK is not available.
 namespace placeholder {
 
 struct AccountAddress {
@@ -93,7 +96,6 @@ struct SignedTransaction {};
 struct TransactionPayload {};
 
 } // namespace placeholder
-#endif // APTOS_SDK_AVAILABLE
 
 // =============================================================================
 // Type Aliases
@@ -102,21 +104,28 @@ struct TransactionPayload {};
 // For now, they use placeholder types.
 
 #ifdef APTOS_SDK_AVAILABLE
-// Use actual SDK types (adjust namespaces based on SDK structure)
-using AccountAddress = aptos::AccountAddress;
-using Ed25519PrivateKey = aptos::crypto::Ed25519PrivateKey;
-using Ed25519PublicKey = aptos::crypto::Ed25519PublicKey;
-using Ed25519Signature = aptos::crypto::Ed25519Signature;
-using Secp256k1PrivateKey = aptos::crypto::Secp256k1PrivateKey;
-using Secp256k1PublicKey = aptos::crypto::Secp256k1PublicKey;
-using Secp256k1Signature = aptos::crypto::Secp256k1Signature;
-using Secp256r1PrivateKey = aptos::crypto::Secp256r1PrivateKey;
-using Secp256r1PublicKey = aptos::crypto::Secp256r1PublicKey;
-using Secp256r1Signature = aptos::crypto::Secp256r1Signature;
-using TypeTag = aptos::TypeTag;
-using RawTransaction = aptos::RawTransaction;
-using SignedTransaction = aptos::SignedTransaction;
-using TransactionPayload = aptos::TransactionPayload;
+// Use actual SDK types (Var Meta SDK namespaces)
+using AccountAddress = Aptos::Accounts::AccountAddress;
+using Account = Aptos::Accounts::Account;
+using AuthenticationKey = Aptos::Accounts::AuthenticationKey;
+using Ed25519PrivateKey = Aptos::Accounts::Ed25519::PrivateKey;
+using Ed25519PublicKey = Aptos::Accounts::Ed25519::PublicKey;
+using Ed25519Signature = Aptos::Accounts::Ed25519Signature;
+using Wallet = Aptos::HDWallet::Wallet;
+using RawTransaction = Aptos::BCS::RawTransaction;
+using SignedTransaction = Aptos::BCS::SignedTransaction;
+using TransactionPayload = Aptos::BCS::TransactionPayload;
+using Serialization = Aptos::BCS::Serialization;
+using Deserialization = Aptos::BCS::Deserialization;
+
+// Secp256k1/r1 not yet in SDK - use placeholders for now
+using Secp256k1PrivateKey = placeholder::Secp256k1PrivateKey;
+using Secp256k1PublicKey = placeholder::Secp256k1PublicKey;
+using Secp256k1Signature = placeholder::Secp256k1Signature;
+using Secp256r1PrivateKey = placeholder::Secp256r1PrivateKey;
+using Secp256r1PublicKey = placeholder::Secp256r1PublicKey;
+using Secp256r1Signature = placeholder::Secp256r1Signature;
+using TypeTag = placeholder::TypeTag;
 #else
 // Use placeholder types
 using AccountAddress = placeholder::AccountAddress;

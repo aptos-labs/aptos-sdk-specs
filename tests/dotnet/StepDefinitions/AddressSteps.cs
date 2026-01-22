@@ -167,7 +167,8 @@ public class AddressSteps
     {
         try
         {
-            _world.Address = AccountAddress.FromString(_world.HexString!);
+            // Use maxMissingChars=62 to allow short addresses (minimum "0x" + 2 chars)
+            _world.Address = AccountAddress.FromString(_world.HexString!, maxMissingChars: 62);
             _world.ClearError();
         }
         catch (Exception ex)

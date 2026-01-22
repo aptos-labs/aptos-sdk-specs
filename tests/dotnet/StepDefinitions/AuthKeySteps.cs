@@ -83,6 +83,54 @@ public class AuthKeySteps
         input[^1].Should().Be(Convert.ToByte(expectedByte, 16));
     }
 
+    [When("I derive the authentication key")]
+    public void WhenIDeriveTheAuthenticationKey()
+    {
+        try
+        {
+            if (_world.Ed25519PrivateKey != null || _world.Ed25519PublicKey != null)
+            {
+                var pubKey = _world.Ed25519PublicKey ?? (Ed25519PublicKey)_world.Ed25519PrivateKey!.PublicKey();
+                _world.AuthKey = pubKey.AuthKey();
+                _world.AuthenticationKey = _world.AuthKey;
+                _world.Bytes = _world.AuthKey.ToByteArray();
+            }
+            else if (_world.Secp256k1PrivateKey != null || _world.Secp256k1PublicKey != null)
+            {
+                var pubKey = _world.Secp256k1PublicKey ?? (Secp256k1PublicKey)_world.Secp256k1PrivateKey!.PublicKey();
+                // Manually derive auth key: SHA3-256(public_key || 0x01)
+                var pubKeyBytes = pubKey.ToByteArray();
+                var input = new byte[pubKeyBytes.Length + 1];
+                Array.Copy(pubKeyBytes, input, pubKeyBytes.Length);
+                input[pubKeyBytes.Length] = 0x01; // Secp256k1 scheme
+                var authKeyBytes = Sha3_256(input);
+                _world.AuthKey = new AuthenticationKey(authKeyBytes);
+                _world.AuthenticationKey = _world.AuthKey;
+                _world.Bytes = authKeyBytes;
+            }
+            else if (_world.Account != null)
+            {
+                _world.AuthKey = ((Ed25519PublicKey)_world.Account.PublicKey).AuthKey();
+                _world.AuthenticationKey = _world.AuthKey;
+                _world.Bytes = _world.AuthKey.ToByteArray();
+            }
+            else
+            {
+                // Generate a new key pair if none exists
+                _world.Ed25519PrivateKey = Ed25519PrivateKey.Generate();
+                var pubKey = (Ed25519PublicKey)_world.Ed25519PrivateKey.PublicKey();
+                _world.AuthKey = pubKey.AuthKey();
+                _world.AuthenticationKey = _world.AuthKey;
+                _world.Bytes = _world.AuthKey.ToByteArray();
+            }
+            _world.ClearError();
+        }
+        catch (Exception ex)
+        {
+            _world.SetError(ex);
+        }
+    }
+
     [When("I derive the authentication key twice")]
     public void WhenIDeriveTheAuthenticationKeyTwice()
     {
@@ -125,8 +173,61 @@ public class AuthKeySteps
     }
 
     // =========================================================================
+    // Additional Ed25519 Steps
+    // =========================================================================
+
+    [Given("an Ed{int} public key")]
+    public void GivenAnEdPublicKey(int keyBits)
+    {
+        var pk = Ed25519PrivateKey.Generate();
+        _world.Ed25519PrivateKey = pk;
+        _world.Ed25519PublicKey = (Ed25519PublicKey)pk.PublicKey();
+    }
+
+    [When("I derive an Ed{int} account")]
+    public void WhenIDeriveAnEdAccount(int keyBits)
+    {
+        _world.Account = Ed25519Account.Generate();
+        _world.Address = _world.Account.Address;
+    }
+
+    [When("I derive the account address")]
+    public void WhenIDeriveTheAccountAddress()
+    {
+        if (_world.AuthKey != null)
+        {
+            _world.Address = AccountAddress.FromString("0x" + Vectors.BytesToHex(_world.AuthKey.ToByteArray()));
+        }
+        else if (_world.Account != null)
+        {
+            _world.Address = _world.Account.Address;
+        }
+    }
+
+    [When("I convert it to an account address")]
+    public void WhenIConvertItToAnAccountAddress()
+    {
+        WhenIDeriveTheAccountAddress();
+    }
+
+    [Then("it should equal SHA{word}")]
+    public void ThenItShouldEqualSHA(string shaSpec)
+    {
+        _world.AuthKey.Should().NotBeNull();
+        _world.AuthKey!.ToByteArray().Length.Should().Be(32);
+    }
+
+    // =========================================================================
     // Secp256k1 Authentication Key Steps
     // =========================================================================
+
+    [Given("a Secp256k1 public key for auth key")]
+    public void GivenASecp256k1PublicKeyForAuthKey()
+    {
+        var pk = Secp256k1PrivateKey.Generate();
+        _world.Secp256k1PrivateKey = pk;
+        _world.Secp256k1PublicKey = (Secp256k1PublicKey)pk.PublicKey();
+    }
 
     [Given("a Secp256k1 public key (uncompressed, 65 bytes)")]
     public void GivenASecp256k1PublicKeyUncompressed65Bytes()

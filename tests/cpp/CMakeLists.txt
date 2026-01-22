@@ -51,46 +51,34 @@ endif()
 # Repository: https://github.com/VAR-META-Tech/Aptos-Cpp-SDK
 # Documentation: https://aptos.dev/build/sdks/cpp-sdk
 #
-# NOTE: The SDK has complex dependencies (bip3x, cryptopp, cpprestsdk) and 
-# requires Conan for dependency management. Integration requires:
-# 1. Clone the SDK separately
-# 2. Build it following their instructions
-# 3. Link against the built libraries
-#
-# For simpler testing, we use placeholder types that allow the test scaffold
-# to compile and run without the full SDK dependency chain.
+# The SDK is cloned locally in the `sdk/` directory and built with Conan.
 
-# -----------------------------------------------------------------------------
-# Option A: Local path (recommended for development)
-# -----------------------------------------------------------------------------
-# First, clone and build the SDK:
-#   git clone https://github.com/VAR-META-Tech/Aptos-Cpp-SDK.git
-#   cd Aptos-Cpp-SDK
-#   git submodule update --init --recursive
-#   conan install . -s compiler.cppstd=20 --build=missing
-#   cd build && cmake .. && make
-#
-# Then set the path here:
-# set(APTOS_CPP_SDK_PATH "/path/to/Aptos-Cpp-SDK")
-# if(EXISTS "${APTOS_CPP_SDK_PATH}/Src")
-#     target_include_directories(aptos_spec_tests PRIVATE ${APTOS_CPP_SDK_PATH}/Src)
-#     target_link_directories(aptos_spec_tests PRIVATE ${APTOS_CPP_SDK_PATH}/build)
-#     target_link_libraries(aptos_spec_tests PRIVATE Aptos)
-#     set(APTOS_SDK_AVAILABLE TRUE)
-# endif()
+set(APTOS_CPP_SDK_PATH "${CMAKE_CURRENT_SOURCE_DIR}/sdk")
 
-# -----------------------------------------------------------------------------
-# Option B: FetchContent (requires handling SDK's dependencies)
-# -----------------------------------------------------------------------------
-# The SDK uses git submodules and Conan, so FetchContent alone won't work.
-# You'd need to also fetch bip3x, cryptopp, cpprestsdk, toolbox.
-
-# For now, we build without the SDK (placeholder types in world.hpp)
-set(APTOS_SDK_AVAILABLE FALSE)
-
-if(NOT APTOS_SDK_AVAILABLE)
-    message(STATUS "Building without Aptos C++ SDK - using placeholder types")
-    message(STATUS "SDK repo: https://github.com/VAR-META-Tech/Aptos-Cpp-SDK")
+if(EXISTS "${APTOS_CPP_SDK_PATH}/Src" AND EXISTS "${APTOS_CPP_SDK_PATH}/build/build/Release/libAptos.dylib")
+    set(APTOS_SDK_AVAILABLE TRUE)
+    message(STATUS "Found Aptos C++ SDK at: ${APTOS_CPP_SDK_PATH}")
+    
+    # Set CMAKE_PREFIX_PATH to find SDK's dependencies via Conan
+    set(SDK_CONAN_DIR "${APTOS_CPP_SDK_PATH}/build/build/Release/generators")
+    if(EXISTS "${SDK_CONAN_DIR}")
+        list(APPEND CMAKE_PREFIX_PATH "${SDK_CONAN_DIR}")
+        message(STATUS "Added SDK Conan generators to CMAKE_PREFIX_PATH: ${SDK_CONAN_DIR}")
+    endif()
+    
+    # Find SDK's dependencies (installed via Conan)
+    find_package(cryptopp REQUIRED)
+    find_package(cpprestsdk QUIET)
+    find_package(Boost QUIET)
+    find_package(OpenSSL QUIET)
+else()
+    set(APTOS_SDK_AVAILABLE FALSE)
+    message(STATUS "Aptos C++ SDK not found - using placeholder types")
+    message(STATUS "To build the SDK:")
+    message(STATUS "  cd ${APTOS_CPP_SDK_PATH}")
+    message(STATUS "  conan install . -s compiler.cppstd=20 --build=missing --output-folder=build")
+    message(STATUS "  cd build && cmake .. --preset conan-release")
+    message(STATUS "  cd build/Release && make Aptos")
 endif()
 
 # =============================================================================
@@ -125,6 +113,24 @@ target_include_directories(aptos_spec_tests PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/steps
 )
 
+# Conditionally add SDK includes and link libraries
+if(APTOS_SDK_AVAILABLE)
+    set(SDK_BUILD_DIR "${APTOS_CPP_SDK_PATH}/build/build/Release")
+    
+    # SDK source headers
+    target_include_directories(aptos_spec_tests PRIVATE
+        ${APTOS_CPP_SDK_PATH}/Src
+        ${APTOS_CPP_SDK_PATH}/ThirdParty/bip3x/include
+        ${SDK_BUILD_DIR}/_deps/toolbox-src/include
+    )
+    
+    target_link_directories(aptos_spec_tests PRIVATE
+        ${SDK_BUILD_DIR}
+    )
+    
+    target_compile_definitions(aptos_spec_tests PRIVATE APTOS_SDK_AVAILABLE=1)
+endif()
+
 # Link dependencies
 target_link_libraries(aptos_spec_tests PRIVATE
     cwt::cucumber
@@ -133,8 +139,23 @@ target_link_libraries(aptos_spec_tests PRIVATE
 
 # Conditionally link SDK when available
 if(APTOS_SDK_AVAILABLE)
-    target_link_libraries(aptos_spec_tests PRIVATE aptos-cpp-sdk::aptos-cpp-sdk)
-    target_compile_definitions(aptos_spec_tests PRIVATE APTOS_SDK_AVAILABLE=1)
+    target_link_libraries(aptos_spec_tests PRIVATE
+        Aptos
+    )
+    
+    # Link SDK's dependencies if found
+    if(cryptopp_FOUND)
+        target_link_libraries(aptos_spec_tests PRIVATE cryptopp::cryptopp)
+    endif()
+    if(cpprestsdk_FOUND)
+        target_link_libraries(aptos_spec_tests PRIVATE cpprestsdk::cpprestsdk)
+    endif()
+    if(Boost_FOUND)
+        target_link_libraries(aptos_spec_tests PRIVATE Boost::boost)
+    endif()
+    if(OpenSSL_FOUND)
+        target_link_libraries(aptos_spec_tests PRIVATE OpenSSL::SSL OpenSSL::Crypto)
+    endif()
 endif()
 
 # =============================================================================

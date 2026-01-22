@@ -4,11 +4,18 @@ This document tracks test failures and issues that need to be addressed.
 
 ## Current Status
 
-- **Passed**: 199/370 required scenarios (54%)
-- **Failed**: 4 scenarios
-- **Undefined**: 167 scenarios
+- **Passed**: 212/370 required scenarios (57%)
+- **Failed**: 8 scenarios
+  - 4 known local issues (Secp256r1/MultiEd25519/MultiKey keys, coin module)
+  - 4 network-dependent scenarios (need client connection in prior steps)
+- **Undefined**: 154 scenarios (mostly network-dependent API tests)
 
-Last updated: Session implementing signing, auth key, entry function, and transaction steps. Upgraded Go SDK to v1.11.0.
+Last updated: Cleaned up API client steps - removed mock/placeholder implementations, keeping only real SDK calls:
+- Client configuration (testnet/devnet/mainnet/custom URL)
+- Account operations (info, resources, balance via real API calls)
+- Transaction operations (submit, wait, simulate via real API calls)
+- Faucet funding (real faucet calls)
+- Gas estimation (real API calls)
 
 ## Failed Tests
 

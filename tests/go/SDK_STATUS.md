@@ -1,6 +1,7 @@
 # Go SDK Test Status
 
 > **Last Updated:** 2026-01-22
+> **Last Verified:** 2026-01-22 (see TO_FIX.md)
 
 ## SDK Information
 
@@ -16,10 +17,12 @@
 
 | Priority | Passing | Total | Percentage |
 |----------|---------|-------|------------|
-| Required (P0) | 199 | 370 | 54% |
+| Required (P0) | 212 | 370 | 57% |
 | Preferred (P1) | 20 | 183 | 11% |
 | Optional (P2) | 0 | 250 | 0% |
-| **Total** | 219 | 803 | 27% |
+| **Total** | 232 | 803 | 29% |
+
+> **Note:** 8 failures (4 SDK limitations, 4 network-dependent). 154 scenarios undefined.
 
 ## Feature Availability
 

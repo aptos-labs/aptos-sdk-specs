@@ -15,7 +15,7 @@ validation. The goal is to ensure consistent behavior across all official and co
   etc.)
 - `test-vectors/` - JSON files with deterministic input/output test cases
 - `categories/` - Documentation for feature priority levels (required.md, preferred.md, optional.md)
-- `tests/` - BDD test implementations for different SDKs (TypeScript, Go, Rust)
+- `tests/` - BDD test implementations for different SDKs (TypeScript, Go, Rust, Java, Python, Swift, etc.)
 - `FEATURE_COVERAGE.md` - Coverage tracking matrix for all SDKs (keep updated!)
 
 ## Running Tests

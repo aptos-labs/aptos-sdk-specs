@@ -17,12 +17,21 @@ GIVEN(given_sender_address, "a sender address {string}")
 {
     auto& world = cuke::context<TestWorld>();
     std::string addr = CUKE_ARG(1);
+    
+#ifdef APTOS_SDK_AVAILABLE
+    try {
+        world.tx_sender = AccountAddress::FromHex(addr);
+    } catch (const std::exception& e) {
+        world.set_error(e.what());
+    }
+#else
     auto result = AccountAddress::from_hex(addr);
     if (result) {
         world.tx_sender = *result;
     } else {
         world.set_error("Invalid sender address");
     }
+#endif
 }
 
 GIVEN(given_sequence_number, "a sequence number {int}")
@@ -60,7 +69,7 @@ GIVEN(given_raw_transaction_bcs_hex, "a raw transaction from BCS hex {string}")
 WHEN(when_build_raw_transaction, "I build the raw transaction")
 {
     auto& world = cuke::context<TestWorld>();
-    // TODO: Implement with actual SDK
+    // TODO: Implement with actual SDK once transaction payload is set up
     world.set_error("Not implemented");
 }
 

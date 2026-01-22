@@ -53,6 +53,23 @@ class AptosWorld:
     signed_transaction: Any = None
     transaction_hash: Optional[str] = None
     simulation_result: Any = None
+    
+    # Entry functions
+    entry_function: Any = None
+    transaction_payload: Any = None
+    authenticator: Any = None
+    
+    # Account collections
+    secp256k1_account: Any = None
+    account_collection: List[Any] = field(default_factory=list)
+    any_account: Any = None
+    private_key: Any = None
+    public_key: Any = None
+    
+    # Fee payer
+    fee_payer: Any = None
+    fee_payer_tx: Any = None
+    multi_agent_tx: Any = None
 
     # Authentication
     auth_key: Any = None
@@ -116,6 +133,23 @@ class AptosWorld:
         self.signed_transaction = None
         self.transaction_hash = None
         self.simulation_result = None
+        
+        # Entry functions
+        self.entry_function = None
+        self.transaction_payload = None
+        self.authenticator = None
+        
+        # Account collections
+        self.secp256k1_account = None
+        self.account_collection = []
+        self.any_account = None
+        self.private_key = None
+        self.public_key = None
+        
+        # Fee payer
+        self.fee_payer = None
+        self.fee_payer_tx = None
+        self.multi_agent_tx = None
 
         # Authentication
         self.auth_key = None

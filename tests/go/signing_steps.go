@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"time"
 
 	"github.com/aptos-labs/aptos-go-sdk"
 	"github.com/aptos-labs/aptos-go-sdk/bcs"
@@ -616,6 +617,147 @@ func initSigningSteps(ctx *godog.ScenarioContext, world *World) {
 		if len(world.HexString) < 2 {
 			return fmt.Errorf("no hash set")
 		}
+		return nil
+	})
+
+	ctx.Step(`^it should have a public_key field$`, func() error {
+		auth, ok := world.TestVectors["authenticator"].(*aptos.TransactionAuthenticator)
+		if !ok {
+			return fmt.Errorf("no authenticator set")
+		}
+		// Check for public key based on type
+		switch a := auth.Auth.(type) {
+		case *crypto.Ed25519Authenticator:
+			if a.PubKey == nil {
+				return fmt.Errorf("no public key")
+			}
+			return nil
+		case *aptos.Ed25519TransactionAuthenticator:
+			if a.Sender == nil || a.Sender.PubKey() == nil {
+				return fmt.Errorf("no public key")
+			}
+			return nil
+		case *crypto.SingleKeyAuthenticator:
+			if a.PubKey == nil {
+				return fmt.Errorf("no public key")
+			}
+			return nil
+		}
+		return fmt.Errorf("unsupported authenticator type")
+	})
+
+	ctx.Step(`^it should have a signature field$`, func() error {
+		auth, ok := world.TestVectors["authenticator"].(*aptos.TransactionAuthenticator)
+		if !ok {
+			return fmt.Errorf("no authenticator set")
+		}
+		// Check for signature based on type
+		switch a := auth.Auth.(type) {
+		case *crypto.Ed25519Authenticator:
+			if a.Sig == nil {
+				return fmt.Errorf("no signature")
+			}
+			return nil
+		case *aptos.Ed25519TransactionAuthenticator:
+			if a.Sender == nil || a.Sender.Signature() == nil {
+				return fmt.Errorf("no signature")
+			}
+			return nil
+		case *crypto.SingleKeyAuthenticator:
+			if a.Sig == nil {
+				return fmt.Errorf("no signature")
+			}
+			return nil
+		}
+		return fmt.Errorf("unsupported authenticator type")
+	})
+
+	ctx.Step(`^the bytes should be identical$`, func() error {
+		bytes1, ok1 := world.TestVectors["bytes1"].([]byte)
+		bytes2, ok2 := world.TestVectors["bytes2"].([]byte)
+		if !ok1 || !ok2 {
+			return fmt.Errorf("need two byte arrays to compare")
+		}
+		if !bytes.Equal(bytes1, bytes2) {
+			return fmt.Errorf("bytes are not identical")
+		}
+		return nil
+	})
+
+	ctx.Step(`^the encoding should succeed$`, func() error {
+		if world.Error != nil {
+			return fmt.Errorf("encoding failed: %v", world.Error)
+		}
+		return nil
+	})
+
+	ctx.Step(`^a transaction authenticator$`, func() error {
+		// Create a signed transaction to get an authenticator
+		account, err := aptos.NewEd25519Account()
+		if err != nil {
+			return err
+		}
+
+		recipient := aptos.AccountAddress{}
+		recipient[31] = 0x42
+		payload, err := aptos.CoinTransferPayload(nil, recipient, 1000)
+		if err != nil {
+			return err
+		}
+
+		rawTx := &aptos.RawTransaction{
+			Sender:                     account.Address,
+			SequenceNumber:             0,
+			Payload:                    aptos.TransactionPayload{Payload: payload},
+			MaxGasAmount:               200000,
+			GasUnitPrice:               100,
+			ExpirationTimestampSeconds: uint64(time.Now().Unix() + 600),
+			ChainId:                    2,
+		}
+
+		signedTx, err := rawTx.SignedTransaction(account)
+		if err != nil {
+			return err
+		}
+
+		world.TestVectors["authenticator"] = signedTx.Authenticator
+		world.TestVectors["signedTransaction"] = signedTx
+		world.Account = account
+		return nil
+	})
+
+	ctx.Step(`^an Ed25519 transaction authenticator$`, func() error {
+		// Same as above, but ensure it's Ed25519
+		account, err := aptos.NewEd25519Account()
+		if err != nil {
+			return err
+		}
+
+		recipient := aptos.AccountAddress{}
+		recipient[31] = 0x42
+		payload, err := aptos.CoinTransferPayload(nil, recipient, 1000)
+		if err != nil {
+			return err
+		}
+
+		rawTx := &aptos.RawTransaction{
+			Sender:                     account.Address,
+			SequenceNumber:             0,
+			Payload:                    aptos.TransactionPayload{Payload: payload},
+			MaxGasAmount:               200000,
+			GasUnitPrice:               100,
+			ExpirationTimestampSeconds: uint64(time.Now().Unix() + 600),
+			ChainId:                    2,
+		}
+
+		signedTx, err := rawTx.SignedTransaction(account)
+		if err != nil {
+			return err
+		}
+
+		world.TestVectors["authenticator"] = signedTx.Authenticator
+		world.TestVectors["signedTransaction"] = signedTx
+		world.Account = account
 		return nil
 	})
 }

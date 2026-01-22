@@ -679,21 +679,7 @@ public class CryptoSteps
         }
     }
 
-    [Then(@"the result should be 33 bytes")]
-    public void ThenTheResultShouldBe33Bytes()
-    {
-        var result = _world.Result as byte[];
-        result.Should().NotBeNull();
-        result!.Length.Should().Be(33);
-    }
-
-    [Then(@"the result should be 65 bytes")]
-    public void ThenTheResultShouldBe65Bytes()
-    {
-        var result = _world.Result as byte[];
-        result.Should().NotBeNull();
-        result!.Length.Should().Be(65);
-    }
+    // Note: "Then the result should be {int} bytes" is defined in CommonSteps.cs
 
     [Then(@"the first byte should be 0x02 or 0x03")]
     public void ThenTheFirstByteShouldBe0x02Or0x03()

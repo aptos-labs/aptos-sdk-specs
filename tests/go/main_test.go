@@ -58,6 +58,9 @@ func InitializeScenario(ctx *godog.ScenarioContext) {
 	initSigningSteps(ctx, world)
 	initEntryFunctionSteps(ctx, world)
 
+	// API client steps
+	initAPIClientSteps(ctx, world)
+
 	// Reset world before each scenario
 	ctx.Before(func(ctx context.Context, sc *godog.Scenario) (context.Context, error) {
 		world.Reset()
