@@ -40,17 +40,23 @@ func TestFeatures(t *testing.T) {
 func InitializeScenario(ctx *godog.ScenarioContext) {
 	world := NewWorld()
 
-	// Address steps
-	initAddressSteps(ctx, world)
-
-	// Cryptography steps
+	// Cryptography steps (register first for more specific patterns)
+	initHashingSteps(ctx, world)
 	initCryptoSteps(ctx, world)
+
+	// Core types steps
+	initAddressSteps(ctx, world)
+	initSerializationSteps(ctx, world)
+	initTypeTagSteps(ctx, world)
 
 	// Account steps
 	initAccountSteps(ctx, world)
+	initAuthKeySteps(ctx, world)
 
 	// Transaction steps
 	initTransactionSteps(ctx, world)
+	initSigningSteps(ctx, world)
+	initEntryFunctionSteps(ctx, world)
 
 	// Reset world before each scenario
 	ctx.Before(func(ctx context.Context, sc *godog.Scenario) (context.Context, error) {

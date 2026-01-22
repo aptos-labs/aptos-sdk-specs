@@ -19,7 +19,29 @@ All agents share this foundational knowledge about the repository.
   - `tests/typescript/` - Cucumber.js + Bun (tests @aptos-labs/ts-sdk)
   - `tests/go/` - Godog (tests aptos-go-sdk)
   - `tests/rust/` - cucumber-rs (tests aptos-rust-sdk-v2)
+  - `tests/java/` - Cucumber-JVM (tests japtos)
+  - `tests/kotlin/` - Cucumber-JVM (tests kaptos)
+  - `tests/python/` - Behave (tests aptos-sdk)
+  - `tests/dotnet/` - Reqnroll (tests Aptos .NET SDK)
 - `FEATURE_COVERAGE.md` - **Coverage tracking matrix** (keep this updated!)
+- `tests/<language>/SDK_STATUS.md` - **Per-SDK status documents** (keep these updated!)
+
+### Documentation Files to Maintain
+
+When writing tests or features, **always update these files**:
+
+1. **`FEATURE_COVERAGE.md`** - Main coverage matrix
+   - Update checkboxes when implementing step definitions
+   - Update summary counts after changes
+   - Update feature-level summaries
+
+2. **`tests/<language>/SDK_STATUS.md`** - Per-SDK status
+   - Update coverage summary percentages
+   - Document any new known issues
+   - Update feature availability if SDK changes
+   - Update "Last Updated" date
+
+3. **`tests/README.md`** - If adding new SDKs or changing test structure
 
 ### Priority Levels
 
@@ -144,6 +166,10 @@ Invoke when:
    - Specs that are impossible to implement
    - SDK limitations that affect testability
    - Cross-language inconsistencies
+6. **Update documentation**:
+   - Update `tests/<language>/SDK_STATUS.md` with any new findings
+   - Mark newly implemented scenarios in `FEATURE_COVERAGE.md`
+   - Document any SDK limitations discovered
 
 ### Success Criteria
 
@@ -221,9 +247,14 @@ Invoke when:
    - Check that deterministic scenarios reference vectors
    - Validate vector data completeness
 5. **Update `FEATURE_COVERAGE.md`**:
-   - Mark newly implemented scenarios as `[x]`
+   - Mark newly implemented scenarios as `[x]}
    - Update summary counts at top of file
    - Add `[~]` for known issues
+6. **Update per-SDK documentation**:
+   - Review each `tests/<language>/SDK_STATUS.md`
+   - Ensure coverage percentages match actual test results
+   - Document any SDK gaps or limitations found
+   - Update "Last Updated" dates
 
 ### Success Criteria
 
@@ -346,6 +377,7 @@ Invoke when:
 - `test-vectors/*.json` - JSON structure and validity
 - `**/*.md` - Documentation quality
 - `FEATURE_COVERAGE.md` - Coverage matrix accuracy
+- `tests/*/SDK_STATUS.md` - Per-SDK status documents
 - `.prettierrc` - Formatting configuration
 - Step definition files - Code style
 

@@ -1,0 +1,23 @@
+# Build results
+bin/
+obj/
+
+# Test results
+TestResults/
+*.trx
+
+# IDE
+.vs/
+.vscode/
+*.user
+*.suo
+
+# NuGet
+*.nupkg
+packages/
+
+# Rider
+.idea/
+
+# macOS
+.DS_Store

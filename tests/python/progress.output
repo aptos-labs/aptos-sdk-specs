@@ -1,0 +1,6 @@
+../../features/02-cryptography/bls12381.feature  EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+../../features/02-cryptography/ed25519.feature  .......................EE
+../../features/02-cryptography/hashing.feature  ....................E.
+../../features/02-cryptography/secp256k1.feature  EEEEEEEEEEEEE.EEEEE
+../../features/02-cryptography/secp256r1.feature  EEEEEEEEEEEEEEEEEEEEEEEEEE
+

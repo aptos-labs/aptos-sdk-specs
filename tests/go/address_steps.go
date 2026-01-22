@@ -27,6 +27,11 @@ func initAddressSteps(ctx *godog.ScenarioContext, world *World) {
 		return nil
 	})
 
+	ctx.Step(`^a hex string "([^"]*)"$`, func(hex string) error {
+		world.HexString = hex
+		return nil
+	})
+
 	ctx.Step(`^a full 64-character hex address$`, func() error {
 		world.HexString = "0x0000000000000000000000000000000000000000000000000000000000000001"
 		return nil
@@ -149,7 +154,7 @@ func initAddressSteps(ctx *godog.ScenarioContext, world *World) {
 	})
 
 	ctx.Step(`^I format it as a short string$`, func() error {
-		world.HexString = world.Address.String()
+		world.HexString = world.Address.StringShort()
 		return nil
 	})
 
@@ -186,7 +191,7 @@ func initAddressSteps(ctx *godog.ScenarioContext, world *World) {
 			}
 
 			fullHex := addr.StringLong()
-			shortString := addr.String()
+			shortString := addr.StringShort()
 
 			passed := strings.EqualFold(fullHex, v.Expected.FullHex) &&
 				strings.EqualFold(shortString, v.Expected.ShortString)
@@ -240,6 +245,34 @@ func initAddressSteps(ctx *godog.ScenarioContext, world *World) {
 		return nil
 	})
 
+	ctx.Step(`^the parsing should fail with an invalid address error$`, func() error {
+		if world.Error == nil {
+			return fmt.Errorf("expected error, but parsing succeeded")
+		}
+		return nil
+	})
+
+	ctx.Step(`^the parsing should fail with an invalid hex error$`, func() error {
+		if world.Error == nil {
+			return fmt.Errorf("expected error, but parsing succeeded")
+		}
+		return nil
+	})
+
+	ctx.Step(`^the parsing should fail with an invalid length error$`, func() error {
+		if world.Error == nil {
+			return fmt.Errorf("expected error, but parsing succeeded")
+		}
+		return nil
+	})
+
+	ctx.Step(`^the parsing should fail with a parse error$`, func() error {
+		if world.Error == nil {
+			return fmt.Errorf("expected error, but parsing succeeded")
+		}
+		return nil
+	})
+
 	ctx.Step(`^the full hex representation should be "([^"]*)"$`, func(expected string) error {
 		actual := world.Address.StringLong()
 		if !strings.EqualFold(actual, expected) {
@@ -249,7 +282,7 @@ func initAddressSteps(ctx *godog.ScenarioContext, world *World) {
 	})
 
 	ctx.Step(`^the short string should be "([^"]*)"$`, func(expected string) error {
-		actual := world.Address.String()
+		actual := world.Address.StringShort()
 		if !strings.EqualFold(actual, expected) {
 			return fmt.Errorf("expected %s, got %s", expected, actual)
 		}

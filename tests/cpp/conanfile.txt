@@ -1,0 +1,11 @@
+[requires]
+cwt-cucumber/2.8
+nlohmann_json/3.11.3
+
+[generators]
+CMakeDeps
+CMakeToolchain
+
+[options]
+# Enable JSON reporting in cwt-cucumber
+# cwt-cucumber/*:with_json_report=True

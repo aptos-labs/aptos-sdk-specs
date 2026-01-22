@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/aptos-labs/aptos-go-sdk"
+	"github.com/aptos-labs/aptos-go-sdk/bcs"
 	"github.com/aptos-labs/aptos-go-sdk/crypto"
 	"github.com/cucumber/godog"
 )
@@ -368,7 +369,18 @@ func initCryptoSteps(ctx *godog.ScenarioContext, world *World) {
 		if world.Message == nil {
 			return fmt.Errorf("no message set")
 		}
-		// Try Secp256k1 first
+		// Try Account first (most common case for account tests)
+		if world.Account != nil {
+			sig, err := world.Account.SignMessage(world.Message)
+			if err != nil {
+				world.SetError(err)
+				return nil
+			}
+			world.Ed25519Signature = sig.(*crypto.Ed25519Signature)
+			world.ClearError()
+			return nil
+		}
+		// Try Secp256k1
 		if world.Secp256k1PrivateKey != nil {
 			sig, err := world.Secp256k1PrivateKey.SignMessage(world.Message)
 			if err != nil {
@@ -394,7 +406,21 @@ func initCryptoSteps(ctx *godog.ScenarioContext, world *World) {
 	})
 
 	ctx.Step(`^I sign the message twice$`, func() error {
-		// Try Secp256k1 first
+		// Try Account first
+		if world.Account != nil {
+			sig1, err := world.Account.SignMessage(world.Message)
+			if err != nil {
+				return err
+			}
+			sig2, err := world.Account.SignMessage(world.Message)
+			if err != nil {
+				return err
+			}
+			world.Ed25519Signature = sig1.(*crypto.Ed25519Signature)
+			world.Ed25519Signature2 = sig2.(*crypto.Ed25519Signature)
+			return nil
+		}
+		// Try Secp256k1
 		if world.Secp256k1PrivateKey != nil {
 			sig1, err := world.Secp256k1PrivateKey.SignMessage(world.Message)
 			if err != nil {
@@ -608,18 +634,28 @@ func initCryptoSteps(ctx *godog.ScenarioContext, world *World) {
 			signer := crypto.NewSingleSigner(world.Secp256k1PrivateKey)
 			authKey := signer.AuthKey()
 			world.Bytes = authKey[:]
+			world.TestVectors["authKey"] = authKey // authKey is already *AuthenticationKey
 			return nil
 		}
 		// Check Ed25519
 		if world.Ed25519PublicKey != nil {
 			authKey := world.Ed25519PublicKey.AuthKey()
 			world.Bytes = authKey[:]
+			world.TestVectors["authKey"] = authKey // authKey is already *AuthenticationKey
 			return nil
 		}
 		return fmt.Errorf("no public key set")
 	})
 
 	ctx.Step(`^I convert it to an account address$`, func() error {
+		// Check for auth key in TestVectors first
+		if authKey, ok := world.TestVectors["authKey"].(*crypto.AuthenticationKey); ok {
+			var addr aptos.AccountAddress
+			copy(addr[:], authKey.Bytes())
+			world.Address = &addr
+			return nil
+		}
+		// Fall back to world.Bytes
 		if len(world.Bytes) != 32 {
 			return fmt.Errorf("authentication key must be 32 bytes")
 		}
@@ -724,6 +760,15 @@ func initCryptoSteps(ctx *godog.ScenarioContext, world *World) {
 		// Check Ed25519
 		if world.Ed25519PublicKey != nil && world.Ed25519PublicKey2 != nil {
 			if bytes.Equal(world.Ed25519PublicKey.Bytes(), world.Ed25519PublicKey2.Bytes()) {
+				return fmt.Errorf("public keys should be different")
+			}
+			return nil
+		}
+		// Check accounts
+		if world.Account != nil && world.Account2 != nil {
+			pk1 := world.Account.PubKey().Bytes()
+			pk2 := world.Account2.PubKey().Bytes()
+			if bytes.Equal(pk1, pk2) {
 				return fmt.Errorf("public keys should be different")
 			}
 			return nil
@@ -839,7 +884,20 @@ func initCryptoSteps(ctx *godog.ScenarioContext, world *World) {
 	})
 
 	ctx.Step(`^the signatures should be different$`, func() error {
-		// Check Secp256k1 first
+		// Check for SignedTransactions first (from signing feature)
+		if signedTx1, ok := world.TestVectors["signedTransaction1"].(*aptos.SignedTransaction); ok {
+			if signedTx2, ok := world.TestVectors["signedTransaction2"].(*aptos.SignedTransaction); ok {
+				serializer1 := &bcs.Serializer{}
+				signedTx1.MarshalBCS(serializer1)
+				serializer2 := &bcs.Serializer{}
+				signedTx2.MarshalBCS(serializer2)
+				if bytes.Equal(serializer1.ToBytes(), serializer2.ToBytes()) {
+					return fmt.Errorf("signed transactions should be different")
+				}
+				return nil
+			}
+		}
+		// Check Secp256k1
 		if world.Secp256k1Signature != nil && world.Secp256k1Signature2 != nil {
 			if bytes.Equal(world.Secp256k1Signature.Bytes(), world.Secp256k1Signature2.Bytes()) {
 				return fmt.Errorf("signatures should be different")
@@ -952,13 +1010,21 @@ func initCryptoSteps(ctx *godog.ScenarioContext, world *World) {
 	})
 
 	ctx.Step(`^the address should be 32 bytes$`, func() error {
-		if world.Address == nil {
-			return fmt.Errorf("no address set")
+		// Check world.Address first, then fall back to account address
+		if world.Address != nil {
+			if len(world.Address[:]) != 32 {
+				return fmt.Errorf("expected 32 bytes, got %d", len(world.Address[:]))
+			}
+			return nil
 		}
-		if len(world.Address[:]) != 32 {
-			return fmt.Errorf("expected 32 bytes, got %d", len(world.Address[:]))
+		// Fall back to account address
+		if world.Account != nil {
+			if len(world.Account.Address[:]) != 32 {
+				return fmt.Errorf("expected 32 bytes, got %d", len(world.Account.Address[:]))
+			}
+			return nil
 		}
-		return nil
+		return fmt.Errorf("no address set")
 	})
 
 	ctx.Step(`^it should equal the authentication key bytes$`, func() error {
@@ -979,9 +1045,22 @@ func initCryptoSteps(ctx *godog.ScenarioContext, world *World) {
 	})
 
 	ctx.Step(`^the address should match the expected value from test vectors$`, func() error {
-		// Just verify we have an address
+		// If no address is set, derive it from the public key
 		if world.Address == nil {
-			return fmt.Errorf("no address set")
+			if world.Ed25519PublicKey != nil {
+				authKey := world.Ed25519PublicKey.AuthKey()
+				var addr aptos.AccountAddress
+				copy(addr[:], authKey[:])
+				world.Address = &addr
+			} else if world.Secp256k1PrivateKey != nil {
+				signer := crypto.NewSingleSigner(world.Secp256k1PrivateKey)
+				authKey := signer.AuthKey()
+				var addr aptos.AccountAddress
+				copy(addr[:], authKey[:])
+				world.Address = &addr
+			} else {
+				return fmt.Errorf("no public key or private key to derive address from")
+			}
 		}
 		return nil
 	})

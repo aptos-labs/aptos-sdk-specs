@@ -607,7 +607,7 @@ Given("a valid keyless account", function (this: AptosWorld) {
   }
 });
 
-Given("a message to sign", function (this: AptosWorld) {
+Given("a message to sign with keyless", function (this: AptosWorld) {
   this.testVectors.set("messageToSign", new TextEncoder().encode("test message for keyless signing"));
 });
 

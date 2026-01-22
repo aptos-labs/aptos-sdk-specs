@@ -1,0 +1,17 @@
+{
+  "$schema": "https://schemas.reqnroll.net/reqnroll-config-latest.json",
+  "language": {
+    "feature": "en",
+    "binding": "en"
+  },
+  "bindingCulture": {
+    "name": "en-US"
+  },
+  "runtime": {
+    "missingOrPendingStepsOutcome": "Error"
+  },
+  "trace": {
+    "traceTimings": false,
+    "minTracedDuration": "0:0:0.1"
+  }
+}
