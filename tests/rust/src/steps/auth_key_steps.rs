@@ -295,6 +295,8 @@ fn then_equals_sha3_256_alt(world: &mut TestWorld, scheme_hex: String) {
 }
 
 fn verify_sha3_256_auth_key(world: &mut TestWorld, scheme_hex: String) {
+    use aptos_rust_sdk_v2::account::Account;
+    
     let scheme = u8::from_str_radix(scheme_hex.trim_start_matches("0x"), 16).unwrap_or(0);
 
     let public_key_bytes = if let Some(ref pk) = world.ed25519_public_key {
@@ -303,6 +305,10 @@ fn verify_sha3_256_auth_key(world: &mut TestWorld, scheme_hex: String) {
         pk.to_uncompressed_bytes().to_vec()
     } else if let Some(ref pk) = world.secp256r1_public_key {
         pk.to_uncompressed_bytes().to_vec()
+    } else if let Some(ref account) = world.ed25519_account {
+        account.public_key_bytes()
+    } else if let Some(ref account) = world.secp256k1_account {
+        account.public_key_bytes()
     } else {
         panic!("No public key available");
     };

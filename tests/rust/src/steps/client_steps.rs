@@ -1855,6 +1855,10 @@ fn when_try_submit(world: &mut TestWorld) {
     if world.named_values.get("account_balance") == Some(&"1000".to_string()) {
         world.set_error("Insufficient balance for gas");
     }
+    // Check if partial_sign scenario (incomplete multi-agent signatures)
+    if world.named_values.contains_key("partial_sign") {
+        world.set_error("Incomplete signatures for multi-agent transaction");
+    }
 }
 
 #[when("I simulate it")]

@@ -58,6 +58,22 @@ fn when_bcs_serialize(world: &mut TestWorld) {
         world.serialized_bytes = Some(aptos_bcs::to_bytes(v).unwrap());
     } else if let Some(ref v) = world.struct_tag {
         world.serialized_bytes = Some(aptos_bcs::to_bytes(v).unwrap());
+    } else if let Some(ref v) = world.tx_payload {
+        // Check tx_payload BEFORE entry_function because wrapping EntryFunction in payload sets both
+        world.serialized_bytes = Some(aptos_bcs::to_bytes(v).unwrap());
+        world.bytes = world.serialized_bytes.clone();
+    } else if let Some(ref v) = world.entry_function {
+        world.serialized_bytes = Some(aptos_bcs::to_bytes(v).unwrap());
+        // Also set bytes for compatibility with other steps
+        world.bytes = world.serialized_bytes.clone();
+    } else if let Some(ref v) = world.address {
+        // For entry function argument encoding
+        world.serialized_bytes = Some(aptos_bcs::to_bytes(v).unwrap());
+        world.bytes = world.serialized_bytes.clone();
+    } else if let Some(v) = world.transfer_amount {
+        // For u64 argument encoding
+        world.serialized_bytes = Some(aptos_bcs::to_bytes(&v).unwrap());
+        world.bytes = world.serialized_bytes.clone();
     }
 }
 
@@ -160,6 +176,12 @@ fn given_u128(world: &mut TestWorld, value: u128) {
     world.u128_value = Some(value);
 }
 
+#[given(regex = r"^a u128 value (0x[0-9a-fA-F]+)$")]
+fn given_u128_hex(world: &mut TestWorld, hex: String) {
+    let hex = hex.trim_start_matches("0x").trim_start_matches("0X");
+    world.u128_value = Some(u128::from_str_radix(hex, 16).expect("Invalid u128 hex"));
+}
+
 #[given(expr = "a u256 value {int}")]
 fn given_u256(world: &mut TestWorld, value: u64) {
     let mut bytes = [0u8; 32];
@@ -167,13 +189,29 @@ fn given_u256(world: &mut TestWorld, value: u64) {
     world.u256_value = Some(bytes);
 }
 
+#[given(regex = r"^a u256 value (0x[0-9a-fA-F]+)$")]
+fn given_u256_hex(world: &mut TestWorld, hex: String) {
+    let hex = hex.trim_start_matches("0x").trim_start_matches("0X");
+    // Pad to 64 hex chars (32 bytes) and convert
+    let padded = format!("{:0>64}", hex);
+    let mut bytes = [0u8; 32];
+    for (i, chunk) in padded.as_bytes().chunks(2).enumerate() {
+        let s = std::str::from_utf8(chunk).unwrap();
+        bytes[31 - i] = u8::from_str_radix(s, 16).expect("Invalid hex byte");
+    }
+    world.u256_value = Some(bytes);
+}
+
 #[then(expr = "the result should be {int} bytes in little-endian")]
 fn then_bytes_le(world: &mut TestWorld, count: usize) {
-    let bytes = world
-        .serialized_bytes
-        .as_ref()
-        .expect("No serialized bytes");
-    assert_eq!(bytes.len(), count);
+    let bytes = if let Some(ref b) = world.serialized_bytes {
+        b
+    } else if let Some(ref b) = world.bytes {
+        b
+    } else {
+        panic!("No bytes found (serialized_bytes or bytes)");
+    };
+    assert_eq!(bytes.len(), count, "Expected {} bytes, got {}", count, bytes.len());
 }
 
 // Use regex for byte array assertions
@@ -544,6 +582,32 @@ fn when_deserialize_vec_u8(world: &mut TestWorld) {
         Err(e) => world.error = Some(e.to_string()),
     }
 }
+
+// =============================================================================
+// Serialize Both (for determinism tests)
+// =============================================================================
+
+#[when(expr = "I BCS serialize both")]
+fn when_bcs_serialize_both(world: &mut TestWorld) {
+    if let Some(ref entry_fn) = world.entry_function {
+        world.bytes = Some(aptos_bcs::to_bytes(entry_fn).unwrap());
+        world.serialized_bytes = world.bytes.clone();
+    }
+    if let Some(ref entry_fn2) = world.entry_function2 {
+        world.serialized_bytes2 = Some(aptos_bcs::to_bytes(entry_fn2).unwrap());
+    }
+}
+
+#[then(expr = "the bytes should be identical")]
+fn then_bytes_identical(world: &mut TestWorld) {
+    let bytes1 = world.bytes.as_ref().or(world.serialized_bytes.as_ref())
+        .expect("No first serialization");
+    let bytes2 = world.serialized_bytes2.as_ref().expect("No second serialization");
+    assert_eq!(bytes1, bytes2, "BCS serialization should be deterministic");
+}
+
+// Note: "the serialization should succeed" is in type_tags_steps.rs
+// Note: "the result should equal the original" is in type_tags_steps.rs
 
 // =============================================================================
 // Helper Functions
