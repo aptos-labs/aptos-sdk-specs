@@ -40,7 +40,11 @@ fn then_type_tag_variant(world: &mut TestWorld, variant: String) {
         TypeTag::Vector(_) => "Vector",
         TypeTag::Struct(_) => "Struct",
     };
-    assert_eq!(actual_variant, variant, "Expected variant {}, got {}", variant, actual_variant);
+    assert_eq!(
+        actual_variant, variant,
+        "Expected variant {}, got {}",
+        variant, actual_variant
+    );
 }
 
 #[given(expr = "a TypeTag of variant {word}")]
@@ -89,7 +93,11 @@ fn then_inner_type(world: &mut TestWorld, inner: String) {
             TypeTag::Struct(_) => "Struct",
             _ => "Other",
         };
-        assert_eq!(actual, inner, "Expected inner type {}, got {}", inner, actual);
+        assert_eq!(
+            actual, inner,
+            "Expected inner type {}, got {}",
+            inner, actual
+        );
     } else {
         panic!("Expected Vector type, got {:?}", tag);
     }
@@ -172,7 +180,13 @@ fn then_struct_name(world: &mut TestWorld, name: String) {
 fn then_struct_type_args_count_singular(world: &mut TestWorld, count: usize) {
     let tag = world.type_tag.as_ref().expect("No TypeTag");
     if let TypeTag::Struct(st) = tag {
-        assert_eq!(st.type_args.len(), count, "Expected {} type args, got {}", count, st.type_args.len());
+        assert_eq!(
+            st.type_args.len(),
+            count,
+            "Expected {} type args, got {}",
+            count,
+            st.type_args.len()
+        );
     } else {
         panic!("Expected Struct type");
     }
@@ -182,7 +196,13 @@ fn then_struct_type_args_count_singular(world: &mut TestWorld, count: usize) {
 fn then_struct_type_args_count(world: &mut TestWorld, count: usize) {
     let tag = world.type_tag.as_ref().expect("No TypeTag");
     if let TypeTag::Struct(st) = tag {
-        assert_eq!(st.type_args.len(), count, "Expected {} type args, got {}", count, st.type_args.len());
+        assert_eq!(
+            st.type_args.len(),
+            count,
+            "Expected {} type args, got {}",
+            count,
+            st.type_args.len()
+        );
     } else {
         panic!("Expected Struct type");
     }
@@ -220,8 +240,8 @@ fn then_type_arg_is(world: &mut TestWorld, idx: usize, variant: String) {
 
 #[given(expr = "a TypeTag struct with address {string}, module {string}, name {string}")]
 fn given_type_tag_struct(world: &mut TestWorld, addr: String, module: String, name: String) {
-    use aptos_rust_sdk_v2::AccountAddress;
     use aptos_rust_sdk_v2::types::Identifier;
+    use aptos_rust_sdk_v2::AccountAddress;
     let address = AccountAddress::from_hex(&addr).unwrap();
     let struct_tag = MoveStructTag {
         address,
@@ -234,8 +254,8 @@ fn given_type_tag_struct(world: &mut TestWorld, addr: String, module: String, na
 
 #[given(expr = "a TypeTag for CoinStore of AptosCoin")]
 fn given_type_tag_coin_store(world: &mut TestWorld) {
-    use aptos_rust_sdk_v2::AccountAddress;
     use aptos_rust_sdk_v2::types::Identifier;
+    use aptos_rust_sdk_v2::AccountAddress;
     let aptos_coin = MoveStructTag {
         address: AccountAddress::from_hex("0x1").unwrap(),
         module: Identifier::new("aptos_coin").unwrap(),
@@ -293,8 +313,8 @@ fn then_module_name(world: &mut TestWorld, name: String) {
 
 #[given(expr = "a MoveModuleId with address {string} and name {string}")]
 fn given_move_module_id(world: &mut TestWorld, addr: String, name: String) {
-    use aptos_rust_sdk_v2::AccountAddress;
     use aptos_rust_sdk_v2::types::Identifier;
+    use aptos_rust_sdk_v2::AccountAddress;
     world.module_id = Some(MoveModuleId {
         address: AccountAddress::from_hex(&addr).unwrap(),
         name: Identifier::new(&name).unwrap(),
@@ -310,10 +330,12 @@ fn then_parsing_fail_generic(world: &mut TestWorld) {
 // MoveStructTag
 // =============================================================================
 
-#[given(regex = r#"^address "([^"]+)", module "([^"]+)", name "([^"]+)", and type args \[AptosCoin\]$"#)]
+#[given(
+    regex = r#"^address "([^"]+)", module "([^"]+)", name "([^"]+)", and type args \[AptosCoin\]$"#
+)]
 fn given_struct_tag_components(world: &mut TestWorld, addr: String, module: String, name: String) {
-    use aptos_rust_sdk_v2::AccountAddress;
     use aptos_rust_sdk_v2::types::Identifier;
+    use aptos_rust_sdk_v2::AccountAddress;
     let aptos_coin = MoveStructTag {
         address: AccountAddress::from_hex("0x1").unwrap(),
         module: Identifier::new("aptos_coin").unwrap(),
@@ -356,7 +378,10 @@ fn when_bcs_serialize_type_tag(world: &mut TestWorld) {
 
 #[then(expr = "the first byte should be the {word} variant index")]
 fn then_first_byte_variant_index(world: &mut TestWorld, _variant: String) {
-    let bytes = world.serialized_bytes.as_ref().expect("No serialized bytes");
+    let bytes = world
+        .serialized_bytes
+        .as_ref()
+        .expect("No serialized bytes");
     // U64 is index 3 in the TypeTag enum
     assert!(!bytes.is_empty());
 }
@@ -376,7 +401,10 @@ fn then_serialization_succeed(world: &mut TestWorld) {
 
 #[then(expr = "the result should be deserializable back to the same TypeTag")]
 fn then_deserializable_back(world: &mut TestWorld) {
-    let bytes = world.serialized_bytes.as_ref().expect("No serialized bytes");
+    let bytes = world
+        .serialized_bytes
+        .as_ref()
+        .expect("No serialized bytes");
     let deserialized: TypeTag = aptos_bcs::from_bytes(bytes).expect("Failed to deserialize");
     let original = world.type_tag.as_ref().expect("No original TypeTag");
     assert_eq!(&deserialized, original);
@@ -385,14 +413,15 @@ fn then_deserializable_back(world: &mut TestWorld) {
 #[when(expr = "I BCS serialize and deserialize it")]
 fn when_bcs_roundtrip(world: &mut TestWorld) {
     use aptos_rust_sdk_v2::transaction::RawTransaction;
-    
+
     if let Some(ref tag) = world.type_tag {
         let bytes = aptos_bcs::to_bytes(tag).expect("Failed to serialize");
         let deserialized: TypeTag = aptos_bcs::from_bytes(&bytes).expect("Failed to deserialize");
         world.type_tag_deserialized = Some(deserialized);
     } else if let Some(ref raw_tx) = world.raw_transaction {
         let bytes = aptos_bcs::to_bytes(raw_tx).expect("Failed to serialize");
-        let deserialized: RawTransaction = aptos_bcs::from_bytes(&bytes).expect("Failed to deserialize");
+        let deserialized: RawTransaction =
+            aptos_bcs::from_bytes(&bytes).expect("Failed to deserialize");
         world.raw_transaction2 = Some(deserialized);
     } else if let Some(ref module_id) = world.module_id {
         let bytes = aptos_bcs::to_bytes(module_id).expect("Failed to serialize");
@@ -408,6 +437,9 @@ fn when_bcs_roundtrip(world: &mut TestWorld) {
 #[then(expr = "the result should equal the original TypeTag")]
 fn then_result_equals_original(world: &mut TestWorld) {
     let original = world.type_tag.as_ref().expect("No original TypeTag");
-    let deserialized = world.type_tag_deserialized.as_ref().expect("No deserialized TypeTag");
+    let deserialized = world
+        .type_tag_deserialized
+        .as_ref()
+        .expect("No deserialized TypeTag");
     assert_eq!(original, deserialized);
 }

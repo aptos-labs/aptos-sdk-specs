@@ -3,23 +3,23 @@ Step definitions for simulation.feature
 Tests transaction simulation for validation and gas estimation.
 """
 
-import sys
-import os
-import asyncio
-import hashlib
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
-
-from behave import given, when, then
-from aptos_sdk.async_client import RestClient
-from aptos_sdk.account import Account
-from aptos_sdk.account_address import AccountAddress
-from aptos_sdk.bcs import Serializer
+import time
 from aptos_sdk.transactions import (
     RawTransaction,
     TransactionPayload,
     EntryFunction,
 )
-import time
+from aptos_sdk.bcs import Serializer
+from aptos_sdk.account_address import AccountAddress
+from aptos_sdk.account import Account
+from aptos_sdk.async_client import RestClient
+from behave import given, when, then
+import sys
+import os
+import asyncio
+import hashlib
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 
 # Helper to run async functions synchronously
@@ -46,23 +46,18 @@ def step_given_simulation_client(context):
 def step_given_transaction_to_simulate(context):
     context.world.account = Account.generate()
     sender = context.world.account.address()
-    
+
     encoded_args = []
     serializer = Serializer()
     serializer.struct(AccountAddress.from_str("0x1"))
     encoded_args.append(serializer.output())
-    
+
     serializer = Serializer()
     serializer.u64(1000)
     encoded_args.append(serializer.output())
-    
-    payload = EntryFunction.natural(
-        "0x1::aptos_account",
-        "transfer",
-        [],
-        encoded_args
-    )
-    
+
+    payload = EntryFunction.natural("0x1::aptos_account", "transfer", [], encoded_args)
+
     context.world.raw_transaction = RawTransaction(
         sender=sender,
         sequence_number=0,
@@ -78,24 +73,19 @@ def step_given_transaction_to_simulate(context):
 def step_given_failing_transaction(context):
     context.world.account = Account.generate()
     sender = context.world.account.address()
-    
+
     # Create a transaction that will fail (e.g., transfer more than balance)
     encoded_args = []
     serializer = Serializer()
     serializer.struct(AccountAddress.from_str("0x1"))
     encoded_args.append(serializer.output())
-    
+
     serializer = Serializer()
     serializer.u64(999999999999999)  # Very large amount
     encoded_args.append(serializer.output())
-    
-    payload = EntryFunction.natural(
-        "0x1::aptos_account",
-        "transfer",
-        [],
-        encoded_args
-    )
-    
+
+    payload = EntryFunction.natural("0x1::aptos_account", "transfer", [], encoded_args)
+
     context.world.raw_transaction = RawTransaction(
         sender=sender,
         sequence_number=0,
@@ -111,14 +101,11 @@ def step_given_failing_transaction(context):
 def step_given_invalid_module_transaction(context):
     context.world.account = Account.generate()
     sender = context.world.account.address()
-    
+
     payload = EntryFunction.natural(
-        "0x1::nonexistent_module",
-        "nonexistent_function",
-        [],
-        []
+        "0x1::nonexistent_module", "nonexistent_function", [], []
     )
-    
+
     context.world.raw_transaction = RawTransaction(
         sender=sender,
         sequence_number=0,
@@ -138,17 +125,17 @@ def step_given_invalid_module_transaction(context):
 @when("I simulate the transaction")
 def step_simulate_transaction(context):
     try:
+
         async def _simulate():
             client = RestClient(context.world.network_url)
             try:
                 result = await client.simulate_transaction(
-                    context.world.raw_transaction,
-                    context.world.account
+                    context.world.raw_transaction, context.world.account
                 )
                 return result
             finally:
                 await client.close()
-        
+
         context.world.result = run_async(_simulate())
         context.world.clear_error()
     except Exception as e:
@@ -158,18 +145,19 @@ def step_simulate_transaction(context):
 @when("I simulate the transaction with estimate gas unit price")
 def step_simulate_with_estimate_gas(context):
     try:
+
         async def _simulate():
             client = RestClient(context.world.network_url)
             try:
                 result = await client.simulate_transaction(
                     context.world.raw_transaction,
                     context.world.account,
-                    estimate_gas_unit_price=True
+                    estimate_gas_unit_price=True,
                 )
                 return result
             finally:
                 await client.close()
-        
+
         context.world.result = run_async(_simulate())
         context.world.clear_error()
     except Exception as e:
@@ -179,18 +167,19 @@ def step_simulate_with_estimate_gas(context):
 @when("I simulate the transaction with estimate max gas")
 def step_simulate_with_estimate_max_gas(context):
     try:
+
         async def _simulate():
             client = RestClient(context.world.network_url)
             try:
                 result = await client.simulate_transaction(
                     context.world.raw_transaction,
                     context.world.account,
-                    estimate_max_gas_amount=True
+                    estimate_max_gas_amount=True,
                 )
                 return result
             finally:
                 await client.close()
-        
+
         context.world.result = run_async(_simulate())
         context.world.clear_error()
     except Exception as e:
@@ -200,18 +189,19 @@ def step_simulate_with_estimate_max_gas(context):
 @when("I simulate the transaction with estimate prioritized gas")
 def step_simulate_with_prioritized_gas(context):
     try:
+
         async def _simulate():
             client = RestClient(context.world.network_url)
             try:
                 result = await client.simulate_transaction(
                     context.world.raw_transaction,
                     context.world.account,
-                    estimate_prioritized_gas_unit_price=True
+                    estimate_prioritized_gas_unit_price=True,
                 )
                 return result
             finally:
                 await client.close()
-        
+
         context.world.result = run_async(_simulate())
         context.world.clear_error()
     except Exception as e:
@@ -343,11 +333,15 @@ def step_simulation_insufficient_balance(context):
     result = context.world.result
     if isinstance(result, list) and len(result) > 0:
         result = result[0]
-    
+
     vm_status = result.get("vm_status", "")
     success = result.get("success", True)
-    
-    assert not success or "insufficient" in vm_status.lower() or "balance" in vm_status.lower()
+
+    assert (
+        not success
+        or "insufficient" in vm_status.lower()
+        or "balance" in vm_status.lower()
+    )
 
 
 @then("the simulation should show module not found")
@@ -355,34 +349,35 @@ def step_simulation_module_not_found(context):
     result = context.world.result
     if isinstance(result, list) and len(result) > 0:
         result = result[0]
-    
+
     vm_status = result.get("vm_status", "")
     success = result.get("success", True)
-    
-    assert not success or "not found" in vm_status.lower() or "module" in vm_status.lower()
+
+    assert (
+        not success or "not found" in vm_status.lower() or "module" in vm_status.lower()
+    )
 
 
 @then("the simulation result should be deterministic")
 def step_simulation_deterministic(context):
     # Simulate twice and compare
     result1 = context.world.result
-    
+
     async def _simulate_again():
         client = RestClient(context.world.network_url)
         try:
             return await client.simulate_transaction(
-                context.world.raw_transaction,
-                context.world.account
+                context.world.raw_transaction, context.world.account
             )
         finally:
             await client.close()
-    
+
     result2 = run_async(_simulate_again())
-    
+
     # Compare gas_used
     if isinstance(result1, list):
         result1 = result1[0] if result1 else {}
     if isinstance(result2, list):
         result2 = result2[0] if result2 else {}
-    
+
     assert result1.get("gas_used") == result2.get("gas_used")

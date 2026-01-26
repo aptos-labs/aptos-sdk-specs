@@ -1,4 +1,4 @@
-.PHONY: test test-required test-preferred test-optional deps setup
+.PHONY: test test-required test-preferred test-optional deps setup format lint
 
 # Setup - run this first to initialize dependencies
 setup:
@@ -59,3 +59,14 @@ test-network:
 test-local:
 	GODOG_TAGS="@core-types or @cryptography or @transactions" go test -v ./...
 
+# Run performance benchmarks
+test-performance:
+	GODOG_TAGS=@performance go test -v ./...
+
+# Format code
+format:
+	go fmt ./...
+
+# Lint code
+lint:
+	golangci-lint run ./...

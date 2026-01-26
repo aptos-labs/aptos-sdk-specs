@@ -2,7 +2,7 @@
 # Uses CMake + Conan for building
 
 .PHONY: all build test test-required test-preferred test-core-types test-cryptography \
-        test-accounts test-transactions clean install-deps help
+        test-accounts test-transactions clean install-deps format lint help
 
 # Default target
 all: build
@@ -97,6 +97,14 @@ clean:
 
 # Full rebuild
 rebuild: clean build
+
+# Format code (requires clang-format)
+format:
+	find src -name '*.cpp' -o -name '*.hpp' | xargs clang-format -i 2>/dev/null || echo "Install clang-format: brew install clang-format"
+
+# Lint code (requires clang-tidy or cppcheck)
+lint:
+	clang-tidy src/*.cpp 2>/dev/null || cppcheck src/ 2>/dev/null || echo "Install clang-tidy or cppcheck"
 
 # =============================================================================
 # Help

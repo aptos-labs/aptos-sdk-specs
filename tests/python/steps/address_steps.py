@@ -3,14 +3,6 @@ Step definitions for address.feature
 Tests AccountAddress parsing, formatting, and BCS serialization.
 """
 
-import sys
-import os
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
-
-from behave import given, when, then
-from aptos_sdk.account_address import AccountAddress
-from aptos_sdk.bcs import Serializer, Deserializer
-
 from support.vectors import (
     get_address_parsing_vectors,
     get_address_constants,
@@ -18,6 +10,13 @@ from support.vectors import (
     hex_to_bytes,
     bytes_to_hex,
 )
+from aptos_sdk.bcs import Serializer, Deserializer
+from aptos_sdk.account_address import AccountAddress
+from behave import given, when, then
+import sys
+import os
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 
 # =============================================================================
@@ -204,7 +203,9 @@ def step_given_two_addresses(context, addr1, addr2):
 @when("I parse the address")
 def step_parse_address(context):
     try:
-        context.world.address = AccountAddress.from_str_relaxed(context.world.hex_string)
+        context.world.address = AccountAddress.from_str_relaxed(
+            context.world.hex_string
+        )
         context.world.clear_error()
     except Exception as e:
         context.world.set_error(e)
@@ -233,7 +234,9 @@ def step_create_address_from_bytes(context):
 @when("I try to parse it as an address")
 def step_try_parse_address(context):
     try:
-        context.world.address = AccountAddress.from_str_relaxed(context.world.hex_string)
+        context.world.address = AccountAddress.from_str_relaxed(
+            context.world.hex_string
+        )
         context.world.clear_error()
     except Exception as e:
         context.world.set_error(e)
@@ -356,13 +359,15 @@ def step_parsing_should_succeed(context):
     assert context.world.error is None, f"Expected no error, got: {context.world.error}"
     # Check various things that might be set after parsing
     has_something = (
-        context.world.address is not None 
+        context.world.address is not None
         or context.world.result is not None
-        or getattr(context.world, 'type_tag', None) is not None
-        or getattr(context.world, 'module_address', None) is not None
-        or getattr(context.world, 'hash_value', None) is not None
+        or getattr(context.world, "type_tag", None) is not None
+        or getattr(context.world, "module_address", None) is not None
+        or getattr(context.world, "hash_value", None) is not None
     )
-    assert has_something, "Expected address, result, type_tag, module_address, or hash_value to be set"
+    assert (
+        has_something
+    ), "Expected address, result, type_tag, module_address, or hash_value to be set"
 
 
 @then("I should get a valid AccountAddress")
@@ -525,12 +530,16 @@ def step_should_equal_address(context, expected):
 
 @then("the two addresses should be equal")
 def step_two_addresses_equal(context):
-    assert to_full_hex(context.world.addresses[0]) == to_full_hex(context.world.addresses[1])
+    assert to_full_hex(context.world.addresses[0]) == to_full_hex(
+        context.world.addresses[1]
+    )
 
 
 @then("the two addresses should not be equal")
 def step_two_addresses_not_equal(context):
-    assert to_full_hex(context.world.addresses[0]) != to_full_hex(context.world.addresses[1])
+    assert to_full_hex(context.world.addresses[0]) != to_full_hex(
+        context.world.addresses[1]
+    )
 
 
 @then("they should be equal")

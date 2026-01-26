@@ -1,0 +1,353 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+# Cancel in-progress runs for the same branch
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ==========================================================================
+  # Formatting & Linting
+  # ==========================================================================
+  format-check:
+    name: Format Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Check formatting
+        run: bun run format:check
+
+  # ==========================================================================
+  # TypeScript Tests
+  # ==========================================================================
+  typescript:
+    name: TypeScript Tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: tests/typescript
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Lint
+        run: bun run lint
+        continue-on-error: true
+
+      - name: Run required tests
+        run: bun run test:required
+
+      - name: Run preferred tests
+        run: bun run test:preferred
+        continue-on-error: true
+
+      - name: Run optional tests
+        run: bun run test:optional
+        continue-on-error: true
+
+  # ==========================================================================
+  # Go Tests
+  # ==========================================================================
+  go:
+    name: Go Tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: tests/go
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.22"
+          cache-dependency-path: tests/go/go.sum
+
+      - name: Install dependencies
+        run: go mod download
+
+      - name: Lint
+        run: go vet ./...
+        continue-on-error: true
+
+      - name: Run required tests
+        run: make test-required
+
+      - name: Run preferred tests
+        run: make test-preferred
+        continue-on-error: true
+
+      - name: Run optional tests
+        run: make test-optional
+        continue-on-error: true
+
+  # ==========================================================================
+  # Rust Tests
+  # ==========================================================================
+  rust:
+    name: Rust Tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: tests/rust
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Rust
+        uses: dtolnay/rust-action@stable
+        with:
+          components: clippy
+
+      - name: Cache cargo
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            tests/rust/target/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('tests/rust/Cargo.lock') }}
+
+      - name: Lint
+        run: cargo clippy --test specs -- -D warnings
+        continue-on-error: true
+
+      - name: Run required tests
+        run: make test-required
+
+      - name: Run preferred tests
+        run: make test-preferred
+        continue-on-error: true
+
+  # ==========================================================================
+  # Python Tests
+  # ==========================================================================
+  python:
+    name: Python Tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: tests/python
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+          cache-dependency-path: tests/python/requirements.txt
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Lint
+        run: python -m flake8 steps/ support/ || true
+        continue-on-error: true
+
+      - name: Run required tests
+        run: make test-required
+
+      - name: Run preferred tests
+        run: make test-preferred
+        continue-on-error: true
+
+  # ==========================================================================
+  # .NET Tests
+  # ==========================================================================
+  dotnet:
+    name: .NET Tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: tests/dotnet
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --no-restore
+
+      - name: Run required tests
+        run: make test-required
+
+      - name: Run preferred tests
+        run: make test-preferred
+        continue-on-error: true
+
+  # ==========================================================================
+  # Java Tests
+  # ==========================================================================
+  java:
+    name: Java Tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: tests/java
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "21"
+          cache: "maven"
+
+      - name: Run required tests
+        run: make test-required
+
+      - name: Run preferred tests
+        run: make test-preferred
+        continue-on-error: true
+
+  # ==========================================================================
+  # Kotlin Tests
+  # ==========================================================================
+  kotlin:
+    name: Kotlin Tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: tests/kotlin
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "21"
+          cache: "gradle"
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Run required tests
+        run: make test-required
+
+      - name: Run preferred tests
+        run: make test-preferred
+        continue-on-error: true
+
+  # ==========================================================================
+  # Swift Tests (macOS only)
+  # ==========================================================================
+  swift:
+    name: Swift Tests
+    runs-on: macos-latest
+    defaults:
+      run:
+        working-directory: tests/swift
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup features
+        run: make link-features
+
+      - name: Build
+        run: swift build
+
+      - name: Run tests
+        run: swift test
+        continue-on-error: true
+
+  # ==========================================================================
+  # C++ Tests
+  # ==========================================================================
+  cpp:
+    name: C++ Tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: tests/cpp
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake ninja-build
+
+      - name: Setup Conan
+        run: |
+          pip install conan
+          conan profile detect
+
+      - name: Install Conan dependencies
+        run: conan install . --output-folder=build --build=missing
+
+      - name: Build
+        run: |
+          cmake -S . -B build -DCMAKE_TOOLCHAIN_FILE=build/conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Release -G Ninja
+          cmake --build build
+
+      - name: Run tests
+        run: ./build/aptos_spec_tests ../../features --tags "@required"
+        continue-on-error: true
+
+  # ==========================================================================
+  # Summary Job
+  # ==========================================================================
+  ci-success:
+    name: CI Success
+    runs-on: ubuntu-latest
+    needs:
+      - format-check
+      - typescript
+      - go
+      - rust
+      - python
+      - dotnet
+      - java
+      - kotlin
+      - swift
+      - cpp
+    if: always()
+    steps:
+      - name: Check required jobs
+        run: |
+          # Format check and TypeScript must pass
+          if [[ "${{ needs.format-check.result }}" != "success" ]]; then
+            echo "Format check failed"
+            exit 1
+          fi
+          if [[ "${{ needs.typescript.result }}" != "success" ]]; then
+            echo "TypeScript tests failed"
+            exit 1
+          fi
+          if [[ "${{ needs.go.result }}" != "success" ]]; then
+            echo "Go tests failed"
+            exit 1
+          fi
+          echo "All required checks passed!"

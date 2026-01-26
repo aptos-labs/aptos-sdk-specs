@@ -77,17 +77,21 @@ fn given_account_with_modules(world: &mut TestWorld) {
 
 #[given("a known transaction hash")]
 fn given_known_tx_hash(world: &mut TestWorld) {
-    world.hex_string = Some("0x0000000000000000000000000000000000000000000000000000000000000001".to_string());
+    world.hex_string =
+        Some("0x0000000000000000000000000000000000000000000000000000000000000001".to_string());
 }
 
 #[given("a non-existent transaction hash")]
 fn given_nonexistent_tx_hash(world: &mut TestWorld) {
-    world.hex_string = Some("0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef".to_string());
+    world.hex_string =
+        Some("0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef".to_string());
 }
 
 #[given("a known ledger version")]
 fn given_known_ledger_version(world: &mut TestWorld) {
-    world.named_values.insert("ledger_version".to_string(), "12345".to_string());
+    world
+        .named_values
+        .insert("ledger_version".to_string(), "12345".to_string());
 }
 
 #[given("an account with transaction history")]
@@ -120,12 +124,16 @@ fn given_client_short_timeout(world: &mut TestWorld) {
 #[given("a malformed request")]
 fn given_malformed_request(world: &mut TestWorld) {
     // We'll test error handling in the when step
-    world.named_values.insert("test_error".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("test_error".to_string(), "true".to_string());
 }
 
 #[given("many rapid requests")]
 fn given_many_rapid_requests(world: &mut TestWorld) {
-    world.named_values.insert("rapid_requests".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("rapid_requests".to_string(), "true".to_string());
 }
 
 // =============================================================================
@@ -154,12 +162,10 @@ fn when_create_mainnet_client(world: &mut TestWorld) {
 fn when_create_custom_client(world: &mut TestWorld) {
     if let Some(ref url) = world.string_value {
         match AptosConfig::custom(url) {
-            Ok(config) => {
-                match FullnodeClient::new(config.without_retry()) {
-                    Ok(client) => world.fullnode_client = Some(client),
-                    Err(e) => world.set_error(e),
-                }
-            }
+            Ok(config) => match FullnodeClient::new(config.without_retry()) {
+                Ok(client) => world.fullnode_client = Some(client),
+                Err(e) => world.set_error(e),
+            },
             Err(e) => world.set_error(e),
         }
     }
@@ -180,95 +186,134 @@ fn when_create_client_timeout(world: &mut TestWorld) {
 fn when_request_ledger_info(world: &mut TestWorld) {
     // For now, just mark that we requested it
     // Actual network tests would use mocking or integration tests
-    world.named_values.insert("ledger_info_requested".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("ledger_info_requested".to_string(), "true".to_string());
 }
 
 #[when("I get the ledger info")]
 fn when_get_ledger_info(world: &mut TestWorld) {
-    world.named_values.insert("ledger_info_requested".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("ledger_info_requested".to_string(), "true".to_string());
 }
 
 #[when("I get account info for the address")]
 fn when_get_account_info(world: &mut TestWorld) {
-    world.named_values.insert("account_info_requested".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("account_info_requested".to_string(), "true".to_string());
 }
 
 #[when(expr = "I get account info for {string}")]
 fn when_get_account_info_for(world: &mut TestWorld, addr: String) {
     world.address = AccountAddress::from_hex(&addr).ok();
-    world.named_values.insert("account_info_requested".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("account_info_requested".to_string(), "true".to_string());
 }
 
 #[when("I get account resources")]
 fn when_get_account_resources(world: &mut TestWorld) {
-    world.named_values.insert("resources_requested".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("resources_requested".to_string(), "true".to_string());
 }
 
 #[when(expr = "I get resource {string}")]
 fn when_get_specific_resource(world: &mut TestWorld, resource_type: String) {
-    world.named_values.insert("resource_type".to_string(), resource_type);
+    world
+        .named_values
+        .insert("resource_type".to_string(), resource_type);
 }
 
 #[when("I get a resource type that doesn't exist")]
 fn when_get_nonexistent_resource(world: &mut TestWorld) {
-    world.named_values.insert("resource_type".to_string(), "0x1::nonexistent::Type".to_string());
+    world.named_values.insert(
+        "resource_type".to_string(),
+        "0x1::nonexistent::Type".to_string(),
+    );
 }
 
 #[when("I get account modules")]
 fn when_get_account_modules(world: &mut TestWorld) {
-    world.named_values.insert("modules_requested".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("modules_requested".to_string(), "true".to_string());
 }
 
 #[when("I get transaction by hash")]
 fn when_get_tx_by_hash(world: &mut TestWorld) {
-    world.named_values.insert("tx_by_hash_requested".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("tx_by_hash_requested".to_string(), "true".to_string());
 }
 
 #[when("I get transaction by version")]
 fn when_get_tx_by_version(world: &mut TestWorld) {
-    world.named_values.insert("tx_by_version_requested".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("tx_by_version_requested".to_string(), "true".to_string());
 }
 
 #[when("I get account transactions")]
 fn when_get_account_transactions(world: &mut TestWorld) {
-    world.named_values.insert("account_txs_requested".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("account_txs_requested".to_string(), "true".to_string());
 }
 
 #[when("I get account transactions with start=10 and limit=5")]
 fn when_get_account_txs_paginated(world: &mut TestWorld) {
-    world.named_values.insert("pagination_start".to_string(), "10".to_string());
-    world.named_values.insert("pagination_limit".to_string(), "5".to_string());
+    world
+        .named_values
+        .insert("pagination_start".to_string(), "10".to_string());
+    world
+        .named_values
+        .insert("pagination_limit".to_string(), "5".to_string());
 }
 
 #[when("I make any API request")]
 fn when_make_any_request(world: &mut TestWorld) {
-    world.named_values.insert("any_request".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("any_request".to_string(), "true".to_string());
 }
 
 #[when("I get ledger info twice with delay")]
 fn when_get_ledger_info_twice(world: &mut TestWorld) {
-    world.named_values.insert("ledger_info_twice".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("ledger_info_twice".to_string(), "true".to_string());
 }
 
 #[when("I try to make a request")]
 fn when_try_make_request(world: &mut TestWorld) {
     // Network/timeout error expected
-    world.named_values.insert("error_request".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("error_request".to_string(), "true".to_string());
 }
 
 #[when("the API returns an error")]
 fn when_api_returns_error(world: &mut TestWorld) {
-    world.named_values.insert("api_error".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("api_error".to_string(), "true".to_string());
 }
 
 #[when("the API returns 429")]
 fn when_api_rate_limited(world: &mut TestWorld) {
-    world.named_values.insert("rate_limited".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("rate_limited".to_string(), "true".to_string());
 }
 
 #[when("I get the CoinInfo resource for AptosCoin")]
 fn when_get_coin_info(world: &mut TestWorld) {
-    world.named_values.insert("coin_info_requested".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("coin_info_requested".to_string(), "true".to_string());
 }
 
 // =============================================================================
@@ -311,9 +356,14 @@ fn then_base_url_is(world: &mut TestWorld, expected: String) {
 
 #[then("the client should use that URL for requests")]
 fn then_client_uses_custom_url(world: &mut TestWorld) {
-    if let (Some(ref client), Some(ref expected_url)) = (&world.fullnode_client, &world.string_value) {
+    if let (Some(ref client), Some(ref expected_url)) =
+        (&world.fullnode_client, &world.string_value)
+    {
         assert!(
-            client.base_url().as_str().starts_with(expected_url.trim_end_matches("/v1")),
+            client
+                .base_url()
+                .as_str()
+                .starts_with(expected_url.trim_end_matches("/v1")),
             "Client should use custom URL"
         );
     }
@@ -360,7 +410,9 @@ fn then_receive_auth_key(world: &mut TestWorld) {
 #[then("I should receive a 404 NotFound error")]
 fn then_receive_404(world: &mut TestWorld) {
     // Would be set by actual request in integration tests
-    world.named_values.insert("expected_404".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("expected_404".to_string(), "true".to_string());
 }
 
 #[then("I should receive a list of resources")]
@@ -427,12 +479,18 @@ fn then_txs_for_account(world: &mut TestWorld) {
 
 #[then("I should receive at most 5 transactions")]
 fn then_receive_max_5_txs(world: &mut TestWorld) {
-    assert_eq!(world.named_values.get("pagination_limit"), Some(&"5".to_string()));
+    assert_eq!(
+        world.named_values.get("pagination_limit"),
+        Some(&"5".to_string())
+    );
 }
 
 #[then("they should start from the specified offset")]
 fn then_start_from_offset(world: &mut TestWorld) {
-    assert_eq!(world.named_values.get("pagination_start"), Some(&"10".to_string()));
+    assert_eq!(
+        world.named_values.get("pagination_start"),
+        Some(&"10".to_string())
+    );
 }
 
 #[then("the response should include ledger state")]
@@ -462,12 +520,16 @@ fn then_ledger_version_increases(world: &mut TestWorld) {
 
 #[then("I should receive a Network error")]
 fn then_receive_network_error(world: &mut TestWorld) {
-    world.named_values.insert("network_error_expected".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("network_error_expected".to_string(), "true".to_string());
 }
 
 #[then("I should receive a Timeout error")]
 fn then_receive_timeout_error(world: &mut TestWorld) {
-    world.named_values.insert("timeout_error_expected".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("timeout_error_expected".to_string(), "true".to_string());
 }
 
 #[then("the error should contain the message")]
@@ -513,12 +575,16 @@ fn then_see_name(world: &mut TestWorld, name: String) {
 
 #[then(expr = "I should see symbol {string}")]
 fn then_see_symbol(world: &mut TestWorld, symbol: String) {
-    world.named_values.insert("expected_symbol".to_string(), symbol);
+    world
+        .named_values
+        .insert("expected_symbol".to_string(), symbol);
 }
 
 #[then("I should see decimals 8")]
 fn then_see_decimals_8(world: &mut TestWorld) {
-    world.named_values.insert("expected_decimals".to_string(), "8".to_string());
+    world
+        .named_values
+        .insert("expected_decimals".to_string(), "8".to_string());
 }
 
 // =============================================================================
@@ -531,7 +597,10 @@ fn when_create_faucet_testnet(world: &mut TestWorld) {
     match FaucetClient::new(config) {
         Ok(client) => {
             world.faucet_client = Some(client);
-            world.named_values.insert("faucet_url".to_string(), "https://faucet.testnet.aptoslabs.com".to_string());
+            world.named_values.insert(
+                "faucet_url".to_string(),
+                "https://faucet.testnet.aptoslabs.com".to_string(),
+            );
         }
         Err(e) => world.set_error(e),
     }
@@ -543,7 +612,10 @@ fn when_create_faucet_devnet(world: &mut TestWorld) {
     match FaucetClient::new(config) {
         Ok(client) => {
             world.faucet_client = Some(client);
-            world.named_values.insert("faucet_url".to_string(), "https://faucet.devnet.aptoslabs.com".to_string());
+            world.named_values.insert(
+                "faucet_url".to_string(),
+                "https://faucet.devnet.aptoslabs.com".to_string(),
+            );
         }
         Err(e) => world.set_error(e),
     }
@@ -555,7 +627,10 @@ fn when_create_faucet_localnet(world: &mut TestWorld) {
     match FaucetClient::new(config) {
         Ok(client) => {
             world.faucet_client = Some(client);
-            world.named_values.insert("faucet_url".to_string(), "http://localhost:8081".to_string());
+            world.named_values.insert(
+                "faucet_url".to_string(),
+                "http://localhost:8081".to_string(),
+            );
         }
         Err(e) => world.set_error(e),
     }
@@ -563,7 +638,9 @@ fn when_create_faucet_localnet(world: &mut TestWorld) {
 
 #[given(expr = "a custom faucet URL {string}")]
 fn given_custom_faucet_url(world: &mut TestWorld, url: String) {
-    world.named_values.insert("custom_faucet_url".to_string(), url);
+    world
+        .named_values
+        .insert("custom_faucet_url".to_string(), url);
 }
 
 #[when("I create a faucet client with the custom URL")]
@@ -583,7 +660,11 @@ fn when_create_custom_faucet(world: &mut TestWorld) {
 fn when_try_faucet_mainnet(world: &mut TestWorld) {
     let config = AptosConfig::mainnet();
     match FaucetClient::new(config) {
-        Ok(_) => { world.named_values.insert("faucet_created".to_string(), "true".to_string()); }
+        Ok(_) => {
+            world
+                .named_values
+                .insert("faucet_created".to_string(), "true".to_string());
+        }
         Err(e) => world.set_error(e),
     }
 }
@@ -651,17 +732,23 @@ fn given_aptos_mainnet(world: &mut TestWorld) {
 
 #[given("a successful funding request")]
 fn given_successful_funding(world: &mut TestWorld) {
-    world.named_values.insert("funding_success".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("funding_success".to_string(), "true".to_string());
 }
 
 #[given("many rapid funding requests")]
 fn given_rapid_funding_requests(world: &mut TestWorld) {
-    world.named_values.insert("rapid_funding".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("rapid_funding".to_string(), "true".to_string());
 }
 
 #[given("a faucet endpoint that is down")]
 fn given_faucet_down(world: &mut TestWorld) {
-    world.named_values.insert("faucet_down".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("faucet_down".to_string(), "true".to_string());
 }
 
 #[given("an invalid address string")]
@@ -671,106 +758,148 @@ fn given_invalid_address_string(world: &mut TestWorld) {
 
 #[given("a very short timeout (1ms)")]
 fn given_short_timeout(world: &mut TestWorld) {
-    world.named_values.insert("short_timeout".to_string(), "1".to_string());
+    world
+        .named_values
+        .insert("short_timeout".to_string(), "1".to_string());
 }
 
 // Funding when steps - these would need network in integration tests
 #[when("I request funding for the account")]
 fn when_request_funding(world: &mut TestWorld) {
-    world.named_values.insert("funding_requested".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("funding_requested".to_string(), "true".to_string());
 }
 
 #[when("I request funding for 100_000_000 octas (1 APT)")]
 fn when_request_funding_1_apt(world: &mut TestWorld) {
-    world.named_values.insert("funding_amount".to_string(), "100000000".to_string());
+    world
+        .named_values
+        .insert("funding_amount".to_string(), "100000000".to_string());
 }
 
 #[when("I fund the account")]
 fn when_fund_account(world: &mut TestWorld) {
-    world.named_values.insert("funding_requested".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("funding_requested".to_string(), "true".to_string());
 }
 
 #[when("I fund the account with 1 APT more")]
 fn when_fund_1_apt_more(world: &mut TestWorld) {
-    world.named_values.insert("additional_funding".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("additional_funding".to_string(), "true".to_string());
 }
 
 #[when("I fund the account 3 times")]
 fn when_fund_3_times(world: &mut TestWorld) {
-    world.named_values.insert("funding_count".to_string(), "3".to_string());
+    world
+        .named_values
+        .insert("funding_count".to_string(), "3".to_string());
 }
 
 #[when("I wait for the funding transaction")]
 fn when_wait_for_funding(world: &mut TestWorld) {
-    world.named_values.insert("wait_for_funding".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("wait_for_funding".to_string(), "true".to_string());
 }
 
 #[when("I call fund_and_wait")]
 fn when_fund_and_wait(world: &mut TestWorld) {
-    world.named_values.insert("fund_and_wait".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("fund_and_wait".to_string(), "true".to_string());
 }
 
 #[when("I try to fund and wait")]
 fn when_try_fund_and_wait(world: &mut TestWorld) {
-    world.named_values.insert("try_fund_and_wait".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("try_fund_and_wait".to_string(), "true".to_string());
 }
 
 #[when("I call create_funded_account with 100_000_000 octas")]
 fn when_create_funded_account(world: &mut TestWorld) {
-    world.named_values.insert("create_funded".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("create_funded".to_string(), "true".to_string());
 }
 
 #[when("I create a funded Ed25519 account")]
 fn when_create_funded_ed25519(world: &mut TestWorld) {
-    world.named_values.insert("create_funded_ed25519".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("create_funded_ed25519".to_string(), "true".to_string());
 }
 
 #[when("I create a funded Secp256k1 account")]
 fn when_create_funded_secp256k1(world: &mut TestWorld) {
-    world.named_values.insert("create_funded_secp256k1".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("create_funded_secp256k1".to_string(), "true".to_string());
 }
 
 #[when("the faucet returns rate limit error")]
 fn when_faucet_rate_limited(world: &mut TestWorld) {
-    world.named_values.insert("faucet_rate_limited".to_string(), "true".to_string());
-    world.named_values.insert("rate_limited".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("faucet_rate_limited".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("rate_limited".to_string(), "true".to_string());
 }
 
 #[when("I try to fund an account")]
 fn when_try_fund(world: &mut TestWorld) {
-    world.named_values.insert("try_fund".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("try_fund".to_string(), "true".to_string());
 }
 
 #[when("I try to fund it")]
 fn when_try_fund_it(world: &mut TestWorld) {
-    world.named_values.insert("try_fund_invalid".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("try_fund_invalid".to_string(), "true".to_string());
 }
 
 #[when("I inspect the response")]
 fn when_inspect_response(world: &mut TestWorld) {
-    world.named_values.insert("inspect_response".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("inspect_response".to_string(), "true".to_string());
 }
 
 #[when("I access the faucet client")]
 fn when_access_faucet(world: &mut TestWorld) {
-    world.named_values.insert("access_faucet".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("access_faucet".to_string(), "true".to_string());
 }
 
 #[when("I try to access the faucet client")]
 fn when_try_access_faucet(world: &mut TestWorld) {
-    world.named_values.insert("try_access_faucet".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("try_access_faucet".to_string(), "true".to_string());
 }
 
 #[when("I call aptos.fund_account(address, amount)")]
 fn when_fund_account_method(world: &mut TestWorld) {
-    world.named_values.insert("fund_account_method".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("fund_account_method".to_string(), "true".to_string());
 }
 
 // Funding then steps
 #[then("the request should succeed")]
 fn then_request_succeeds(world: &mut TestWorld) {
-    assert!(world.named_values.contains_key("funding_requested") || 
-            world.named_values.contains_key("funding_amount"));
+    assert!(
+        world.named_values.contains_key("funding_requested")
+            || world.named_values.contains_key("funding_amount")
+    );
 }
 
 #[then("I should receive transaction hash(es)")]
@@ -785,9 +914,11 @@ fn then_account_created(world: &mut TestWorld) {
 
 #[then("the account should have balance")]
 fn then_account_has_balance(world: &mut TestWorld) {
-    assert!(world.named_values.contains_key("funding_requested") ||
-            world.named_values.contains_key("create_funded") ||
-            world.named_values.contains_key("fund_and_wait"));
+    assert!(
+        world.named_values.contains_key("funding_requested")
+            || world.named_values.contains_key("create_funded")
+            || world.named_values.contains_key("fund_and_wait")
+    );
 }
 
 #[then("the balance should increase")]
@@ -822,7 +953,9 @@ fn then_method_returns_after_confirm(world: &mut TestWorld) {
 
 #[then("it should fail with timeout error")]
 fn then_fails_timeout(world: &mut TestWorld) {
-    world.named_values.insert("timeout_expected".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("timeout_expected".to_string(), "true".to_string());
 }
 
 #[then("I should receive a new account")]
@@ -848,7 +981,10 @@ fn then_account_ed25519_type(world: &mut TestWorld) {
 #[then("it should have balance")]
 fn then_has_balance(world: &mut TestWorld) {
     // Check any funding-related operation
-    assert!(world.named_values.iter().any(|(k, _)| k.contains("funded") || k.contains("funding")));
+    assert!(world
+        .named_values
+        .iter()
+        .any(|(k, _)| k.contains("funded") || k.contains("funding")));
 }
 
 #[then("the account should be Secp256k1 type")]
@@ -863,12 +999,16 @@ fn then_suggest_waiting(world: &mut TestWorld) {
 
 #[then("I should receive a network error")]
 fn then_receive_network_error_faucet(world: &mut TestWorld) {
-    world.named_values.insert("network_error".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("network_error".to_string(), "true".to_string());
 }
 
 #[then("I should receive a validation error")]
 fn then_receive_validation_error(world: &mut TestWorld) {
-    world.named_values.insert("validation_error".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("validation_error".to_string(), "true".to_string());
 }
 
 #[then("I should see one or more transaction hashes")]
@@ -888,7 +1028,9 @@ fn then_faucet_available(world: &mut TestWorld) {
 
 #[then("configured for testnet faucet")]
 fn then_configured_testnet_faucet(world: &mut TestWorld) {
-    assert!(world.named_values.get("faucet_url")
+    assert!(world
+        .named_values
+        .get("faucet_url")
         .map(|u| u.contains("testnet"))
         .unwrap_or(false));
 }
@@ -915,7 +1057,9 @@ fn then_wait_for_confirmation(world: &mut TestWorld) {
 
 #[when(expr = "I call view function {string}")]
 fn when_call_view_function(world: &mut TestWorld, function: String) {
-    world.named_values.insert("view_function".to_string(), function);
+    world
+        .named_values
+        .insert("view_function".to_string(), function);
 }
 
 #[when(regex = r#"^with type arguments \[(.*)\]$"#)]
@@ -930,107 +1074,149 @@ fn when_with_args(world: &mut TestWorld, args: String) {
 
 #[when("with no type arguments")]
 fn when_no_type_args(world: &mut TestWorld) {
-    world.named_values.insert("type_args".to_string(), "".to_string());
+    world
+        .named_values
+        .insert("type_args".to_string(), "".to_string());
 }
 
 #[when("no arguments")]
 fn when_no_args(world: &mut TestWorld) {
-    world.named_values.insert("view_args".to_string(), "".to_string());
+    world
+        .named_values
+        .insert("view_args".to_string(), "".to_string());
 }
 
 #[when("I call a view function that returns multiple values")]
 fn when_call_multi_return_view(world: &mut TestWorld) {
-    world.named_values.insert("multi_return_view".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("multi_return_view".to_string(), "true".to_string());
 }
 
 #[given("a view function expecting an address")]
 fn given_view_expecting_address(world: &mut TestWorld) {
-    world.named_values.insert("view_arg_type".to_string(), "address".to_string());
+    world
+        .named_values
+        .insert("view_arg_type".to_string(), "address".to_string());
 }
 
 #[given("a view function expecting a u64")]
 fn given_view_expecting_u64(world: &mut TestWorld) {
-    world.named_values.insert("view_arg_type".to_string(), "u64".to_string());
+    world
+        .named_values
+        .insert("view_arg_type".to_string(), "u64".to_string());
 }
 
 #[given("a view function expecting a string")]
 fn given_view_expecting_string(world: &mut TestWorld) {
-    world.named_values.insert("view_arg_type".to_string(), "string".to_string());
+    world
+        .named_values
+        .insert("view_arg_type".to_string(), "string".to_string());
 }
 
 #[given("a view function expecting vector<u8>")]
 fn given_view_expecting_vector(world: &mut TestWorld) {
-    world.named_values.insert("view_arg_type".to_string(), "vector<u8>".to_string());
+    world
+        .named_values
+        .insert("view_arg_type".to_string(), "vector<u8>".to_string());
 }
 
 #[given("a view function expecting a bool")]
 fn given_view_expecting_bool(world: &mut TestWorld) {
-    world.named_values.insert("view_arg_type".to_string(), "bool".to_string());
+    world
+        .named_values
+        .insert("view_arg_type".to_string(), "bool".to_string());
 }
 
 #[given("a view function with one type parameter")]
 fn given_view_one_type_param(world: &mut TestWorld) {
-    world.named_values.insert("view_type_params".to_string(), "1".to_string());
+    world
+        .named_values
+        .insert("view_type_params".to_string(), "1".to_string());
 }
 
 #[given("a view function with multiple type parameters")]
 fn given_view_multi_type_params(world: &mut TestWorld) {
-    world.named_values.insert("view_type_params".to_string(), "2".to_string());
+    world
+        .named_values
+        .insert("view_type_params".to_string(), "2".to_string());
 }
 
 #[given("a view function with generic type")]
 fn given_view_generic_type(world: &mut TestWorld) {
-    world.named_values.insert("view_generic".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("view_generic".to_string(), "true".to_string());
 }
 
 #[given("a view function returning u64")]
 fn given_view_returning_u64(world: &mut TestWorld) {
-    world.named_values.insert("view_return_type".to_string(), "u64".to_string());
+    world
+        .named_values
+        .insert("view_return_type".to_string(), "u64".to_string());
 }
 
 #[given("a view function returning a String")]
 fn given_view_returning_string(world: &mut TestWorld) {
-    world.named_values.insert("view_return_type".to_string(), "string".to_string());
+    world
+        .named_values
+        .insert("view_return_type".to_string(), "string".to_string());
 }
 
 #[given("a view function returning bool")]
 fn given_view_returning_bool(world: &mut TestWorld) {
-    world.named_values.insert("view_return_type".to_string(), "bool".to_string());
+    world
+        .named_values
+        .insert("view_return_type".to_string(), "bool".to_string());
 }
 
 #[given("a view function returning vector<u8>")]
 fn given_view_returning_vector(world: &mut TestWorld) {
-    world.named_values.insert("view_return_type".to_string(), "vector<u8>".to_string());
+    world
+        .named_values
+        .insert("view_return_type".to_string(), "vector<u8>".to_string());
 }
 
 #[given("a view function returning a struct")]
 fn given_view_returning_struct(world: &mut TestWorld) {
-    world.named_values.insert("view_return_type".to_string(), "struct".to_string());
+    world
+        .named_values
+        .insert("view_return_type".to_string(), "struct".to_string());
 }
 
 #[given("a view function that can abort")]
 fn given_view_can_abort(world: &mut TestWorld) {
-    world.named_values.insert("view_can_abort".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("view_can_abort".to_string(), "true".to_string());
 }
 
 #[given("a known past ledger version")]
 fn given_past_ledger_version(world: &mut TestWorld) {
-    world.named_values.insert("past_version".to_string(), "1000".to_string());
+    world
+        .named_values
+        .insert("past_version".to_string(), "1000".to_string());
 }
 
 #[given("a ledger version older than oldest available")]
 fn given_too_old_version(world: &mut TestWorld) {
-    world.named_values.insert("too_old_version".to_string(), "1".to_string());
+    world
+        .named_values
+        .insert("too_old_version".to_string(), "1".to_string());
 }
 
 #[when(expr = "I pass address {string} as argument")]
 fn when_pass_address_arg(world: &mut TestWorld, addr: String) {
-    world.named_values.insert("view_arg_value".to_string(), addr);
+    world
+        .named_values
+        .insert("view_arg_value".to_string(), addr);
 }
 
 #[when(expr = "I pass number {int} as argument")]
 fn when_pass_number_arg(world: &mut TestWorld, num: u64) {
-    world.named_values.insert("view_arg_value".to_string(), num.to_string());
+    world
+        .named_values
+        .insert("view_arg_value".to_string(), num.to_string());
 }
 
 #[when(expr = "I pass {string} as argument")]
@@ -1040,12 +1226,16 @@ fn when_pass_string_arg(world: &mut TestWorld, s: String) {
 
 #[when(regex = r#"^I pass bytes \[(.*)\] as argument$"#)]
 fn when_pass_bytes_arg(world: &mut TestWorld, bytes: String) {
-    world.named_values.insert("view_arg_value".to_string(), bytes);
+    world
+        .named_values
+        .insert("view_arg_value".to_string(), bytes);
 }
 
 #[when("I pass true as argument")]
 fn when_pass_true_arg(world: &mut TestWorld) {
-    world.named_values.insert("view_arg_value".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("view_arg_value".to_string(), "true".to_string());
 }
 
 #[when(expr = "I call with type argument {string}")]
@@ -1055,60 +1245,85 @@ fn when_call_with_type_arg(world: &mut TestWorld, type_arg: String) {
 
 #[when(regex = r#"^I call with type arguments \[(.*)\]$"#)]
 fn when_call_with_type_args(world: &mut TestWorld, type_args: String) {
-    world.named_values.insert("type_args".to_string(), type_args);
+    world
+        .named_values
+        .insert("type_args".to_string(), type_args);
 }
 
 #[when("I execute the call")]
 fn when_execute_view_call(world: &mut TestWorld) {
-    world.named_values.insert("view_executed".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("view_executed".to_string(), "true".to_string());
 }
 
 #[when(expr = "I call non-existent view function {string}")]
 fn when_call_nonexistent_view(world: &mut TestWorld, function: String) {
-    world.named_values.insert("nonexistent_view".to_string(), function);
+    world
+        .named_values
+        .insert("nonexistent_view".to_string(), function);
     world.set_error("Function not found");
 }
 
 #[when("I call a view function with wrong argument types")]
 fn when_call_wrong_arg_types(world: &mut TestWorld) {
-    world.named_values.insert("wrong_arg_types".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("wrong_arg_types".to_string(), "true".to_string());
     world.set_error("Type mismatch");
 }
 
 #[when("I call a view function with too few arguments")]
 fn when_call_too_few_args(world: &mut TestWorld) {
-    world.named_values.insert("too_few_args".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("too_few_args".to_string(), "true".to_string());
     world.set_error("Wrong number of arguments");
 }
 
 #[when("I call a generic function without type arguments")]
 fn when_call_without_type_args(world: &mut TestWorld) {
-    world.named_values.insert("missing_type_args".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("missing_type_args".to_string(), "true".to_string());
     world.set_error("Missing type arguments");
 }
 
 #[when("I call with arguments that cause abort")]
 fn when_call_causes_abort(world: &mut TestWorld) {
-    world.named_values.insert("view_aborted".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("view_aborted".to_string(), "true".to_string());
     world.set_error("ABORT_CODE: 12345");
 }
 
 #[when("I call 0x1::coin::balance<0x1::aptos_coin::AptosCoin>")]
 fn when_call_coin_balance(world: &mut TestWorld) {
-    world.named_values.insert("view_function".to_string(), "0x1::coin::balance".to_string());
-    world.named_values.insert("type_args".to_string(), "0x1::aptos_coin::AptosCoin".to_string());
+    world.named_values.insert(
+        "view_function".to_string(),
+        "0x1::coin::balance".to_string(),
+    );
+    world.named_values.insert(
+        "type_args".to_string(),
+        "0x1::aptos_coin::AptosCoin".to_string(),
+    );
 }
 
 #[when("with the account address as argument")]
 fn when_with_account_address_arg(world: &mut TestWorld) {
     if let Some(addr) = world.address.as_ref() {
-        world.named_values.insert("view_args".to_string(), addr.to_string());
+        world
+            .named_values
+            .insert("view_args".to_string(), addr.to_string());
     }
 }
 
 #[when("I call 0x1::account::exists_at")]
 fn when_call_account_exists(world: &mut TestWorld) {
-    world.named_values.insert("view_function".to_string(), "0x1::account::exists_at".to_string());
+    world.named_values.insert(
+        "view_function".to_string(),
+        "0x1::account::exists_at".to_string(),
+    );
 }
 
 #[when(expr = "with address {string} as argument")]
@@ -1118,30 +1333,44 @@ fn when_with_address_arg(world: &mut TestWorld, addr: String) {
 
 #[when("I call 0x1::timestamp::now_seconds")]
 fn when_call_timestamp(world: &mut TestWorld) {
-    world.named_values.insert("view_function".to_string(), "0x1::timestamp::now_seconds".to_string());
+    world.named_values.insert(
+        "view_function".to_string(),
+        "0x1::timestamp::now_seconds".to_string(),
+    );
 }
 
 #[when("I call 0x1::coin::supply<0x1::aptos_coin::AptosCoin>")]
 fn when_call_coin_supply(world: &mut TestWorld) {
-    world.named_values.insert("view_function".to_string(), "0x1::coin::supply".to_string());
-    world.named_values.insert("type_args".to_string(), "0x1::aptos_coin::AptosCoin".to_string());
+    world
+        .named_values
+        .insert("view_function".to_string(), "0x1::coin::supply".to_string());
+    world.named_values.insert(
+        "type_args".to_string(),
+        "0x1::aptos_coin::AptosCoin".to_string(),
+    );
 }
 
 #[when("I call a view function at that version")]
 fn when_call_at_version(world: &mut TestWorld) {
-    world.named_values.insert("view_at_version".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("view_at_version".to_string(), "true".to_string());
 }
 
 #[when("I try to call a view function at that version")]
 fn when_try_call_at_old_version(world: &mut TestWorld) {
-    world.named_values.insert("try_old_version".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("try_old_version".to_string(), "true".to_string());
     world.set_error("State not available");
 }
 
 #[then("the call should succeed")]
 fn then_view_call_succeeds(world: &mut TestWorld) {
-    assert!(world.named_values.contains_key("view_function") || 
-            world.named_values.contains_key("view_executed"));
+    assert!(
+        world.named_values.contains_key("view_function")
+            || world.named_values.contains_key("view_executed")
+    );
 }
 
 #[then("I should receive return values")]
@@ -1151,12 +1380,16 @@ fn then_receive_return_values(world: &mut TestWorld) {
 
 #[then("the result should be a boolean")]
 fn then_result_is_boolean(world: &mut TestWorld) {
-    world.named_values.insert("result_type".to_string(), "bool".to_string());
+    world
+        .named_values
+        .insert("result_type".to_string(), "bool".to_string());
 }
 
 #[then("the result should be a u64")]
 fn then_result_is_u64(world: &mut TestWorld) {
-    world.named_values.insert("result_type".to_string(), "u64".to_string());
+    world
+        .named_values
+        .insert("result_type".to_string(), "u64".to_string());
 }
 
 #[then("I should receive all return values in order")]
@@ -1256,7 +1489,9 @@ fn then_receive_balance_u64(world: &mut TestWorld) {
 
 #[then("I should receive true")]
 fn then_receive_true(world: &mut TestWorld) {
-    world.named_values.insert("result_value".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("result_value".to_string(), "true".to_string());
 }
 
 #[then("I should receive current blockchain timestamp")]
@@ -1291,219 +1526,331 @@ fn given_connected_aptos_client(world: &mut TestWorld) {
 
 #[given("gas price estimates")]
 fn given_gas_estimates(world: &mut TestWorld) {
-    world.named_values.insert("gas_estimate".to_string(), "100".to_string());
-    world.named_values.insert("prioritized_estimate".to_string(), "150".to_string());
-    world.named_values.insert("deprioritized_estimate".to_string(), "50".to_string());
+    world
+        .named_values
+        .insert("gas_estimate".to_string(), "100".to_string());
+    world
+        .named_values
+        .insert("prioritized_estimate".to_string(), "150".to_string());
+    world
+        .named_values
+        .insert("deprioritized_estimate".to_string(), "50".to_string());
 }
 
 #[given("a valid transaction")]
 fn given_valid_transaction(world: &mut TestWorld) {
-    world.named_values.insert("valid_tx".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("valid_tx".to_string(), "true".to_string());
 }
 
 #[given("a transaction simulation result")]
 fn given_simulation_result(world: &mut TestWorld) {
-    world.named_values.insert("gas_used".to_string(), "10000".to_string());
+    world
+        .named_values
+        .insert("gas_used".to_string(), "10000".to_string());
 }
 
 #[given("a simulated and executed transaction")]
 fn given_simulated_and_executed_tx(world: &mut TestWorld) {
-    world.named_values.insert("simulated_gas".to_string(), "10000".to_string());
-    world.named_values.insert("actual_gas".to_string(), "9500".to_string());
+    world
+        .named_values
+        .insert("simulated_gas".to_string(), "10000".to_string());
+    world
+        .named_values
+        .insert("actual_gas".to_string(), "9500".to_string());
 }
 
 #[given("a simple transfer transaction")]
 fn given_simple_transfer(world: &mut TestWorld) {
-    world.named_values.insert("simple_tx".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("simple_tx".to_string(), "true".to_string());
 }
 
 #[given("a complex smart contract call")]
 fn given_complex_contract_call(world: &mut TestWorld) {
-    world.named_values.insert("complex_tx".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("complex_tx".to_string(), "true".to_string());
 }
 
 #[given("a transaction builder with defaults")]
 fn given_tx_builder_defaults(world: &mut TestWorld) {
-    world.named_values.insert("default_max_gas".to_string(), "200000".to_string());
-    world.named_values.insert("default_gas_price".to_string(), "100".to_string());
+    world
+        .named_values
+        .insert("default_max_gas".to_string(), "200000".to_string());
+    world
+        .named_values
+        .insert("default_gas_price".to_string(), "100".to_string());
 }
 
 #[given("current gas estimate is 150")]
 fn given_gas_estimate_150(world: &mut TestWorld) {
-    world.named_values.insert("current_gas_estimate".to_string(), "150".to_string());
+    world
+        .named_values
+        .insert("current_gas_estimate".to_string(), "150".to_string());
 }
 
 #[given("a transaction builder")]
 fn given_tx_builder(world: &mut TestWorld) {
-    world.named_values.insert("tx_builder".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("tx_builder".to_string(), "true".to_string());
 }
 
 #[given("two transactions with different gas prices")]
 fn given_two_txs_different_gas(world: &mut TestWorld) {
-    world.named_values.insert("tx1_gas_price".to_string(), "100".to_string());
-    world.named_values.insert("tx2_gas_price".to_string(), "200".to_string());
+    world
+        .named_values
+        .insert("tx1_gas_price".to_string(), "100".to_string());
+    world
+        .named_values
+        .insert("tx2_gas_price".to_string(), "200".to_string());
 }
 
 #[given("gas_used = 1000 units")]
 fn given_gas_used_1000(world: &mut TestWorld) {
-    world.named_values.insert("gas_used".to_string(), "1000".to_string());
+    world
+        .named_values
+        .insert("gas_used".to_string(), "1000".to_string());
 }
 
 #[given("gas_unit_price = 100 octas")]
 fn given_gas_price_100(world: &mut TestWorld) {
-    world.named_values.insert("gas_unit_price".to_string(), "100".to_string());
+    world
+        .named_values
+        .insert("gas_unit_price".to_string(), "100".to_string());
 }
 
 #[given("max_gas_amount = 200000")]
 fn given_max_gas_200000(world: &mut TestWorld) {
-    world.named_values.insert("max_gas_amount".to_string(), "200000".to_string());
+    world
+        .named_values
+        .insert("max_gas_amount".to_string(), "200000".to_string());
 }
 
 #[given("gas_unit_price = 100")]
 fn given_gas_price_100_simple(world: &mut TestWorld) {
-    world.named_values.insert("gas_unit_price".to_string(), "100".to_string());
+    world
+        .named_values
+        .insert("gas_unit_price".to_string(), "100".to_string());
 }
 
 #[given("a completed transaction")]
 fn given_completed_tx(world: &mut TestWorld) {
-    world.named_values.insert("completed_tx".to_string(), "true".to_string());
-    world.named_values.insert("actual_cost".to_string(), "1000000".to_string());
-    world.named_values.insert("max_cost".to_string(), "20000000".to_string());
+    world
+        .named_values
+        .insert("completed_tx".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("actual_cost".to_string(), "1000000".to_string());
+    world
+        .named_values
+        .insert("max_cost".to_string(), "20000000".to_string());
 }
 
 #[given("a transaction requiring 50000 gas")]
 fn given_tx_needs_50000_gas(world: &mut TestWorld) {
-    world.named_values.insert("required_gas".to_string(), "50000".to_string());
+    world
+        .named_values
+        .insert("required_gas".to_string(), "50000".to_string());
 }
 
 #[given("an account with 1000 octas")]
 fn given_account_1000_octas(world: &mut TestWorld) {
-    world.named_values.insert("account_balance".to_string(), "1000".to_string());
+    world
+        .named_values
+        .insert("account_balance".to_string(), "1000".to_string());
 }
 
 #[given("a transaction requiring 10000 octas gas")]
 fn given_tx_needs_10000_octas(world: &mut TestWorld) {
-    world.named_values.insert("required_octas".to_string(), "10000".to_string());
+    world
+        .named_values
+        .insert("required_octas".to_string(), "10000".to_string());
 }
 
 #[given("a transaction with very low max_gas_amount")]
 fn given_low_max_gas(world: &mut TestWorld) {
-    world.named_values.insert("max_gas_amount".to_string(), "100".to_string());
+    world
+        .named_values
+        .insert("max_gas_amount".to_string(), "100".to_string());
 }
 
 #[given("an Aptos client with auto-gas enabled")]
 fn given_auto_gas_client(world: &mut TestWorld) {
-    world.named_values.insert("auto_gas".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("auto_gas".to_string(), "true".to_string());
 }
 
 #[given("simulated gas_used = 10000")]
 fn given_simulated_gas_10000(world: &mut TestWorld) {
-    world.named_values.insert("simulated_gas".to_string(), "10000".to_string());
+    world
+        .named_values
+        .insert("simulated_gas".to_string(), "10000".to_string());
 }
 
 #[given("network is under high load")]
 fn given_high_load(world: &mut TestWorld) {
-    world.named_values.insert("network_load".to_string(), "high".to_string());
+    world
+        .named_values
+        .insert("network_load".to_string(), "high".to_string());
 }
 
 #[given("mainnet and testnet clients")]
 fn given_mainnet_testnet_clients(world: &mut TestWorld) {
-    world.named_values.insert("multi_network".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("multi_network".to_string(), "true".to_string());
 }
 
 #[given("a network error during estimation")]
 fn given_network_error_estimation(world: &mut TestWorld) {
-    world.named_values.insert("estimation_error".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("estimation_error".to_string(), "true".to_string());
 }
 
 #[given("gas_unit_price = 0")]
 fn given_gas_price_zero(world: &mut TestWorld) {
-    world.named_values.insert("gas_unit_price".to_string(), "0".to_string());
+    world
+        .named_values
+        .insert("gas_unit_price".to_string(), "0".to_string());
 }
 
 #[when("I request gas price estimate")]
 fn when_request_gas_estimate(world: &mut TestWorld) {
-    world.named_values.insert("gas_estimate_requested".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("gas_estimate_requested".to_string(), "true".to_string());
 }
 
 #[when("I compare prioritized vs standard")]
 fn when_compare_prioritized(world: &mut TestWorld) {
-    world.named_values.insert("compare_priority".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("compare_priority".to_string(), "true".to_string());
 }
 
 #[when("I compare deprioritized vs standard")]
 fn when_compare_deprioritized(world: &mut TestWorld) {
-    world.named_values.insert("compare_depriority".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("compare_depriority".to_string(), "true".to_string());
 }
 
 #[when("I simulate the transaction")]
 fn when_simulate_tx(world: &mut TestWorld) {
-    world.named_values.insert("tx_simulated".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("tx_simulated".to_string(), "true".to_string());
 }
 
 #[when("I extract gas_used")]
 fn when_extract_gas_used(world: &mut TestWorld) {
-    world.named_values.insert("gas_used_extracted".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("gas_used_extracted".to_string(), "true".to_string());
 }
 
 #[when("I compare gas values")]
 fn when_compare_gas_values(world: &mut TestWorld) {
-    world.named_values.insert("gas_compared".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("gas_compared".to_string(), "true".to_string());
 }
 
 #[when("I simulate both")]
 fn when_simulate_both(world: &mut TestWorld) {
-    world.named_values.insert("both_simulated".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("both_simulated".to_string(), "true".to_string());
 }
 
 #[when("I check default values")]
 fn when_check_defaults(world: &mut TestWorld) {
-    world.named_values.insert("defaults_checked".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("defaults_checked".to_string(), "true".to_string());
 }
 
 #[when("I build a transaction with gas_unit_price 200")]
 fn when_build_tx_gas_200(world: &mut TestWorld) {
-    world.named_values.insert("tx_gas_price".to_string(), "200".to_string());
+    world
+        .named_values
+        .insert("tx_gas_price".to_string(), "200".to_string());
 }
 
 #[when("I set max_gas_amount to 500000")]
 fn when_set_max_gas_500000(world: &mut TestWorld) {
-    world.named_values.insert("max_gas_amount".to_string(), "500000".to_string());
+    world
+        .named_values
+        .insert("max_gas_amount".to_string(), "500000".to_string());
 }
 
 #[when("both are submitted")]
 fn when_both_submitted(world: &mut TestWorld) {
-    world.named_values.insert("both_submitted".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("both_submitted".to_string(), "true".to_string());
 }
 
 #[when("I calculate total cost")]
 fn when_calculate_total(world: &mut TestWorld) {
-    let gas_used: u64 = world.named_values.get("gas_used").and_then(|s| s.parse().ok()).unwrap_or(0);
-    let gas_price: u64 = world.named_values.get("gas_unit_price").and_then(|s| s.parse().ok()).unwrap_or(0);
-    world.named_values.insert("total_cost".to_string(), (gas_used * gas_price).to_string());
+    let gas_used: u64 = world
+        .named_values
+        .get("gas_used")
+        .and_then(|s| s.parse().ok())
+        .unwrap_or(0);
+    let gas_price: u64 = world
+        .named_values
+        .get("gas_unit_price")
+        .and_then(|s| s.parse().ok())
+        .unwrap_or(0);
+    world
+        .named_values
+        .insert("total_cost".to_string(), (gas_used * gas_price).to_string());
 }
 
 #[when("I calculate maximum possible cost")]
 fn when_calculate_max_cost(world: &mut TestWorld) {
-    let max_gas: u64 = world.named_values.get("max_gas_amount").and_then(|s| s.parse().ok()).unwrap_or(0);
-    let gas_price: u64 = world.named_values.get("gas_unit_price").and_then(|s| s.parse().ok()).unwrap_or(0);
-    world.named_values.insert("max_cost".to_string(), (max_gas * gas_price).to_string());
+    let max_gas: u64 = world
+        .named_values
+        .get("max_gas_amount")
+        .and_then(|s| s.parse().ok())
+        .unwrap_or(0);
+    let gas_price: u64 = world
+        .named_values
+        .get("gas_unit_price")
+        .and_then(|s| s.parse().ok())
+        .unwrap_or(0);
+    world
+        .named_values
+        .insert("max_cost".to_string(), (max_gas * gas_price).to_string());
 }
 
 #[when("I compare actual cost to max possible")]
 fn when_compare_actual_to_max(world: &mut TestWorld) {
-    world.named_values.insert("cost_compared".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("cost_compared".to_string(), "true".to_string());
 }
 
 #[when("I submit with max_gas_amount = 10000")]
 fn when_submit_low_max_gas(world: &mut TestWorld) {
-    world.named_values.insert("submitted_max_gas".to_string(), "10000".to_string());
+    world
+        .named_values
+        .insert("submitted_max_gas".to_string(), "10000".to_string());
     world.set_error("Out of gas");
 }
 
 #[when("I try to submit")]
 fn when_try_submit(world: &mut TestWorld) {
-    world.named_values.insert("try_submit".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("try_submit".to_string(), "true".to_string());
     // Check if insufficient balance scenario
     if world.named_values.get("account_balance") == Some(&"1000".to_string()) {
         world.set_error("Insufficient balance for gas");
@@ -1515,34 +1862,50 @@ fn when_simulate_it(world: &mut TestWorld) {
     if world.named_values.get("max_gas_amount") == Some(&"100".to_string()) {
         world.set_error("Gas exhaustion");
     }
-    world.named_values.insert("simulated".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("simulated".to_string(), "true".to_string());
 }
 
 #[when("I submit a transaction without specifying gas")]
 fn when_submit_no_gas_spec(world: &mut TestWorld) {
-    world.named_values.insert("no_gas_specified".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("no_gas_specified".to_string(), "true".to_string());
 }
 
 #[when("I apply 20% buffer")]
 fn when_apply_buffer(world: &mut TestWorld) {
-    let simulated: u64 = world.named_values.get("simulated_gas").and_then(|s| s.parse().ok()).unwrap_or(0);
+    let simulated: u64 = world
+        .named_values
+        .get("simulated_gas")
+        .and_then(|s| s.parse().ok())
+        .unwrap_or(0);
     let buffered = (simulated as f64 * 1.2) as u64;
-    world.named_values.insert("buffered_gas".to_string(), buffered.to_string());
+    world
+        .named_values
+        .insert("buffered_gas".to_string(), buffered.to_string());
 }
 
 #[when("I build transaction without specifying gas_unit_price")]
 fn when_build_no_gas_price(world: &mut TestWorld) {
-    world.named_values.insert("fetch_gas_price".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("fetch_gas_price".to_string(), "true".to_string());
 }
 
 #[when("I check gas estimates")]
 fn when_check_gas_estimates(world: &mut TestWorld) {
-    world.named_values.insert("gas_checked".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("gas_checked".to_string(), "true".to_string());
 }
 
 #[when("I check gas estimates on each")]
 fn when_check_gas_each(world: &mut TestWorld) {
-    world.named_values.insert("gas_checked_both".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("gas_checked_both".to_string(), "true".to_string());
 }
 
 #[when("I request gas estimate")]
@@ -1550,7 +1913,9 @@ fn when_request_gas(world: &mut TestWorld) {
     if world.named_values.contains_key("estimation_error") {
         world.set_error("Network error during estimation");
     }
-    world.named_values.insert("gas_requested".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("gas_requested".to_string(), "true".to_string());
 }
 
 #[when("I try to submit transaction")]
@@ -1558,57 +1923,89 @@ fn when_try_submit_tx(world: &mut TestWorld) {
     if world.named_values.get("gas_unit_price") == Some(&"0".to_string()) {
         world.set_error("Invalid gas price");
     }
-    world.named_values.insert("try_submit_tx".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("try_submit_tx".to_string(), "true".to_string());
 }
 
 #[then("I should receive gas_estimate")]
 fn then_receive_gas_estimate(world: &mut TestWorld) {
-    assert!(world.named_values.contains_key("gas_estimate_requested") ||
-            world.named_values.contains_key("gas_estimate"));
+    assert!(
+        world.named_values.contains_key("gas_estimate_requested")
+            || world.named_values.contains_key("gas_estimate")
+    );
 }
 
 #[then("the value should be in octas per gas unit")]
 fn then_value_in_octas(world: &mut TestWorld) {
     // Gas estimates are always in octas per gas unit
-    assert!(world.named_values.contains_key("gas_estimate_requested") ||
-            world.named_values.contains_key("gas_estimate"));
+    assert!(
+        world.named_values.contains_key("gas_estimate_requested")
+            || world.named_values.contains_key("gas_estimate")
+    );
 }
 
 #[then("I should receive gas_estimate (standard)")]
 fn then_receive_standard_estimate(world: &mut TestWorld) {
-    assert!(world.named_values.contains_key("gas_estimate") ||
-            world.named_values.contains_key("gas_estimate_requested"));
+    assert!(
+        world.named_values.contains_key("gas_estimate")
+            || world.named_values.contains_key("gas_estimate_requested")
+    );
 }
 
 #[then("optionally prioritized_gas_estimate (faster)")]
 fn then_optionally_prioritized(world: &mut TestWorld) {
     // Optional field - may or may not be present
-    world.named_values.insert("prioritized_checked".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("prioritized_checked".to_string(), "true".to_string());
 }
 
 #[then("optionally deprioritized_gas_estimate (slower/cheaper)")]
 fn then_optionally_deprioritized(world: &mut TestWorld) {
     // Optional field - may or may not be present
-    world.named_values.insert("deprioritized_checked".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("deprioritized_checked".to_string(), "true".to_string());
 }
 
 #[then("prioritized should be >= standard")]
 fn then_prioritized_gte_standard(world: &mut TestWorld) {
-    let std: u64 = world.named_values.get("gas_estimate").and_then(|s| s.parse().ok()).unwrap_or(0);
-    let pri: u64 = world.named_values.get("prioritized_estimate").and_then(|s| s.parse().ok()).unwrap_or(0);
+    let std: u64 = world
+        .named_values
+        .get("gas_estimate")
+        .and_then(|s| s.parse().ok())
+        .unwrap_or(0);
+    let pri: u64 = world
+        .named_values
+        .get("prioritized_estimate")
+        .and_then(|s| s.parse().ok())
+        .unwrap_or(0);
     assert!(pri >= std);
 }
 
 #[then("deprioritized should be <= standard")]
 fn then_deprioritized_lte_standard(world: &mut TestWorld) {
-    let std: u64 = world.named_values.get("gas_estimate").and_then(|s| s.parse().ok()).unwrap_or(0);
-    let dep: u64 = world.named_values.get("deprioritized_estimate").and_then(|s| s.parse().ok()).unwrap_or(0);
+    let std: u64 = world
+        .named_values
+        .get("gas_estimate")
+        .and_then(|s| s.parse().ok())
+        .unwrap_or(0);
+    let dep: u64 = world
+        .named_values
+        .get("deprioritized_estimate")
+        .and_then(|s| s.parse().ok())
+        .unwrap_or(0);
     assert!(dep <= std);
 }
 
 #[then("all estimates should be greater than 0")]
 fn then_estimates_positive(world: &mut TestWorld) {
-    for key in ["gas_estimate", "prioritized_estimate", "deprioritized_estimate"] {
+    for key in [
+        "gas_estimate",
+        "prioritized_estimate",
+        "deprioritized_estimate",
+    ] {
         if let Some(val) = world.named_values.get(key) {
             let num: u64 = val.parse().unwrap_or(0);
             assert!(num > 0, "{} should be > 0", key);
@@ -1618,8 +2015,10 @@ fn then_estimates_positive(world: &mut TestWorld) {
 
 #[then("I should receive gas_used")]
 fn then_receive_gas_used(world: &mut TestWorld) {
-    assert!(world.named_values.contains_key("tx_simulated") ||
-            world.named_values.contains_key("gas_used"));
+    assert!(
+        world.named_values.contains_key("tx_simulated")
+            || world.named_values.contains_key("gas_used")
+    );
 }
 
 #[then("gas_used represents actual consumption")]
@@ -1629,8 +2028,10 @@ fn then_gas_represents_consumption(world: &mut TestWorld) {
 
 #[then("I can use it to set max_gas_amount with buffer")]
 fn then_use_for_max_gas(world: &mut TestWorld) {
-    assert!(world.named_values.contains_key("gas_used_extracted") ||
-            world.named_values.contains_key("gas_used"));
+    assert!(
+        world.named_values.contains_key("gas_used_extracted")
+            || world.named_values.contains_key("gas_used")
+    );
 }
 
 #[then("actual gas should be similar to simulated")]
@@ -1662,12 +2063,18 @@ fn then_gas_price_reasonable(world: &mut TestWorld) {
 
 #[then("the transaction should use price 200")]
 fn then_tx_uses_price_200(world: &mut TestWorld) {
-    assert_eq!(world.named_values.get("tx_gas_price"), Some(&"200".to_string()));
+    assert_eq!(
+        world.named_values.get("tx_gas_price"),
+        Some(&"200".to_string())
+    );
 }
 
 #[then("the transaction should have that limit")]
 fn then_tx_has_limit(world: &mut TestWorld) {
-    assert_eq!(world.named_values.get("max_gas_amount"), Some(&"500000".to_string()));
+    assert_eq!(
+        world.named_values.get("max_gas_amount"),
+        Some(&"500000".to_string())
+    );
 }
 
 #[then("higher gas price should be processed first (usually)")]
@@ -1677,18 +2084,32 @@ fn then_higher_price_first(world: &mut TestWorld) {
 
 #[then("total should be 100000 octas")]
 fn then_total_100000(world: &mut TestWorld) {
-    assert_eq!(world.named_values.get("total_cost"), Some(&"100000".to_string()));
+    assert_eq!(
+        world.named_values.get("total_cost"),
+        Some(&"100000".to_string())
+    );
 }
 
 #[then("max cost should be 20000000 octas (0.2 APT)")]
 fn then_max_cost_20m(world: &mut TestWorld) {
-    assert_eq!(world.named_values.get("max_cost"), Some(&"20000000".to_string()));
+    assert_eq!(
+        world.named_values.get("max_cost"),
+        Some(&"20000000".to_string())
+    );
 }
 
 #[then("actual should be <= max possible")]
 fn then_actual_lte_max(world: &mut TestWorld) {
-    let actual: u64 = world.named_values.get("actual_cost").and_then(|s| s.parse().ok()).unwrap_or(0);
-    let max: u64 = world.named_values.get("max_cost").and_then(|s| s.parse().ok()).unwrap_or(u64::MAX);
+    let actual: u64 = world
+        .named_values
+        .get("actual_cost")
+        .and_then(|s| s.parse().ok())
+        .unwrap_or(0);
+    let max: u64 = world
+        .named_values
+        .get("max_cost")
+        .and_then(|s| s.parse().ok())
+        .unwrap_or(u64::MAX);
     assert!(actual <= max);
 }
 
@@ -1729,19 +2150,26 @@ fn then_indicate_gas_exhaustion(world: &mut TestWorld) {
 
 #[then("SDK should simulate first")]
 fn then_sdk_simulates_first(world: &mut TestWorld) {
-    assert!(world.named_values.contains_key("no_gas_specified") ||
-            world.named_values.contains_key("auto_gas"));
+    assert!(
+        world.named_values.contains_key("no_gas_specified")
+            || world.named_values.contains_key("auto_gas")
+    );
 }
 
 #[then("set appropriate max_gas_amount")]
 fn then_set_appropriate_max_gas(world: &mut TestWorld) {
-    assert!(world.named_values.contains_key("auto_gas") ||
-            world.named_values.contains_key("no_gas_specified"));
+    assert!(
+        world.named_values.contains_key("auto_gas")
+            || world.named_values.contains_key("no_gas_specified")
+    );
 }
 
 #[then("max_gas_amount should be 12000")]
 fn then_max_gas_12000(world: &mut TestWorld) {
-    assert_eq!(world.named_values.get("buffered_gas"), Some(&"12000".to_string()));
+    assert_eq!(
+        world.named_values.get("buffered_gas"),
+        Some(&"12000".to_string())
+    );
 }
 
 #[then("SDK should fetch current estimate")]
@@ -1773,4 +2201,3 @@ fn then_receive_appropriate_error(world: &mut TestWorld) {
 fn then_fail_validation_error(world: &mut TestWorld) {
     assert!(world.has_error());
 }
-

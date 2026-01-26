@@ -4,6 +4,9 @@ tests/typescript/node_modules/
 
 # Build outputs
 tests/rust/target/
+tests/swift/.build/
+tests/cpp/build/
+tests/cpp/sdk/
 tests/typescript/reports/
 
 # Lock files

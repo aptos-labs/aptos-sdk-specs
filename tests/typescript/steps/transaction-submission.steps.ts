@@ -41,41 +41,36 @@ Given("a funded account", async function (this: AptosWorld) {
   this.account = account;
 });
 
-Given(
-  "a valid signed APT transfer transaction",
-  async function (this: AptosWorld) {
-    const client = this.testVectors.get("aptosClient") as Aptos;
-    const account = this.testVectors.get("fundedAccount") as Account;
+Given("a valid signed APT transfer transaction", async function (this: AptosWorld) {
+  const client = this.testVectors.get("aptosClient") as Aptos;
+  const account = this.testVectors.get("fundedAccount") as Account;
 
-    try {
-      // Build a simple transfer transaction
-      const txn = await client.transaction.build.simple({
-        sender: account.accountAddress,
-        data: {
-          function: "0x1::aptos_account::transfer",
-          functionArguments: [account.accountAddress, 100], // transfer to self
-        },
-      });
+  try {
+    // Build a simple transfer transaction
+    const txn = await client.transaction.build.simple({
+      sender: account.accountAddress,
+      data: {
+        function: "0x1::aptos_account::transfer",
+        functionArguments: [account.accountAddress, 100], // transfer to self
+      },
+    });
 
-      // Sign the transaction
-      const signedTxn = await client.transaction.sign({
-        signer: account,
-        transaction: txn,
-      });
+    // Sign the transaction
+    const signedTxn = await client.transaction.sign({
+      signer: account,
+      transaction: txn,
+    });
 
-      this.testVectors.set("signedTransaction", signedTxn);
-      this.signedTransaction = signedTxn;
-    } catch (e) {
-      this.error = e as Error;
-    }
-  },
-);
+    this.testVectors.set("signedTransaction", signedTxn);
+    this.signedTransaction = signedTxn;
+  } catch (e) {
+    this.error = e as Error;
+  }
+});
 
 When("I submit the transaction", async function (this: AptosWorld) {
   const client = this.testVectors.get("aptosClient") as Aptos;
-  const signedTxn = this.testVectors.get(
-    "signedTransaction",
-  ) as SignedTransaction;
+  const signedTxn = this.testVectors.get("signedTransaction") as SignedTransaction;
 
   if (!signedTxn) {
     this.error = new Error("No signed transaction available");
@@ -91,26 +86,20 @@ When("I submit the transaction", async function (this: AptosWorld) {
   }
 });
 
-Then(
-  "I should receive a pending transaction response",
-  function (this: AptosWorld) {
-    if (this.error) {
-      // May fail due to unfunded account in test mode
-      return;
-    }
-    const pendingTxn = this.testVectors.get("pendingTransaction") as any;
-    expect(pendingTxn).to.not.be.undefined;
-  },
-);
+Then("I should receive a pending transaction response", function (this: AptosWorld) {
+  if (this.error) {
+    // May fail due to unfunded account in test mode
+    return;
+  }
+  const pendingTxn = this.testVectors.get("pendingTransaction") as any;
+  expect(pendingTxn).to.not.be.undefined;
+});
 
-Then(
-  "the response should contain the transaction hash",
-  function (this: AptosWorld) {
-    if (this.error) return;
-    const pendingTxn = this.testVectors.get("pendingTransaction") as any;
-    expect(pendingTxn.hash).to.not.be.undefined;
-  },
-);
+Then("the response should contain the transaction hash", function (this: AptosWorld) {
+  if (this.error) return;
+  const pendingTxn = this.testVectors.get("pendingTransaction") as any;
+  expect(pendingTxn.hash).to.not.be.undefined;
+});
 
 Given("a signed transaction for submission", async function (this: AptosWorld) {
   const privateKey = Ed25519PrivateKey.generate();
@@ -118,10 +107,7 @@ Given("a signed transaction for submission", async function (this: AptosWorld) {
   this.testVectors.set("signingAccount", account);
 
   // Create a basic transaction structure
-  const moduleId = new ModuleId(
-    AccountAddress.from("0x1"),
-    new Identifier("aptos_account"),
-  );
+  const moduleId = new ModuleId(AccountAddress.from("0x1"), new Identifier("aptos_account"));
   const entryFunction = new EntryFunction(
     moduleId,
     new Identifier("transfer"),
@@ -167,13 +153,10 @@ Then("I should receive the transaction hash", function (this: AptosWorld) {
   expect(hash).to.not.be.undefined;
 });
 
-Then(
-  "the hash should be 64 hex characters with 0x prefix",
-  function (this: AptosWorld) {
-    const hash = this.testVectors.get("transactionHash") as string;
-    expect(hash).to.match(/^0x[a-f0-9]{64}$/i);
-  },
-);
+Then("the hash should be 64 hex characters with 0x prefix", function (this: AptosWorld) {
+  const hash = this.testVectors.get("transactionHash") as string;
+  expect(hash).to.match(/^0x[a-f0-9]{64}$/i);
+});
 
 Given("malformed transaction bytes", function (this: AptosWorld) {
   this.testVectors.set("malformedBytes", new Uint8Array([0, 1, 2, 3, 4]));
@@ -184,49 +167,34 @@ When("I try to submit them", async function (this: AptosWorld) {
   this.error = new Error("Bad Request: Invalid transaction format");
 });
 
-Then(
-  "I should receive a {int} Bad Request error",
-  function (this: AptosWorld, statusCode: number) {
-    expect(this.error).to.not.be.undefined;
-    expect(statusCode).to.equal(400);
-  },
-);
+Then("I should receive a {int} Bad Request error", function (this: AptosWorld, statusCode: number) {
+  expect(this.error).to.not.be.undefined;
+  expect(statusCode).to.equal(400);
+});
 
-Given(
-  "a signed transaction with corrupted signature",
-  async function (this: AptosWorld) {
-    this.testVectors.set("corruptedSignature", true);
-  },
-);
+Given("a signed transaction with corrupted signature", async function (this: AptosWorld) {
+  this.testVectors.set("corruptedSignature", true);
+});
 
 When("I try to submit it", async function (this: AptosWorld) {
   this.error = new Error("Invalid signature");
 });
 
-Then(
-  "I should receive an error about invalid signature",
-  function (this: AptosWorld) {
-    expect(this.error).to.not.be.undefined;
-    expect(this.error!.message.toLowerCase()).to.include("signature");
-  },
-);
+Then("I should receive an error about invalid signature", function (this: AptosWorld) {
+  expect(this.error).to.not.be.undefined;
+  expect(this.error!.message.toLowerCase()).to.include("signature");
+});
 
-Given(
-  "a transaction signed for mainnet \\(chain_id=1\\)",
-  function (this: AptosWorld) {
-    this.testVectors.set("signedChainId", 1);
-  },
-);
+Given("a transaction signed for mainnet \\(chain_id=1\\)", function (this: AptosWorld) {
+  this.testVectors.set("signedChainId", 1);
+});
 
-Given(
-  "a client connected to testnet \\(chain_id=2\\)",
-  async function (this: AptosWorld) {
-    const config = new AptosConfig({ network: Network.TESTNET });
-    const client = new Aptos(config);
-    this.testVectors.set("aptosClient", client);
-    this.testVectors.set("clientChainId", 2);
-  },
-);
+Given("a client connected to testnet \\(chain_id=2\\)", async function (this: AptosWorld) {
+  const config = new AptosConfig({ network: Network.TESTNET });
+  const client = new Aptos(config);
+  this.testVectors.set("aptosClient", client);
+  this.testVectors.set("clientChainId", 2);
+});
 
 When("I try to submit the transaction", async function (this: AptosWorld) {
   const signedChainId = this.testVectors.get("signedChainId") as number;
@@ -237,28 +205,19 @@ When("I try to submit the transaction", async function (this: AptosWorld) {
   }
 });
 
-Then(
-  "I should receive an error about chain ID mismatch",
-  function (this: AptosWorld) {
-    expect(this.error).to.not.be.undefined;
-    expect(this.error!.message.toLowerCase()).to.include("chain");
-  },
-);
+Then("I should receive an error about chain ID mismatch", function (this: AptosWorld) {
+  expect(this.error).to.not.be.undefined;
+  expect(this.error!.message.toLowerCase()).to.include("chain");
+});
 
 Given("a signed transaction with past expiration", function (this: AptosWorld) {
   // Expiration in the past
-  this.testVectors.set(
-    "expirationTimestamp",
-    Math.floor(Date.now() / 1000) - 3600,
-  );
+  this.testVectors.set("expirationTimestamp", Math.floor(Date.now() / 1000) - 3600);
 });
 
-Then(
-  "I should receive an error about expired transaction",
-  function (this: AptosWorld) {
-    expect(this.error).to.not.be.undefined;
-  },
-);
+Then("I should receive an error about expired transaction", function (this: AptosWorld) {
+  expect(this.error).to.not.be.undefined;
+});
 
 // =============================================================================
 // Wait for Transaction
@@ -281,38 +240,28 @@ When("I wait for the transaction", async function (this: AptosWorld) {
   }
 });
 
-Then(
-  "I should receive the final transaction result",
-  function (this: AptosWorld) {
-    if (this.error) {
-      // Expected if hash doesn't exist
-      return;
-    }
-    const result = this.testVectors.get("transactionResult") as any;
-    expect(result).to.not.be.undefined;
-  },
-);
+Then("I should receive the final transaction result", function (this: AptosWorld) {
+  if (this.error) {
+    // Expected if hash doesn't exist
+    return;
+  }
+  const result = this.testVectors.get("transactionResult") as any;
+  expect(result).to.not.be.undefined;
+});
 
-Then(
-  "the transaction should be committed or failed",
-  function (this: AptosWorld) {
-    if (this.error) return;
-    const result = this.testVectors.get("transactionResult") as any;
-    expect(result.success !== undefined || result.vm_status !== undefined).to.be
-      .true;
-  },
-);
+Then("the transaction should be committed or failed", function (this: AptosWorld) {
+  if (this.error) return;
+  const result = this.testVectors.get("transactionResult") as any;
+  expect(result.success !== undefined || result.vm_status !== undefined).to.be.true;
+});
 
 Given("a transaction hash that doesn't exist", function (this: AptosWorld) {
   this.testVectors.set("nonExistentHash", "0x" + "f".repeat(64));
 });
 
-Given(
-  "a wait timeout of {int} seconds",
-  function (this: AptosWorld, seconds: number) {
-    this.testVectors.set("waitTimeout", seconds * 1000);
-  },
-);
+Given("a wait timeout of {int} seconds", function (this: AptosWorld, seconds: number) {
+  this.testVectors.set("waitTimeout", seconds * 1000);
+});
 
 Then("I should receive a timeout error", function (this: AptosWorld) {
   // Waiting for non-existent hash should timeout
@@ -333,13 +282,10 @@ Then("the result should indicate success: true", function (this: AptosWorld) {
   expect(expected).to.be.true;
 });
 
-Given(
-  "a transaction that will fail \\(e.g., insufficient balance\\)",
-  function (this: AptosWorld) {
-    this.testVectors.set("expectedSuccess", false);
-    this.testVectors.set("expectedError", "insufficient balance");
-  },
-);
+Given("a transaction that will fail \\(e.g., insufficient balance\\)", function (this: AptosWorld) {
+  this.testVectors.set("expectedSuccess", false);
+  this.testVectors.set("expectedError", "insufficient balance");
+});
 
 Then("the result should indicate success: false", function (this: AptosWorld) {
   const expected = this.testVectors.get("expectedSuccess") as boolean;
@@ -376,10 +322,7 @@ Given("a valid transaction payload", async function (this: AptosWorld) {
   const account = this.testVectors.get("fundedAccount") as Account;
   if (!account) return;
 
-  const moduleId = new ModuleId(
-    AccountAddress.from("0x1"),
-    new Identifier("aptos_account"),
-  );
+  const moduleId = new ModuleId(AccountAddress.from("0x1"), new Identifier("aptos_account"));
   const entryFunction = new EntryFunction(
     moduleId,
     new Identifier("transfer"),
@@ -549,9 +492,7 @@ When("I simulate it", async function (this: AptosWorld) {
 Then("I should see the estimated gas_used", function (this: AptosWorld) {
   const result = this.testVectors.get("simulationResult") as any;
   if (result) {
-    const gasUsed = Array.isArray(result)
-      ? result[0]?.gas_used
-      : result.gas_used;
+    const gasUsed = Array.isArray(result) ? result[0]?.gas_used : result.gas_used;
     expect(gasUsed).to.not.be.undefined;
   }
 });
@@ -573,24 +514,18 @@ Then("I should see the VM error details", function (this: AptosWorld) {
   expect(true).to.be.true;
 });
 
-Given(
-  "a transfer transaction for more than account balance",
-  function (this: AptosWorld) {
-    this.testVectors.set("insufficientBalance", true);
-  },
-);
+Given("a transfer transaction for more than account balance", function (this: AptosWorld) {
+  this.testVectors.set("insufficientBalance", true);
+});
 
 Then("I should see the failure reason", function (this: AptosWorld) {
   expect(true).to.be.true;
 });
 
-Then(
-  "the error should indicate insufficient balance",
-  function (this: AptosWorld) {
-    const insufficient = this.testVectors.get("insufficientBalance") as boolean;
-    expect(insufficient).to.be.true;
-  },
-);
+Then("the error should indicate insufficient balance", function (this: AptosWorld) {
+  const insufficient = this.testVectors.get("insufficientBalance") as boolean;
+  expect(insufficient).to.be.true;
+});
 
 Given("a transaction with invalid signature", function (this: AptosWorld) {
   this.testVectors.set("invalidSignature", true);
@@ -601,12 +536,9 @@ Then("simulation should still work", function (this: AptosWorld) {
   expect(true).to.be.true;
 });
 
-Then(
-  "show what would happen if signature were valid",
-  function (this: AptosWorld) {
-    expect(true).to.be.true;
-  },
-);
+Then("show what would happen if signature were valid", function (this: AptosWorld) {
+  expect(true).to.be.true;
+});
 
 // =============================================================================
 // Sequence Number Handling
@@ -625,29 +557,21 @@ When("I get the account info", async function (this: AptosWorld) {
   }
 });
 
-Then(
-  "I should receive the current sequence_number",
-  function (this: AptosWorld) {
-    const info = this.testVectors.get("accountInfo") as any;
-    if (info) {
-      expect(info.sequence_number).to.not.be.undefined;
-    }
-  },
-);
+Then("I should receive the current sequence_number", function (this: AptosWorld) {
+  const info = this.testVectors.get("accountInfo") as any;
+  if (info) {
+    expect(info.sequence_number).to.not.be.undefined;
+  }
+});
 
-Given(
-  "an account with sequence_number {int}",
-  function (this: AptosWorld, seqNum: number) {
-    this.testVectors.set("accountSequenceNumber", seqNum);
-  },
-);
+Given("an account with sequence_number {int}", function (this: AptosWorld, seqNum: number) {
+  this.testVectors.set("accountSequenceNumber", seqNum);
+});
 
 When(
   "I submit a transaction with sequence_number {int}",
   async function (this: AptosWorld, seqNum: number) {
-    const accountSeqNum = this.testVectors.get(
-      "accountSequenceNumber",
-    ) as number;
+    const accountSeqNum = this.testVectors.get("accountSequenceNumber") as number;
 
     if (seqNum !== accountSeqNum) {
       this.error = new Error("Sequence number mismatch");
@@ -663,13 +587,10 @@ Then("the transaction should be accepted", function (this: AptosWorld) {
   }
 });
 
-Then(
-  "I should receive an error about sequence number",
-  function (this: AptosWorld) {
-    expect(this.error).to.not.be.undefined;
-    expect(this.error!.message.toLowerCase()).to.include("sequence");
-  },
-);
+Then("I should receive an error about sequence number", function (this: AptosWorld) {
+  expect(this.error).to.not.be.undefined;
+  expect(this.error!.message.toLowerCase()).to.include("sequence");
+});
 
 When(
   "I submit transactions with sequence numbers {int}, {int}, {int}",
@@ -747,13 +668,10 @@ When("I compute its hash locally", function (this: AptosWorld) {
   }
 });
 
-When(
-  "compare with the hash from submission response",
-  function (this: AptosWorld) {
-    // In a real test, compare with API response hash
-    this.testVectors.set("comparedHashes", true);
-  },
-);
+When("compare with the hash from submission response", function (this: AptosWorld) {
+  // In a real test, compare with API response hash
+  this.testVectors.set("comparedHashes", true);
+});
 
 Then("they should match", function (this: AptosWorld) {
   const compared = this.testVectors.get("comparedHashes") as boolean;
@@ -799,13 +717,10 @@ Given("a gas price estimate", async function (this: AptosWorld) {
   this.testVectors.set("gasEstimate", { gas_estimate: 100 });
 });
 
-When(
-  "I build a transaction using the estimate",
-  async function (this: AptosWorld) {
-    const estimate = this.testVectors.get("gasEstimate") as any;
-    this.testVectors.set("usedGasPrice", estimate.gas_estimate);
-  },
-);
+When("I build a transaction using the estimate", async function (this: AptosWorld) {
+  const estimate = this.testVectors.get("gasEstimate") as any;
+  this.testVectors.set("usedGasPrice", estimate.gas_estimate);
+});
 
 When("submit it", async function (this: AptosWorld) {
   this.testVectors.set("submitAttempted", true);

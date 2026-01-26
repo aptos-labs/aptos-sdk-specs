@@ -3,22 +3,22 @@ Step definitions for gas-estimation.feature
 Tests gas estimation and pricing.
 """
 
-import sys
-import os
-import asyncio
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
-
-from behave import given, when, then
-from aptos_sdk.async_client import RestClient
-from aptos_sdk.account import Account
-from aptos_sdk.account_address import AccountAddress
-from aptos_sdk.bcs import Serializer
+import time
 from aptos_sdk.transactions import (
     RawTransaction,
     TransactionPayload,
     EntryFunction,
 )
-import time
+from aptos_sdk.bcs import Serializer
+from aptos_sdk.account_address import AccountAddress
+from aptos_sdk.account import Account
+from aptos_sdk.async_client import RestClient
+from behave import given, when, then
+import sys
+import os
+import asyncio
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 
 # Helper to run async functions synchronously
@@ -45,23 +45,18 @@ def step_given_gas_client(context):
 def step_given_simple_transfer_for_gas(context):
     context.world.account = Account.generate()
     sender = context.world.account.address()
-    
+
     encoded_args = []
     serializer = Serializer()
     serializer.struct(AccountAddress.from_str("0x1"))
     encoded_args.append(serializer.output())
-    
+
     serializer = Serializer()
     serializer.u64(1000)
     encoded_args.append(serializer.output())
-    
-    payload = EntryFunction.natural(
-        "0x1::aptos_account",
-        "transfer",
-        [],
-        encoded_args
-    )
-    
+
+    payload = EntryFunction.natural("0x1::aptos_account", "transfer", [], encoded_args)
+
     context.world.raw_transaction = RawTransaction(
         sender=sender,
         sequence_number=0,
@@ -77,23 +72,20 @@ def step_given_simple_transfer_for_gas(context):
 def step_given_complex_transaction_for_gas(context):
     context.world.account = Account.generate()
     sender = context.world.account.address()
-    
+
     # More complex payload with multiple arguments
     encoded_args = []
-    
+
     # Multiple addresses
     for i in range(5):
         serializer = Serializer()
         serializer.struct(AccountAddress.from_str(f"0x{i+1}"))
         encoded_args.append(serializer.output())
-    
+
     payload = EntryFunction.natural(
-        "0x1::aptos_account",
-        "batch_transfer",
-        [],
-        encoded_args
+        "0x1::aptos_account", "batch_transfer", [], encoded_args
     )
-    
+
     context.world.raw_transaction = RawTransaction(
         sender=sender,
         sequence_number=0,
@@ -113,18 +105,18 @@ def step_given_complex_transaction_for_gas(context):
 @when("I estimate gas for the transaction")
 def step_estimate_gas(context):
     try:
+
         async def _estimate_gas():
             client = RestClient(context.world.network_url)
             try:
                 # Simulate transaction to get gas estimate
                 gas_estimate = await client.simulate_transaction(
-                    context.world.raw_transaction,
-                    context.world.account
+                    context.world.raw_transaction, context.world.account
                 )
                 return gas_estimate
             finally:
                 await client.close()
-        
+
         context.world.result = run_async(_estimate_gas())
         if isinstance(context.world.result, list) and len(context.world.result) > 0:
             context.world.gas_estimate = context.world.result[0].get("gas_used")
@@ -136,6 +128,7 @@ def step_estimate_gas(context):
 @when("I get the current gas price")
 def step_get_gas_price(context):
     try:
+
         async def _get_gas_price():
             client = RestClient(context.world.network_url)
             try:
@@ -145,7 +138,7 @@ def step_get_gas_price(context):
                 return info.get("gas_estimate", {}).get("gas_price", 100)
             finally:
                 await client.close()
-        
+
         context.world.result = run_async(_get_gas_price())
         context.world.gas_price = context.world.result
         context.world.clear_error()
@@ -156,12 +149,13 @@ def step_get_gas_price(context):
 @when("I get the gas price with priority {priority}")
 def step_get_gas_price_priority(context, priority):
     try:
+
         async def _get_gas_price():
             client = RestClient(context.world.network_url)
             try:
                 info = await client.info()
                 estimate = info.get("gas_estimate", {})
-                
+
                 # Different priorities
                 if priority.lower() == "low":
                     return estimate.get("deprioritized_gas_estimate", 100)
@@ -171,7 +165,7 @@ def step_get_gas_price_priority(context, priority):
                     return estimate.get("gas_estimate", 100)
             finally:
                 await client.close()
-        
+
         context.world.result = run_async(_get_gas_price())
         context.world.clear_error()
     except Exception as e:
@@ -181,21 +175,21 @@ def step_get_gas_price_priority(context, priority):
 @when("I estimate gas multiple times")
 def step_estimate_gas_multiple(context):
     try:
+
         async def _estimate_multiple():
             client = RestClient(context.world.network_url)
             estimates = []
             try:
                 for _ in range(3):
                     result = await client.simulate_transaction(
-                        context.world.raw_transaction,
-                        context.world.account
+                        context.world.raw_transaction, context.world.account
                     )
                     if isinstance(result, list) and len(result) > 0:
                         estimates.append(result[0].get("gas_used"))
                 return estimates
             finally:
                 await client.close()
-        
+
         context.world.result = run_async(_estimate_multiple())
         context.world.clear_error()
     except Exception as e:

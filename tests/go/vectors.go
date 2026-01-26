@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/hex"
 	"encoding/json"
+	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -90,7 +91,9 @@ func GetAddressParsingVectors() ([]AddressVector, error) {
 	for _, v := range vectorsRaw {
 		jsonBytes, _ := json.Marshal(v)
 		var av AddressVector
-		json.Unmarshal(jsonBytes, &av)
+		if err := json.Unmarshal(jsonBytes, &av); err != nil {
+			return nil, fmt.Errorf("failed to unmarshal address vector: %v", err)
+		}
 		vectors = append(vectors, av)
 	}
 	return vectors, nil
@@ -117,7 +120,9 @@ func GetEd25519DerivationVectors() ([]MnemonicVector, error) {
 	for _, v := range vectorsRaw {
 		jsonBytes, _ := json.Marshal(v)
 		var mv MnemonicVector
-		json.Unmarshal(jsonBytes, &mv)
+		if err := json.Unmarshal(jsonBytes, &mv); err != nil {
+			return nil, fmt.Errorf("failed to unmarshal mnemonic vector: %v", err)
+		}
 		vectors = append(vectors, mv)
 	}
 	return vectors, nil
@@ -149,7 +154,9 @@ func GetSha3256Vectors() ([]HashVector, error) {
 	for _, v := range vectorsRaw {
 		jsonBytes, _ := json.Marshal(v)
 		var hv HashVector
-		json.Unmarshal(jsonBytes, &hv)
+		if err := json.Unmarshal(jsonBytes, &hv); err != nil {
+			return nil, fmt.Errorf("failed to unmarshal hash vector: %v", err)
+		}
 		vectors = append(vectors, hv)
 	}
 	return vectors, nil
@@ -170,4 +177,3 @@ func HexToBytes(hexStr string) ([]byte, error) {
 func BytesToHex(data []byte) string {
 	return "0x" + hex.EncodeToString(data)
 }
-

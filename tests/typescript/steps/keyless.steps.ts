@@ -34,12 +34,8 @@ interface MockJwtPayload {
 
 function createMockJwt(payload: MockJwtPayload): string {
   const header = { alg: "RS256", typ: "JWT" };
-  const encodedHeader = Buffer.from(JSON.stringify(header)).toString(
-    "base64url",
-  );
-  const encodedPayload = Buffer.from(JSON.stringify(payload)).toString(
-    "base64url",
-  );
+  const encodedHeader = Buffer.from(JSON.stringify(header)).toString("base64url");
+  const encodedPayload = Buffer.from(JSON.stringify(payload)).toString("base64url");
   const mockSignature = Buffer.from("mock-signature").toString("base64url");
   return `${encodedHeader}.${encodedPayload}.${mockSignature}`;
 }
@@ -105,12 +101,8 @@ When("I generate two ephemeral key pairs", function (this: AptosWorld) {
 });
 
 Then("the nonces should be different", function (this: AptosWorld) {
-  const keyPair1 = this.testVectors.get(
-    "ephemeralKeyPair1",
-  ) as EphemeralKeyPair;
-  const keyPair2 = this.testVectors.get(
-    "ephemeralKeyPair2",
-  ) as EphemeralKeyPair;
+  const keyPair1 = this.testVectors.get("ephemeralKeyPair1") as EphemeralKeyPair;
+  const keyPair2 = this.testVectors.get("ephemeralKeyPair2") as EphemeralKeyPair;
   if (keyPair1 && keyPair2) {
     expect(keyPair1.nonce).to.not.equal(keyPair2.nonce);
   }
@@ -131,21 +123,17 @@ Given(
   },
 );
 
-When(
-  "I wait {int} seconds",
-  async function (this: AptosWorld, seconds: number) {
-    // For testing, we'll just mark that we've waited
-    // In real tests, this would use actual delays
-    this.testVectors.set("waitedSeconds", seconds);
-  },
-);
+When("I wait {int} seconds", async function (this: AptosWorld, seconds: number) {
+  // For testing, we'll just mark that we've waited
+  // In real tests, this would use actual delays
+  this.testVectors.set("waitedSeconds", seconds);
+});
 
 When(/^I check is_expired\(\)$/, function (this: AptosWorld) {
   const keyPair = this.testVectors.get("ephemeralKeyPair") as EphemeralKeyPair;
   if (keyPair) {
     // Check expiry - for testing, simulate based on wait time
-    const waitedSeconds =
-      (this.testVectors.get("waitedSeconds") as number) || 0;
+    const waitedSeconds = (this.testVectors.get("waitedSeconds") as number) || 0;
     const now = Math.floor(Date.now() / 1000) + waitedSeconds;
     const isExpired = now >= keyPair.expiryDateSecs;
     this.testVectors.set("isExpired", isExpired);
@@ -188,15 +176,12 @@ When("I get the nonce", function (this: AptosWorld) {
   }
 });
 
-Then(
-  "it should be a valid string for OIDC nonce parameter",
-  function (this: AptosWorld) {
-    const nonce = this.testVectors.get("nonce") as string;
-    expect(nonce).to.not.be.empty;
-    // OIDC nonce should be URL-safe
-    expect(nonce).to.match(/^[a-zA-Z0-9_-]+$/);
-  },
-);
+Then("it should be a valid string for OIDC nonce parameter", function (this: AptosWorld) {
+  const nonce = this.testVectors.get("nonce") as string;
+  expect(nonce).to.not.be.empty;
+  // OIDC nonce should be URL-safe
+  expect(nonce).to.match(/^[a-zA-Z0-9_-]+$/);
+});
 
 // =============================================================================
 // Keyless Account Creation
@@ -389,14 +374,8 @@ When("I create keyless accounts for each", function (this: AptosWorld) {
       `${payload2.iss}|${payload2.aud}|${payload2.sub}|${bytesToHex(pepper)}`,
     );
 
-    this.testVectors.set(
-      "keylessAddress1",
-      AccountAddress.from(sha3_256(input1)),
-    );
-    this.testVectors.set(
-      "keylessAddress2",
-      AccountAddress.from(sha3_256(input2)),
-    );
+    this.testVectors.set("keylessAddress1", AccountAddress.from(sha3_256(input1)));
+    this.testVectors.set("keylessAddress2", AccountAddress.from(sha3_256(input2)));
   }
 });
 
@@ -410,12 +389,9 @@ Given("issuer {string}", function (this: AptosWorld, issuer: string) {
   this.testVectors.set("issuer", issuer);
 });
 
-Given(
-  /^audience \(client_id\) "([^"]*)"$/,
-  function (this: AptosWorld, audience: string) {
-    this.testVectors.set("audience", audience);
-  },
-);
+Given(/^audience \(client_id\) "([^"]*)"$/, function (this: AptosWorld, audience: string) {
+  this.testVectors.set("audience", audience);
+});
 
 Given(/^user ID \(sub\) "([^"]*)"$/, function (this: AptosWorld, sub: string) {
   this.testVectors.set("userId", sub);
@@ -431,22 +407,15 @@ When("I derive the keyless address", function (this: AptosWorld) {
   const userId = this.testVectors.get("userId") as string;
   const pepper = this.testVectors.get("pepper") as Uint8Array;
 
-  const input = new TextEncoder().encode(
-    `${issuer}|${audience}|${userId}|${bytesToHex(pepper)}`,
-  );
+  const input = new TextEncoder().encode(`${issuer}|${audience}|${userId}|${bytesToHex(pepper)}`);
   const addressBytes = sha3_256(input);
-  this.testVectors.set(
-    "derivedKeylessAddress",
-    AccountAddress.from(addressBytes),
-  );
+  this.testVectors.set("derivedKeylessAddress", AccountAddress.from(addressBytes));
 });
 
 Then(
   "it should equal SHA3-256 of the concatenated hashes with pepper and scheme",
   function (this: AptosWorld) {
-    const address = this.testVectors.get(
-      "derivedKeylessAddress",
-    ) as AccountAddress;
+    const address = this.testVectors.get("derivedKeylessAddress") as AccountAddress;
     expect(address).to.not.be.undefined;
     expect(address.toUint8Array().length).to.equal(32);
   },
@@ -465,8 +434,7 @@ Given(/^different issuers \(Google vs Apple\)$/, function (this: AptosWorld) {
 When("I derive addresses for each", function (this: AptosWorld) {
   const userId = this.testVectors.get("userId") as string;
   const pepper = this.testVectors.get("pepper") as Uint8Array;
-  const audience =
-    (this.testVectors.get("audience") as string) || "test-client";
+  const audience = (this.testVectors.get("audience") as string) || "test-client";
 
   const issuer1 = this.testVectors.get("issuer1") as string;
   const issuer2 = this.testVectors.get("issuer2") as string;
@@ -479,14 +447,8 @@ When("I derive addresses for each", function (this: AptosWorld) {
       `${issuer2}|${audience}|${userId}|${bytesToHex(pepper)}`,
     );
 
-    this.testVectors.set(
-      "derivedAddress1",
-      AccountAddress.from(sha3_256(input1)),
-    );
-    this.testVectors.set(
-      "derivedAddress2",
-      AccountAddress.from(sha3_256(input2)),
-    );
+    this.testVectors.set("derivedAddress1", AccountAddress.from(sha3_256(input1)));
+    this.testVectors.set("derivedAddress2", AccountAddress.from(sha3_256(input2)));
   }
 
   // Handle audience variation
@@ -495,21 +457,11 @@ When("I derive addresses for each", function (this: AptosWorld) {
   const issuer = this.testVectors.get("issuer") as string;
 
   if (aud1 && aud2) {
-    const input1 = new TextEncoder().encode(
-      `${issuer}|${aud1}|${userId}|${bytesToHex(pepper)}`,
-    );
-    const input2 = new TextEncoder().encode(
-      `${issuer}|${aud2}|${userId}|${bytesToHex(pepper)}`,
-    );
+    const input1 = new TextEncoder().encode(`${issuer}|${aud1}|${userId}|${bytesToHex(pepper)}`);
+    const input2 = new TextEncoder().encode(`${issuer}|${aud2}|${userId}|${bytesToHex(pepper)}`);
 
-    this.testVectors.set(
-      "derivedAddress1",
-      AccountAddress.from(sha3_256(input1)),
-    );
-    this.testVectors.set(
-      "derivedAddress2",
-      AccountAddress.from(sha3_256(input2)),
-    );
+    this.testVectors.set("derivedAddress1", AccountAddress.from(sha3_256(input1)));
+    this.testVectors.set("derivedAddress2", AccountAddress.from(sha3_256(input2)));
   }
 
   // Handle pepper variation
@@ -527,14 +479,8 @@ When("I derive addresses for each", function (this: AptosWorld) {
         `${payload.iss}|${payload.aud}|${payload.sub}|${bytesToHex(pepper2)}`,
       );
 
-      this.testVectors.set(
-        "derivedAddress1",
-        AccountAddress.from(sha3_256(input1)),
-      );
-      this.testVectors.set(
-        "derivedAddress2",
-        AccountAddress.from(sha3_256(input2)),
-      );
+      this.testVectors.set("derivedAddress1", AccountAddress.from(sha3_256(input1)));
+      this.testVectors.set("derivedAddress2", AccountAddress.from(sha3_256(input2)));
     }
   }
 });
@@ -608,7 +554,10 @@ Given("a valid keyless account", function (this: AptosWorld) {
 });
 
 Given("a message to sign with keyless", function (this: AptosWorld) {
-  this.testVectors.set("messageToSign", new TextEncoder().encode("test message for keyless signing"));
+  this.testVectors.set(
+    "messageToSign",
+    new TextEncoder().encode("test message for keyless signing"),
+  );
 });
 
 When("I sign the message with an ephemeral key pair", function (this: AptosWorld) {
@@ -624,13 +573,10 @@ When("I sign the message with an ephemeral key pair", function (this: AptosWorld
   }
 });
 
-Then(
-  "the signature should include the ephemeral signature",
-  function (this: AptosWorld) {
-    const sig = this.testVectors.get("keylessSignature") as any;
-    expect(sig?.ephemeralSignature).to.not.be.undefined;
-  },
-);
+Then("the signature should include the ephemeral signature", function (this: AptosWorld) {
+  const sig = this.testVectors.get("keylessSignature") as any;
+  expect(sig?.ephemeralSignature).to.not.be.undefined;
+});
 
 Then("the signature should include the ZK proof", function (this: AptosWorld) {
   const sig = this.testVectors.get("keylessSignature") as any;
@@ -645,26 +591,20 @@ Then("the signature should include the ZK proof", function (this: AptosWorld) {
 // This is an integration test that needs external services.
 // See features/06-advanced/keyless.feature line 119
 
-Then(
-  "the authenticator should be Keyless variant",
-  function (this: AptosWorld) {
-    const signedTxn = this.testVectors.get("signedKeylessTransaction") as any;
-    expect(signedTxn?.authenticator).to.equal("Keyless");
-  },
-);
+Then("the authenticator should be Keyless variant", function (this: AptosWorld) {
+  const signedTxn = this.testVectors.get("signedKeylessTransaction") as any;
+  expect(signedTxn?.authenticator).to.equal("Keyless");
+});
 
-Given(
-  "a keyless account with expired ephemeral key",
-  function (this: AptosWorld) {
-    // Create with expired key
-    this.testVectors.set("keylessAccount", {
-      ephemeralKeyPair: {
-        isExpired: () => true,
-      },
-      isExpired: true,
-    });
-  },
-);
+Given("a keyless account with expired ephemeral key", function (this: AptosWorld) {
+  // Create with expired key
+  this.testVectors.set("keylessAccount", {
+    ephemeralKeyPair: {
+      isExpired: () => true,
+    },
+    isExpired: true,
+  });
+});
 
 When("I try to sign the message", function (this: AptosWorld) {
   const account = this.testVectors.get("keylessAccount") as any;
@@ -673,13 +613,10 @@ When("I try to sign the message", function (this: AptosWorld) {
   }
 });
 
-Then(
-  "it should fail with EphemeralKeyExpired error",
-  function (this: AptosWorld) {
-    expect(this.error).to.not.be.undefined;
-    expect(this.error!.message).to.include("EphemeralKeyExpired");
-  },
-);
+Then("it should fail with EphemeralKeyExpired error", function (this: AptosWorld) {
+  expect(this.error).to.not.be.undefined;
+  expect(this.error!.message).to.include("EphemeralKeyExpired");
+});
 
 // =============================================================================
 // Proof Management
@@ -695,10 +632,7 @@ Given("a keyless account with valid proof", function (this: AptosWorld) {
 When(/^I check is_valid\(\)$/, function (this: AptosWorld) {
   const account = this.testVectors.get("keylessAccount") as any;
   const now = Math.floor(Date.now() / 1000);
-  this.testVectors.set(
-    "isValid",
-    account?.isValid && account?.proofExpiry > now,
-  );
+  this.testVectors.set("isValid", account?.isValid && account?.proofExpiry > now);
 });
 
 Given("a keyless account with expired ZK proof", function (this: AptosWorld) {
@@ -887,13 +821,10 @@ Given("an invalid ephemeral key", function (this: AptosWorld) {
   this.testVectors.set("invalidEphemeralKey", true);
 });
 
-Then(
-  "I should receive ProofGenerationFailed error",
-  function (this: AptosWorld) {
-    this.error = new Error("ProofGenerationFailed: Invalid ephemeral key");
-    expect(this.error.message).to.include("ProofGenerationFailed");
-  },
-);
+Then("I should receive ProofGenerationFailed error", function (this: AptosWorld) {
+  this.error = new Error("ProofGenerationFailed: Invalid ephemeral key");
+  expect(this.error.message).to.include("ProofGenerationFailed");
+});
 
 // =============================================================================
 // Error Cases
@@ -917,47 +848,36 @@ Then("it should fail with InvalidJwt error", function (this: AptosWorld) {
   expect(this.error!.message).to.include("InvalidJwt");
 });
 
-Given(
-  "an ephemeral key pair with nonce {string}",
-  function (this: AptosWorld, nonce: string) {
-    this.testVectors.set("expectedNonce", nonce);
-    this.testVectors.set("ephemeralKeyPair", {
-      nonce: nonce,
-    });
-  },
-);
+Given("an ephemeral key pair with nonce {string}", function (this: AptosWorld, nonce: string) {
+  this.testVectors.set("expectedNonce", nonce);
+  this.testVectors.set("ephemeralKeyPair", {
+    nonce: nonce,
+  });
+});
 
-Given(
-  "a JWT with nonce {string}",
-  function (this: AptosWorld, jwtNonce: string) {
-    const jwt = createMockJwt({
-      iss: "https://accounts.google.com",
-      aud: "test-client-id.apps.googleusercontent.com",
-      sub: "123456789",
-      nonce: jwtNonce,
-      iat: Math.floor(Date.now() / 1000),
-      exp: Math.floor(Date.now() / 1000) + 3600,
-    });
-    this.testVectors.set("jwt", jwt);
-    this.testVectors.set("jwtNonce", jwtNonce);
-  },
-);
+Given("a JWT with nonce {string}", function (this: AptosWorld, jwtNonce: string) {
+  const jwt = createMockJwt({
+    iss: "https://accounts.google.com",
+    aud: "test-client-id.apps.googleusercontent.com",
+    sub: "123456789",
+    nonce: jwtNonce,
+    iat: Math.floor(Date.now() / 1000),
+    exp: Math.floor(Date.now() / 1000) + 3600,
+  });
+  this.testVectors.set("jwt", jwt);
+  this.testVectors.set("jwtNonce", jwtNonce);
+});
 
-Then(
-  "it should fail with an error about nonce mismatch",
-  function (this: AptosWorld) {
-    const expectedNonce = this.testVectors.get("expectedNonce") as string;
-    const jwtNonce = this.testVectors.get("jwtNonce") as string;
+Then("it should fail with an error about nonce mismatch", function (this: AptosWorld) {
+  const expectedNonce = this.testVectors.get("expectedNonce") as string;
+  const jwtNonce = this.testVectors.get("jwtNonce") as string;
 
-    if (expectedNonce !== jwtNonce) {
-      this.error = new Error(
-        "NonceMismatch: JWT nonce does not match ephemeral key nonce",
-      );
-    }
-    expect(this.error).to.not.be.undefined;
-    expect(this.error!.message).to.include("nonce");
-  },
-);
+  if (expectedNonce !== jwtNonce) {
+    this.error = new Error("NonceMismatch: JWT nonce does not match ephemeral key nonce");
+  }
+  expect(this.error).to.not.be.undefined;
+  expect(this.error!.message).to.include("nonce");
+});
 
 Given("an expired JWT", function (this: AptosWorld) {
   const jwt = createMockJwt({
@@ -978,16 +898,13 @@ Given("an expired JWT", function (this: AptosWorld) {
 // Security Considerations
 // =============================================================================
 
-Given(
-  "an ephemeral key with {int} hour expiry",
-  function (this: AptosWorld, hours: number) {
-    const expiryDate = new Date(Date.now() + hours * 3600 * 1000);
-    const keyPair = EphemeralKeyPair.generate({
-      expiryDateSecs: Math.floor(expiryDate.getTime() / 1000),
-    });
-    this.testVectors.set("ephemeralKeyPair", keyPair);
-  },
-);
+Given("an ephemeral key with {int} hour expiry", function (this: AptosWorld, hours: number) {
+  const expiryDate = new Date(Date.now() + hours * 3600 * 1000);
+  const keyPair = EphemeralKeyPair.generate({
+    expiryDateSecs: Math.floor(expiryDate.getTime() / 1000),
+  });
+  this.testVectors.set("ephemeralKeyPair", keyPair);
+});
 
 When("the hour passes", function (this: AptosWorld) {
   this.testVectors.set("timePassed", true);
@@ -1047,10 +964,7 @@ When("I derive the address", function (this: AptosWorld) {
       `${payload.iss}|${payload.aud}|${payload.sub}|${bytesToHex(pepper)}`,
     );
     const addressBytes = sha3_256(input);
-    this.testVectors.set(
-      "testVectorAddress",
-      AccountAddress.from(addressBytes),
-    );
+    this.testVectors.set("testVectorAddress", AccountAddress.from(addressBytes));
   }
 });
 

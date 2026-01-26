@@ -10,11 +10,7 @@ import { p256 } from "@noble/curves/p256";
 import { sha256 } from "@noble/hashes/sha2.js";
 import { sha3_256 } from "@noble/hashes/sha3.js";
 import { bytesToHex, hexToBytes } from "@noble/hashes/utils.js";
-import {
-  Account,
-  AccountAddress,
-  Secp256k1PrivateKey,
-} from "@aptos-labs/ts-sdk";
+import { Account, AccountAddress, Secp256k1PrivateKey } from "@aptos-labs/ts-sdk";
 import type { AptosWorld } from "../support/world.js";
 
 // =============================================================================
@@ -96,14 +92,8 @@ When("I generate a random Secp256r1 key pair", function (this: AptosWorld) {
     const keyPair = Secp256r1KeyPair.generate();
     this.testVectors.set("secp256r1KeyPair", keyPair);
     this.testVectors.set("secp256r1PrivateKey", keyPair.getPrivateKeyBytes());
-    this.testVectors.set(
-      "secp256r1PublicKeyCompressed",
-      keyPair.publicKeyCompressed,
-    );
-    this.testVectors.set(
-      "secp256r1PublicKeyUncompressed",
-      keyPair.publicKeyUncompressed,
-    );
+    this.testVectors.set("secp256r1PublicKeyCompressed", keyPair.publicKeyCompressed);
+    this.testVectors.set("secp256r1PublicKeyUncompressed", keyPair.publicKeyUncompressed);
   } catch (e) {
     this.error = e as Error;
   }
@@ -118,22 +108,17 @@ Given("a 32-byte private key", function (this: AptosWorld) {
   this.testVectors.set("rawPrivateKeyBytes", privateKey);
 });
 
-When(
-  "I create a Secp256r1 key pair from the bytes",
-  function (this: AptosWorld) {
-    const privateKeyBytes = this.testVectors.get(
-      "rawPrivateKeyBytes",
-    ) as Uint8Array;
-    try {
-      const keyPair = new Secp256r1KeyPair(privateKeyBytes);
-      this.testVectors.set("secp256r1KeyPair", keyPair);
-      this.testVectors.set("keyPairValid", true);
-    } catch (e) {
-      this.error = e as Error;
-      this.testVectors.set("keyPairValid", false);
-    }
-  },
-);
+When("I create a Secp256r1 key pair from the bytes", function (this: AptosWorld) {
+  const privateKeyBytes = this.testVectors.get("rawPrivateKeyBytes") as Uint8Array;
+  try {
+    const keyPair = new Secp256r1KeyPair(privateKeyBytes);
+    this.testVectors.set("secp256r1KeyPair", keyPair);
+    this.testVectors.set("keyPairValid", true);
+  } catch (e) {
+    this.error = e as Error;
+    this.testVectors.set("keyPairValid", false);
+  }
+});
 
 Then("the Secp256r1 key pair should be valid", function (this: AptosWorld) {
   if (this.error) {
@@ -170,9 +155,7 @@ Given("a 32-byte private key of all zeros", function (this: AptosWorld) {
 });
 
 When("I try to create a Secp256r1 key pair", function (this: AptosWorld) {
-  const privateKeyBytes = this.testVectors.get(
-    "rawPrivateKeyBytes",
-  ) as Uint8Array;
+  const privateKeyBytes = this.testVectors.get("rawPrivateKeyBytes") as Uint8Array;
   try {
     const keyPair = new Secp256r1KeyPair(privateKeyBytes);
     this.testVectors.set("secp256r1KeyPair", keyPair);
@@ -183,14 +166,11 @@ When("I try to create a Secp256r1 key pair", function (this: AptosWorld) {
   }
 });
 
-Given(
-  "a 32-byte value greater than the P-256 curve order",
-  function (this: AptosWorld) {
-    // P-256 curve order is approximately 2^256 - 2^224 + 2^192 + 2^96 - 1
-    // Set to all 0xff which is definitely greater
-    this.testVectors.set("rawPrivateKeyBytes", new Uint8Array(32).fill(0xff));
-  },
-);
+Given("a 32-byte value greater than the P-256 curve order", function (this: AptosWorld) {
+  // P-256 curve order is approximately 2^256 - 2^224 + 2^192 + 2^96 - 1
+  // Set to all 0xff which is definitely greater
+  this.testVectors.set("rawPrivateKeyBytes", new Uint8Array(32).fill(0xff));
+});
 
 // =============================================================================
 // Public Key Formats
@@ -200,14 +180,8 @@ Given("a Secp256r1 key pair", function (this: AptosWorld) {
   const keyPair = Secp256r1KeyPair.generate();
   this.testVectors.set("secp256r1KeyPair", keyPair);
   this.testVectors.set("secp256r1PrivateKey", keyPair.getPrivateKeyBytes());
-  this.testVectors.set(
-    "secp256r1PublicKeyCompressed",
-    keyPair.publicKeyCompressed,
-  );
-  this.testVectors.set(
-    "secp256r1PublicKeyUncompressed",
-    keyPair.publicKeyUncompressed,
-  );
+  this.testVectors.set("secp256r1PublicKeyCompressed", keyPair.publicKeyCompressed);
+  this.testVectors.set("secp256r1PublicKeyUncompressed", keyPair.publicKeyUncompressed);
 });
 
 Given("a message", function (this: AptosWorld) {
@@ -227,23 +201,15 @@ Then(
   },
 );
 
-Then(
-  "the Secp256r1 first byte should be 0x02 or 0x03",
-  function (this: AptosWorld) {
-    const result = this.result as Uint8Array;
-    expect([0x02, 0x03]).to.include(result[0]);
-  },
-);
+Then("the Secp256r1 first byte should be 0x02 or 0x03", function (this: AptosWorld) {
+  const result = this.result as Uint8Array;
+  expect([0x02, 0x03]).to.include(result[0]);
+});
 
-When(
-  "I get the Secp256r1 uncompressed public key",
-  function (this: AptosWorld) {
-    const keyPair = this.testVectors.get(
-      "secp256r1KeyPair",
-    ) as Secp256r1KeyPair;
-    this.result = keyPair.publicKeyUncompressed;
-  },
-);
+When("I get the Secp256r1 uncompressed public key", function (this: AptosWorld) {
+  const keyPair = this.testVectors.get("secp256r1KeyPair") as Secp256r1KeyPair;
+  this.result = keyPair.publicKeyUncompressed;
+});
 
 Then("the Secp256r1 first byte should be 0x04", function (this: AptosWorld) {
   const result = this.result as Uint8Array;
@@ -272,17 +238,11 @@ Then("I should get a valid Secp256r1 public key", function (this: AptosWorld) {
   expect(this.testVectors.get("parseSucceeded")).to.be.true;
 });
 
-Given(
-  "a 65-byte uncompressed Secp256r1 public key",
-  function (this: AptosWorld) {
-    const keyPair = Secp256r1KeyPair.generate();
-    this.testVectors.set(
-      "uncompressedPublicKey",
-      keyPair.publicKeyUncompressed,
-    );
-    this.testVectors.set("compressedPublicKey", keyPair.publicKeyUncompressed); // Use for parsing
-  },
-);
+Given("a 65-byte uncompressed Secp256r1 public key", function (this: AptosWorld) {
+  const keyPair = Secp256r1KeyPair.generate();
+  this.testVectors.set("uncompressedPublicKey", keyPair.publicKeyUncompressed);
+  this.testVectors.set("compressedPublicKey", keyPair.publicKeyUncompressed); // Use for parsing
+});
 
 // =============================================================================
 // Signing
@@ -306,26 +266,17 @@ When("I sign the message with Secp256r1", function (this: AptosWorld) {
 Then(
   "the Secp256r1 signature should be {int} bytes",
   function (this: AptosWorld, expectedBytes: number) {
-    const signature =
-      this.signature ??
-      (this.testVectors.get("secp256r1Signature") as Uint8Array);
+    const signature = this.signature ?? (this.testVectors.get("secp256r1Signature") as Uint8Array);
     expect(signature.length).to.equal(expectedBytes);
   },
 );
 
-Then(
-  "the Secp256r1 signature should be valid for the message",
-  function (this: AptosWorld) {
-    const keyPair = this.testVectors.get(
-      "secp256r1KeyPair",
-    ) as Secp256r1KeyPair;
-    const signature =
-      this.signature ??
-      (this.testVectors.get("secp256r1Signature") as Uint8Array);
-    const isValid = keyPair.verify(this.message!, signature);
-    expect(isValid).to.be.true;
-  },
-);
+Then("the Secp256r1 signature should be valid for the message", function (this: AptosWorld) {
+  const keyPair = this.testVectors.get("secp256r1KeyPair") as Secp256r1KeyPair;
+  const signature = this.signature ?? (this.testVectors.get("secp256r1Signature") as Uint8Array);
+  const isValid = keyPair.verify(this.message!, signature);
+  expect(isValid).to.be.true;
+});
 
 When("I sign the Secp256r1 message twice", function (this: AptosWorld) {
   const keyPair = this.testVectors.get("secp256r1KeyPair") as Secp256r1KeyPair;
@@ -335,14 +286,11 @@ When("I sign the Secp256r1 message twice", function (this: AptosWorld) {
   this.testVectors.set("signature2", sig2);
 });
 
-Then(
-  "both Secp256r1 signatures should be identical",
-  function (this: AptosWorld) {
-    const sig1 = this.testVectors.get("signature1") as Uint8Array;
-    const sig2 = this.testVectors.get("signature2") as Uint8Array;
-    expect(bytesToHex(sig1)).to.equal(bytesToHex(sig2));
-  },
-);
+Then("both Secp256r1 signatures should be identical", function (this: AptosWorld) {
+  const sig1 = this.testVectors.get("signature1") as Uint8Array;
+  const sig2 = this.testVectors.get("signature2") as Uint8Array;
+  expect(bytesToHex(sig1)).to.equal(bytesToHex(sig2));
+});
 
 // Note: 'a message' step is defined in cryptography.steps.ts
 
@@ -360,45 +308,30 @@ When("I sign the pre-hashed message", function (this: AptosWorld) {
   this.signature = signature.toCompactRawBytes();
 });
 
-Then(
-  "the Secp256r1 pre-hash signature should be valid",
-  function (this: AptosWorld) {
-    expect(this.signature).to.not.be.undefined;
-    expect(this.signature!.length).to.equal(64);
-  },
-);
+Then("the Secp256r1 pre-hash signature should be valid", function (this: AptosWorld) {
+  expect(this.signature).to.not.be.undefined;
+  expect(this.signature!.length).to.equal(64);
+});
 
 // =============================================================================
 // Verification
 // =============================================================================
 
-Given(
-  "a Secp256r1 signature created by the key pair",
-  function (this: AptosWorld) {
-    const keyPair = this.testVectors.get(
-      "secp256r1KeyPair",
-    ) as Secp256r1KeyPair;
-    const signature = keyPair.sign(this.message!);
-    this.signature = signature;
-    this.testVectors.set("secp256r1Signature", signature);
-  },
-);
+Given("a Secp256r1 signature created by the key pair", function (this: AptosWorld) {
+  const keyPair = this.testVectors.get("secp256r1KeyPair") as Secp256r1KeyPair;
+  const signature = keyPair.sign(this.message!);
+  this.signature = signature;
+  this.testVectors.set("secp256r1Signature", signature);
+});
 
 When("I verify the Secp256r1 signature", function (this: AptosWorld) {
   const keyPair = this.testVectors.get("secp256r1KeyPair") as Secp256r1KeyPair;
-  const signature =
-    this.signature ??
-    (this.testVectors.get("secp256r1Signature") as Uint8Array);
+  const signature = this.signature ?? (this.testVectors.get("secp256r1Signature") as Uint8Array);
   const publicKey =
-    this.testVectors.get("secp256r1PublicKeyUncompressed") ??
-    keyPair?.publicKeyUncompressed;
+    this.testVectors.get("secp256r1PublicKeyUncompressed") ?? keyPair?.publicKeyUncompressed;
 
   try {
-    const isValid = p256.verify(
-      signature,
-      this.message!,
-      publicKey as Uint8Array,
-    );
+    const isValid = p256.verify(signature, this.message!, publicKey as Uint8Array);
     this.testVectors.set("verificationResult", isValid);
   } catch (e) {
     this.testVectors.set("verificationResult", false);
@@ -420,40 +353,27 @@ Given("two different Secp256r1 key pairs", function (this: AptosWorld) {
   this.testVectors.set("secp256r1KeyPair2", keyPair2);
 });
 
-Given(
-  "a message signed by the first Secp256r1 key",
-  function (this: AptosWorld) {
-    const keyPair = this.testVectors.get(
-      "secp256r1KeyPair",
-    ) as Secp256r1KeyPair;
-    this.message = new TextEncoder().encode("test message");
-    const signature = keyPair.sign(this.message);
-    this.signature = signature;
-  },
-);
+Given("a message signed by the first Secp256r1 key", function (this: AptosWorld) {
+  const keyPair = this.testVectors.get("secp256r1KeyPair") as Secp256r1KeyPair;
+  this.message = new TextEncoder().encode("test message");
+  const signature = keyPair.sign(this.message);
+  this.signature = signature;
+});
 
-When(
-  "I verify with the second Secp256r1 key's public key",
-  function (this: AptosWorld) {
-    const keyPair2 = this.testVectors.get(
-      "secp256r1KeyPair2",
-    ) as Secp256r1KeyPair;
-    try {
-      const isValid = keyPair2.verify(this.message!, this.signature!);
-      this.testVectors.set("verificationResult", isValid);
-    } catch {
-      this.testVectors.set("verificationResult", false);
-    }
-  },
-);
+When("I verify with the second Secp256r1 key's public key", function (this: AptosWorld) {
+  const keyPair2 = this.testVectors.get("secp256r1KeyPair2") as Secp256r1KeyPair;
+  try {
+    const isValid = keyPair2.verify(this.message!, this.signature!);
+    this.testVectors.set("verificationResult", isValid);
+  } catch {
+    this.testVectors.set("verificationResult", false);
+  }
+});
 
 Given("a generated Secp256r1 public key", function (this: AptosWorld) {
   const keyPair = Secp256r1KeyPair.generate();
   this.testVectors.set("secp256r1KeyPair", keyPair);
-  this.testVectors.set(
-    "secp256r1PublicKeyUncompressed",
-    keyPair.publicKeyUncompressed,
-  );
+  this.testVectors.set("secp256r1PublicKeyUncompressed", keyPair.publicKeyUncompressed);
 });
 
 Given("a Secp256r1 signature with invalid bytes", function (this: AptosWorld) {
@@ -468,10 +388,7 @@ Given("a Secp256r1 signature with invalid bytes", function (this: AptosWorld) {
 Given(/^a Secp256r1 public key \(uncompressed\)$/, function (this: AptosWorld) {
   const keyPair = Secp256r1KeyPair.generate();
   this.testVectors.set("secp256r1KeyPair", keyPair);
-  this.testVectors.set(
-    "secp256r1PublicKeyUncompressed",
-    keyPair.publicKeyUncompressed,
-  );
+  this.testVectors.set("secp256r1PublicKeyUncompressed", keyPair.publicKeyUncompressed);
 });
 
 When("I derive the Secp256r1 authentication key", function (this: AptosWorld) {
@@ -483,23 +400,18 @@ When("I derive the Secp256r1 authentication key", function (this: AptosWorld) {
   }
 });
 
-Then(
-  /^it should equal SHA3-256\(public_key_bytes \|\| 0x02\)$/,
-  function (this: AptosWorld) {
-    const keyPair = this.testVectors.get(
-      "secp256r1KeyPair",
-    ) as Secp256r1KeyPair;
-    const authKey = this.testVectors.get("authenticationKey") as Uint8Array;
+Then(/^it should equal SHA3-256\(public_key_bytes \|\| 0x02\)$/, function (this: AptosWorld) {
+  const keyPair = this.testVectors.get("secp256r1KeyPair") as Secp256r1KeyPair;
+  const authKey = this.testVectors.get("authenticationKey") as Uint8Array;
 
-    // Compute expected
-    const input = new Uint8Array(keyPair.publicKeyUncompressed.length + 1);
-    input.set(keyPair.publicKeyUncompressed);
-    input[input.length - 1] = 0x02;
-    const expected = sha3_256(input);
+  // Compute expected
+  const input = new Uint8Array(keyPair.publicKeyUncompressed.length + 1);
+  input.set(keyPair.publicKeyUncompressed);
+  input[input.length - 1] = 0x02;
+  const expected = sha3_256(input);
 
-    expect(bytesToHex(authKey)).to.equal(bytesToHex(expected));
-  },
-);
+  expect(bytesToHex(authKey)).to.equal(bytesToHex(expected));
+});
 
 Then("the scheme identifier used should be 0x02", function (this: AptosWorld) {
   // Secp256r1 uses scheme identifier 0x02
@@ -536,14 +448,11 @@ When("I create Secp256k1 and Secp256r1 accounts", function (this: AptosWorld) {
   }
 });
 
-Then(
-  "the Secp256r1 and Secp256k1 addresses should be different",
-  function (this: AptosWorld) {
-    const r1Addr = this.testVectors.get("secp256r1Address") as AccountAddress;
-    const k1Addr = this.testVectors.get("secp256k1Address") as AccountAddress;
-    expect(r1Addr.toString()).to.not.equal(k1Addr.toString());
-  },
-);
+Then("the Secp256r1 and Secp256k1 addresses should be different", function (this: AptosWorld) {
+  const r1Addr = this.testVectors.get("secp256r1Address") as AccountAddress;
+  const k1Addr = this.testVectors.get("secp256k1Address") as AccountAddress;
+  expect(r1Addr.toString()).to.not.equal(k1Addr.toString());
+});
 
 Then("the difference is due to scheme identifier", function (this: AptosWorld) {
   // Secp256k1 uses 0x01, Secp256r1 uses 0x02
@@ -554,22 +463,19 @@ Then("the difference is due to scheme identifier", function (this: AptosWorld) {
 // WebAuthn/Passkey Compatibility
 // =============================================================================
 
-Given(
-  "a COSE-encoded P-256 public key from WebAuthn",
-  function (this: AptosWorld) {
-    // COSE public key structure (simplified)
-    // In real WebAuthn, this would come from the authenticator
-    const keyPair = Secp256r1KeyPair.generate();
-    this.testVectors.set("cosePublicKey", {
-      kty: 2, // EC
-      alg: -7, // ES256
-      crv: 1, // P-256
-      x: keyPair.publicKeyUncompressed.slice(1, 33),
-      y: keyPair.publicKeyUncompressed.slice(33, 65),
-    });
-    this.testVectors.set("expectedPublicKey", keyPair.publicKeyUncompressed);
-  },
-);
+Given("a COSE-encoded P-256 public key from WebAuthn", function (this: AptosWorld) {
+  // COSE public key structure (simplified)
+  // In real WebAuthn, this would come from the authenticator
+  const keyPair = Secp256r1KeyPair.generate();
+  this.testVectors.set("cosePublicKey", {
+    kty: 2, // EC
+    alg: -7, // ES256
+    crv: 1, // P-256
+    x: keyPair.publicKeyUncompressed.slice(1, 33),
+    y: keyPair.publicKeyUncompressed.slice(33, 65),
+  });
+  this.testVectors.set("expectedPublicKey", keyPair.publicKeyUncompressed);
+});
 
 When("I parse it as Secp256r1 public key", function (this: AptosWorld) {
   const cose = this.testVectors.get("cosePublicKey") as any;
@@ -608,9 +514,7 @@ Given("a WebAuthn assertion signature", function (this: AptosWorld) {
   const clientDataHash = sha256(new TextEncoder().encode(clientDataJSON));
 
   // signedData = authenticatorData || clientDataHash
-  const signedData = new Uint8Array(
-    authenticatorData.length + clientDataHash.length,
-  );
+  const signedData = new Uint8Array(authenticatorData.length + clientDataHash.length);
   signedData.set(authenticatorData);
   signedData.set(clientDataHash, authenticatorData.length);
 
@@ -655,12 +559,9 @@ When(/^I convert to raw \(r,s\) format$/, function (this: AptosWorld) {
   this.result = sig.toCompactRawBytes();
 });
 
-Then(
-  "I should get {int} bytes",
-  function (this: AptosWorld, expectedBytes: number) {
-    expect((this.result as Uint8Array).length).to.equal(expectedBytes);
-  },
-);
+Then("I should get {int} bytes", function (this: AptosWorld, expectedBytes: number) {
+  expect((this.result as Uint8Array).length).to.equal(expectedBytes);
+});
 
 Then("it should be usable with Aptos", function (this: AptosWorld) {
   // 64-byte compact format is what Aptos uses
@@ -681,14 +582,11 @@ When("I create a Secp256r1 account", function (this: AptosWorld) {
   this.testVectors.set("secp256r1AuthKey", authKey);
 });
 
-Then(
-  "the Secp256r1 account should have a valid address",
-  function (this: AptosWorld) {
-    const address = this.testVectors.get("secp256r1Address") as AccountAddress;
-    expect(address).to.not.be.undefined;
-    expect(address.toUint8Array().length).to.equal(32);
-  },
-);
+Then("the Secp256r1 account should have a valid address", function (this: AptosWorld) {
+  const address = this.testVectors.get("secp256r1Address") as AccountAddress;
+  expect(address).to.not.be.undefined;
+  expect(address.toUint8Array().length).to.equal(32);
+});
 
 Then(
   "the Secp256r1 signature scheme should be {string}",
@@ -715,9 +613,7 @@ When("I sign the transaction with Secp256r1", function (this: AptosWorld) {
   const keyPair = this.testVectors.get("secp256r1KeyPair") as Secp256r1KeyPair;
 
   // Sign a mock transaction message
-  const txnMessage = new TextEncoder().encode(
-    "mock transaction signing message",
-  );
+  const txnMessage = new TextEncoder().encode("mock transaction signing message");
   const signature = keyPair.sign(txnMessage);
 
   this.testVectors.set("transactionSignature", signature);
@@ -743,74 +639,51 @@ Then("the authenticator should use Secp256r1", function (this: AptosWorld) {
 // Test Vectors
 // =============================================================================
 
-Given(
-  "a known Secp256r1 private key from test vectors",
-  function (this: AptosWorld) {
-    // Known test vector private key
-    const testPrivateKey =
-      "c9afa9d845ba75166b5c215767b1d6934e50c3db36e89b127b8a622b120f6721";
-    this.testVectors.set("testPrivateKeyHex", testPrivateKey);
+Given("a known Secp256r1 private key from test vectors", function (this: AptosWorld) {
+  // Known test vector private key
+  const testPrivateKey = "c9afa9d845ba75166b5c215767b1d6934e50c3db36e89b127b8a622b120f6721";
+  this.testVectors.set("testPrivateKeyHex", testPrivateKey);
 
-    const keyPair = Secp256r1KeyPair.fromHex(testPrivateKey);
-    this.testVectors.set("secp256r1KeyPair", keyPair);
-  },
-);
+  const keyPair = Secp256r1KeyPair.fromHex(testPrivateKey);
+  this.testVectors.set("secp256r1KeyPair", keyPair);
+});
 
 When("I derive the Secp256r1 public key", function (this: AptosWorld) {
   const keyPair = this.testVectors.get("secp256r1KeyPair") as Secp256r1KeyPair;
   this.testVectors.set("derivedCompressedPubKey", keyPair.publicKeyCompressed);
-  this.testVectors.set(
-    "derivedUncompressedPubKey",
-    keyPair.publicKeyUncompressed,
-  );
+  this.testVectors.set("derivedUncompressedPubKey", keyPair.publicKeyUncompressed);
 });
 
-Then(
-  "the Secp256r1 compressed public key should match test vectors",
-  function (this: AptosWorld) {
-    const compressed = this.testVectors.get(
-      "derivedCompressedPubKey",
-    ) as Uint8Array;
-    expect(compressed.length).to.equal(33);
-    expect([0x02, 0x03]).to.include(compressed[0]);
-  },
-);
+Then("the Secp256r1 compressed public key should match test vectors", function (this: AptosWorld) {
+  const compressed = this.testVectors.get("derivedCompressedPubKey") as Uint8Array;
+  expect(compressed.length).to.equal(33);
+  expect([0x02, 0x03]).to.include(compressed[0]);
+});
 
 Then(
   "the Secp256r1 uncompressed public key should match test vectors",
   function (this: AptosWorld) {
-    const uncompressed = this.testVectors.get(
-      "derivedUncompressedPubKey",
-    ) as Uint8Array;
+    const uncompressed = this.testVectors.get("derivedUncompressedPubKey") as Uint8Array;
     expect(uncompressed.length).to.equal(65);
     expect(uncompressed[0]).to.equal(0x04);
   },
 );
 
-Given(
-  "a known Secp256r1 key pair from test vectors",
-  function (this: AptosWorld) {
-    const testPrivateKey =
-      "c9afa9d845ba75166b5c215767b1d6934e50c3db36e89b127b8a622b120f6721";
-    const keyPair = Secp256r1KeyPair.fromHex(testPrivateKey);
-    this.testVectors.set("secp256r1KeyPair", keyPair);
-  },
-);
+Given("a known Secp256r1 key pair from test vectors", function (this: AptosWorld) {
+  const testPrivateKey = "c9afa9d845ba75166b5c215767b1d6934e50c3db36e89b127b8a622b120f6721";
+  const keyPair = Secp256r1KeyPair.fromHex(testPrivateKey);
+  this.testVectors.set("secp256r1KeyPair", keyPair);
+});
 
 Given("the Secp256r1 message from test vectors", function (this: AptosWorld) {
   this.message = new TextEncoder().encode("sample");
 });
 
-Then(
-  "the Secp256r1 signature should match test vectors",
-  function (this: AptosWorld) {
-    const signature =
-      this.signature ??
-      (this.testVectors.get("secp256r1Signature") as Uint8Array);
-    expect(signature).to.not.be.undefined;
-    expect(signature.length).to.equal(64);
-  },
-);
+Then("the Secp256r1 signature should match test vectors", function (this: AptosWorld) {
+  const signature = this.signature ?? (this.testVectors.get("secp256r1Signature") as Uint8Array);
+  expect(signature).to.not.be.undefined;
+  expect(signature.length).to.equal(64);
+});
 
 When("I derive the Secp256r1 account address", function (this: AptosWorld) {
   const keyPair = this.testVectors.get("secp256r1KeyPair") as Secp256r1KeyPair;

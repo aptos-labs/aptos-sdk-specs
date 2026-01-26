@@ -3,26 +3,25 @@ Step definitions for signing.feature
 Tests transaction signing and authenticator creation.
 """
 
-import sys
-import os
-import hashlib
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
-
-from behave import given, when, then
-from aptos_sdk.account import Account
-from aptos_sdk.account_address import AccountAddress
-from aptos_sdk.bcs import Serializer, Deserializer
-from aptos_sdk.transactions import (
-    RawTransaction,
-    SignedTransaction,
-)
+from support.vectors import hex_to_bytes, bytes_to_hex
 from aptos_sdk.authenticator import (
     Authenticator,
     AccountAuthenticator,
     Ed25519Authenticator,
 )
+from aptos_sdk.transactions import (
+    RawTransaction,
+    SignedTransaction,
+)
+from aptos_sdk.bcs import Serializer, Deserializer
+from aptos_sdk.account_address import AccountAddress
+from aptos_sdk.account import Account
+from behave import given, when, then
+import sys
+import os
+import hashlib
 
-from support.vectors import hex_to_bytes, bytes_to_hex
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 
 # =============================================================================
@@ -43,6 +42,7 @@ def step_given_second_signing_account(context):
 @given('an Ed25519 signing account from private key "{key_hex}"')
 def step_given_signing_account_from_key(context, key_hex):
     from aptos_sdk.ed25519 import PrivateKey
+
     key_bytes = hex_to_bytes(key_hex)
     private_key = PrivateKey.from_bytes(key_bytes)
     context.world.account = Account.load_key(private_key.key.hex())
@@ -57,23 +57,24 @@ def step_given_signing_account_from_key(context, key_hex):
 def step_given_raw_transaction_to_sign(context):
     if context.world.raw_transaction is None:
         # Create a simple raw transaction
-        from aptos_sdk.transactions import EntryFunction, TransactionPayload, TransactionArgument
+        from aptos_sdk.transactions import (
+            EntryFunction,
+            TransactionPayload,
+            TransactionArgument,
+        )
         import time
-        
+
         sender = context.world.account.address()
-        
+
         # Create simple payload using TransactionArgument
         recipient = AccountAddress.from_str("0x1")
         addr_arg = TransactionArgument(recipient, Serializer.struct)
         amount_arg = TransactionArgument(1000, Serializer.u64)
-        
+
         payload = EntryFunction.natural(
-            "0x1::aptos_account",
-            "transfer",
-            [],
-            [addr_arg, amount_arg]
+            "0x1::aptos_account", "transfer", [], [addr_arg, amount_arg]
         )
-        
+
         context.world.raw_transaction = RawTransaction(
             sender=sender,
             sequence_number=0,
@@ -104,29 +105,25 @@ def step_sign_raw_transaction(context):
         serializer = Serializer()
         context.world.raw_transaction.serialize(serializer)
         raw_bytes = serializer.output()
-        
+
         # Domain separation
         domain = b"APTOS::RawTransaction"
         domain_hash = hashlib.sha3_256(domain).digest()
         signing_message = domain_hash + raw_bytes
-        
+
         # Sign
         signature = context.world.account.sign(signing_message)
-        
+
         # Create authenticator
         from aptos_sdk.authenticator import AccountAuthenticator, Ed25519Authenticator
-        
+
         authenticator = AccountAuthenticator(
-            Ed25519Authenticator(
-                context.world.account.public_key(),
-                signature
-            )
+            Ed25519Authenticator(context.world.account.public_key(), signature)
         )
-        
+
         # Create signed transaction
         context.world.signed_transaction = SignedTransaction(
-            context.world.raw_transaction,
-            authenticator
+            context.world.raw_transaction, authenticator
         )
         context.world.clear_error()
     except Exception as e:
@@ -139,25 +136,21 @@ def step_sign_with_second_account(context):
         serializer = Serializer()
         context.world.raw_transaction.serialize(serializer)
         raw_bytes = serializer.output()
-        
+
         domain = b"APTOS::RawTransaction"
         domain_hash = hashlib.sha3_256(domain).digest()
         signing_message = domain_hash + raw_bytes
-        
+
         signature = context.world.account_2.sign(signing_message)
-        
+
         from aptos_sdk.authenticator import AccountAuthenticator, Ed25519Authenticator
-        
+
         authenticator = AccountAuthenticator(
-            Ed25519Authenticator(
-                context.world.account_2.public_key(),
-                signature
-            )
+            Ed25519Authenticator(context.world.account_2.public_key(), signature)
         )
-        
+
         context.world.test_vectors["signed_tx_2"] = SignedTransaction(
-            context.world.raw_transaction,
-            authenticator
+            context.world.raw_transaction, authenticator
         )
         context.world.clear_error()
     except Exception as e:
@@ -170,25 +163,21 @@ def step_sign_raw_transaction_again(context):
         serializer = Serializer()
         context.world.raw_transaction.serialize(serializer)
         raw_bytes = serializer.output()
-        
+
         domain = b"APTOS::RawTransaction"
         domain_hash = hashlib.sha3_256(domain).digest()
         signing_message = domain_hash + raw_bytes
-        
+
         signature = context.world.account.sign(signing_message)
-        
+
         from aptos_sdk.authenticator import AccountAuthenticator, Ed25519Authenticator
-        
+
         authenticator = AccountAuthenticator(
-            Ed25519Authenticator(
-                context.world.account.public_key(),
-                signature
-            )
+            Ed25519Authenticator(context.world.account.public_key(), signature)
         )
-        
+
         context.world.test_vectors["signed_tx_2"] = SignedTransaction(
-            context.world.raw_transaction,
-            authenticator
+            context.world.raw_transaction, authenticator
         )
         context.world.clear_error()
     except Exception as e:
@@ -206,11 +195,11 @@ def step_compute_transaction_hash(context):
         # Transaction hash = SHA3-256(domain_separator || signed_tx_bcs)
         domain = b"APTOS::Transaction"
         domain_hash = hashlib.sha3_256(domain).digest()
-        
+
         serializer = Serializer()
         context.world.signed_transaction.serialize(serializer)
         tx_bytes = serializer.output()
-        
+
         hash_input = domain_hash + tx_bytes
         context.world.transaction_hash = hashlib.sha3_256(hash_input).hexdigest()
         context.world.clear_error()
@@ -222,16 +211,18 @@ def step_compute_transaction_hash(context):
 def step_compute_hash_for_second(context):
     try:
         signed_tx_2 = context.world.test_vectors.get("signed_tx_2")
-        
+
         domain = b"APTOS::Transaction"
         domain_hash = hashlib.sha3_256(domain).digest()
-        
+
         serializer = Serializer()
         signed_tx_2.serialize(serializer)
         tx_bytes = serializer.output()
-        
+
         hash_input = domain_hash + tx_bytes
-        context.world.test_vectors["tx_hash_2"] = hashlib.sha3_256(hash_input).hexdigest()
+        context.world.test_vectors["tx_hash_2"] = hashlib.sha3_256(
+            hash_input
+        ).hexdigest()
         context.world.clear_error()
     except Exception as e:
         context.world.set_error(e)
@@ -293,21 +284,21 @@ def step_verify_signed_transaction(context):
         serializer = Serializer()
         context.world.signed_transaction.raw_transaction.serialize(serializer)
         raw_bytes = serializer.output()
-        
+
         domain = b"APTOS::RawTransaction"
         domain_hash = hashlib.sha3_256(domain).digest()
         signing_message = domain_hash + raw_bytes
-        
+
         # Get public key and signature from authenticator
         auth = context.world.signed_transaction.authenticator
-        if hasattr(auth, 'authenticator'):
+        if hasattr(auth, "authenticator"):
             inner = auth.authenticator
             public_key = inner.public_key
             signature = inner.signature
         else:
             public_key = auth.public_key
             signature = auth.signature
-        
+
         # Verify
         is_valid = public_key.verify(signing_message, signature)
         context.world.result = is_valid
@@ -350,10 +341,10 @@ def step_signed_tx_contains_raw(context):
     # Compare serialized bytes
     serializer1 = Serializer()
     context.world.raw_transaction.serialize(serializer1)
-    
+
     serializer2 = Serializer()
     context.world.signed_transaction.raw_transaction.serialize(serializer2)
-    
+
     assert serializer1.output() == serializer2.output()
 
 
@@ -372,7 +363,7 @@ def step_authenticator_is_ed25519(context):
 @then("the authenticator should contain the public key")
 def step_authenticator_contains_public_key(context):
     auth = context.world.signed_transaction.authenticator
-    if hasattr(auth, 'authenticator'):
+    if hasattr(auth, "authenticator"):
         assert auth.authenticator.public_key is not None
     else:
         assert auth.public_key is not None
@@ -381,7 +372,7 @@ def step_authenticator_contains_public_key(context):
 @then("the authenticator should contain a 64-byte signature")
 def step_authenticator_contains_signature(context):
     auth = context.world.signed_transaction.authenticator
-    if hasattr(auth, 'authenticator'):
+    if hasattr(auth, "authenticator"):
         sig = auth.authenticator.signature
     else:
         sig = auth.signature
@@ -409,14 +400,14 @@ def step_hash_deterministic(context):
     # Compute hash again
     domain = b"APTOS::Transaction"
     domain_hash = hashlib.sha3_256(domain).digest()
-    
+
     serializer = Serializer()
     context.world.signed_transaction.serialize(serializer)
     tx_bytes = serializer.output()
-    
+
     hash_input = domain_hash + tx_bytes
     hash2 = hashlib.sha3_256(hash_input).hexdigest()
-    
+
     assert context.world.transaction_hash == hash2
 
 
@@ -473,13 +464,13 @@ def step_signed_tx_serializations_identical(context):
 def step_signing_deterministic(context):
     signed_tx_1 = context.world.signed_transaction
     signed_tx_2 = context.world.test_vectors.get("signed_tx_2")
-    
+
     serializer1 = Serializer()
     signed_tx_1.serialize(serializer1)
-    
+
     serializer2 = Serializer()
     signed_tx_2.serialize(serializer2)
-    
+
     assert serializer1.output() == serializer2.output()
 
 
@@ -524,7 +515,7 @@ def step_given_two_signed_transactions(context):
     step_sign_raw_transaction(context)
     context.world.test_vectors["signed_tx_1"] = context.world.signed_transaction
     context.world.test_vectors["tx_hash_1"] = None
-    
+
     # Second signed transaction with different account
     context.world.account = Account.generate()
     step_given_raw_transaction_to_sign(context)
@@ -612,13 +603,15 @@ def step_sign_transaction_simple(context):
 
 @when("I get the raw_transaction")
 def step_get_raw_transaction(context):
-    context.world.test_vectors["extracted_raw_tx"] = context.world.signed_transaction.raw_transaction
+    context.world.test_vectors["extracted_raw_tx"] = (
+        context.world.signed_transaction.raw_transaction
+    )
 
 
 @when("I extract the signature from the authenticator")
 def step_extract_signature(context):
     auth = context.world.signed_transaction.authenticator
-    if hasattr(auth, 'authenticator'):
+    if hasattr(auth, "authenticator"):
         context.world.test_vectors["extracted_signature"] = auth.authenticator.signature
     else:
         context.world.test_vectors["extracted_signature"] = auth.signature
@@ -634,7 +627,9 @@ def step_sign_transaction_twice(context):
     step_sign_raw_transaction(context)
     context.world.test_vectors["signed_tx_1"] = context.world.signed_transaction
     step_sign_raw_transaction_again(context)
-    context.world.test_vectors["signed_tx_2"] = context.world.test_vectors.get("signed_tx_2")
+    context.world.test_vectors["signed_tx_2"] = context.world.test_vectors.get(
+        "signed_tx_2"
+    )
 
 
 @when("both accounts sign the transaction")
@@ -642,7 +637,7 @@ def step_both_accounts_sign_transaction(context):
     # First account signs
     step_sign_raw_transaction(context)
     context.world.test_vectors["signed_tx_1"] = context.world.signed_transaction
-    
+
     # Second account signs
     step_sign_with_second_account(context)
 
@@ -662,7 +657,7 @@ def step_serialize_deserialize(context):
     # Serialize
     step_bcs_serialize_signed_transaction(context)
     context.world.test_vectors["original_signed_tx"] = context.world.signed_transaction
-    
+
     # Deserialize
     step_bcs_deserialize_signed_transaction(context)
 
@@ -686,12 +681,12 @@ def step_compute_their_hashes(context):
     signed_tx_1 = context.world.test_vectors.get("signed_tx_1")
     domain = b"APTOS::Transaction"
     domain_hash = hashlib.sha3_256(domain).digest()
-    
+
     serializer = Serializer()
     signed_tx_1.serialize(serializer)
     hash_input = domain_hash + serializer.output()
     context.world.test_vectors["tx_hash_1"] = hashlib.sha3_256(hash_input).hexdigest()
-    
+
     # Second transaction hash
     signed_tx_2 = context.world.test_vectors.get("signed_tx_2")
     serializer = Serializer()
@@ -752,13 +747,13 @@ def step_authenticator_secp256k1_variant(context):
 def step_equals_original_raw_tx(context):
     extracted = context.world.test_vectors.get("extracted_raw_tx")
     original = context.world.raw_transaction
-    
+
     serializer1 = Serializer()
     extracted.serialize(serializer1)
-    
+
     serializer2 = Serializer()
     original.serialize(serializer2)
-    
+
     assert serializer1.output() == serializer2.output()
 
 
@@ -768,15 +763,15 @@ def step_signature_verifies_against_message(context):
     serializer = Serializer()
     context.world.signed_transaction.raw_transaction.serialize(serializer)
     raw_bytes = serializer.output()
-    
+
     domain = b"APTOS::RawTransaction"
     domain_hash = hashlib.sha3_256(domain).digest()
     signing_message = domain_hash + raw_bytes
-    
+
     # Get signature and public key
     sig = context.world.test_vectors.get("extracted_signature")
     public_key = context.world.account.public_key()
-    
+
     # Verify
     try:
         is_valid = public_key.verify(signing_message, sig)
@@ -789,7 +784,7 @@ def step_signature_verifies_against_message(context):
 @then("it should contain the signer's public key")
 def step_contains_signers_public_key(context):
     auth = context.world.authenticator or context.world.signed_transaction.authenticator
-    if hasattr(auth, 'authenticator'):
+    if hasattr(auth, "authenticator"):
         assert auth.authenticator.public_key is not None
     else:
         assert auth.public_key is not None
@@ -798,7 +793,7 @@ def step_contains_signers_public_key(context):
 @then("it should contain the signature")
 def step_contains_signature(context):
     auth = context.world.authenticator or context.world.signed_transaction.authenticator
-    if hasattr(auth, 'authenticator'):
+    if hasattr(auth, "authenticator"):
         assert auth.authenticator.signature is not None
     else:
         assert auth.signature is not None
@@ -808,13 +803,13 @@ def step_contains_signature(context):
 def step_both_signed_txs_identical(context):
     signed_tx_1 = context.world.test_vectors.get("signed_tx_1")
     signed_tx_2 = context.world.test_vectors.get("signed_tx_2")
-    
+
     serializer1 = Serializer()
     signed_tx_1.serialize(serializer1)
-    
+
     serializer2 = Serializer()
     signed_tx_2.serialize(serializer2)
-    
+
     assert serializer1.output() == serializer2.output()
 
 
@@ -826,17 +821,18 @@ def step_result_valid_bcs(context):
 
 # Note: "both results should be identical" is defined in hashing_steps.py
 
+
 @then("the signed transaction result should equal the original")
 def step_result_equals_original_signed_tx(context):
     original = context.world.test_vectors.get("original_signed_tx")
     result = context.world.signed_transaction
-    
+
     serializer1 = Serializer()
     original.serialize(serializer1)
-    
+
     serializer2 = Serializer()
     result.serialize(serializer2)
-    
+
     assert serializer1.output() == serializer2.output()
 
 
@@ -854,26 +850,28 @@ def step_tx_hashes_different(context):
     assert hash1 != hash2
 
 
-@then('it should equal SHA3-256(SHA3-256("APTOS::Transaction") || bcs(SignedTransaction))')
+@then(
+    'it should equal SHA3-256(SHA3-256("APTOS::Transaction") || bcs(SignedTransaction))'
+)
 def step_hash_equals_formula(context):
     # Compute expected hash
     domain = b"APTOS::Transaction"
     domain_hash = hashlib.sha3_256(domain).digest()
-    
+
     serializer = Serializer()
     context.world.signed_transaction.serialize(serializer)
     tx_bytes = serializer.output()
-    
+
     hash_input = domain_hash + tx_bytes
     expected = hashlib.sha3_256(hash_input).hexdigest()
-    
+
     assert context.world.transaction_hash == expected
 
 
 @then("it should have a public_key field (32 bytes)")
 def step_has_public_key_32_bytes(context):
     auth = context.world.authenticator
-    if hasattr(auth, 'authenticator'):
+    if hasattr(auth, "authenticator"):
         pk = auth.authenticator.public_key
     else:
         pk = auth.public_key
@@ -884,7 +882,7 @@ def step_has_public_key_32_bytes(context):
 @then("it should have a signature field (64 bytes)")
 def step_has_signature_64_bytes(context):
     auth = context.world.authenticator
-    if hasattr(auth, 'authenticator'):
+    if hasattr(auth, "authenticator"):
         sig = auth.authenticator.signature
     else:
         sig = auth.signature
@@ -895,7 +893,7 @@ def step_has_signature_64_bytes(context):
 @then("it should have a public_key field")
 def step_has_public_key_field(context):
     auth = context.world.authenticator
-    if hasattr(auth, 'authenticator'):
+    if hasattr(auth, "authenticator"):
         assert auth.authenticator.public_key is not None
     else:
         assert auth.public_key is not None
@@ -904,7 +902,7 @@ def step_has_public_key_field(context):
 @then("it should have a signature field")
 def step_has_signature_field(context):
     auth = context.world.authenticator
-    if hasattr(auth, 'authenticator'):
+    if hasattr(auth, "authenticator"):
         assert auth.authenticator.signature is not None
     else:
         assert auth.signature is not None
@@ -941,6 +939,7 @@ def step_transaction_will_fail_onchain(context):
 
 
 # Note: "the signature should match the expected value from test vectors" is defined in cryptography_steps.py
+
 
 @then("the signed transaction hash should match the expected value")
 def step_signed_tx_hash_matches_vectors(context):

@@ -3,6 +3,7 @@
 > **Updated:** 2026-01-22
 >
 > **Current Status:** 578/739 scenarios (~78%)
+>
 > - Required (P0): ~300/306 (98%)
 > - Preferred (P1): ~168/183 (92%)
 > - Optional (P2): ~110/250 (44%)
@@ -13,17 +14,18 @@ Total undefined scenarios: 161 (down from 163)
 
 ### By Priority Level (After Updates)
 
-| Priority | Missing | Feature Areas |
-|----------|---------|---------------|
-| Required | ~6 | Transaction submission (4), Error handling (2) |
-| Preferred | ~15 | Simulation (13), Fee-payer (2) |
-| Optional | ~140 | BLS12381 (35), Codegen (34), Indexer (~24), Multi-agent/Fee-payer/Multi-sig/Keyless (~47) |
+| Priority  | Missing | Feature Areas                                                                             |
+| --------- | ------- | ----------------------------------------------------------------------------------------- |
+| Required  | ~6      | Transaction submission (4), Error handling (2)                                            |
+| Preferred | ~15     | Simulation (13), Fee-payer (2)                                                            |
+| Optional  | ~140    | BLS12381 (35), Codegen (34), Indexer (~24), Multi-agent/Fee-payer/Multi-sig/Keyless (~47) |
 
 ---
 
 ## Completed Work
 
 ### Phase 1: Simulation Steps (simulation.steps.ts)
+
 - [x] Added step definitions for basic simulation scenarios
 - [x] Added gas estimation via simulation steps
 - [x] Added state/event preview steps
@@ -31,10 +33,12 @@ Total undefined scenarios: 161 (down from 163)
 - [x] Added simulation options steps
 
 ### Phase 2: Gas Estimation Steps (gas-estimation.steps.ts)
+
 - [x] Added `error should indicate insufficient balance` step
 - [x] Added `When I request gas estimate` step
 
 ### Phase 3: Secp256k1 Steps (cryptography.steps.ts)
+
 - [x] Added hex key creation steps
 - [x] Added invalid key rejection steps
 - [x] Added compressed/uncompressed public key steps
@@ -43,6 +47,7 @@ Total undefined scenarios: 161 (down from 163)
 - [x] Added test vector steps
 
 ### Phase 4: Indexer Steps (indexer.steps.ts - NEW FILE)
+
 - [x] Created new indexer.steps.ts file
 - [x] Added client configuration steps
 - [x] Added GraphQL query steps
@@ -57,7 +62,9 @@ Total undefined scenarios: 161 (down from 163)
 ## Remaining Work
 
 ### Still Missing - Simulation (13 scenarios)
+
 These scenarios have step definitions but patterns may not match exactly:
+
 - [ ] Simulate valid transaction - step pattern mismatch
 - [ ] Simulate without signing - step pattern mismatch
 - [ ] Simulation result includes changes - step pattern mismatch
@@ -73,6 +80,7 @@ These scenarios have step definitions but patterns may not match exactly:
 - [ ] Simulate multi-agent/fee payer transaction - step pattern mismatch
 
 ### Still Missing - Fee-payer & Multi-agent Edge Cases (~9 scenarios)
+
 - [ ] Fee payer signing message includes fee payer address
 - [ ] Fee payer signing message uses correct domain
 - [ ] Sign fee payer transaction
@@ -86,13 +94,17 @@ These scenarios have step definitions but patterns may not match exactly:
 ### Skip - SDK Limitations
 
 #### BLS12-381 (35 scenarios) - @optional
+
 **Status:** SDK does not support BLS12-381. These scenarios cannot be implemented.
 
 #### Codegen (34 scenarios) - @optional
+
 **Status:** Code generation is not a TypeScript SDK feature. Skip.
 
 ### Indexer - Partially Implemented
+
 Step definitions added in `indexer.steps.ts` but some scenarios still have pattern mismatches:
+
 - [ ] Check indexer processor status
 - [ ] Indexer lag detection
 - [ ] Handle indexer unavailable
@@ -100,11 +112,13 @@ Step definitions added in `indexer.steps.ts` but some scenarios still have patte
 - [ ] Handle malformed response
 
 ### Multi-signature (~3 scenarios)
+
 - [ ] Sign with enough private keys
 - [ ] Collect signatures from multiple parties
 - [ ] Multi-sig transaction authenticator structure
 
 ### Keyless (~3 scenarios)
+
 - [ ] Sign message with keyless account
 - [ ] Sign transaction with keyless account
 - [ ] Reject signing with expired ephemeral key
@@ -133,18 +147,21 @@ bun run test:preferred
 ## Summary
 
 ### What Was Done
+
 1. **simulation.steps.ts** - Added ~50 new step definitions for simulation scenarios
 2. **gas-estimation.steps.ts** - Added 2 missing step patterns
 3. **cryptography.steps.ts** - Added ~30 new Secp256k1 step definitions
 4. **indexer.steps.ts** - Created new file with ~60 step definitions
 
 ### What Remains
+
 1. **BLS12381** (35) - Not supported by SDK, skip
 2. **Codegen** (34) - Not a SDK feature, skip
 3. **Pattern mismatches** (~30) - Step definitions exist but Gherkin patterns don't match
 4. **Edge cases** (~20) - Multi-agent, fee-payer, multi-sig validation scenarios
 
 ### Recommendations
+
 1. Run actual tests (not dry-run) to see which scenarios pass
 2. Fix remaining pattern mismatches in simulation.steps.ts
 3. Add validation edge cases for multi-agent/fee-payer

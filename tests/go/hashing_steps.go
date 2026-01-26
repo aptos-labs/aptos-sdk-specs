@@ -480,7 +480,7 @@ func initHashingSteps(ctx *godog.ScenarioContext, world *World) {
 			}
 		}
 		// Check for address equality
-		if world.Addresses != nil && len(world.Addresses) >= 2 {
+		if len(world.Addresses) >= 2 {
 			if *world.Addresses[0] != *world.Addresses[1] {
 				return fmt.Errorf("addresses should be equal")
 			}

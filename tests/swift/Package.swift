@@ -21,7 +21,7 @@ let package = Package(
         .package(url: "https://github.com/ALCOVE-LAB/aptos-swift-sdk.git", branch: "main"),
         
         // Pin secp256k1 to a version compatible with the SDK
-        .package(url: "https://github.com/GigaBitcoin/secp256k1.swift.git", exact: "0.17.0"),
+        .package(url: "https://github.com/GigaBitcoin/secp256k1.swift.git", exact: "0.17.0")
     ],
     targets: [
         // Empty library target (test-only package)
@@ -36,7 +36,7 @@ let package = Package(
             name: "AptosSpecsTests",
             dependencies: [
                 "AptosSpecs",
-                .product(name: "Aptos", package: "aptos-swift-sdk"),
+                .product(name: "Aptos", package: "aptos-swift-sdk")
             ],
             path: "Tests/AptosSpecsTests",
             resources: [

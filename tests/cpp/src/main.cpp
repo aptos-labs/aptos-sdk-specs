@@ -12,24 +12,21 @@ using namespace aptos::specs;
 // Hooks
 // =============================================================================
 
-BEFORE(reset_world)
-{
-    // Get or create world context and reset it
-    cuke::context<TestWorld>().reset();
+BEFORE(reset_world) {
+  // Get or create world context and reset it
+  cuke::context<TestWorld>().reset();
 }
 
-AFTER(cleanup_world)
-{
-    // Cleanup after each scenario if needed
+AFTER(cleanup_world) {
+  // Cleanup after each scenario if needed
 }
 
 // =============================================================================
 // Main Entry Point
 // =============================================================================
 
-int main(int argc, const char* argv[])
-{
-    // Run CWT-Cucumber tests
-    auto result = cuke::entry_point(argc, argv);
-    return result == cuke::results::test_status::passed ? 0 : 1;
+int main(int argc, const char *argv[]) {
+  // Run CWT-Cucumber tests
+  auto result = cuke::entry_point(argc, argv);
+  return result == cuke::results::test_status::passed ? 0 : 1;
 }

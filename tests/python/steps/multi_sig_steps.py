@@ -3,22 +3,21 @@ Step definitions for multi-signature.feature
 Tests multi-signature account and transaction handling.
 """
 
-import sys
-import os
-import hashlib
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
-
-from behave import given, when, then
-from aptos_sdk.account import Account
-from aptos_sdk.account_address import AccountAddress
-from aptos_sdk.bcs import Serializer, Deserializer
-from aptos_sdk.ed25519 import PublicKey
-
 from support.vectors import (
     get_multi_sig_test_vectors,
     hex_to_bytes,
     bytes_to_hex,
 )
+from aptos_sdk.ed25519 import PublicKey
+from aptos_sdk.bcs import Serializer, Deserializer
+from aptos_sdk.account_address import AccountAddress
+from aptos_sdk.account import Account
+from behave import given, when, then
+import sys
+import os
+import hashlib
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 
 # =============================================================================
@@ -119,14 +118,11 @@ def step_given_message_to_sign_multi_sig(context):
 def step_create_multi_sig_public_key(context):
     try:
         from aptos_sdk.ed25519 import MultiPublicKey
-        
+
         public_keys = context.world.test_vectors.get("public_keys", [])
         threshold = context.world.test_vectors.get("threshold", 2)
-        
-        context.world.multi_sig_public_key = MultiPublicKey(
-            public_keys,
-            threshold
-        )
+
+        context.world.multi_sig_public_key = MultiPublicKey(public_keys, threshold)
         context.world.clear_error()
     except Exception as e:
         context.world.set_error(e)
@@ -149,17 +145,17 @@ def step_try_create_multi_ed25519_account(context):
 def step_create_multi_sig_accounts_from_each(context):
     try:
         from aptos_sdk.ed25519 import MultiPublicKey
-        
+
         threshold = context.world.test_vectors.get("threshold", 2)
-        
+
         # Create first account with ABC order
         pks_abc = context.world.test_vectors.get("public_keys_abc")
         mpk_abc = MultiPublicKey(pks_abc, threshold)
-        
+
         # Create second account with CBA order
         pks_cba = context.world.test_vectors.get("public_keys_cba")
         mpk_cba = MultiPublicKey(pks_cba, threshold)
-        
+
         # Derive addresses
         def derive_address(mpk):
             serializer = Serializer()
@@ -168,7 +164,7 @@ def step_create_multi_sig_accounts_from_each(context):
             scheme_id = bytes([1])
             auth_key_hash = hashlib.sha3_256(pk_bytes + scheme_id).digest()
             return auth_key_hash.hex()
-        
+
         context.world.test_vectors["address_abc"] = derive_address(mpk_abc)
         context.world.test_vectors["address_cba"] = derive_address(mpk_cba)
         context.world.clear_error()
@@ -180,13 +176,13 @@ def step_create_multi_sig_accounts_from_each(context):
 def step_create_two_multi_sig_accounts(context):
     try:
         from aptos_sdk.ed25519 import MultiPublicKey
-        
+
         pks = context.world.test_vectors.get("public_keys")
         threshold = context.world.test_vectors.get("threshold", 2)
-        
+
         mpk1 = MultiPublicKey(pks, threshold)
         mpk2 = MultiPublicKey(pks, threshold)
-        
+
         def derive_address(mpk):
             serializer = Serializer()
             mpk.serialize(serializer)
@@ -194,7 +190,7 @@ def step_create_two_multi_sig_accounts(context):
             scheme_id = bytes([1])
             auth_key_hash = hashlib.sha3_256(pk_bytes + scheme_id).digest()
             return auth_key_hash.hex()
-        
+
         context.world.test_vectors["address_1"] = derive_address(mpk1)
         context.world.test_vectors["address_2"] = derive_address(mpk2)
         context.world.clear_error()
@@ -207,10 +203,10 @@ def step_sign_message_with_multi_sig(context):
     try:
         signers = context.world.test_vectors.get("available_signers", [])
         signatures = {}
-        
+
         for i, signer in enumerate(signers):
             signatures[i] = signer.sign(context.world.message)
-        
+
         context.world.test_vectors["signatures"] = signatures
         step_create_multi_signature(context)
     except Exception as e:
@@ -221,16 +217,16 @@ def step_sign_message_with_multi_sig(context):
 def step_derive_multi_sig_auth_key(context):
     try:
         from aptos_sdk.authenticator import AuthenticationKey
-        
+
         # Multi-sig auth key derivation
         # SHA3-256(public_key_bytes || scheme_id)
         serializer = Serializer()
         context.world.multi_sig_public_key.serialize(serializer)
         pk_bytes = serializer.output()
-        
+
         # Multi-Ed25519 scheme ID is 1
         scheme_id = bytes([1])
-        
+
         auth_key_hash = hashlib.sha3_256(pk_bytes + scheme_id).digest()
         context.world.authentication_key = auth_key_hash.hex()
         context.world.clear_error()
@@ -265,10 +261,10 @@ def step_signer_signs_message(context, index):
         accounts = context.world.test_vectors.get("multi_sig_accounts", [])
         if index >= len(accounts):
             raise IndexError(f"Signer index {index} out of range")
-        
+
         account = accounts[index]
         signature = account.sign(context.world.message)
-        
+
         signatures = context.world.test_vectors.get("signatures", {})
         signatures[index] = signature
         context.world.test_vectors["signatures"] = signatures
@@ -281,11 +277,11 @@ def step_signer_signs_message(context, index):
 def step_multiple_signers_sign(context, count):
     try:
         accounts = context.world.test_vectors.get("multi_sig_accounts", [])
-        
+
         signatures = {}
         for i in range(min(count, len(accounts))):
             signatures[i] = accounts[i].sign(context.world.message)
-        
+
         context.world.test_vectors["signatures"] = signatures
         context.world.clear_error()
     except Exception as e:
@@ -296,21 +292,20 @@ def step_multiple_signers_sign(context, count):
 def step_create_multi_signature(context):
     try:
         from aptos_sdk.ed25519 import MultiSignature
-        
+
         signatures = context.world.test_vectors.get("signatures", {})
         threshold = context.world.test_vectors.get("threshold", 2)
         total_signers = len(context.world.test_vectors.get("multi_sig_accounts", []))
-        
+
         # Create bitmap
         bitmap = 0
         sig_list = []
         for index, sig in sorted(signatures.items()):
-            bitmap |= (1 << (31 - index))  # Big-endian bit order
+            bitmap |= 1 << (31 - index)  # Big-endian bit order
             sig_list.append(sig)
-        
+
         context.world.multi_signature = MultiSignature(
-            signatures=sig_list,
-            bitmap=bitmap
+            signatures=sig_list, bitmap=bitmap
         )
         context.world.clear_error()
     except Exception as e:
@@ -326,8 +321,7 @@ def step_create_multi_signature(context):
 def step_verify_multi_signature(context):
     try:
         is_valid = context.world.multi_sig_public_key.verify(
-            context.world.message,
-            context.world.multi_signature
+            context.world.message, context.world.multi_signature
         )
         context.world.result = is_valid
         context.world.clear_error()
@@ -367,7 +361,7 @@ def step_bcs_serialize_multi_sig(context):
 def step_bcs_deserialize_multi_sig_pk(context):
     try:
         from aptos_sdk.ed25519 import MultiPublicKey
-        
+
         deserializer = Deserializer(context.world.bytes_value)
         context.world.multi_sig_public_key = MultiPublicKey.deserialize(deserializer)
         context.world.clear_error()
@@ -417,7 +411,7 @@ def step_fail_no_keys(context):
     assert context.world.error is not None
 
 
-@then('it should equal SHA3-256(pk1 || pk2 || pk3 || threshold || 0x01)')
+@then("it should equal SHA3-256(pk1 || pk2 || pk3 || threshold || 0x01)")
 def step_auth_key_equals_expected(context):
     # Verify the authentication key derivation formula
     assert context.world.authentication_key is not None
@@ -425,6 +419,7 @@ def step_auth_key_equals_expected(context):
 
 
 # Note: "the addresses should be different" is defined in account_steps.py
+
 
 @then("the multi-sig addresses should be identical")
 def step_addresses_identical(context):
@@ -497,9 +492,9 @@ def step_multi_sig_sig_count(context, count):
 def step_multi_sig_bitmap_correct(context):
     signatures = context.world.test_vectors.get("signatures", {})
     bitmap = context.world.multi_signature.bitmap
-    
+
     for index in signatures.keys():
-        expected_bit = (1 << (31 - index))
+        expected_bit = 1 << (31 - index)
         assert (bitmap & expected_bit) != 0
 
 
@@ -557,13 +552,13 @@ def step_multi_sig_pk_deserialized_matches(context):
 def step_all_multi_sig_vectors_pass(context):
     vectors = context.world.test_vectors.get("multi_sig", [])
     failures = []
-    
+
     for vector in vectors:
         try:
             # Test according to vector specifications
             pass  # Implement based on vector format
         except Exception as e:
             failures.append(f"{vector.get('name', 'unknown')}: {str(e)}")
-    
+
     if failures:
         raise AssertionError("\n".join(failures))

@@ -220,7 +220,9 @@ func initEntryFunctionSteps(ctx *godog.ScenarioContext, world *World) {
 		expectedParts := strings.Split(expected, "::")
 		if len(expectedParts) == 2 {
 			expectedAddr := &aptos.AccountAddress{}
-			expectedAddr.ParseStringRelaxed(expectedParts[0])
+			if err := expectedAddr.ParseStringRelaxed(expectedParts[0]); err != nil {
+				return fmt.Errorf("failed to parse expected address: %v", err)
+			}
 			expected = expectedAddr.String() + "::" + expectedParts[1]
 		}
 		if actual != expected {
@@ -261,7 +263,9 @@ func initEntryFunctionSteps(ctx *godog.ScenarioContext, world *World) {
 		expectedParts := strings.Split(expected, "::")
 		if len(expectedParts) == 2 {
 			expectedAddr := &aptos.AccountAddress{}
-			expectedAddr.ParseStringRelaxed(expectedParts[0])
+			if err := expectedAddr.ParseStringRelaxed(expectedParts[0]); err != nil {
+				return fmt.Errorf("failed to parse expected address: %v", err)
+			}
 			expected = expectedAddr.String() + "::" + expectedParts[1]
 		}
 		if actual != expected {

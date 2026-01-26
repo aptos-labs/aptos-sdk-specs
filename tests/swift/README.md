@@ -71,10 +71,10 @@ swift test --verbose
 
 ## SDK Under Test
 
-| Property | Value |
-|----------|-------|
-| **Package** | `aptos-swift-sdk` |
-| **Repository** | https://github.com/ALCOVE-LAB/aptos-swift-sdk |
+| Property          | Value                                                 |
+| ----------------- | ----------------------------------------------------- |
+| **Package**       | `aptos-swift-sdk`                                     |
+| **Repository**    | https://github.com/ALCOVE-LAB/aptos-swift-sdk         |
 | **Documentation** | https://aptos.dev/build/sdks/community-sdks/swift-sdk |
 
 ## Dependencies
@@ -84,18 +84,18 @@ swift test --verbose
 
 ## Test Tags
 
-| Tag | Description |
-|-----|-------------|
-| `@required` | Must-have features (P0) |
-| `@preferred` | Recommended features (P1) |
-| `@optional` | Nice-to-have features (P2) |
-| `@core-types` | Address, TypeTag, serialization |
-| `@cryptography` | Keys, signatures, hashing |
-| `@accounts` | Account creation, derivation |
-| `@transactions` | Transaction building |
-| `@api-clients` | REST API, faucet, indexer |
-| `@advanced` | Multi-sig, keyless, etc. |
-| `@network` | Requires network connectivity |
+| Tag             | Description                     |
+| --------------- | ------------------------------- |
+| `@required`     | Must-have features (P0)         |
+| `@preferred`    | Recommended features (P1)       |
+| `@optional`     | Nice-to-have features (P2)      |
+| `@core-types`   | Address, TypeTag, serialization |
+| `@cryptography` | Keys, signatures, hashing       |
+| `@accounts`     | Account creation, derivation    |
+| `@transactions` | Transaction building            |
+| `@api-clients`  | REST API, faucet, indexer       |
+| `@advanced`     | Multi-sig, keyless, etc.        |
+| `@network`      | Requires network connectivity   |
 
 ## Implementation Status
 

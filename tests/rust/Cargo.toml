@@ -9,8 +9,9 @@ description = "Behavioral specification tests for aptos-rust-sdk-v2"
 [workspace]
 
 [dependencies]
-# The SDK we're testing
-aptos-rust-sdk-v2 = { path = "../../../crates/aptos-rust-sdk-v2", features = ["full"] }
+# The SDK we're testing - local path for development
+# For CI, use: aptos-rust-sdk-v2 = { git = "https://github.com/aptos-labs/aptos-rust-sdk" }
+aptos-rust-sdk-v2 = { path = "../../../aptos-rust-sdk/crates/aptos-rust-sdk-v2", features = ["full"] }
 aptos-bcs = "0.1"
 
 # BDD testing framework

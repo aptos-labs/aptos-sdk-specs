@@ -1453,8 +1453,3 @@ func parseByteArray(s string) ([]byte, error) {
 	}
 	return result, nil
 }
-
-func hexToBytes(s string) ([]byte, error) {
-	s = strings.TrimPrefix(s, "0x")
-	return hex.DecodeString(s)
-}

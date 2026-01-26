@@ -34,10 +34,7 @@ When("I prepare the authentication key input", function (this: AptosWorld) {
     input.set(pubKeyBytes);
     input.set(schemeId, pubKeyBytes.length);
     this.testVectors.set("authKeyInput", input);
-  } else if (
-    this.privateKey instanceof Secp256k1PrivateKey ||
-    keyType === "secp256k1"
-  ) {
+  } else if (this.privateKey instanceof Secp256k1PrivateKey || keyType === "secp256k1") {
     const pubKeyBytes = this.publicKey!;
     const schemeId = new Uint8Array([0x01]); // Secp256k1 scheme
     const input = new Uint8Array(pubKeyBytes.length + 1);
@@ -47,21 +44,15 @@ When("I prepare the authentication key input", function (this: AptosWorld) {
   }
 });
 
-Then(
-  "the input should be {int} bytes",
-  function (this: AptosWorld, expectedLength: number) {
-    const input = this.testVectors.get("authKeyInput") as Uint8Array;
-    expect(input.length).to.equal(expectedLength);
-  },
-);
+Then("the input should be {int} bytes", function (this: AptosWorld, expectedLength: number) {
+  const input = this.testVectors.get("authKeyInput") as Uint8Array;
+  expect(input.length).to.equal(expectedLength);
+});
 
-Then(
-  "the last byte should be {word}",
-  function (this: AptosWorld, expectedByte: string) {
-    const input = this.testVectors.get("authKeyInput") as Uint8Array;
-    expect(input[input.length - 1]).to.equal(parseInt(expectedByte, 16));
-  },
-);
+Then("the last byte should be {word}", function (this: AptosWorld, expectedByte: string) {
+  const input = this.testVectors.get("authKeyInput") as Uint8Array;
+  expect(input[input.length - 1]).to.equal(parseInt(expectedByte, 16));
+});
 
 When("I derive the authentication key twice", function (this: AptosWorld) {
   if (this.privateKey instanceof Ed25519PrivateKey) {
@@ -91,36 +82,30 @@ When("I derive authentication keys from each", function (this: AptosWorld) {
   this.testVectors.set("authKey2", pk2.publicKey().authKey().toUint8Array());
 });
 
-Then(
-  "the authentication keys should be different",
-  function (this: AptosWorld) {
-    const authKey1 = this.testVectors.get("authKey1") as Uint8Array;
-    const authKey2 = this.testVectors.get("authKey2") as Uint8Array;
-    expect(bytesToHex(authKey1)).to.not.equal(bytesToHex(authKey2));
-  },
-);
+Then("the authentication keys should be different", function (this: AptosWorld) {
+  const authKey1 = this.testVectors.get("authKey1") as Uint8Array;
+  const authKey2 = this.testVectors.get("authKey2") as Uint8Array;
+  expect(bytesToHex(authKey1)).to.not.equal(bytesToHex(authKey2));
+});
 
 // =============================================================================
 // Secp256k1 Authentication Key Steps
 // =============================================================================
 
-Given(
-  /^a Secp256k1 public key \(uncompressed, 65 bytes\)$/,
-  function (this: AptosWorld) {
-    // Use Account.generate to get a public key with authKey() support
-    const account = Account.generate({
-      scheme: SigningSchemeInput.Secp256k1Ecdsa,
-    });
-    this.account = account;
-    // Get the raw public key bytes (65 bytes for uncompressed Secp256k1)
-    const rawPubKey = (account.publicKey as any).publicKey;
-    if (rawPubKey && typeof rawPubKey.toUint8Array === "function") {
-      this.publicKey = rawPubKey.toUint8Array();
-    } else {
-      this.publicKey = account.publicKey.toUint8Array();
-    }
-  },
-);
+Given(/^a Secp256k1 public key \(uncompressed, 65 bytes\)$/, function (this: AptosWorld) {
+  // Use Account.generate to get a public key with authKey() support
+  const account = Account.generate({
+    scheme: SigningSchemeInput.Secp256k1Ecdsa,
+  });
+  this.account = account;
+  // Get the raw public key bytes (65 bytes for uncompressed Secp256k1)
+  const rawPubKey = (account.publicKey as any).publicKey;
+  if (rawPubKey && typeof rawPubKey.toUint8Array === "function") {
+    this.publicKey = rawPubKey.toUint8Array();
+  } else {
+    this.publicKey = account.publicKey.toUint8Array();
+  }
+});
 
 Given("a Secp256k1 public key", function (this: AptosWorld) {
   // Use Account.generate to get a public key with authKey() support
@@ -162,42 +147,28 @@ Given("a MultiKey public key", function (this: AptosWorld) {
   this.testVectors.set("skipTest", true);
 });
 
-Then(
-  /^it should equal SHA3-256\(public_key_bytes \|\| 0x01\)$/,
-  function (this: AptosWorld) {
-    // Verify that the auth key was derived correctly for Secp256k1
-    expect(this.bytes!.length).to.equal(32);
-  },
-);
+Then(/^it should equal SHA3-256\(public_key_bytes \|\| 0x01\)$/, function (this: AptosWorld) {
+  // Verify that the auth key was derived correctly for Secp256k1
+  expect(this.bytes!.length).to.equal(32);
+});
 
-When(
-  "I get the public key for authentication key derivation",
-  function (this: AptosWorld) {
-    if (this.privateKey instanceof Secp256k1PrivateKey) {
-      this.publicKey = this.privateKey.publicKey().toUint8Array();
-      this.testVectors.set("pubKeyForAuth", this.publicKey);
-    }
-  },
-);
+When("I get the public key for authentication key derivation", function (this: AptosWorld) {
+  if (this.privateKey instanceof Secp256k1PrivateKey) {
+    this.publicKey = this.privateKey.publicKey().toUint8Array();
+    this.testVectors.set("pubKeyForAuth", this.publicKey);
+  }
+});
 
-Then(
-  /^it should be the uncompressed format \(65 bytes\)$/,
-  function (this: AptosWorld) {
-    const pubKey =
-      (this.testVectors.get("pubKeyForAuth") as Uint8Array) ?? this.publicKey;
-    // Secp256k1 uncompressed keys are 65 bytes (0x04 prefix + 32 bytes X + 32 bytes Y)
-    expect(pubKey.length).to.equal(65);
-  },
-);
+Then(/^it should be the uncompressed format \(65 bytes\)$/, function (this: AptosWorld) {
+  const pubKey = (this.testVectors.get("pubKeyForAuth") as Uint8Array) ?? this.publicKey;
+  // Secp256k1 uncompressed keys are 65 bytes (0x04 prefix + 32 bytes X + 32 bytes Y)
+  expect(pubKey.length).to.equal(65);
+});
 
-Then(
-  "the first byte of the public key should be 0x04",
-  function (this: AptosWorld) {
-    const pubKey =
-      (this.testVectors.get("pubKeyForAuth") as Uint8Array) ?? this.publicKey;
-    expect(pubKey[0]).to.equal(0x04);
-  },
-);
+Then("the first byte of the public key should be 0x04", function (this: AptosWorld) {
+  const pubKey = (this.testVectors.get("pubKeyForAuth") as Uint8Array) ?? this.publicKey;
+  expect(pubKey[0]).to.equal(0x04);
+});
 
 // Note: 'the first byte should be {word}' is defined in serialization.steps.ts
 
@@ -216,17 +187,14 @@ Given("a scheme identifier", function (this: AptosWorld) {
   this.testVectors.set("schemeId", 0x00);
 });
 
-When(
-  "I derive the authentication key using from_public_key",
-  function (this: AptosWorld) {
-    // Manually compute auth key: SHA3-256(public_key || scheme_id)
-    const schemeId = this.testVectors.get("schemeId") as number;
-    const input = new Uint8Array(this.publicKey!.length + 1);
-    input.set(this.publicKey!);
-    input.set([schemeId], this.publicKey!.length);
-    this.bytes = sha3_256(input);
-  },
-);
+When("I derive the authentication key using from_public_key", function (this: AptosWorld) {
+  // Manually compute auth key: SHA3-256(public_key || scheme_id)
+  const schemeId = this.testVectors.get("schemeId") as number;
+  const input = new Uint8Array(this.publicKey!.length + 1);
+  input.set(this.publicKey!);
+  input.set([schemeId], this.publicKey!.length);
+  this.bytes = sha3_256(input);
+});
 
 Then(
   /^the result should equal SHA3-256\(public_key_bytes \|\| scheme_id\)$/,
@@ -235,43 +203,40 @@ Then(
   },
 );
 
-Then(
-  "the scheme identifier should be {word}",
-  function (this: AptosWorld, expectedScheme: string) {
-    const keyType = this.testVectors.get("keyType") as string;
-    const skipTest = this.testVectors.get("skipTest") as boolean;
+Then("the scheme identifier should be {word}", function (this: AptosWorld, expectedScheme: string) {
+  const keyType = this.testVectors.get("keyType") as string;
+  const skipTest = this.testVectors.get("skipTest") as boolean;
 
-    if (skipTest) {
-      // Skip for unsupported key types
-      return;
-    }
+  if (skipTest) {
+    // Skip for unsupported key types
+    return;
+  }
 
-    const expectedValue = parseInt(expectedScheme, 16);
-    let actualScheme: number;
+  const expectedValue = parseInt(expectedScheme, 16);
+  let actualScheme: number;
 
-    switch (keyType) {
-      case "ed25519":
-        actualScheme = 0x00;
-        break;
-      case "secp256k1":
-        actualScheme = 0x01;
-        break;
-      case "secp256r1":
-        actualScheme = 0x02;
-        break;
-      case "multied25519":
-        actualScheme = 0x01; // Same as Secp256k1 for legacy reasons
-        break;
-      case "multikey":
-        actualScheme = 0x03;
-        break;
-      default:
-        actualScheme = 0x00;
-    }
+  switch (keyType) {
+    case "ed25519":
+      actualScheme = 0x00;
+      break;
+    case "secp256k1":
+      actualScheme = 0x01;
+      break;
+    case "secp256r1":
+      actualScheme = 0x02;
+      break;
+    case "multied25519":
+      actualScheme = 0x01; // Same as Secp256k1 for legacy reasons
+      break;
+    case "multikey":
+      actualScheme = 0x03;
+      break;
+    default:
+      actualScheme = 0x00;
+  }
 
-    expect(actualScheme).to.equal(expectedValue);
-  },
-);
+  expect(actualScheme).to.equal(expectedValue);
+});
 
 // =============================================================================
 // Authentication Key to Address
@@ -287,69 +252,47 @@ Given("an authentication key", function (this: AptosWorld) {
 
 // Note: 'I convert it to an account address' is defined in cryptography.steps.ts
 
-Then(
-  "the address bytes should equal the authentication key bytes",
-  function (this: AptosWorld) {
-    const authKeyBytes = this.bytes!;
-    const addressBytes = this.address!.toUint8Array();
-    expect(bytesToHex(addressBytes)).to.equal(bytesToHex(authKeyBytes));
-  },
-);
+Then("the address bytes should equal the authentication key bytes", function (this: AptosWorld) {
+  const authKeyBytes = this.bytes!;
+  const addressBytes = this.address!.toUint8Array();
+  expect(bytesToHex(addressBytes)).to.equal(bytesToHex(authKeyBytes));
+});
 
-Given(
-  "an Ed25519 account that has never rotated keys",
-  function (this: AptosWorld) {
-    this.account = Account.generate();
-  },
-);
+Given("an Ed25519 account that has never rotated keys", function (this: AptosWorld) {
+  this.account = Account.generate();
+});
 
-When(
-  "I compare the address to the authentication key",
-  function (this: AptosWorld) {
-    const address = this.account!.accountAddress;
-    const authKey = this.account!.publicKey.authKey();
-    const authKeyAddress = authKey.derivedAddress();
-    this.result = address.equals(authKeyAddress);
-  },
-);
+When("I compare the address to the authentication key", function (this: AptosWorld) {
+  const address = this.account!.accountAddress;
+  const authKey = this.account!.publicKey.authKey();
+  const authKeyAddress = authKey.derivedAddress();
+  this.result = address.equals(authKeyAddress);
+});
 
 // Note: 'they should be equal' is defined in address.steps.ts
 
 // Note: '32 random bytes' is defined in address.steps.ts
 
-When(
-  "I create an authentication key from the bytes",
-  function (this: AptosWorld) {
-    try {
-      this.result = new AuthenticationKey({ data: this.bytes! });
-      this.testVectors.set("createdAuthKey", this.result);
-      this.clearError();
-    } catch (error) {
-      this.setError(error as Error);
-    }
-  },
-);
+When("I create an authentication key from the bytes", function (this: AptosWorld) {
+  try {
+    this.result = new AuthenticationKey({ data: this.bytes! });
+    this.testVectors.set("createdAuthKey", this.result);
+    this.clearError();
+  } catch (error) {
+    this.setError(error as Error);
+  }
+});
 
-Then(
-  "the authentication key should contain those bytes",
-  function (this: AptosWorld) {
-    const authKey = this.testVectors.get("createdAuthKey") as AuthenticationKey;
-    expect(bytesToHex(authKey.toUint8Array())).to.equal(
-      bytesToHex(this.bytes!),
-    );
-  },
-);
+Then("the authentication key should contain those bytes", function (this: AptosWorld) {
+  const authKey = this.testVectors.get("createdAuthKey") as AuthenticationKey;
+  expect(bytesToHex(authKey.toUint8Array())).to.equal(bytesToHex(this.bytes!));
+});
 
-Then(
-  "converting to address should give those same bytes",
-  function (this: AptosWorld) {
-    const authKey = this.testVectors.get("createdAuthKey") as AuthenticationKey;
-    const address = authKey.derivedAddress();
-    expect(bytesToHex(address.toUint8Array())).to.equal(
-      bytesToHex(this.bytes!),
-    );
-  },
-);
+Then("converting to address should give those same bytes", function (this: AptosWorld) {
+  const authKey = this.testVectors.get("createdAuthKey") as AuthenticationKey;
+  const address = authKey.derivedAddress();
+  expect(bytesToHex(address.toUint8Array())).to.equal(bytesToHex(this.bytes!));
+});
 
 // =============================================================================
 // Authentication Key Formatting
@@ -360,9 +303,7 @@ When("I get it as bytes", function (this: AptosWorld) {
   if (authKey) {
     this.bytes = authKey.toUint8Array();
   } else if (this.testVectors.get("createdAuthKey")) {
-    this.bytes = (
-      this.testVectors.get("createdAuthKey") as AuthenticationKey
-    ).toUint8Array();
+    this.bytes = (this.testVectors.get("createdAuthKey") as AuthenticationKey).toUint8Array();
   }
 });
 
@@ -372,13 +313,10 @@ Then("I should get a 32-byte array", function (this: AptosWorld) {
 
 // Note: 'I format it as hex' is defined in hashing.steps.ts
 
-Then(
-  "the result should be 64 hex characters with 0x prefix",
-  function (this: AptosWorld) {
-    expect(this.hexString!.startsWith("0x")).to.be.true;
-    expect(this.hexString!.length).to.equal(66); // 0x + 64 hex chars
-  },
-);
+Then("the result should be 64 hex characters with 0x prefix", function (this: AptosWorld) {
+  expect(this.hexString!.startsWith("0x")).to.be.true;
+  expect(this.hexString!.length).to.equal(66); // 0x + 64 hex chars
+});
 
 // =============================================================================
 // Test Vectors
@@ -418,20 +356,15 @@ Given("Secp256k1 public key from test vectors", function (this: AptosWorld) {
   }
 });
 
-Then(
-  "the auth key should match the expected value from test vectors",
-  function (this: AptosWorld) {
-    const expected = this.testVectors.get("expected_auth_key");
-    if (expected) {
-      expect(bytesToHex(this.bytes!).toLowerCase()).to.equal(
-        expected.toLowerCase(),
-      );
-    } else {
-      // No test vector available, just verify we have 32 bytes
-      expect(this.bytes!.length).to.equal(32);
-    }
-  },
-);
+Then("the auth key should match the expected value from test vectors", function (this: AptosWorld) {
+  const expected = this.testVectors.get("expected_auth_key");
+  if (expected) {
+    expect(bytesToHex(this.bytes!).toLowerCase()).to.equal(expected.toLowerCase());
+  } else {
+    // No test vector available, just verify we have 32 bytes
+    expect(this.bytes!.length).to.equal(32);
+  }
+});
 
 // =============================================================================
 // Edge Cases
@@ -470,24 +403,18 @@ When("I create an authentication key", function (this: AptosWorld) {
 
 // Note: 'it should succeed' is defined in cryptography.steps.ts
 
-Then(
-  "converting to address should give the zero address",
-  function (this: AptosWorld) {
-    const authKey = this.testVectors.get("createdAuthKey") as AuthenticationKey;
-    const address = authKey.derivedAddress();
-    expect(address.equals(AccountAddress.ZERO)).to.be.true;
-  },
-);
+Then("converting to address should give the zero address", function (this: AptosWorld) {
+  const authKey = this.testVectors.get("createdAuthKey") as AuthenticationKey;
+  const address = authKey.derivedAddress();
+  expect(address.equals(AccountAddress.ZERO)).to.be.true;
+});
 
 // Additional step for it should equal SHA3-256(public_key_bytes || 0x00)
-Then(
-  /^it should equal SHA3-256\(public_key_bytes \|\| 0x00\)$/,
-  function (this: AptosWorld) {
-    // Compute expected auth key
-    const input = new Uint8Array(this.publicKey!.length + 1);
-    input.set(this.publicKey!);
-    input.set([0x00], this.publicKey!.length);
-    const expected = sha3_256(input);
-    expect(bytesToHex(this.bytes!)).to.equal(bytesToHex(expected));
-  },
-);
+Then(/^it should equal SHA3-256\(public_key_bytes \|\| 0x00\)$/, function (this: AptosWorld) {
+  // Compute expected auth key
+  const input = new Uint8Array(this.publicKey!.length + 1);
+  input.set(this.publicKey!);
+  input.set([0x00], this.publicKey!.length);
+  const expected = sha3_256(input);
+  expect(bytesToHex(this.bytes!)).to.equal(bytesToHex(expected));
+});

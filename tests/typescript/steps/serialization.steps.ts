@@ -25,16 +25,12 @@ Given("a u8 value {int}", function (this: AptosWorld, value: number) {
 });
 
 Given("a u16 value {word}", function (this: AptosWorld, value: string) {
-  const numValue = value.startsWith("0x")
-    ? parseInt(value, 16)
-    : parseInt(value, 10);
+  const numValue = value.startsWith("0x") ? parseInt(value, 16) : parseInt(value, 10);
   this.testVectors.set("u16Value", numValue);
 });
 
 Given("a u32 value {word}", function (this: AptosWorld, value: string) {
-  const numValue = value.startsWith("0x")
-    ? parseInt(value, 16)
-    : parseInt(value, 10);
+  const numValue = value.startsWith("0x") ? parseInt(value, 16) : parseInt(value, 10);
   this.testVectors.set("u32Value", numValue);
 });
 
@@ -114,12 +110,9 @@ Given("an Option with no value", function (this: AptosWorld) {
   this.testVectors.set("optionValue", null);
 });
 
-Given(
-  "an Option containing u64 value {int}",
-  function (this: AptosWorld, value: number) {
-    this.testVectors.set("optionValue", BigInt(value));
-  },
-);
+Given("an Option containing u64 value {int}", function (this: AptosWorld, value: number) {
+  this.testVectors.set("optionValue", BigInt(value));
+});
 
 // =============================================================================
 // Given Steps - Vector Values
@@ -132,19 +125,13 @@ Given("an empty vector of u8", function (this: AptosWorld) {
 Given(
   /^a vector \[(\d+), (\d+), (\d+)\] of u8$/,
   function (this: AptosWorld, a: string, b: string, c: string) {
-    this.testVectors.set(
-      "vectorU8",
-      new Uint8Array([parseInt(a), parseInt(b), parseInt(c)]),
-    );
+    this.testVectors.set("vectorU8", new Uint8Array([parseInt(a), parseInt(b), parseInt(c)]));
   },
 );
 
-Given(
-  /^a vector \[(\d+), (\d+)\] of u64$/,
-  function (this: AptosWorld, a: string, b: string) {
-    this.testVectors.set("vectorU64", [BigInt(a), BigInt(b)]);
-  },
-);
+Given(/^a vector \[(\d+), (\d+)\] of u64$/, function (this: AptosWorld, a: string, b: string) {
+  this.testVectors.set("vectorU64", [BigInt(a), BigInt(b)]);
+});
 
 Given(
   /^a vector \[\[(\d+), (\d+)\], \[(\d+), (\d+)\]\] of vectors of u8$/,
@@ -160,21 +147,13 @@ Given(
 // Given Steps - AccountAddress
 // =============================================================================
 
-Given(
-  "an AccountAddress {string}",
-  function (this: AptosWorld, addressStr: string) {
-    this.address = AccountAddress.from(addressStr);
-  },
-);
+Given("an AccountAddress {string}", function (this: AptosWorld, addressStr: string) {
+  this.address = AccountAddress.from(addressStr);
+});
 
 Given(
   "{int} bytes with byte {int} = {word}",
-  function (
-    this: AptosWorld,
-    totalBytes: number,
-    byteIndex: number,
-    value: string,
-  ) {
+  function (this: AptosWorld, totalBytes: number, byteIndex: number, value: string) {
     const bytes = new Uint8Array(totalBytes);
     bytes[byteIndex] = parseInt(value, 16);
     this.bytes = bytes;
@@ -235,9 +214,9 @@ When("I BCS serialize it", function (this: AptosWorld) {
       serializer.serializeU128(this.testVectors.get("u128Value") as bigint);
     } else if (this.testVectors.has("u256Value")) {
       serializer.serializeU256(this.testVectors.get("u256Value") as bigint);
-    // Signed integer types (two's complement)
-    // TODO: Add support for signed integer types, it's not working correctly atm
-    /*} else if (this.testVectors.has("i8Value")) {
+      // Signed integer types (two's complement)
+      // TODO: Add support for signed integer types, it's not working correctly atm
+      /*} else if (this.testVectors.has("i8Value")) {
       const val = toTwosComplement(this.testVectors.get("i8Value") as number, 8);
       serializer.serializeU8(Number(val));
     } else if (this.testVectors.has("i16Value")) {
@@ -305,10 +284,7 @@ When("I BCS serialize it", function (this: AptosWorld) {
     } else if (this.signedTransaction) {
       // Handle SignedTransaction serialization
       this.signedTransaction.serialize(serializer);
-    } else if (
-      this.result &&
-      typeof (this.result as any).serialize === "function"
-    ) {
+    } else if (this.result && typeof (this.result as any).serialize === "function") {
       // Handle any serializable result (e.g., TransactionAuthenticator)
       (this.result as any).serialize(serializer);
     } else if (this.bytes) {
@@ -395,13 +371,9 @@ When("I BCS deserialize as vector of u8", function (this: AptosWorld) {
 
 // Removed duplicate - use the regex version from hashing.steps.ts
 
-Then(
-  "the byte should be {word}",
-  function (this: AptosWorld, expected: string) {
-    expect(this.bytes![0]).to.equal(parseInt(expected, 16));
-  },
-);
-
+Then("the byte should be {word}", function (this: AptosWorld, expected: string) {
+  expect(this.bytes![0]).to.equal(parseInt(expected, 16));
+});
 
 Then(
   /^the bytes should be \[((?:0x[0-9a-fA-F]+, )*0x[0-9a-fA-F]+)\]$/,
@@ -419,7 +391,6 @@ Then(
   },
 );
 
-
 Then(
   "the result should be {int} bytes in little-endian",
   function (this: AptosWorld, count: number) {
@@ -434,13 +405,9 @@ Then(
   },
 );
 
-
-Then(
-  "byte {int} should be {word}",
-  function (this: AptosWorld, index: number, expected: string) {
-    expect(this.bytes![index]).to.equal(parseInt(expected, 16));
-  },
-);
+Then("byte {int} should be {word}", function (this: AptosWorld, index: number, expected: string) {
+  expect(this.bytes![index]).to.equal(parseInt(expected, 16));
+});
 
 Then(
   /^bytes (\d+)-(\d+) should all be (0x[0-9a-fA-F]+)$/,
@@ -456,13 +423,10 @@ Then(
 
 // Removed duplicate - use version from address.steps.ts
 
-Then(
-  /^the result should be \[(0x[0-9a-fA-F]+)\]$/,
-  function (this: AptosWorld, expected: string) {
-    expect(this.bytes!.length).to.equal(1);
-    expect(this.bytes![0]).to.equal(parseInt(expected, 16));
-  },
-);
+Then(/^the result should be \[(0x[0-9a-fA-F]+)\]$/, function (this: AptosWorld, expected: string) {
+  expect(this.bytes!.length).to.equal(1);
+  expect(this.bytes![0]).to.equal(parseInt(expected, 16));
+});
 
 Then(
   /^the result should be \[(0x[0-9a-fA-F]+), (0x[0-9a-fA-F]+)\]$/,
@@ -516,18 +480,13 @@ Then(
   },
 );
 
-Then(
-  "the first byte should be {word}",
-  function (this: AptosWorld, expected: string) {
-    // Check bytes, or publicKey for public key scenarios
-    const bytes =
-      this.bytes ??
-      (this.testVectors.get("pubKeyForAuth") as Uint8Array) ??
-      this.publicKey;
-    expect(bytes).to.not.be.undefined;
-    expect(bytes![0]).to.equal(parseInt(expected, 16));
-  },
-);
+Then("the first byte should be {word}", function (this: AptosWorld, expected: string) {
+  // Check bytes, or publicKey for public key scenarios
+  const bytes =
+    this.bytes ?? (this.testVectors.get("pubKeyForAuth") as Uint8Array) ?? this.publicKey;
+  expect(bytes).to.not.be.undefined;
+  expect(bytes![0]).to.equal(parseInt(expected, 16));
+});
 
 Then(
   "the remaining {int} bytes should be the u64 value",
@@ -536,27 +495,18 @@ Then(
   },
 );
 
-Then(
-  "the remaining bytes should be two u64 values in little-endian",
-  function (this: AptosWorld) {
-    expect(this.bytes!.length).to.equal(17); // 1 for length + 2*8 for u64s
-  },
-);
+Then("the remaining bytes should be two u64 values in little-endian", function (this: AptosWorld) {
+  expect(this.bytes!.length).to.equal(17); // 1 for length + 2*8 for u64s
+});
 
-Then(
-  "each inner vector should be length-prefixed",
-  function (this: AptosWorld) {
-    // Just verify we have some bytes
-    expect(this.bytes!.length).to.be.greaterThan(2);
-  },
-);
+Then("each inner vector should be length-prefixed", function (this: AptosWorld) {
+  // Just verify we have some bytes
+  expect(this.bytes!.length).to.be.greaterThan(2);
+});
 
-Then(
-  "the result should be exactly {int} bytes",
-  function (this: AptosWorld, count: number) {
-    expect(this.bytes!.length).to.equal(count);
-  },
-);
+Then("the result should be exactly {int} bytes", function (this: AptosWorld, count: number) {
+  expect(this.bytes!.length).to.equal(count);
+});
 
 Then("the fields should be serialized in order", function (this: AptosWorld) {
   expect(this.bytes).to.not.be.undefined;
@@ -583,9 +533,6 @@ Then("the result should equal the original value", function (this: AptosWorld) {
   expect(this.result).to.equal(original);
 });
 
-Then(
-  "the deserialization should fail with an error",
-  function (this: AptosWorld) {
-    expect(this.error).to.not.be.undefined;
-  },
-);
+Then("the deserialization should fail with an error", function (this: AptosWorld) {
+  expect(this.error).to.not.be.undefined;
+});

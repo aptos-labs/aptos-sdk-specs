@@ -1,10 +1,11 @@
 # Aptos Kotlin SDK (Kaptos) BDD Tests
 
-This directory contains BDD (Behavior-Driven Development) tests for the [Kaptos](https://github.com/mcxross/kaptos) Kotlin Multiplatform SDK, using Cucumber-JVM.
+This directory contains BDD (Behavior-Driven Development) tests for the
+[Kaptos](https://github.com/mcxross/kaptos) Kotlin Multiplatform SDK, using Cucumber-JVM.
 
-> **Note:** The Kaptos SDK is currently in beta (0.1.2-beta) with limited API exposure.
-> Many step definitions are stubs that will be implemented as the SDK matures.
-> The test infrastructure is complete and ready for future SDK updates.
+> **Note:** The Kaptos SDK is currently in beta (0.1.2-beta) with limited API exposure. Many step
+> definitions are stubs that will be implemented as the SDK matures. The test infrastructure is
+> complete and ready for future SDK updates.
 
 ## Prerequisites
 
@@ -51,17 +52,17 @@ tests/kotlin/
 
 ## Available Commands
 
-| Command | Description |
-|---------|-------------|
-| `make test` | Run all tests |
-| `make test-required` | Run only @required (P0) tests |
-| `make test-preferred` | Run only @preferred (P1) tests |
-| `make test-core-types` | Run only @core-types tests |
-| `make test-cryptography` | Run only @cryptography tests |
-| `make test-transactions` | Run only @transactions tests |
-| `make dry-run` | Check step definitions without running |
-| `make clean` | Remove build artifacts |
-| `make report` | Open HTML test report |
+| Command                  | Description                            |
+| ------------------------ | -------------------------------------- |
+| `make test`              | Run all tests                          |
+| `make test-required`     | Run only @required (P0) tests          |
+| `make test-preferred`    | Run only @preferred (P1) tests         |
+| `make test-core-types`   | Run only @core-types tests             |
+| `make test-cryptography` | Run only @cryptography tests           |
+| `make test-transactions` | Run only @transactions tests           |
+| `make dry-run`           | Check step definitions without running |
+| `make clean`             | Remove build artifacts                 |
+| `make report`            | Open HTML test report                  |
 
 ## Dependencies
 
@@ -72,13 +73,15 @@ The Kaptos SDK is published to Maven Central. The current dependency in `build.g
 implementation("xyz.mcxross.kaptos:kaptos-jvm:0.1.2-beta")
 ```
 
-**Note:** The SDK is in beta. Check [Maven Central](https://search.maven.org/search?q=g:xyz.mcxross.kaptos) for the latest version.
+**Note:** The SDK is in beta. Check
+[Maven Central](https://search.maven.org/search?q=g:xyz.mcxross.kaptos) for the latest version.
 
 ## Configuration
 
 ### Cucumber Options
 
 Tests use Cucumber-JVM with the following configuration:
+
 - **Feature files**: `../../features/` (shared Gherkin specs)
 - **Glue packages**: `com.aptos.specs.steps`, `com.aptos.specs.support`
 - **Reports**: HTML and JSON in `build/reports/cucumber/`
@@ -116,12 +119,12 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 
 class AddressSteps(private val world: World) {
-    
+
     @Given("a hex string {string}")
     fun givenAHexString(hex: String) {
         world.hexString = hex
     }
-    
+
     @When("I parse it as an AccountAddress")
     fun parseAccountAddress() {
         runCatching {
@@ -130,7 +133,7 @@ class AddressSteps(private val world: World) {
             world.error = it
         }
     }
-    
+
     @Then("the parsing should succeed")
     fun parsingShouldSucceed() {
         world.error shouldBe null
@@ -142,10 +145,12 @@ class AddressSteps(private val world: World) {
 ## Test Reports
 
 After running tests, reports are available at:
+
 - **HTML Report**: `build/reports/cucumber/cucumber.html`
 - **JSON Report**: `build/reports/cucumber/cucumber.json`
 
 Open the HTML report:
+
 ```bash
 make report
 ```
@@ -153,15 +158,20 @@ make report
 ## Troubleshooting
 
 ### Gradle wrapper not found
+
 ```bash
 make wrapper
 ```
 
 ### SDK dependency not found
-Ensure the Kaptos SDK is published and accessible. Update `build.gradle.kts` with the correct repository and coordinates.
+
+Ensure the Kaptos SDK is published and accessible. Update `build.gradle.kts` with the correct
+repository and coordinates.
 
 ### Feature files not found
-Feature files are expected at `../../features/` relative to this directory. Ensure you're running from `tests/kotlin/`.
+
+Feature files are expected at `../../features/` relative to this directory. Ensure you're running
+from `tests/kotlin/`.
 
 ## Contributing
 
@@ -180,6 +190,7 @@ Feature files are expected at `../../features/` relative to this directory. Ensu
 ### SDK Limitations (0.1.2-beta)
 
 The current Kaptos SDK doesn't expose several low-level primitives needed for the specs:
+
 - No direct `Bcs` class for serialization
 - No `Ed25519PrivateKey`, `Secp256k1` key classes
 - No `RawTransaction`, `SignedTransaction` constructors

@@ -61,10 +61,12 @@ func InitializeScenario(ctx *godog.ScenarioContext) {
 	// API client steps
 	initAPIClientSteps(ctx, world)
 
+	// Performance steps
+	initPerformanceSteps(ctx, world)
+
 	// Reset world before each scenario
 	ctx.Before(func(ctx context.Context, sc *godog.Scenario) (context.Context, error) {
 		world.Reset()
 		return ctx, nil
 	})
 }
-

@@ -2,171 +2,186 @@ package com.aptos.specs.steps
 
 import com.aptos.specs.support.World
 import com.aptos.specs.support.hexToBytes
-import com.aptos.specs.support.toHex
-import io.cucumber.java.en.Given
-import io.cucumber.java.en.When
-import io.cucumber.java.en.Then
-import io.cucumber.java.en.And
 import io.cucumber.datatable.DataTable
+import io.cucumber.java.en.Given
+import io.cucumber.java.en.Then
+import io.cucumber.java.en.When
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
+import xyz.mcxross.kaptos.model.AccountAddress
 import java.io.ByteArrayOutputStream
 import java.math.BigInteger
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
-import xyz.mcxross.kaptos.model.AccountAddress
 
 /**
  * Step definitions for BCS serialization/deserialization scenarios.
- * 
+ *
  * Feature: features/01-core-types/serialization.feature
- * 
+ *
  * Note: Implements BCS manually since Kaptos 0.1.2-beta may not expose
  * low-level BCS APIs directly. These implementations follow the BCS spec.
  */
 class SerializationSteps(private val world: World) {
-    
     // ============================================================
     // Given Steps - Primitives
     // ============================================================
-    
+
     @Given("a boolean value {word}")
     fun givenABooleanValue(value: String) {
         world.store("bool_value", value.toBoolean())
     }
-    
+
     @Given("a u8 value {int}")
     fun givenAU8Value(value: Int) {
         world.store("u8_value", value.toByte())
     }
-    
+
     @Given("a u16 value {word}")
     fun givenAU16Value(value: String) {
-        val parsed = if (value.startsWith("0x") || value.startsWith("0X")) {
-            value.removePrefix("0x").removePrefix("0X").toLong(16)
-        } else {
-            value.toLong()
-        }
+        val parsed =
+            if (value.startsWith("0x") || value.startsWith("0X")) {
+                value.removePrefix("0x").removePrefix("0X").toLong(16)
+            } else {
+                value.toLong()
+            }
         world.store("u16_value", parsed.toShort())
     }
-    
+
     @Given("a u32 value {word}")
     fun givenAU32Value(value: String) {
-        val parsed = if (value.startsWith("0x") || value.startsWith("0X")) {
-            value.removePrefix("0x").removePrefix("0X").toLong(16)
-        } else {
-            value.toLong()
-        }
+        val parsed =
+            if (value.startsWith("0x") || value.startsWith("0X")) {
+                value.removePrefix("0x").removePrefix("0X").toLong(16)
+            } else {
+                value.toLong()
+            }
         world.store("u32_value", parsed.toInt())
     }
-    
+
     @Given("a u64 value {word}")
     fun givenAU64Value(value: String) {
-        val parsed = if (value.startsWith("0x") || value.startsWith("0X")) {
-            java.lang.Long.parseUnsignedLong(value.removePrefix("0x").removePrefix("0X"), 16)
-        } else {
-            value.toLong()
-        }
+        val parsed =
+            if (value.startsWith("0x") || value.startsWith("0X")) {
+                java.lang.Long.parseUnsignedLong(value.removePrefix("0x").removePrefix("0X"), 16)
+            } else {
+                value.toLong()
+            }
         world.store("u64_value", parsed)
     }
-    
+
     @Given("a u128 value {word}")
     fun givenAU128Value(value: String) {
-        val parsed = if (value.startsWith("0x") || value.startsWith("0X")) {
-            BigInteger(value.removePrefix("0x").removePrefix("0X"), 16)
-        } else {
-            BigInteger(value)
-        }
+        val parsed =
+            if (value.startsWith("0x") || value.startsWith("0X")) {
+                BigInteger(value.removePrefix("0x").removePrefix("0X"), 16)
+            } else {
+                BigInteger(value)
+            }
         world.store("u128_value", parsed)
     }
-    
+
     @Given("a u256 value {word}")
     fun givenAU256Value(value: String) {
-        val parsed = if (value.startsWith("0x") || value.startsWith("0X")) {
-            BigInteger(value.removePrefix("0x").removePrefix("0X"), 16)
-        } else {
-            BigInteger(value)
-        }
+        val parsed =
+            if (value.startsWith("0x") || value.startsWith("0X")) {
+                BigInteger(value.removePrefix("0x").removePrefix("0X"), 16)
+            } else {
+                BigInteger(value)
+            }
         world.store("u256_value", parsed)
     }
-    
+
     @Given("a length value {long}")
     fun givenALengthValue(value: Long) {
         world.store("length_value", value)
     }
-    
+
     // ============================================================
     // Given Steps - Bytes/Strings
     // ============================================================
-    
+
     @Given("an empty byte array")
     fun givenAnEmptyByteArray() {
         world.bytes = ByteArray(0)
     }
-    
+
     @Given("^bytes \\[(.+)\\]$")
     fun givenBytesArray(bytesStr: String) {
         world.bytes = parseBytesArray("[$bytesStr]")
     }
-    
+
     @Given("^bytes \\[(.+)\\] intended for u64$")
     fun givenBytesTwoIntended(bytesStr: String) {
         world.bytes = parseBytesArray("[$bytesStr]")
     }
-    
+
     @Given("a string {string}")
     fun givenAString(value: String) {
         world.store("string_value", value)
     }
-    
+
     // ============================================================
     // Given Steps - Option
     // ============================================================
-    
+
     @Given("an Option with no value")
     fun givenAnOptionWithNoValue() {
         world.store("option_value", null)
         world.store("option_is_some", false)
     }
-    
+
     @Given("an Option containing u64 value {long}")
     fun givenAnOptionContainingU64Value(value: Long) {
         world.store("option_value", value)
         world.store("option_is_some", true)
     }
-    
+
     // ============================================================
     // Given Steps - Vector
     // ============================================================
-    
+
     @Given("an empty vector of u8")
     fun givenAnEmptyVectorOfU8() {
         world.store("vector_u8", emptyList<Byte>())
     }
-    
+
     @Given("^a vector \\[([0-9]+), ([0-9]+), ([0-9]+)\\] of u8$")
-    fun givenAVectorOfU8(v1: String, v2: String, v3: String) {
+    fun givenAVectorOfU8(
+        v1: String,
+        v2: String,
+        v3: String,
+    ) {
         world.store("vector_u8", listOf(v1.toInt().toByte(), v2.toInt().toByte(), v3.toInt().toByte()))
     }
-    
+
     @Given("^a vector \\[([0-9]+), ([0-9]+)\\] of u64$")
-    fun givenAVectorOfU64(v1: String, v2: String) {
+    fun givenAVectorOfU64(
+        v1: String,
+        v2: String,
+    ) {
         world.store("vector_u64", listOf(v1.toLong(), v2.toLong()))
     }
-    
+
     @Given("^a vector \\[\\[([0-9]+), ([0-9]+)\\], \\[([0-9]+), ([0-9]+)\\]\\] of vectors of u8$")
-    fun givenANestedVectorOfU8(v1: String, v2: String, v3: String, v4: String) {
-        val nested = listOf(
-            listOf(v1.toInt().toByte(), v2.toInt().toByte()),
-            listOf(v3.toInt().toByte(), v4.toInt().toByte())
-        )
+    fun givenANestedVectorOfU8(
+        v1: String,
+        v2: String,
+        v3: String,
+        v4: String,
+    ) {
+        val nested =
+            listOf(
+                listOf(v1.toInt().toByte(), v2.toInt().toByte()),
+                listOf(v3.toInt().toByte(), v4.toInt().toByte()),
+            )
         world.store("nested_vector", nested)
     }
-    
+
     // ============================================================
     // Given Steps - Complex Types
     // ============================================================
-    
+
     @Given("an AccountAddress {string}")
     fun givenAnAccountAddressString(hex: String) {
         runCatching {
@@ -177,29 +192,34 @@ class SerializationSteps(private val world: World) {
             world.recordError(it)
         }
     }
-    
+
     @Given("{int} bytes with byte {int} = {word}")
-    fun givenBytesWithSpecificByte(size: Int, index: Int, valueHex: String) {
+    fun givenBytesWithSpecificByte(
+        size: Int,
+        index: Int,
+        valueHex: String,
+    ) {
         val bytes = ByteArray(size)
-        val value = if (valueHex.startsWith("0x")) {
-            valueHex.removePrefix("0x").toInt(16)
-        } else {
-            valueHex.toInt()
-        }
+        val value =
+            if (valueHex.startsWith("0x")) {
+                valueHex.removePrefix("0x").toInt(16)
+            } else {
+                valueHex.toInt()
+            }
         bytes[index] = value.toByte()
         world.bytes = bytes
     }
-    
+
     @Given("a struct with fields:")
     fun givenAStructWithFields(dataTable: DataTable) {
         val fields = dataTable.asMaps()
         world.store("struct_fields", fields)
     }
-    
+
     // ============================================================
     // When Steps
     // ============================================================
-    
+
     @When("I BCS serialize it")
     fun whenIBcsSerializeIt() {
         runCatching {
@@ -311,7 +331,7 @@ class SerializationSteps(private val world: World) {
             world.recordError(it)
         }
     }
-    
+
     @When("I ULEB128 encode it")
     fun whenIUleb128EncodeIt() {
         runCatching {
@@ -323,7 +343,7 @@ class SerializationSteps(private val world: World) {
             world.recordError(it)
         }
     }
-    
+
     @When("I ULEB128 encode and decode it")
     fun whenIUleb128EncodeAndDecodeIt() {
         runCatching {
@@ -337,7 +357,7 @@ class SerializationSteps(private val world: World) {
             world.recordError(it)
         }
     }
-    
+
     @When("I BCS deserialize as boolean")
     fun whenIBcsDeserializeAsBoolean() {
         runCatching {
@@ -352,7 +372,7 @@ class SerializationSteps(private val world: World) {
             world.recordError(it)
         }
     }
-    
+
     @When("I BCS deserialize as u64")
     fun whenIBcsDeserializeAsU64() {
         runCatching {
@@ -367,9 +387,9 @@ class SerializationSteps(private val world: World) {
             world.recordError(it)
         }
     }
-    
+
     // "I BCS deserialize as AccountAddress" is in AddressSteps
-    
+
     @When("I BCS deserialize as vector of u8")
     fun whenIBcsDeserializeAsVectorOfU8() {
         runCatching {
@@ -385,138 +405,144 @@ class SerializationSteps(private val world: World) {
             world.recordError(it)
         }
     }
-    
+
     // ============================================================
     // Then Steps
     // ============================================================
-    
+
     @Then("the result should be {int} byte")
     fun thenTheResultShouldBeNByte(expected: Int) {
         world.serializedBytes shouldNotBe null
         world.serializedBytes!!.size shouldBe expected
     }
-    
+
     @Then("the result should be {int} bytes")
     fun thenTheResultShouldBeNBytes(expected: Int) {
         world.serializedBytes shouldNotBe null
         world.serializedBytes!!.size shouldBe expected
     }
-    
+
     @Then("the result should be {int} bytes in little-endian")
     fun thenTheResultShouldBeNBytesInLittleEndian(expected: Int) {
         world.serializedBytes shouldNotBe null
         world.serializedBytes!!.size shouldBe expected
     }
-    
+
     @Then("the result should be exactly {int} bytes")
     fun thenTheResultShouldBeExactlyNBytes(expected: Int) {
         world.serializedBytes shouldNotBe null
         world.serializedBytes!!.size shouldBe expected
     }
-    
+
     @Then("the byte should be {word}")
     fun thenTheByteShouldBe(expected: String) {
-        val expectedValue = if (expected.startsWith("0x")) {
-            expected.removePrefix("0x").toInt(16)
-        } else {
-            expected.toInt()
-        }
+        val expectedValue =
+            if (expected.startsWith("0x")) {
+                expected.removePrefix("0x").toInt(16)
+            } else {
+                expected.toInt()
+            }
         (world.serializedBytes!![0].toInt() and 0xFF) shouldBe expectedValue
     }
-    
+
     @Then("^the bytes should be \\[(.+)\\]$")
     fun thenTheBytesShouldBe(expectedStr: String) {
         val expectedBytes = parseBytesArray("[$expectedStr]")
         world.serializedBytes shouldBe expectedBytes
     }
-    
+
     @Then("^the result should be \\[(.+)\\]$")
     fun thenTheResultShouldBeBytesArray(expectedStr: String) {
         val expectedBytes = parseBytesArray("[$expectedStr]")
         world.serializedBytes shouldBe expectedBytes
     }
-    
+
     @Then("the result should be <value>")
     fun thenTheResultShouldBeValue() {
         // Comparison with original value
     }
-    
+
     @Then("the result should be {word}")
     fun thenTheResultShouldBeWord(expected: String) {
         when (expected) {
             "true" -> world.deserializedValue shouldBe true
             "false" -> world.deserializedValue shouldBe false
             else -> {
-                val expectedValue = if (expected.startsWith("0x")) {
-                    expected.removePrefix("0x").toLong(16)
-                } else {
-                    expected.toLong()
-                }
+                val expectedValue =
+                    if (expected.startsWith("0x")) {
+                        expected.removePrefix("0x").toLong(16)
+                    } else {
+                        expected.toLong()
+                    }
                 world.deserializedValue shouldBe expectedValue
             }
         }
     }
-    
+
     @Then("the result should equal the original value")
     fun thenTheResultShouldEqualOriginalValue() {
         val original = world.retrieve<Long>("length_value")
         world.deserializedValue shouldBe original
     }
-    
+
     @Then("the first byte should be {word}")
     fun thenTheFirstByteShouldBe(expected: String) {
-        val expectedValue = if (expected.startsWith("0x")) {
-            expected.removePrefix("0x").toInt(16)
-        } else {
-            expected.toInt()
-        }
+        val expectedValue =
+            if (expected.startsWith("0x")) {
+                expected.removePrefix("0x").toInt(16)
+            } else {
+                expected.toInt()
+            }
         (world.serializedBytes!![0].toInt() and 0xFF) shouldBe expectedValue
     }
-    
+
     @Then("the first byte should be {word} \\(length)")
     fun thenTheFirstByteShouldBeLength(expected: String) {
-        val expectedValue = if (expected.startsWith("0x")) {
-            expected.removePrefix("0x").toInt(16)
-        } else {
-            expected.toInt()
-        }
+        val expectedValue =
+            if (expected.startsWith("0x")) {
+                expected.removePrefix("0x").toInt(16)
+            } else {
+                expected.toInt()
+            }
         (world.serializedBytes!![0].toInt() and 0xFF) shouldBe expectedValue
     }
-    
+
     @Then("the first byte should be {word} \\(UTF-8 byte length)")
     fun thenTheFirstByteShouldBeUtf8Length(expected: String) {
-        val expectedValue = if (expected.startsWith("0x")) {
-            expected.removePrefix("0x").toInt(16)
-        } else {
-            expected.toInt()
-        }
+        val expectedValue =
+            if (expected.startsWith("0x")) {
+                expected.removePrefix("0x").toInt(16)
+            } else {
+                expected.toInt()
+            }
         (world.serializedBytes!![0].toInt() and 0xFF) shouldBe expectedValue
     }
-    
+
     @Then("the first byte should be {word} \\(outer length)")
     fun thenTheFirstByteShouldBeOuterLength(expected: String) {
-        val expectedValue = if (expected.startsWith("0x")) {
-            expected.removePrefix("0x").toInt(16)
-        } else {
-            expected.toInt()
-        }
+        val expectedValue =
+            if (expected.startsWith("0x")) {
+                expected.removePrefix("0x").toInt(16)
+            } else {
+                expected.toInt()
+            }
         (world.serializedBytes!![0].toInt() and 0xFF) shouldBe expectedValue
     }
-    
+
     @Then("^the remaining bytes should be \\[(.+)\\]$")
     fun thenTheRemainingBytesShouldBe(expectedStr: String) {
         val expectedBytes = parseBytesArray("[$expectedStr]")
         val remaining = world.serializedBytes!!.sliceArray(1 until world.serializedBytes!!.size)
         remaining shouldBe expectedBytes
     }
-    
+
     @Then("the remaining bytes should be UTF-8 encoded {string}")
     fun thenTheRemainingBytesShouldBeUtf8Encoded(expected: String) {
         val expectedBytes = expected.toByteArray(Charsets.UTF_8)
         val remaining = world.serializedBytes!!.sliceArray(1 until world.serializedBytes!!.size)
         remaining shouldBe expectedBytes
     }
-    
+
     @Then("the remaining {int} bytes should be the u64 value")
     fun thenTheRemainingBytesShouldBeU64(count: Int) {
         val remaining = world.serializedBytes!!.sliceArray(1 until 1 + count)
@@ -524,71 +550,85 @@ class SerializationSteps(private val world: World) {
         val value = world.retrieve<Long>("option_value")
         buf.getLong() shouldBe value
     }
-    
+
     @Then("the remaining bytes should be two u64 values in little-endian")
     fun thenTheRemainingBytesShouldBeTwoU64Values() {
         val remaining = world.serializedBytes!!.sliceArray(1 until world.serializedBytes!!.size)
         remaining.size shouldBe 16
     }
-    
+
     @Then("each inner vector should be length-prefixed")
     fun thenEachInnerVectorShouldBeLengthPrefixed() {
         // Verify structure of nested vector
         world.serializedBytes shouldNotBe null
     }
-    
+
     @Then("byte {int} should be {word}")
-    fun thenByteAtIndexShouldBe(index: Int, expected: String) {
-        val expectedValue = if (expected.startsWith("0x")) {
-            expected.removePrefix("0x").toInt(16)
-        } else {
-            expected.toInt()
-        }
+    fun thenByteAtIndexShouldBe(
+        index: Int,
+        expected: String,
+    ) {
+        val expectedValue =
+            if (expected.startsWith("0x")) {
+                expected.removePrefix("0x").toInt(16)
+            } else {
+                expected.toInt()
+            }
         (world.serializedBytes!![index].toInt() and 0xFF) shouldBe expectedValue
     }
-    
+
     @Then("bytes {int}-{int} should all be {word}")
-    fun thenBytesRangeShouldAllBe(start: Int, end: Int, expected: String) {
-        val expectedValue = if (expected.startsWith("0x")) {
-            expected.removePrefix("0x").toInt(16)
-        } else {
-            expected.toInt()
-        }
+    fun thenBytesRangeShouldAllBe(
+        start: Int,
+        end: Int,
+        expected: String,
+    ) {
+        val expectedValue =
+            if (expected.startsWith("0x")) {
+                expected.removePrefix("0x").toInt(16)
+            } else {
+                expected.toInt()
+            }
         for (i in start..end) {
             (world.serializedBytes!![i].toInt() and 0xFF) shouldBe expectedValue
         }
     }
-    
+
     @Then("the fields should be serialized in order")
     fun thenTheFieldsShouldBeSerializedInOrder() {
         world.serializedBytes shouldNotBe null
     }
-    
+
     @Then("the total length should be {int} bytes \\({int} + {int})")
-    fun thenTheTotalLengthShouldBe(total: Int, part1: Int, part2: Int) {
+    fun thenTheTotalLengthShouldBe(
+        total: Int,
+        part1: Int,
+        part2: Int,
+    ) {
         world.serializedBytes!!.size shouldBe total
     }
-    
+
     @Then("the deserialization should fail with an error")
     fun thenTheDeserializationShouldFailWithError() {
         world.error shouldNotBe null
     }
-    
+
     // ============================================================
     // Helper Functions
     // ============================================================
-    
+
     private fun parseBytesArray(input: String): ByteArray {
-        val cleaned = input.trim()
-            .removePrefix("[")
-            .removeSuffix("]")
-            .trim()
-        
+        val cleaned =
+            input.trim()
+                .removePrefix("[")
+                .removeSuffix("]")
+                .trim()
+
         if (cleaned.isEmpty()) return ByteArray(0)
-        
+
         return cleaned.split(",")
             .map { it.trim() }
-            .map { 
+            .map {
                 if (it.startsWith("0x") || it.startsWith("0X")) {
                     it.removePrefix("0x").removePrefix("0X").toInt(16).toByte()
                 } else {
@@ -597,7 +637,7 @@ class SerializationSteps(private val world: World) {
             }
             .toByteArray()
     }
-    
+
     private fun encodeUleb128(value: Long): ByteArray {
         val out = ByteArrayOutputStream()
         var v = value
@@ -611,7 +651,7 @@ class SerializationSteps(private val world: World) {
         } while (v != 0L)
         return out.toByteArray()
     }
-    
+
     private fun decodeUleb128(bytes: ByteArray): Pair<Long, Int> {
         var result = 0L
         var shift = 0
@@ -624,19 +664,22 @@ class SerializationSteps(private val world: World) {
         } while ((bytes[offset - 1].toInt() and 0x80) != 0)
         return Pair(result, offset)
     }
-    
-    private fun bigIntToLittleEndian(bi: BigInteger, size: Int): ByteArray {
+
+    private fun bigIntToLittleEndian(
+        bi: BigInteger,
+        size: Int,
+    ): ByteArray {
         val result = ByteArray(size)
         val bytes = bi.toByteArray()
-        
+
         // BigInteger is big-endian, we need little-endian
         val start = if (bytes.size > size) bytes.size - size else 0
         val length = minOf(bytes.size, size)
-        
+
         for (i in 0 until length) {
             result[i] = bytes[bytes.size - 1 - i]
         }
-        
+
         return result
     }
 }

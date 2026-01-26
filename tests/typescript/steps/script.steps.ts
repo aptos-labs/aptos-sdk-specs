@@ -54,15 +54,12 @@ When("I create a Script payload", function (this: AptosWorld) {
   this.result = this.testVectors.get("scriptPayload");
 });
 
-Then(
-  "I should have a valid TransactionPayload::Script",
-  function (this: AptosWorld) {
-    const payload = this.testVectors.get("scriptPayload");
-    expect(payload).to.not.be.undefined;
-    expect(payload.code).to.be.instanceOf(Uint8Array);
-    expect(payload.code.length).to.be.greaterThan(0);
-  },
-);
+Then("I should have a valid TransactionPayload::Script", function (this: AptosWorld) {
+  const payload = this.testVectors.get("scriptPayload");
+  expect(payload).to.not.be.undefined;
+  expect(payload.code).to.be.instanceOf(Uint8Array);
+  expect(payload.code.length).to.be.greaterThan(0);
+});
 
 Given("a compiled script with no parameters", function (this: AptosWorld) {
   this.testVectors.set("scriptBytecode", SAMPLE_SCRIPT_BYTECODE);
@@ -98,13 +95,10 @@ Given("a compiled generic script", function (this: AptosWorld) {
   this.testVectors.set("scriptArgs", []);
 });
 
-When(
-  /^I provide type arguments \[([^\]]+)\]$/,
-  function (this: AptosWorld, typeArgsStr: string) {
-    const typeArgs = typeArgsStr.split(",").map((t) => parseTypeTag(t.trim()));
-    this.testVectors.set("scriptTypeArgs", typeArgs);
-  },
-);
+When(/^I provide type arguments \[([^\]]+)\]$/, function (this: AptosWorld, typeArgsStr: string) {
+  const typeArgs = typeArgsStr.split(",").map((t) => parseTypeTag(t.trim()));
+  this.testVectors.set("scriptTypeArgs", typeArgs);
+});
 
 When("create the script payload", function (this: AptosWorld) {
   const bytecode = this.testVectors.get("scriptBytecode") as Uint8Array;
@@ -124,16 +118,13 @@ Then("the type arguments should be included", function (this: AptosWorld) {
   expect(payload.type_args.length).to.be.greaterThan(0);
 });
 
-Given(
-  /^a script expecting \(([^)]+)\)$/,
-  function (this: AptosWorld, paramTypes: string) {
-    this.testVectors.set("scriptBytecode", SAMPLE_SCRIPT_BYTECODE);
-    this.testVectors.set(
-      "scriptParamTypes",
-      paramTypes.split(",").map((t) => t.trim()),
-    );
-  },
-);
+Given(/^a script expecting \(([^)]+)\)$/, function (this: AptosWorld, paramTypes: string) {
+  this.testVectors.set("scriptBytecode", SAMPLE_SCRIPT_BYTECODE);
+  this.testVectors.set(
+    "scriptParamTypes",
+    paramTypes.split(",").map((t) => t.trim()),
+  );
+});
 
 When("I provide the arguments", function (this: AptosWorld) {
   const paramTypes = this.testVectors.get("scriptParamTypes") as string[];
@@ -223,15 +214,12 @@ When("I encode the value {int}", function (this: AptosWorld, value: number) {
   this.bytes = serializer.toUint8Array();
 });
 
-When(
-  /^I encode the value \[(\d+(?:,\s*\d+)*)\]$/,
-  function (this: AptosWorld, valuesStr: string) {
-    const values = valuesStr.split(",").map((v) => parseInt(v.trim(), 10));
-    const serializer = new Serializer();
-    serializer.serializeBytes(new Uint8Array(values));
-    this.bytes = serializer.toUint8Array();
-  },
-);
+When(/^I encode the value \[(\d+(?:,\s*\d+)*)\]$/, function (this: AptosWorld, valuesStr: string) {
+  const values = valuesStr.split(",").map((v) => parseInt(v.trim(), 10));
+  const serializer = new Serializer();
+  serializer.serializeBytes(new Uint8Array(values));
+  this.bytes = serializer.toUint8Array();
+});
 
 When("I encode true", function (this: AptosWorld) {
   const serializer = new Serializer();
@@ -256,40 +244,29 @@ When("I encode {string}", function (this: AptosWorld, value: string) {
   this.bytes = serializer.toUint8Array();
 });
 
-Then(
-  "the encoded bytes should be the BCS-serialized address",
-  function (this: AptosWorld) {
-    expect(this.bytes!.length).to.equal(32);
-  },
-);
+Then("the encoded bytes should be the BCS-serialized address", function (this: AptosWorld) {
+  expect(this.bytes!.length).to.equal(32);
+});
 
-Then(
-  "the encoded bytes should be {string}",
-  function (this: AptosWorld, expectedHex: string) {
-    expect(bytesToHex(this.bytes!).replace("0x", "")).to.equal(
-      expectedHex.toLowerCase(),
-    );
-  },
-);
+Then("the encoded bytes should be {string}", function (this: AptosWorld, expectedHex: string) {
+  expect(bytesToHex(this.bytes!).replace("0x", "")).to.equal(expectedHex.toLowerCase());
+});
 
 // =============================================================================
 // Script Transaction Building
 // =============================================================================
 
-Given(
-  /^transaction parameters \(sender, seq num, gas, etc\.\)$/,
-  function (this: AptosWorld) {
-    this.account = Account.generate();
-    this.testVectors.set("txnParams", {
-      sender: this.account.accountAddress,
-      sequenceNumber: BigInt(0),
-      maxGasAmount: BigInt(200000),
-      gasUnitPrice: BigInt(100),
-      expirationTimestamp: BigInt(1700000000),
-      chainId: new ChainId(2),
-    });
-  },
-);
+Given(/^transaction parameters \(sender, seq num, gas, etc\.\)$/, function (this: AptosWorld) {
+  this.account = Account.generate();
+  this.testVectors.set("txnParams", {
+    sender: this.account.accountAddress,
+    sequenceNumber: BigInt(0),
+    maxGasAmount: BigInt(200000),
+    gasUnitPrice: BigInt(100),
+    expirationTimestamp: BigInt(1700000000),
+    chainId: new ChainId(2),
+  });
+});
 
 When("I build the RawTransaction", function (this: AptosWorld) {
   const params = this.testVectors.get("txnParams");
@@ -358,8 +335,7 @@ Then("I should get a valid SignedTransaction", function (this: AptosWorld) {
       },
     });
   }
-  expect(this.signedTransaction || this.testVectors.get("signedScriptTxn")).to
-    .not.be.undefined;
+  expect(this.signedTransaction || this.testVectors.get("signedScriptTxn")).to.not.be.undefined;
 });
 
 Given("a SignedTransaction with Script payload", function (this: AptosWorld) {
@@ -393,10 +369,7 @@ When("I submit the script transaction", function (this: AptosWorld) {
   // Mock submission - actual submission would require network
   this.testVectors.set("submissionResult", {
     hash:
-      "0x" +
-      Array.from({ length: 64 }, () =>
-        Math.floor(Math.random() * 16).toString(16),
-      ).join(""),
+      "0x" + Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join(""),
     success: true,
   });
 });
@@ -487,17 +460,14 @@ Then("show type mismatch error", function (this: AptosWorld) {
 // Common Scripts
 // =============================================================================
 
-Given(
-  "a script that transfers to multiple recipients",
-  function (this: AptosWorld) {
-    this.testVectors.set("scriptBytecode", SAMPLE_SCRIPT_BYTECODE);
-    this.testVectors.set("recipients", [
-      AccountAddress.from("0x1"),
-      AccountAddress.from("0x2"),
-      AccountAddress.from("0x3"),
-    ]);
-  },
-);
+Given("a script that transfers to multiple recipients", function (this: AptosWorld) {
+  this.testVectors.set("scriptBytecode", SAMPLE_SCRIPT_BYTECODE);
+  this.testVectors.set("recipients", [
+    AccountAddress.from("0x1"),
+    AccountAddress.from("0x2"),
+    AccountAddress.from("0x3"),
+  ]);
+});
 
 Given("the compiled bytecode", function (this: AptosWorld) {
   // Already have bytecode from previous step
@@ -528,8 +498,7 @@ When("I execute it", function (this: AptosWorld) {
   const input = this.testVectors.get("conditionalInput");
   this.testVectors.set("executionResult", {
     success: true,
-    branchTaken:
-      input && input.value > input.threshold ? "true_branch" : "false_branch",
+    branchTaken: input && input.value > input.threshold ? "true_branch" : "false_branch",
   });
 });
 
@@ -562,19 +531,13 @@ Then("script may be more appropriate", function (this: AptosWorld) {
   // Document that scripts allow more complex custom logic
 });
 
-Given(
-  /^a module with public \(non-entry\) functions$/,
-  function (this: AptosWorld) {
-    this.testVectors.set("moduleHasPublicFunctions", true);
-  },
-);
+Given(/^a module with public \(non-entry\) functions$/, function (this: AptosWorld) {
+  this.testVectors.set("moduleHasPublicFunctions", true);
+});
 
-When(
-  "I write a script that calls those functions",
-  function (this: AptosWorld) {
-    this.testVectors.set("scriptCallsPublicFunctions", true);
-  },
-);
+When("I write a script that calls those functions", function (this: AptosWorld) {
+  this.testVectors.set("scriptCallsPublicFunctions", true);
+});
 
 Then("the script can access them", function (this: AptosWorld) {
   expect(this.testVectors.get("scriptCallsPublicFunctions")).to.be.true;
@@ -630,10 +593,7 @@ When("I inspect it", function (this: AptosWorld) {
   this.testVectors.set("bytecodeAnalysis", {
     magic: bytecode.slice(0, 4),
     isValid:
-      bytecode[0] === 0xa1 &&
-      bytecode[1] === 0x1c &&
-      bytecode[2] === 0xeb &&
-      bytecode[3] === 0x0b,
+      bytecode[0] === 0xa1 && bytecode[1] === 0x1c && bytecode[2] === 0xeb && bytecode[3] === 0x0b,
   });
 });
 
@@ -653,10 +613,7 @@ Then("different from module bytecode format", function (this: AptosWorld) {
 // =============================================================================
 
 Given("malformed bytecode", function (this: AptosWorld) {
-  this.testVectors.set(
-    "scriptBytecode",
-    new Uint8Array([0xff, 0xff, 0xff, 0xff]),
-  );
+  this.testVectors.set("scriptBytecode", new Uint8Array([0xff, 0xff, 0xff, 0xff]));
 });
 
 When("I try to execute it", function (this: AptosWorld) {
@@ -722,9 +679,7 @@ Then("it should fail with out of gas error", function (this: AptosWorld) {
     });
   }
 
-  expect(this.testVectors.get("executionResult").vmStatus).to.equal(
-    "OUT_OF_GAS",
-  );
+  expect(this.testVectors.get("executionResult").vmStatus).to.equal("OUT_OF_GAS");
 });
 
 // =============================================================================

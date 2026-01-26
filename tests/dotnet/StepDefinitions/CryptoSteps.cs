@@ -229,7 +229,7 @@ public class CryptoSteps
     {
         var pub1 = _world.TestVectors.TryGetValue("publicKey1", out var p1) ? (byte[])p1 : null;
         var pub2 = _world.TestVectors.TryGetValue("publicKey2", out var p2) ? (byte[])p2 : null;
-        
+
         pub1.Should().NotBeNull();
         pub2.Should().NotBeNull();
         Vectors.BytesToHex(pub1!).Should().NotBe(Vectors.BytesToHex(pub2!));

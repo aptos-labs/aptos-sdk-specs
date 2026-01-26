@@ -119,7 +119,7 @@ fn when_bcs_deserialize_address(world: &mut TestWorld) {
         }
         return;
     }
-    
+
     if let Some(ref bytes) = world.bytes {
         match <[u8; 32]>::try_from(bytes.as_slice()) {
             Ok(arr) => world.address = Some(AccountAddress::new(arr)),
@@ -150,7 +150,11 @@ fn when_bcs_deserialize_result(world: &mut TestWorld) {
 #[then("the parsing should fail with an invalid address error")]
 fn then_parsing_fails_invalid_address(world: &mut TestWorld) {
     assert!(
-        world.address_result.as_ref().map(|r| r.is_err()).unwrap_or(false),
+        world
+            .address_result
+            .as_ref()
+            .map(|r| r.is_err())
+            .unwrap_or(false),
         "Expected parsing to fail with invalid address error"
     );
 }
@@ -158,7 +162,11 @@ fn then_parsing_fails_invalid_address(world: &mut TestWorld) {
 #[then("the parsing should fail with an invalid hex error")]
 fn then_parsing_fails_invalid_hex(world: &mut TestWorld) {
     assert!(
-        world.address_result.as_ref().map(|r| r.is_err()).unwrap_or(false),
+        world
+            .address_result
+            .as_ref()
+            .map(|r| r.is_err())
+            .unwrap_or(false),
         "Expected parsing to fail with invalid hex error"
     );
 }
@@ -166,7 +174,11 @@ fn then_parsing_fails_invalid_hex(world: &mut TestWorld) {
 #[then("the parsing should fail with an invalid length error")]
 fn then_parsing_fails_invalid_length(world: &mut TestWorld) {
     assert!(
-        world.address_result.as_ref().map(|r| r.is_err()).unwrap_or(false),
+        world
+            .address_result
+            .as_ref()
+            .map(|r| r.is_err())
+            .unwrap_or(false),
         "Expected parsing to fail with invalid length error"
     );
 }
@@ -266,4 +278,3 @@ fn then_result_equals_original(world: &mut TestWorld) {
     assert!(world.address.is_some() && world.address2.is_some());
     assert_eq!(world.address, world.address2);
 }
-

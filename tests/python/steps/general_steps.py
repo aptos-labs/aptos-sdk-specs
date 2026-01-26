@@ -4,7 +4,6 @@ General step definitions that are commonly used across multiple features.
 
 from behave import given, when, then
 
-
 # =============================================================================
 # Given Steps - General Setup
 # =============================================================================
@@ -14,6 +13,7 @@ from behave import given, when, then
 def step_sdk_available(context):
     try:
         import aptos_sdk
+
         context.world.result = True
     except ImportError:
         context.world.result = False
@@ -23,6 +23,7 @@ def step_sdk_available(context):
 @given("a testnet client")
 def step_testnet_client(context):
     from aptos_sdk.async_client import RestClient
+
     context.world.network_url = "https://fullnode.testnet.aptoslabs.com/v1"
     # Note: For actual API calls, would need to use async client
 
@@ -30,6 +31,7 @@ def step_testnet_client(context):
 @given("a devnet client")
 def step_devnet_client(context):
     from aptos_sdk.async_client import RestClient
+
     context.world.network_url = "https://fullnode.devnet.aptoslabs.com/v1"
 
 
@@ -46,6 +48,7 @@ def step_do_nothing(context):
 @when("I wait for {seconds:d} seconds")
 def step_wait_seconds(context, seconds):
     import time
+
     time.sleep(seconds)
 
 
@@ -56,7 +59,9 @@ def step_wait_seconds(context, seconds):
 
 @then("it should succeed")
 def step_should_succeed(context):
-    assert context.world.error is None, f"Expected success but got error: {context.world.error}"
+    assert (
+        context.world.error is None
+    ), f"Expected success but got error: {context.world.error}"
 
 
 @then("it should fail")
@@ -120,7 +125,10 @@ def step_results_identical(context):
 @then("the results should be different")
 def step_results_different(context):
     # Check for hash results first
-    if context.world.hash_result is not None and context.world.hash_result_2 is not None:
+    if (
+        context.world.hash_result is not None
+        and context.world.hash_result_2 is not None
+    ):
         assert context.world.hash_result != context.world.hash_result_2
     else:
         result1 = context.world.test_vectors.get("result1")

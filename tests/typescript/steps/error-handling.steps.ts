@@ -43,13 +43,10 @@ Given("a validation failure", function (this: AptosWorld) {
   this.testVectors.set("errorType", "ValidationError");
 });
 
-Then(
-  "it should be categorized as ValidationError",
-  function (this: AptosWorld) {
-    const errorType = this.testVectors.get("errorType") as string;
-    expect(errorType).to.equal("ValidationError");
-  },
-);
+Then("it should be categorized as ValidationError", function (this: AptosWorld) {
+  const errorType = this.testVectors.get("errorType") as string;
+  expect(errorType).to.equal("ValidationError");
+});
 
 Then("have the invalid field name", function (this: AptosWorld) {
   const error = this.error as Error;
@@ -76,13 +73,10 @@ Given("a BCS deserialization failure", function (this: AptosWorld) {
   this.testVectors.set("errorType", "SerializationError");
 });
 
-Then(
-  "it should be categorized as SerializationError",
-  function (this: AptosWorld) {
-    const errorType = this.testVectors.get("errorType") as string;
-    expect(errorType).to.equal("SerializationError");
-  },
-);
+Then("it should be categorized as SerializationError", function (this: AptosWorld) {
+  const errorType = this.testVectors.get("errorType") as string;
+  expect(errorType).to.equal("SerializationError");
+});
 
 Then("indicate the serialization issue", function (this: AptosWorld) {
   const error = this.error as Error;
@@ -112,13 +106,10 @@ Then("message should be human-readable", function (this: AptosWorld) {
   expect(props.message).to.not.be.empty;
 });
 
-Then(
-  "cause should contain original error if wrapped",
-  function (this: AptosWorld) {
-    // Modern errors may have a cause property
-    expect(true).to.be.true;
-  },
-);
+Then("cause should contain original error if wrapped", function (this: AptosWorld) {
+  // Modern errors may have a cause property
+  expect(true).to.be.true;
+});
 
 Then("code should be machine-readable", function (this: AptosWorld) {
   // Error codes for programmatic handling
@@ -129,13 +120,10 @@ Then("code should be machine-readable", function (this: AptosWorld) {
 // API Error Details
 // =============================================================================
 
-Given(
-  "an API response with status {int}",
-  function (this: AptosWorld, status: number) {
-    this.error = new Error(`API Error: ${status}`);
-    this.testVectors.set("httpStatus", status);
-  },
-);
+Given("an API response with status {int}", function (this: AptosWorld, status: number) {
+  this.error = new Error(`API Error: ${status}`);
+  this.testVectors.set("httpStatus", status);
+});
 
 Given("error body from fullnode", function (this: AptosWorld) {
   this.testVectors.set("errorBody", {
@@ -177,13 +165,10 @@ Then("I should get vm_error_code if present", function (this: AptosWorld) {
 // VM Error Handling
 // =============================================================================
 
-Given(
-  "a transaction that aborts with code {int}",
-  function (this: AptosWorld, abortCode: number) {
-    this.testVectors.set("abortCode", abortCode);
-    this.error = new Error(`Transaction aborted with code ${abortCode}`);
-  },
-);
+Given("a transaction that aborts with code {int}", function (this: AptosWorld, abortCode: number) {
+  this.testVectors.set("abortCode", abortCode);
+  this.error = new Error(`Transaction aborted with code ${abortCode}`);
+});
 
 When("I get the transaction result", function (this: AptosWorld) {
   this.testVectors.set("txnResult", {
@@ -197,42 +182,30 @@ Then("I should be able to extract abort code", function (this: AptosWorld) {
   expect(result.vm_status).to.include("abort");
 });
 
-Then(
-  "I should be able to extract module and error name if available",
-  function (this: AptosWorld) {
-    // Module info may be available in enhanced error messages
-    expect(true).to.be.true;
-  },
-);
+Then("I should be able to extract module and error name if available", function (this: AptosWorld) {
+  // Module info may be available in enhanced error messages
+  expect(true).to.be.true;
+});
 
 Given("a transaction that fails with OUT_OF_GAS", function (this: AptosWorld) {
   this.error = new Error("Transaction failed: OUT_OF_GAS");
   this.testVectors.set("vmStatus", "OUT_OF_GAS");
 });
 
-Then(
-  "I should see vm_status indicating gas exhaustion",
-  function (this: AptosWorld) {
-    const status = this.testVectors.get("vmStatus") as string;
-    expect(status).to.equal("OUT_OF_GAS");
-  },
-);
+Then("I should see vm_status indicating gas exhaustion", function (this: AptosWorld) {
+  const status = this.testVectors.get("vmStatus") as string;
+  expect(status).to.equal("OUT_OF_GAS");
+});
 
-Given(
-  "a transaction that fails with SEQUENCE_NUMBER error",
-  function (this: AptosWorld) {
-    this.error = new Error("Transaction failed: SEQUENCE_NUMBER_TOO_OLD");
-    this.testVectors.set("vmStatus", "SEQUENCE_NUMBER_TOO_OLD");
-  },
-);
+Given("a transaction that fails with SEQUENCE_NUMBER error", function (this: AptosWorld) {
+  this.error = new Error("Transaction failed: SEQUENCE_NUMBER_TOO_OLD");
+  this.testVectors.set("vmStatus", "SEQUENCE_NUMBER_TOO_OLD");
+});
 
-Then(
-  "I should see vm_status indicating sequence number issue",
-  function (this: AptosWorld) {
-    const status = this.testVectors.get("vmStatus") as string;
-    expect(status).to.include("SEQUENCE_NUMBER");
-  },
-);
+Then("I should see vm_status indicating sequence number issue", function (this: AptosWorld) {
+  const status = this.testVectors.get("vmStatus") as string;
+  expect(status).to.include("SEQUENCE_NUMBER");
+});
 
 // =============================================================================
 // Error Recovery Information
@@ -272,14 +245,11 @@ Given("an insufficient balance error", function (this: AptosWorld) {
   this.testVectors.set("availableAmount", 50);
 });
 
-Then(
-  "I should get the required vs available amounts",
-  function (this: AptosWorld) {
-    const required = this.testVectors.get("requiredAmount") as number;
-    const available = this.testVectors.get("availableAmount") as number;
-    expect(required).to.be.greaterThan(available);
-  },
-);
+Then("I should get the required vs available amounts", function (this: AptosWorld) {
+  const required = this.testVectors.get("requiredAmount") as number;
+  const available = this.testVectors.get("availableAmount") as number;
+  expect(required).to.be.greaterThan(available);
+});
 
 // =============================================================================
 // Exception Hierarchies
@@ -395,12 +365,9 @@ When("the callback receives an error", function (this: AptosWorld) {
   this.error = new Error("Callback error");
 });
 
-Then(
-  "it should be converted to rejected promise or exception",
-  function (this: AptosWorld) {
-    expect(this.error).to.not.be.undefined;
-  },
-);
+Then("it should be converted to rejected promise or exception", function (this: AptosWorld) {
+  expect(this.error).to.not.be.undefined;
+});
 
 // =============================================================================
 // Error Messages
@@ -410,32 +377,23 @@ Given("any error message", function (this: AptosWorld) {
   this.error = new Error("Invalid transaction: sequence number too old");
 });
 
-Then(
-  "it should be actionable \\(tell user what to do\\)",
-  function (this: AptosWorld) {
-    const message = this.error!.message;
-    // Message should explain the problem
-    expect(message).to.include("sequence number");
-  },
-);
+Then("it should be actionable \\(tell user what to do\\)", function (this: AptosWorld) {
+  const message = this.error!.message;
+  // Message should explain the problem
+  expect(message).to.include("sequence number");
+});
 
-Then(
-  "include relevant context \\(what was being attempted\\)",
-  function (this: AptosWorld) {
-    const message = this.error!.message;
-    // Message should mention transaction
-    expect(message).to.include("transaction");
-  },
-);
+Then("include relevant context \\(what was being attempted\\)", function (this: AptosWorld) {
+  const message = this.error!.message;
+  // Message should mention transaction
+  expect(message).to.include("transaction");
+});
 
-Then(
-  "avoid implementation details in user-facing text",
-  function (this: AptosWorld) {
-    const message = this.error!.message;
-    // Should not include stack traces or internal IDs in message
-    expect(message).to.not.include("0x");
-  },
-);
+Then("avoid implementation details in user-facing text", function (this: AptosWorld) {
+  const message = this.error!.message;
+  // Should not include stack traces or internal IDs in message
+  expect(message).to.not.include("0x");
+});
 
 // =============================================================================
 // Error Localization
@@ -450,13 +408,10 @@ Then("messages can be localized based on code", function (this: AptosWorld) {
   expect(code).to.not.be.empty;
 });
 
-Then(
-  "error code should be stable across versions",
-  function (this: AptosWorld) {
-    const code = this.testVectors.get("errorCode") as string;
-    expect(code).to.equal("INVALID_SIGNATURE");
-  },
-);
+Then("error code should be stable across versions", function (this: AptosWorld) {
+  const code = this.testVectors.get("errorCode") as string;
+  expect(code).to.equal("INVALID_SIGNATURE");
+});
 
 // =============================================================================
 // Additional Steps to Match Feature File
@@ -471,13 +426,10 @@ When("I catch the error", function (this: AptosWorld) {
   this.testVectors.set("caughtError", this.error);
 });
 
-Then(
-  "I should be able to identify it as a network error",
-  function (this: AptosWorld) {
-    const errorType = this.testVectors.get("errorType") as string;
-    expect(errorType).to.equal("NetworkError");
-  },
-);
+Then("I should be able to identify it as a network error", function (this: AptosWorld) {
+  const errorType = this.testVectors.get("errorType") as string;
+  expect(errorType).to.equal("NetworkError");
+});
 
 Then("it should be retryable", function (this: AptosWorld) {
   const errorType = this.testVectors.get("errorType") as string;
@@ -498,13 +450,10 @@ Then("the error message from the API", function (this: AptosWorld) {
   expect(this.error!.message).to.not.be.empty;
 });
 
-Given(
-  /^invalid input \(e\.g\., malformed address\)$/,
-  function (this: AptosWorld) {
-    this.error = new Error("Invalid address format");
-    this.testVectors.set("invalidField", "address");
-  },
-);
+Given(/^invalid input \(e\.g\., malformed address\)$/, function (this: AptosWorld) {
+  this.error = new Error("Invalid address format");
+  this.testVectors.set("invalidField", "address");
+});
 
 When("I catch the validation error", function (this: AptosWorld) {
   this.testVectors.set("validationError", this.error);
@@ -541,12 +490,9 @@ Then("the transaction hash if submitted", function (this: AptosWorld) {
   expect(hash).to.match(/^0x[a-f0-9]{64}$/i);
 });
 
-Given(
-  "a transaction with vm_status {string}",
-  function (this: AptosWorld, status: string) {
-    this.testVectors.set("vmStatus", status);
-  },
-);
+Given("a transaction with vm_status {string}", function (this: AptosWorld, status: string) {
+  this.testVectors.set("vmStatus", status);
+});
 
 When("I check the status", function (this: AptosWorld) {
   const status = this.testVectors.get("vmStatus") as string;
@@ -558,17 +504,11 @@ Then("it should indicate success", function (this: AptosWorld) {
   expect(this.testVectors.get("isSuccess")).to.be.true;
 });
 
-Given(
-  "a transaction with vm_status containing abort code",
-  function (this: AptosWorld) {
-    this.testVectors.set(
-      "vmStatus",
-      "Move abort: 0x1::coin EINSUFFICIENT_BALANCE(65537)",
-    );
-    this.testVectors.set("abortCode", 65537);
-    this.testVectors.set("abortModule", "0x1::coin");
-  },
-);
+Given("a transaction with vm_status containing abort code", function (this: AptosWorld) {
+  this.testVectors.set("vmStatus", "Move abort: 0x1::coin EINSUFFICIENT_BALANCE(65537)");
+  this.testVectors.set("abortCode", 65537);
+  this.testVectors.set("abortModule", "0x1::coin");
+});
 
 When("I parse the status", function (this: AptosWorld) {
   this.testVectors.set("statusParsed", true);
@@ -593,20 +533,14 @@ Then("I should identify it as out-of-gas error", function (this: AptosWorld) {
   expect(status).to.equal("OUT_OF_GAS");
 });
 
-Then(
-  "know that increasing max_gas_amount may help",
-  function (this: AptosWorld) {
-    expect(true).to.be.true;
-  },
-);
+Then("know that increasing max_gas_amount may help", function (this: AptosWorld) {
+  expect(true).to.be.true;
+});
 
-Given(
-  "a transaction rejected for wrong sequence number",
-  function (this: AptosWorld) {
-    this.testVectors.set("vmStatus", "SEQUENCE_NUMBER_TOO_OLD");
-    this.testVectors.set("expectedSeqNum", 5);
-  },
-);
+Given("a transaction rejected for wrong sequence number", function (this: AptosWorld) {
+  this.testVectors.set("vmStatus", "SEQUENCE_NUMBER_TOO_OLD");
+  this.testVectors.set("expectedSeqNum", 5);
+});
 
 Then("I should know the expected sequence number", function (this: AptosWorld) {
   const expected = this.testVectors.get("expectedSeqNum") as number;
@@ -617,13 +551,10 @@ Then("be able to retry with correct number", function (this: AptosWorld) {
   expect(true).to.be.true;
 });
 
-Given(
-  "a transaction failing due to insufficient balance",
-  function (this: AptosWorld) {
-    this.testVectors.set("vmStatus", "INSUFFICIENT_BALANCE");
-    this.testVectors.set("accountLackingFunds", AccountAddress.ONE);
-  },
-);
+Given("a transaction failing due to insufficient balance", function (this: AptosWorld) {
+  this.testVectors.set("vmStatus", "INSUFFICIENT_BALANCE");
+  this.testVectors.set("accountLackingFunds", AccountAddress.ONE);
+});
 
 Then("I should identify it as balance error", function (this: AptosWorld) {
   const status = this.testVectors.get("vmStatus") as string;
@@ -643,12 +574,9 @@ When("I receive these in errors", function (this: AptosWorld) {
   this.testVectors.set("errorsReceived", true);
 });
 
-Then(
-  "SDK should provide human-readable descriptions",
-  function (this: AptosWorld) {
-    expect(true).to.be.true;
-  },
-);
+Then("SDK should provide human-readable descriptions", function (this: AptosWorld) {
+  expect(true).to.be.true;
+});
 
 Given("an abort from a custom module", function (this: AptosWorld) {
   this.testVectors.set("customModuleAddress", "0x123");
@@ -665,13 +593,10 @@ Then("the abort code from that module", function (this: AptosWorld) {
   expect(code).to.be.greaterThan(0);
 });
 
-Given(
-  "an error during {string}",
-  function (this: AptosWorld, operation: string) {
-    this.testVectors.set("failedOperation", operation);
-    this.error = new Error(`Error in ${operation}`);
-  },
-);
+Given("an error during {string}", function (this: AptosWorld, operation: string) {
+  this.testVectors.set("failedOperation", operation);
+  this.error = new Error(`Error in ${operation}`);
+});
 
 Then("I should know which operation failed", function (this: AptosWorld) {
   const op = this.testVectors.get("failedOperation") as string;
@@ -682,12 +607,9 @@ Then("have context about the input", function (this: AptosWorld) {
   expect(true).to.be.true;
 });
 
-Given(
-  /^a low-level error \(e\.g\., JSON parse error\)$/,
-  function (this: AptosWorld) {
-    this.testVectors.set("lowLevelError", new SyntaxError("Unexpected token"));
-  },
-);
+Given(/^a low-level error \(e\.g\., JSON parse error\)$/, function (this: AptosWorld) {
+  this.testVectors.set("lowLevelError", new SyntaxError("Unexpected token"));
+});
 
 When("it propagates up", function (this: AptosWorld) {
   const lowLevel = this.testVectors.get("lowLevelError") as Error;
@@ -708,13 +630,10 @@ Given("an API error with request ID header", function (this: AptosWorld) {
   this.testVectors.set("requestId", "req-12345");
 });
 
-Then(
-  "I should have access to the request ID for debugging",
-  function (this: AptosWorld) {
-    const requestId = this.testVectors.get("requestId") as string;
-    expect(requestId).to.not.be.empty;
-  },
-);
+Then("I should have access to the request ID for debugging", function (this: AptosWorld) {
+  const requestId = this.testVectors.get("requestId") as string;
+  expect(requestId).to.not.be.empty;
+});
 
 Given("TypeScript SDK", function (this: AptosWorld) {
   this.testVectors.set("sdkLanguage", "TypeScript");
@@ -728,12 +647,9 @@ Then("they should extend Error class", function (this: AptosWorld) {
   expect(this.error).to.be.instanceOf(Error);
 });
 
-Then(
-  /^have specific error types \(AptosApiError, etc\.\)$/,
-  function (this: AptosWorld) {
-    expect(true).to.be.true;
-  },
-);
+Then(/^have specific error types \(AptosApiError, etc\.\)$/, function (this: AptosWorld) {
+  expect(true).to.be.true;
+});
 
 Then("be catchable by type", function (this: AptosWorld) {
   expect(true).to.be.true;
@@ -795,24 +711,18 @@ Then("network errors should be retryable", function (this: AptosWorld) {
   expect(true).to.be.true;
 });
 
-Then(
-  /^rate limit errors should be retryable \(with backoff\)$/,
-  function (this: AptosWorld) {
-    expect(true).to.be.true;
-  },
-);
+Then(/^rate limit errors should be retryable \(with backoff\)$/, function (this: AptosWorld) {
+  expect(true).to.be.true;
+});
 
 Then("validation errors should NOT be retryable", function (this: AptosWorld) {
   expect(true).to.be.true;
 });
 
-Given(
-  "a transaction rejection for invalid signature",
-  function (this: AptosWorld) {
-    this.error = new Error("Invalid signature");
-    this.testVectors.set("permanentFailure", true);
-  },
-);
+Given("a transaction rejection for invalid signature", function (this: AptosWorld) {
+  this.error = new Error("Invalid signature");
+  this.testVectors.set("permanentFailure", true);
+});
 
 When("I check the error", function (this: AptosWorld) {
   this.testVectors.set("errorChecked", true);
@@ -897,19 +807,13 @@ Given("an error shown to SDK users", function (this: AptosWorld) {
   this.error = new Error("Invalid address: expected 32 bytes hex string");
 });
 
-Then(
-  "it should not contain internal implementation details",
-  function (this: AptosWorld) {
-    expect(this.error!.message).to.not.include("internal");
-  },
-);
+Then("it should not contain internal implementation details", function (this: AptosWorld) {
+  expect(this.error!.message).to.not.include("internal");
+});
 
-Then(
-  "should use terminology from Aptos documentation",
-  function (this: AptosWorld) {
-    expect(true).to.be.true;
-  },
-);
+Then("should use terminology from Aptos documentation", function (this: AptosWorld) {
+  expect(true).to.be.true;
+});
 
 When("I log it", function (this: AptosWorld) {
   this.testVectors.set("logged", true);
@@ -919,12 +823,9 @@ Then("all relevant details should be included", function (this: AptosWorld) {
   expect(true).to.be.true;
 });
 
-Then(
-  /^sensitive data \(keys\) should NOT be included$/,
-  function (this: AptosWorld) {
-    expect(true).to.be.true;
-  },
-);
+Then(/^sensitive data \(keys\) should NOT be included$/, function (this: AptosWorld) {
+  expect(true).to.be.true;
+});
 
 Given("a SEQUENCE_NUMBER_TOO_OLD error", function (this: AptosWorld) {
   this.error = new Error("SEQUENCE_NUMBER_TOO_OLD");

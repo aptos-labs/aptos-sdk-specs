@@ -26,49 +26,43 @@ import { bytesToHex } from "../support/vectors.js";
 // Given Steps - Type String Input
 // =============================================================================
 
-Given(
-  "a type string {string}",
-  function (this: AptosWorld, typeString: string) {
-    this.testVectors.set("typeString", typeString);
-  },
-);
+Given("a type string {string}", function (this: AptosWorld, typeString: string) {
+  this.testVectors.set("typeString", typeString);
+});
 
-Given(
-  "a TypeTag of variant {word}",
-  function (this: AptosWorld, variant: string) {
-    switch (variant) {
-      case "Bool":
-        this.result = new TypeTagBool();
-        break;
-      case "U8":
-        this.result = new TypeTagU8();
-        break;
-      case "U16":
-        this.result = new TypeTagU16();
-        break;
-      case "U32":
-        this.result = new TypeTagU32();
-        break;
-      case "U64":
-        this.result = new TypeTagU64();
-        break;
-      case "U128":
-        this.result = new TypeTagU128();
-        break;
-      case "U256":
-        this.result = new TypeTagU256();
-        break;
-      case "Address":
-        this.result = new TypeTagAddress();
-        break;
-      case "Signer":
-        this.result = new TypeTagSigner();
-        break;
-      default:
-        throw new Error(`Unknown TypeTag variant: ${variant}`);
-    }
-  },
-);
+Given("a TypeTag of variant {word}", function (this: AptosWorld, variant: string) {
+  switch (variant) {
+    case "Bool":
+      this.result = new TypeTagBool();
+      break;
+    case "U8":
+      this.result = new TypeTagU8();
+      break;
+    case "U16":
+      this.result = new TypeTagU16();
+      break;
+    case "U32":
+      this.result = new TypeTagU32();
+      break;
+    case "U64":
+      this.result = new TypeTagU64();
+      break;
+    case "U128":
+      this.result = new TypeTagU128();
+      break;
+    case "U256":
+      this.result = new TypeTagU256();
+      break;
+    case "Address":
+      this.result = new TypeTagAddress();
+      break;
+    case "Signer":
+      this.result = new TypeTagSigner();
+      break;
+    default:
+      throw new Error(`Unknown TypeTag variant: ${variant}`);
+  }
+});
 
 Given("a TypeTag of Vector containing U8", function (this: AptosWorld) {
   this.result = new TypeTagVector(new TypeTagU8());
@@ -105,12 +99,9 @@ Given("a TypeTag for CoinStore of AptosCoin", function (this: AptosWorld) {
 // Given Steps - Module ID
 // =============================================================================
 
-Given(
-  "a module string {string}",
-  function (this: AptosWorld, moduleString: string) {
-    this.testVectors.set("moduleString", moduleString);
-  },
-);
+Given("a module string {string}", function (this: AptosWorld, moduleString: string) {
+  this.testVectors.set("moduleString", moduleString);
+});
 
 Given(
   "a MoveModuleId with address {string} and name {string}",
@@ -165,10 +156,7 @@ When("I format it as a string", function (this: AptosWorld) {
   ) {
     // It's a TypeTag
     this.testVectors.set("formattedString", this.result.toString());
-  } else if (
-    this.testVectors.has("moduleAddress") &&
-    this.testVectors.has("moduleName")
-  ) {
+  } else if (this.testVectors.has("moduleAddress") && this.testVectors.has("moduleName")) {
     // It's a MoveModuleId from components
     const address = this.testVectors.get("moduleAddress") as string;
     const name = this.testVectors.get("moduleName") as string;
@@ -181,10 +169,7 @@ When("I format it as a string", function (this: AptosWorld) {
   ) {
     // It's a parsed module ID object
     const moduleId = this.result as { address: string; name: string };
-    this.testVectors.set(
-      "formattedString",
-      `${moduleId.address}::${moduleId.name}`,
-    );
+    this.testVectors.set("formattedString", `${moduleId.address}::${moduleId.name}`);
   } else if (this.address) {
     // It's an AccountAddress
     this.testVectors.set("formattedString", this.address.toString());
@@ -330,9 +315,7 @@ When("I BCS serialize and deserialize it", function (this: AptosWorld) {
       return;
     }
 
-    throw new Error(
-      "No TypeTag, RawTransaction, or EntryFunction found to serialize/deserialize",
-    );
+    throw new Error("No TypeTag, RawTransaction, or EntryFunction found to serialize/deserialize");
   } catch (error) {
     this.setError(error as Error);
   }
@@ -342,32 +325,29 @@ When("I BCS serialize and deserialize it", function (this: AptosWorld) {
 // Then Steps - TypeTag Validation
 // =============================================================================
 
-Then(
-  "the TypeTag variant should be {word}",
-  function (this: AptosWorld, variant: string) {
-    const typeTag = this.result as TypeTag;
+Then("the TypeTag variant should be {word}", function (this: AptosWorld, variant: string) {
+  const typeTag = this.result as TypeTag;
 
-    const variantChecks: Record<string, (t: TypeTag) => boolean> = {
-      Bool: (t) => t instanceof TypeTagBool,
-      U8: (t) => t instanceof TypeTagU8,
-      U16: (t) => t instanceof TypeTagU16,
-      U32: (t) => t instanceof TypeTagU32,
-      U64: (t) => t instanceof TypeTagU64,
-      U128: (t) => t instanceof TypeTagU128,
-      U256: (t) => t instanceof TypeTagU256,
-      Address: (t) => t instanceof TypeTagAddress,
-      Signer: (t) => t instanceof TypeTagSigner,
-      Vector: (t) => t instanceof TypeTagVector,
-      Struct: (t) => t instanceof TypeTagStruct,
-    };
+  const variantChecks: Record<string, (t: TypeTag) => boolean> = {
+    Bool: (t) => t instanceof TypeTagBool,
+    U8: (t) => t instanceof TypeTagU8,
+    U16: (t) => t instanceof TypeTagU16,
+    U32: (t) => t instanceof TypeTagU32,
+    U64: (t) => t instanceof TypeTagU64,
+    U128: (t) => t instanceof TypeTagU128,
+    U256: (t) => t instanceof TypeTagU256,
+    Address: (t) => t instanceof TypeTagAddress,
+    Signer: (t) => t instanceof TypeTagSigner,
+    Vector: (t) => t instanceof TypeTagVector,
+    Struct: (t) => t instanceof TypeTagStruct,
+  };
 
-    const check = variantChecks[variant];
-    if (!check) {
-      throw new Error(`Unknown variant: ${variant}`);
-    }
-    expect(check(typeTag)).to.be.true;
-  },
-);
+  const check = variantChecks[variant];
+  if (!check) {
+    throw new Error(`Unknown variant: ${variant}`);
+  }
+  expect(check(typeTag)).to.be.true;
+});
 
 Then("the inner type should be U8", function (this: AptosWorld) {
   const typeTag = this.result as TypeTagVector;
@@ -377,8 +357,7 @@ Then("the inner type should be U8", function (this: AptosWorld) {
 Then("the inner type should be a Vector of U8", function (this: AptosWorld) {
   const typeTag = this.result as TypeTagVector;
   expect(typeTag.value instanceof TypeTagVector).to.be.true;
-  expect((typeTag.value as TypeTagVector).value instanceof TypeTagU8).to.be
-    .true;
+  expect((typeTag.value as TypeTagVector).value instanceof TypeTagU8).to.be.true;
 });
 
 Then("the inner type should be a Struct", function (this: AptosWorld) {
@@ -390,58 +369,38 @@ Then("the inner type should be a Struct", function (this: AptosWorld) {
 // Then Steps - Struct Properties
 // =============================================================================
 
-Then(
-  "the struct address should be {string}",
-  function (this: AptosWorld, expected: string) {
-    const typeTag = this.result as TypeTagStruct;
-    const actualAddress = typeTag.value.address.toString();
-    // Normalize both addresses for comparison
-    const normalizedExpected = AccountAddress.from(expected).toString();
-    expect(actualAddress.toLowerCase()).to.equal(
-      normalizedExpected.toLowerCase(),
-    );
-  },
-);
+Then("the struct address should be {string}", function (this: AptosWorld, expected: string) {
+  const typeTag = this.result as TypeTagStruct;
+  const actualAddress = typeTag.value.address.toString();
+  // Normalize both addresses for comparison
+  const normalizedExpected = AccountAddress.from(expected).toString();
+  expect(actualAddress.toLowerCase()).to.equal(normalizedExpected.toLowerCase());
+});
 
-Then(
-  "the struct module should be {string}",
-  function (this: AptosWorld, expected: string) {
-    const typeTag = this.result as TypeTagStruct;
-    expect(typeTag.value.moduleName.identifier).to.equal(expected);
-  },
-);
+Then("the struct module should be {string}", function (this: AptosWorld, expected: string) {
+  const typeTag = this.result as TypeTagStruct;
+  expect(typeTag.value.moduleName.identifier).to.equal(expected);
+});
 
-Then(
-  "the struct name should be {string}",
-  function (this: AptosWorld, expected: string) {
-    const typeTag = this.result as TypeTagStruct;
-    expect(typeTag.value.name.identifier).to.equal(expected);
-  },
-);
+Then("the struct name should be {string}", function (this: AptosWorld, expected: string) {
+  const typeTag = this.result as TypeTagStruct;
+  expect(typeTag.value.name.identifier).to.equal(expected);
+});
 
-Then(
-  "the struct should have {int} type arguments",
-  function (this: AptosWorld, count: number) {
-    const typeTag = this.result as TypeTagStruct;
-    expect(typeTag.value.typeArgs.length).to.equal(count);
-  },
-);
+Then("the struct should have {int} type arguments", function (this: AptosWorld, count: number) {
+  const typeTag = this.result as TypeTagStruct;
+  expect(typeTag.value.typeArgs.length).to.equal(count);
+});
 
-Then(
-  "the struct should have {int} type argument",
-  function (this: AptosWorld, count: number) {
-    const typeTag = this.result as TypeTagStruct;
-    expect(typeTag.value.typeArgs.length).to.equal(count);
-  },
-);
+Then("the struct should have {int} type argument", function (this: AptosWorld, count: number) {
+  const typeTag = this.result as TypeTagStruct;
+  expect(typeTag.value.typeArgs.length).to.equal(count);
+});
 
-Then(
-  "type argument {int} should be U64",
-  function (this: AptosWorld, index: number) {
-    const typeTag = this.result as TypeTagStruct;
-    expect(typeTag.value.typeArgs[index] instanceof TypeTagU64).to.be.true;
-  },
-);
+Then("type argument {int} should be U64", function (this: AptosWorld, index: number) {
+  const typeTag = this.result as TypeTagStruct;
+  expect(typeTag.value.typeArgs[index] instanceof TypeTagU64).to.be.true;
+});
 
 Then(
   "type argument {int} should be a Struct named {string}",
@@ -457,50 +416,39 @@ Then(
 // Then Steps - Module ID Properties
 // =============================================================================
 
-Then(
-  "the module address should be {string}",
-  function (this: AptosWorld, expected: string) {
-    // Try multiple sources: parsed module, entry function result
-    let address: string | undefined;
-    if (this.testVectors.has("parsedModuleAddress")) {
-      address = this.testVectors.get("parsedModuleAddress") as string;
-    } else if (this.result && (this.result as any).module_name?.address) {
-      address = (this.result as any).module_name.address.toString();
-    }
+Then("the module address should be {string}", function (this: AptosWorld, expected: string) {
+  // Try multiple sources: parsed module, entry function result
+  let address: string | undefined;
+  if (this.testVectors.has("parsedModuleAddress")) {
+    address = this.testVectors.get("parsedModuleAddress") as string;
+  } else if (this.result && (this.result as any).module_name?.address) {
+    address = (this.result as any).module_name.address.toString();
+  }
 
-    if (address) {
-      const normalizedExpected = AccountAddress.from(expected).toString();
-      const normalizedActual = AccountAddress.from(address).toString();
-      expect(normalizedActual.toLowerCase()).to.equal(
-        normalizedExpected.toLowerCase(),
-      );
-    } else {
-      throw new Error("No module address found");
-    }
-  },
-);
+  if (address) {
+    const normalizedExpected = AccountAddress.from(expected).toString();
+    const normalizedActual = AccountAddress.from(address).toString();
+    expect(normalizedActual.toLowerCase()).to.equal(normalizedExpected.toLowerCase());
+  } else {
+    throw new Error("No module address found");
+  }
+});
 
-Then(
-  "the module name should be {string}",
-  function (this: AptosWorld, expected: string) {
-    // Try multiple sources: parsed module, entry function result
-    let name: string | undefined;
-    if (this.testVectors.has("parsedModuleName")) {
-      name = this.testVectors.get("parsedModuleName") as string;
-    } else if (
-      this.result &&
-      (this.result as any).module_name?.name?.identifier
-    ) {
-      name = (this.result as any).module_name.name.identifier;
-    }
+Then("the module name should be {string}", function (this: AptosWorld, expected: string) {
+  // Try multiple sources: parsed module, entry function result
+  let name: string | undefined;
+  if (this.testVectors.has("parsedModuleName")) {
+    name = this.testVectors.get("parsedModuleName") as string;
+  } else if (this.result && (this.result as any).module_name?.name?.identifier) {
+    name = (this.result as any).module_name.name.identifier;
+  }
 
-    if (name) {
-      expect(name).to.equal(expected);
-    } else {
-      throw new Error("No module name found");
-    }
-  },
-);
+  if (name) {
+    expect(name).to.equal(expected);
+  } else {
+    throw new Error("No module name found");
+  }
+});
 
 // =============================================================================
 // Then Steps - Struct Tag
@@ -511,25 +459,19 @@ Then("the struct tag should be valid", function (this: AptosWorld) {
   expect(this.result).to.not.be.undefined;
 });
 
-Then(
-  "the string representation should be {string}",
-  function (this: AptosWorld, expected: string) {
-    const typeTag = this.result as TypeTagStruct;
-    expect(typeTag.toString()).to.equal(expected);
-  },
-);
+Then("the string representation should be {string}", function (this: AptosWorld, expected: string) {
+  const typeTag = this.result as TypeTagStruct;
+  expect(typeTag.toString()).to.equal(expected);
+});
 
 // =============================================================================
 // Then Steps - BCS Serialization
 // =============================================================================
 
-Then(
-  "the first byte should be the U64 variant index",
-  function (this: AptosWorld) {
-    // U64 variant index in TypeTag enum is typically 4
-    expect(this.bytes![0]).to.be.a("number");
-  },
-);
+Then("the first byte should be the U64 variant index", function (this: AptosWorld) {
+  // U64 variant index in TypeTag enum is typically 4
+  expect(this.bytes![0]).to.be.a("number");
+});
 
 Then("the serialization should succeed", function (this: AptosWorld) {
   expect(this.error).to.be.undefined;
@@ -537,24 +479,18 @@ Then("the serialization should succeed", function (this: AptosWorld) {
   expect(this.bytes!.length).to.be.greaterThan(0);
 });
 
-Then(
-  "the result should be deserializable back to the same TypeTag",
-  function (this: AptosWorld) {
-    const originalTypeTag = this.testVectors.get("originalTypeTag") as TypeTag;
-    const deserializer = new Deserializer(this.bytes!);
-    const deserialized = TypeTag.deserialize(deserializer);
-    expect(deserialized.toString()).to.equal(originalTypeTag.toString());
-  },
-);
+Then("the result should be deserializable back to the same TypeTag", function (this: AptosWorld) {
+  const originalTypeTag = this.testVectors.get("originalTypeTag") as TypeTag;
+  const deserializer = new Deserializer(this.bytes!);
+  const deserialized = TypeTag.deserialize(deserializer);
+  expect(deserialized.toString()).to.equal(originalTypeTag.toString());
+});
 
-Then(
-  "the result should equal the original TypeTag",
-  function (this: AptosWorld) {
-    const originalTypeTag = this.testVectors.get("originalTypeTag") as TypeTag;
-    const resultTypeTag = this.result as TypeTag;
-    expect(resultTypeTag.toString()).to.equal(originalTypeTag.toString());
-  },
-);
+Then("the result should equal the original TypeTag", function (this: AptosWorld) {
+  const originalTypeTag = this.testVectors.get("originalTypeTag") as TypeTag;
+  const resultTypeTag = this.result as TypeTag;
+  expect(resultTypeTag.toString()).to.equal(originalTypeTag.toString());
+});
 
 // =============================================================================
 // Then Steps - Parsing Failure

@@ -3,15 +3,15 @@ Step definitions for faucet.feature
 Tests faucet client for funding accounts on testnet/devnet.
 """
 
+from aptos_sdk.account_address import AccountAddress
+from aptos_sdk.account import Account
+from aptos_sdk.async_client import RestClient, FaucetClient
+from behave import given, when, then
 import sys
 import os
 import asyncio
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-from behave import given, when, then
-from aptos_sdk.async_client import RestClient, FaucetClient
-from aptos_sdk.account import Account
-from aptos_sdk.account_address import AccountAddress
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 
 # Helper to run async functions synchronously
@@ -70,18 +70,18 @@ def step_given_existing_account_to_fund(context):
 @when("I request funds from the faucet")
 def step_request_funds(context):
     try:
+
         async def _fund():
             client = RestClient(context.world.network_url)
             faucet = FaucetClient(context.world.faucet_url, client)
             try:
                 result = await faucet.fund_account(
-                    context.world.account.address(),
-                    100_000_000  # 1 APT
+                    context.world.account.address(), 100_000_000  # 1 APT
                 )
                 return result
             finally:
                 await client.close()
-        
+
         context.world.result = run_async(_fund())
         context.world.clear_error()
     except Exception as e:
@@ -91,18 +91,18 @@ def step_request_funds(context):
 @when("I request {amount:d} octas from the faucet")
 def step_request_specific_amount(context, amount):
     try:
+
         async def _fund():
             client = RestClient(context.world.network_url)
             faucet = FaucetClient(context.world.faucet_url, client)
             try:
                 result = await faucet.fund_account(
-                    context.world.account.address(),
-                    amount
+                    context.world.account.address(), amount
                 )
                 return result
             finally:
                 await client.close()
-        
+
         context.world.result = run_async(_fund())
         context.world.clear_error()
     except Exception as e:
@@ -112,6 +112,7 @@ def step_request_specific_amount(context, amount):
 @when('I fund address "{address}"')
 def step_fund_address(context, address):
     try:
+
         async def _fund():
             client = RestClient(context.world.network_url)
             faucet = FaucetClient(context.world.faucet_url, client)
@@ -121,7 +122,7 @@ def step_fund_address(context, address):
                 return result
             finally:
                 await client.close()
-        
+
         context.world.result = run_async(_fund())
         context.world.clear_error()
     except Exception as e:
@@ -131,6 +132,7 @@ def step_fund_address(context, address):
 @when("I request funds multiple times")
 def step_request_funds_multiple(context):
     try:
+
         async def _fund_multiple():
             client = RestClient(context.world.network_url)
             faucet = FaucetClient(context.world.faucet_url, client)
@@ -138,14 +140,13 @@ def step_request_funds_multiple(context):
             try:
                 for _ in range(3):
                     result = await faucet.fund_account(
-                        context.world.account.address(),
-                        100_000_000
+                        context.world.account.address(), 100_000_000
                     )
                     results.append(result)
                 return results
             finally:
                 await client.close()
-        
+
         context.world.result = run_async(_fund_multiple())
         context.world.clear_error()
     except Exception as e:
@@ -160,6 +161,7 @@ def step_request_funds_multiple(context):
 @when("I check the account balance")
 def step_check_balance(context):
     try:
+
         async def _get_balance():
             client = RestClient(context.world.network_url)
             try:
@@ -167,7 +169,7 @@ def step_check_balance(context):
                 return balance
             finally:
                 await client.close()
-        
+
         context.world.result = run_async(_get_balance())
         context.world.clear_error()
     except Exception as e:
@@ -177,6 +179,7 @@ def step_check_balance(context):
 @when("I check the balance before funding")
 def step_check_balance_before(context):
     try:
+
         async def _get_balance():
             client = RestClient(context.world.network_url)
             try:
@@ -186,7 +189,7 @@ def step_check_balance_before(context):
                 return 0  # Account doesn't exist yet
             finally:
                 await client.close()
-        
+
         context.world.test_vectors["balance_before"] = run_async(_get_balance())
         context.world.clear_error()
     except Exception as e:
@@ -196,6 +199,7 @@ def step_check_balance_before(context):
 @when("I check the balance after funding")
 def step_check_balance_after(context):
     try:
+
         async def _get_balance():
             client = RestClient(context.world.network_url)
             try:
@@ -203,7 +207,7 @@ def step_check_balance_after(context):
                 return balance
             finally:
                 await client.close()
-        
+
         context.world.test_vectors["balance_after"] = run_async(_get_balance())
         context.world.clear_error()
     except Exception as e:
@@ -236,6 +240,7 @@ def step_receive_fund_tx_hashes(context):
 @then("the account should exist on chain")
 def step_account_exists(context):
     try:
+
         async def _check_exists():
             client = RestClient(context.world.network_url)
             try:
@@ -245,7 +250,7 @@ def step_account_exists(context):
                 return False
             finally:
                 await client.close()
-        
+
         exists = run_async(_check_exists())
         assert exists, "Account should exist on chain"
     except Exception as e:

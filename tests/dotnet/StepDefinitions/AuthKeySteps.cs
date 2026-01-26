@@ -45,7 +45,7 @@ public class AuthKeySteps
     public void WhenIPrepareTheAuthenticationKeyInput()
     {
         var keyType = _world.TestVectors.TryGetValue("keyType", out var kt) ? (string)kt : "ed25519";
-        
+
         byte[]? pubKeyBytes = null;
         byte schemeId = 0x00;
 
@@ -288,8 +288,8 @@ public class AuthKeySteps
     [Then("it should be the uncompressed format (65 bytes)")]
     public void ThenItShouldBeTheUncompressedFormat65Bytes()
     {
-        var pubKey = _world.TestVectors.TryGetValue("pubKeyForAuth", out var pk) 
-            ? (byte[])pk 
+        var pubKey = _world.TestVectors.TryGetValue("pubKeyForAuth", out var pk)
+            ? (byte[])pk
             : _world.Secp256k1PublicKey?.ToByteArray();
         pubKey.Should().NotBeNull();
         pubKey!.Length.Should().Be(65);
@@ -298,8 +298,8 @@ public class AuthKeySteps
     [Then("the first byte of the public key should be 0x04")]
     public void ThenTheFirstByteOfThePublicKeyShouldBe0x04()
     {
-        var pubKey = _world.TestVectors.TryGetValue("pubKeyForAuth", out var pk) 
-            ? (byte[])pk 
+        var pubKey = _world.TestVectors.TryGetValue("pubKeyForAuth", out var pk)
+            ? (byte[])pk
             : _world.Secp256k1PublicKey?.ToByteArray();
         pubKey.Should().NotBeNull();
         pubKey![0].Should().Be(0x04);
@@ -327,7 +327,7 @@ public class AuthKeySteps
     {
         var schemeId = _world.TestVectors.TryGetValue("schemeId", out var s) ? (byte)s : (byte)0x00;
         var pubKeyBytes = _world.Ed25519PublicKey?.ToByteArray();
-        
+
         if (pubKeyBytes != null)
         {
             var input = new byte[pubKeyBytes.Length + 1];
@@ -349,9 +349,9 @@ public class AuthKeySteps
     {
         var keyType = _world.TestVectors.TryGetValue("keyType", out var kt) ? (string)kt : "ed25519";
         var skipTest = _world.TestVectors.TryGetValue("skipTest", out var skip) && (bool)skip;
-        
+
         if (skipTest) return;
-        
+
         var expectedValue = Convert.ToByte(expectedScheme, 16);
         byte actualScheme = keyType switch
         {
@@ -362,7 +362,7 @@ public class AuthKeySteps
             "multikey" => 0x03,
             _ => 0x00
         };
-        
+
         actualScheme.Should().Be(expectedValue);
     }
 
@@ -573,12 +573,12 @@ public class AuthKeySteps
     {
         var pubKeyBytes = _world.Ed25519PublicKey?.ToByteArray();
         pubKeyBytes.Should().NotBeNull();
-        
+
         var input = new byte[pubKeyBytes!.Length + 1];
         Array.Copy(pubKeyBytes, input, pubKeyBytes.Length);
         input[pubKeyBytes.Length] = 0x00;
         var expected = Sha3_256(input);
-        
+
         Vectors.BytesToHex(_world.Bytes!).Should().Be(Vectors.BytesToHex(expected));
     }
 }

@@ -1,8 +1,4 @@
-import {
-  setWorldConstructor,
-  World,
-  type IWorldOptions,
-} from "@cucumber/cucumber";
+import { setWorldConstructor, World, type IWorldOptions } from "@cucumber/cucumber";
 import {
   Aptos,
   AptosConfig,
@@ -14,7 +10,20 @@ import {
   type RawTransaction,
   type SignedTransaction,
   type PrivateKey,
+  type Ed25519Signature,
 } from "@aptos-labs/ts-sdk";
+
+/**
+ * Benchmark result statistics
+ */
+export interface BenchmarkResult {
+  samples: number[];
+  avg: number;
+  p95: number;
+  min: number;
+  max: number;
+  opsPerSecond: number;
+}
 
 /**
  * Custom World class that holds test context between steps.
@@ -50,6 +59,12 @@ export class AptosWorld extends World {
 
   // Test vectors
   public testVectors: Map<string, any> = new Map();
+
+  // Performance benchmarks
+  public benchmarkResult?: BenchmarkResult;
+  public stepBreakdown?: Record<string, BenchmarkResult>;
+  public message?: Uint8Array;
+  public signature?: Ed25519Signature;
 
   constructor(options: IWorldOptions) {
     super(options);
@@ -116,3 +131,6 @@ export class AptosWorld extends World {
 }
 
 setWorldConstructor(AptosWorld);
+
+// Type alias for step definitions
+export type TestWorld = AptosWorld;

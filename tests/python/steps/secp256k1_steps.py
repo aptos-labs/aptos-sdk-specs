@@ -3,25 +3,26 @@ Step definitions for secp256k1.feature
 Tests Secp256k1 cryptographic operations.
 """
 
-import sys
-import os
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
-
-from behave import given, when, then
-
-# Try to import secp256k1 support
-try:
-    from ecdsa import SECP256k1, SigningKey, VerifyingKey, BadSignatureError
-    from ecdsa.util import sigencode_der, sigdecode_der
-    SECP256K1_AVAILABLE = True
-except ImportError:
-    SECP256K1_AVAILABLE = False
-
 from support.vectors import (
     get_secp256k1_test_vectors,
     hex_to_bytes,
     bytes_to_hex,
 )
+from behave import given, when, then
+import sys
+import os
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+
+
+# Try to import secp256k1 support
+try:
+    from ecdsa import SECP256k1, SigningKey, VerifyingKey, BadSignatureError
+    from ecdsa.util import sigencode_der, sigdecode_der
+
+    SECP256K1_AVAILABLE = True
+except ImportError:
+    SECP256K1_AVAILABLE = False
 
 
 # =============================================================================
@@ -34,11 +35,11 @@ def step_generate_secp256k1_keypair(context):
     if not SECP256K1_AVAILABLE:
         context.world.set_error(ImportError("ecdsa library not available"))
         return
-    
+
     try:
         private_key = SigningKey.generate(curve=SECP256k1)
         public_key = private_key.get_verifying_key()
-        
+
         context.world.private_key = private_key
         context.world.public_key = public_key
         context.world.clear_error()
@@ -51,11 +52,11 @@ def step_generate_another_secp256k1(context):
     if not SECP256K1_AVAILABLE:
         context.world.set_error(ImportError("ecdsa library not available"))
         return
-    
+
     try:
         private_key = SigningKey.generate(curve=SECP256k1)
         public_key = private_key.get_verifying_key()
-        
+
         context.world.test_vectors["private_key_2"] = private_key
         context.world.test_vectors["public_key_2"] = public_key
         context.world.clear_error()
@@ -68,7 +69,7 @@ def step_given_secp256k1_private_key(context, key_hex):
     if not SECP256K1_AVAILABLE:
         context.world.set_error(ImportError("ecdsa library not available"))
         return
-    
+
     try:
         key_bytes = hex_to_bytes(key_hex)
         context.world.private_key = SigningKey.from_string(key_bytes, curve=SECP256k1)
@@ -83,7 +84,7 @@ def step_given_secp256k1_public_key(context, key_hex):
     if not SECP256K1_AVAILABLE:
         context.world.set_error(ImportError("ecdsa library not available"))
         return
-    
+
     try:
         key_bytes = hex_to_bytes(key_hex)
         context.world.public_key = VerifyingKey.from_string(key_bytes, curve=SECP256k1)
@@ -107,7 +108,7 @@ def step_sign_with_secp256k1(context):
     if not SECP256K1_AVAILABLE:
         context.world.set_error(ImportError("ecdsa library not available"))
         return
-    
+
     try:
         message = context.world.message or b"Test message"
         signature = context.world.private_key.sign(message)
@@ -122,15 +123,13 @@ def step_sign_deterministic(context):
     if not SECP256K1_AVAILABLE:
         context.world.set_error(ImportError("ecdsa library not available"))
         return
-    
+
     try:
         import hashlib
+
         message = context.world.message or b"Test message"
         # ECDSA library uses RFC 6979 by default
-        signature = context.world.private_key.sign(
-            message,
-            hashfunc=hashlib.sha256
-        )
+        signature = context.world.private_key.sign(message, hashfunc=hashlib.sha256)
         context.world.signature = signature
         context.world.clear_error()
     except Exception as e:
@@ -147,7 +146,7 @@ def step_verify_secp256k1(context):
     if not SECP256K1_AVAILABLE:
         context.world.set_error(ImportError("ecdsa library not available"))
         return
-    
+
     try:
         message = context.world.message or b"Test message"
         is_valid = context.world.public_key.verify(context.world.signature, message)
@@ -166,10 +165,12 @@ def step_verify_different_message(context):
     if not SECP256K1_AVAILABLE:
         context.world.set_error(ImportError("ecdsa library not available"))
         return
-    
+
     try:
         different_message = b"Different message"
-        is_valid = context.world.public_key.verify(context.world.signature, different_message)
+        is_valid = context.world.public_key.verify(
+            context.world.signature, different_message
+        )
         context.world.result = is_valid
     except BadSignatureError:
         context.world.result = False
@@ -183,7 +184,7 @@ def step_verify_different_public_key(context):
     if not SECP256K1_AVAILABLE:
         context.world.set_error(ImportError("ecdsa library not available"))
         return
-    
+
     try:
         message = context.world.message or b"Test message"
         other_public_key = context.world.test_vectors.get("public_key_2")
@@ -208,7 +209,7 @@ def step_export_secp256k1_private(context):
     if not SECP256K1_AVAILABLE:
         context.world.set_error(ImportError("ecdsa library not available"))
         return
-    
+
     try:
         context.world.bytes_value = context.world.private_key.to_string()
         context.world.clear_error()
@@ -221,7 +222,7 @@ def step_export_secp256k1_public(context):
     if not SECP256K1_AVAILABLE:
         context.world.set_error(ImportError("ecdsa library not available"))
         return
-    
+
     try:
         context.world.bytes_value = context.world.public_key.to_string()
         context.world.clear_error()
@@ -234,7 +235,7 @@ def step_export_secp256k1_public_compressed(context):
     if not SECP256K1_AVAILABLE:
         context.world.set_error(ImportError("ecdsa library not available"))
         return
-    
+
     try:
         context.world.bytes_value = context.world.public_key.to_string("compressed")
         context.world.clear_error()
@@ -247,11 +248,10 @@ def step_import_secp256k1_private(context):
     if not SECP256K1_AVAILABLE:
         context.world.set_error(ImportError("ecdsa library not available"))
         return
-    
+
     try:
         context.world.private_key = SigningKey.from_string(
-            context.world.bytes_value,
-            curve=SECP256k1
+            context.world.bytes_value, curve=SECP256k1
         )
         context.world.public_key = context.world.private_key.get_verifying_key()
         context.world.clear_error()
@@ -264,11 +264,10 @@ def step_import_secp256k1_public(context):
     if not SECP256K1_AVAILABLE:
         context.world.set_error(ImportError("ecdsa library not available"))
         return
-    
+
     try:
         context.world.public_key = VerifyingKey.from_string(
-            context.world.bytes_value,
-            curve=SECP256k1
+            context.world.bytes_value, curve=SECP256k1
         )
         context.world.clear_error()
     except Exception as e:
@@ -341,13 +340,14 @@ def step_secp256k1_verification_fail(context):
 def step_secp256k1_deterministic_signature(context):
     if not SECP256K1_AVAILABLE:
         return
-    
+
     import hashlib
+
     message = context.world.message or b"Test message"
-    
+
     sig1 = context.world.private_key.sign(message, hashfunc=hashlib.sha256)
     sig2 = context.world.private_key.sign(message, hashfunc=hashlib.sha256)
-    
+
     assert sig1 == sig2
 
 
@@ -377,10 +377,10 @@ def step_imported_secp256k1_matches(context):
 def step_all_secp256k1_vectors_pass(context):
     if not SECP256K1_AVAILABLE:
         return
-    
+
     vectors = context.world.test_vectors.get("secp256k1", [])
     failures = []
-    
+
     for vector in vectors:
         try:
             if "private_key" in vector and "public_key" in vector:
@@ -388,11 +388,13 @@ def step_all_secp256k1_vectors_pass(context):
                 private_key = SigningKey.from_string(pk_bytes, curve=SECP256k1)
                 expected_public = hex_to_bytes(vector["public_key"])
                 actual_public = private_key.get_verifying_key().to_string()
-                
+
                 if actual_public != expected_public:
-                    failures.append(f"{vector.get('name', 'unknown')}: public key mismatch")
+                    failures.append(
+                        f"{vector.get('name', 'unknown')}: public key mismatch"
+                    )
         except Exception as e:
             failures.append(f"{vector.get('name', 'unknown')}: {str(e)}")
-    
+
     if failures:
         raise AssertionError("\n".join(failures))

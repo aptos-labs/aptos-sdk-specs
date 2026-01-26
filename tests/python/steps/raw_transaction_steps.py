@@ -3,22 +3,21 @@ Step definitions for raw-transaction.feature
 Tests RawTransaction creation and BCS serialization.
 """
 
-import sys
-import os
-import time
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
-
-from behave import given, when, then
-from aptos_sdk.account_address import AccountAddress
-from aptos_sdk.account import Account
-from aptos_sdk.bcs import Serializer, Deserializer
+from support.vectors import hex_to_bytes, bytes_to_hex
 from aptos_sdk.transactions import (
     RawTransaction,
     TransactionPayload,
     EntryFunction,
 )
+from aptos_sdk.bcs import Serializer, Deserializer
+from aptos_sdk.account import Account
+from aptos_sdk.account_address import AccountAddress
+from behave import given, when, then
+import sys
+import os
+import time
 
-from support.vectors import hex_to_bytes, bytes_to_hex
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 
 # =============================================================================
@@ -72,17 +71,14 @@ def step_given_chain_id(context, chain_id):
 def step_given_simple_transfer_payload(context):
     # Create a simple 0x1::aptos_account::transfer payload
     from aptos_sdk.transactions import TransactionArgument
-    
+
     # Create TransactionArgument objects properly
     recipient = AccountAddress.from_str("0x1")
     addr_arg = TransactionArgument(recipient, Serializer.struct)
     amount_arg = TransactionArgument(1000, Serializer.u64)
-    
+
     context.world.test_vectors["payload"] = EntryFunction.natural(
-        "0x1::aptos_account",
-        "transfer",
-        [],
-        [addr_arg, amount_arg]
+        "0x1::aptos_account", "transfer", [], [addr_arg, amount_arg]
     )
 
 
@@ -159,7 +155,7 @@ def step_given_two_raw_transactions(context):
     context.world.test_vectors["sequence_number"] = 0
     step_create_raw_transaction(context)
     context.world.test_vectors["raw_tx_1"] = context.world.raw_transaction
-    
+
     context.world.test_vectors["sequence_number"] = 1
     step_create_raw_transaction(context)
     context.world.test_vectors["raw_tx_2"] = context.world.raw_transaction
@@ -197,7 +193,9 @@ def step_given_expired_timestamp(context):
 @when("I create a raw transaction")
 def step_create_raw_transaction(context):
     try:
-        sender = context.world.test_vectors.get("sender", context.world.account.address())
+        sender = context.world.test_vectors.get(
+            "sender", context.world.account.address()
+        )
         sequence_number = context.world.test_vectors.get("sequence_number", 0)
         max_gas_amount = context.world.test_vectors.get("max_gas_amount", 100000)
         gas_unit_price = context.world.test_vectors.get("gas_unit_price", 100)
@@ -206,7 +204,7 @@ def step_create_raw_transaction(context):
         )
         chain_id = context.world.test_vectors.get("chain_id", 4)  # Testnet
         payload = context.world.test_vectors.get("payload")
-        
+
         if payload is None:
             step_given_simple_transfer_payload(context)
             payload = context.world.test_vectors["payload"]
@@ -285,16 +283,16 @@ def step_compute_signing_message(context):
         # The signing message is the BCS-serialized raw transaction
         # prefixed with the domain separator
         import hashlib
-        
+
         # Domain separator: SHA3-256("APTOS::RawTransaction")
         domain = b"APTOS::RawTransaction"
         domain_hash = hashlib.sha3_256(domain).digest()
-        
+
         # Serialize the transaction
         serializer = Serializer()
         context.world.raw_transaction.serialize(serializer)
         tx_bytes = serializer.output()
-        
+
         # Signing message = domain_hash || tx_bytes
         context.world.test_vectors["signing_message"] = domain_hash + tx_bytes
         context.world.clear_error()
@@ -306,10 +304,14 @@ def step_compute_signing_message(context):
 def step_compute_different_signing_message(context):
     try:
         import hashlib
-        
+
         # Create a different transaction
-        sender = context.world.account.address() if context.world.account else AccountAddress.from_str("0x1")
-        
+        sender = (
+            context.world.account.address()
+            if context.world.account
+            else AccountAddress.from_str("0x1")
+        )
+
         # Different sequence number
         different_tx = RawTransaction(
             sender=sender,
@@ -320,14 +322,14 @@ def step_compute_different_signing_message(context):
             expiration_timestamps_secs=context.world.raw_transaction.expiration_timestamps_secs,
             chain_id=context.world.raw_transaction.chain_id,
         )
-        
+
         domain = b"APTOS::RawTransaction"
         domain_hash = hashlib.sha3_256(domain).digest()
-        
+
         serializer = Serializer()
         different_tx.serialize(serializer)
         tx_bytes = serializer.output()
-        
+
         context.world.test_vectors["signing_message_2"] = domain_hash + tx_bytes
         context.world.clear_error()
     except Exception as e:
@@ -426,28 +428,28 @@ def step_signing_message_not_empty(context):
 @then("the signing message should start with the domain separator")
 def step_signing_message_starts_with_domain(context):
     import hashlib
-    
+
     msg = context.world.test_vectors.get("signing_message")
     domain = b"APTOS::RawTransaction"
     domain_hash = hashlib.sha3_256(domain).digest()
-    
+
     assert msg[:32] == domain_hash
 
 
 @then("computing the signing message twice should produce the same result")
 def step_signing_message_deterministic(context):
     import hashlib
-    
+
     domain = b"APTOS::RawTransaction"
     domain_hash = hashlib.sha3_256(domain).digest()
-    
+
     serializer = Serializer()
     context.world.raw_transaction.serialize(serializer)
     tx_bytes = serializer.output()
-    
+
     msg1 = domain_hash + tx_bytes
     msg2 = domain_hash + tx_bytes
-    
+
     assert msg1 == msg2
 
 
@@ -490,24 +492,28 @@ def step_generate_signing_message(context):
 @when("I generate the signing message twice")
 def step_generate_signing_message_twice(context):
     step_compute_signing_message(context)
-    context.world.test_vectors["signing_message_1"] = context.world.test_vectors["signing_message"]
+    context.world.test_vectors["signing_message_1"] = context.world.test_vectors[
+        "signing_message"
+    ]
     step_compute_signing_message(context)
-    context.world.test_vectors["signing_message_2"] = context.world.test_vectors["signing_message"]
+    context.world.test_vectors["signing_message_2"] = context.world.test_vectors[
+        "signing_message"
+    ]
 
 
 @when("I generate signing messages for both")
 def step_generate_signing_messages_for_both(context):
     import hashlib
-    
+
     domain = b"APTOS::RawTransaction"
     domain_hash = hashlib.sha3_256(domain).digest()
-    
+
     # First transaction
     raw_tx_1 = context.world.test_vectors.get("raw_tx_1")
     serializer = Serializer()
     raw_tx_1.serialize(serializer)
     context.world.test_vectors["signing_message_1"] = domain_hash + serializer.output()
-    
+
     # Second transaction
     raw_tx_2 = context.world.test_vectors.get("raw_tx_2")
     serializer = Serializer()
@@ -518,6 +524,7 @@ def step_generate_signing_messages_for_both(context):
 @when('I compute SHA3-256 of "APTOS::RawTransaction"')
 def step_compute_sha3_domain(context):
     import hashlib
+
     domain = b"APTOS::RawTransaction"
     context.world.test_vectors["domain_hash"] = hashlib.sha3_256(domain).digest()
 
@@ -612,7 +619,7 @@ def step_rest_in_order(context):
     assert len(context.world.bytes_value) > 50
 
 
-@then("the message should start with SHA3-256(\"APTOS::RawTransaction\")")
+@then('the message should start with SHA3-256("APTOS::RawTransaction")')
 def step_message_starts_with_domain(context):
     step_signing_message_starts_with_domain(context)
 

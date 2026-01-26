@@ -3,18 +3,17 @@ Step definitions for view-functions.feature
 Tests view function execution for reading on-chain state.
 """
 
+from support.vectors import hex_to_bytes, bytes_to_hex
+from aptos_sdk.bcs import Serializer
+from aptos_sdk.type_tag import TypeTag
+from aptos_sdk.account_address import AccountAddress
+from aptos_sdk.async_client import RestClient
+from behave import given, when, then
 import sys
 import os
 import asyncio
+
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
-
-from behave import given, when, then
-from aptos_sdk.async_client import RestClient
-from aptos_sdk.account_address import AccountAddress
-from aptos_sdk.type_tag import TypeTag
-from aptos_sdk.bcs import Serializer
-
-from support.vectors import hex_to_bytes, bytes_to_hex
 
 
 # Helper to run async functions synchronously
@@ -108,6 +107,7 @@ def step_given_get_sequence_number(context, address):
 @when("I execute the view function")
 def step_execute_view_function(context):
     try:
+
         async def _execute_view():
             client = RestClient(context.world.network_url)
             try:
@@ -115,16 +115,12 @@ def step_execute_view_function(context):
                 function = context.world.test_vectors.get("view_function", "balance")
                 args = context.world.test_vectors.get("view_args", [])
                 type_args = context.world.test_vectors.get("view_type_args", [])
-                
-                result = await client.view(
-                    f"{module}::{function}",
-                    type_args,
-                    args
-                )
+
+                result = await client.view(f"{module}::{function}", type_args, args)
                 return result
             finally:
                 await client.close()
-        
+
         context.world.result = run_async(_execute_view())
         context.world.clear_error()
     except Exception as e:
@@ -134,6 +130,7 @@ def step_execute_view_function(context):
 @when("I execute the view function with BCS encoding")
 def step_execute_view_bcs(context):
     try:
+
         async def _execute_view_bcs():
             client = RestClient(context.world.network_url)
             try:
@@ -141,7 +138,7 @@ def step_execute_view_bcs(context):
                 function = context.world.test_vectors.get("view_function")
                 args = context.world.test_vectors.get("view_args", [])
                 type_args = context.world.test_vectors.get("view_type_args", [])
-                
+
                 # BCS encode arguments
                 encoded_args = []
                 for arg in args:
@@ -153,16 +150,14 @@ def step_execute_view_bcs(context):
                     else:
                         # String argument as-is
                         encoded_args.append(arg)
-                
+
                 result = await client.view(
-                    f"{module}::{function}",
-                    type_args,
-                    encoded_args
+                    f"{module}::{function}", type_args, encoded_args
                 )
                 return result
             finally:
                 await client.close()
-        
+
         context.world.result = run_async(_execute_view_bcs())
         context.world.clear_error()
     except Exception as e:
@@ -172,18 +167,15 @@ def step_execute_view_bcs(context):
 @when("I try to execute an invalid view function")
 def step_execute_invalid_view(context):
     try:
+
         async def _execute_invalid():
             client = RestClient(context.world.network_url)
             try:
-                result = await client.view(
-                    "0x1::nonexistent::function",
-                    [],
-                    []
-                )
+                result = await client.view("0x1::nonexistent::function", [], [])
                 return result
             finally:
                 await client.close()
-        
+
         context.world.result = run_async(_execute_invalid())
         context.world.clear_error()
     except Exception as e:
@@ -193,6 +185,7 @@ def step_execute_invalid_view(context):
 @when("I execute the view function with wrong argument count")
 def step_execute_view_wrong_args(context):
     try:
+
         async def _execute_wrong_args():
             client = RestClient(context.world.network_url)
             try:
@@ -200,12 +193,12 @@ def step_execute_view_wrong_args(context):
                 result = await client.view(
                     "0x1::coin::balance",
                     ["0x1::aptos_coin::AptosCoin"],
-                    []  # Missing required argument
+                    [],  # Missing required argument
                 )
                 return result
             finally:
                 await client.close()
-        
+
         context.world.result = run_async(_execute_wrong_args())
         context.world.clear_error()
     except Exception as e:
@@ -215,18 +208,17 @@ def step_execute_view_wrong_args(context):
 @when("I execute the view function with wrong type arguments")
 def step_execute_view_wrong_type_args(context):
     try:
+
         async def _execute_wrong_type():
             client = RestClient(context.world.network_url)
             try:
                 result = await client.view(
-                    "0x1::coin::balance",
-                    ["invalid::type::Tag"],
-                    ["0x1"]
+                    "0x1::coin::balance", ["invalid::type::Tag"], ["0x1"]
                 )
                 return result
             finally:
                 await client.close()
-        
+
         context.world.result = run_async(_execute_wrong_type())
         context.world.clear_error()
     except Exception as e:

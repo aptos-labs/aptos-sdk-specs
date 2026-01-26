@@ -86,7 +86,7 @@ public class GasEstimationSteps
     public void ThenPrioritizedShouldBeGreaterThanOrEqualStandard()
     {
         var estimate = _world.TestVectors.TryGetValue("gasEstimate", out var val) ? val as Dictionary<string, object> : null;
-        if (estimate != null && estimate.TryGetValue("prioritized_gas_estimate", out var prioritized) 
+        if (estimate != null && estimate.TryGetValue("prioritized_gas_estimate", out var prioritized)
             && estimate.TryGetValue("gas_estimate", out var standard))
         {
             Assert.That(Convert.ToInt64(prioritized), Is.GreaterThanOrEqualTo(Convert.ToInt64(standard)));

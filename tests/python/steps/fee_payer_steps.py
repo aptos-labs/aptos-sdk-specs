@@ -3,24 +3,23 @@ Step definitions for fee-payer.feature
 Tests sponsored/fee payer transaction creation and signing.
 """
 
-import sys
-import os
-import hashlib
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
-
-from behave import given, when, then
-from aptos_sdk.account import Account
-from aptos_sdk.account_address import AccountAddress
-from aptos_sdk.bcs import Serializer, Deserializer
+from support.vectors import hex_to_bytes, bytes_to_hex
+import time
 from aptos_sdk.transactions import (
     RawTransaction,
     TransactionPayload,
     EntryFunction,
     FeePayerRawTransaction,
 )
-import time
+from aptos_sdk.bcs import Serializer, Deserializer
+from aptos_sdk.account_address import AccountAddress
+from aptos_sdk.account import Account
+from behave import given, when, then
+import sys
+import os
+import hashlib
 
-from support.vectors import hex_to_bytes, bytes_to_hex
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 
 # =============================================================================
@@ -47,19 +46,16 @@ def step_given_funded_fee_payer(context):
 @given("a transaction payload for fee payer")
 def step_given_fee_payer_payload(context):
     from aptos_sdk.transactions import TransactionArgument
-    
+
     sender = context.world.account.address()
-    
+
     addr_arg = TransactionArgument(AccountAddress.from_str("0x1"), Serializer.struct)
     amount_arg = TransactionArgument(1000, Serializer.u64)
-    
+
     payload = EntryFunction.natural(
-        "0x1::aptos_account",
-        "transfer",
-        [],
-        [addr_arg, amount_arg]
+        "0x1::aptos_account", "transfer", [], [addr_arg, amount_arg]
     )
-    
+
     context.world.raw_transaction = RawTransaction(
         sender=sender,
         sequence_number=0,
@@ -73,9 +69,7 @@ def step_given_fee_payer_payload(context):
 
 @given("secondary signers for fee payer transaction")
 def step_given_secondary_signers_for_fee_payer(context):
-    context.world.test_vectors["secondary_signers"] = [
-        Account.generate()
-    ]
+    context.world.test_vectors["secondary_signers"] = [Account.generate()]
 
 
 @given("a fee payer (sponsor) account")
@@ -92,9 +86,7 @@ def step_given_fee_payer_address(context, address):
 
 @given("secondary signer accounts")
 def step_given_secondary_signer_accounts(context):
-    context.world.test_vectors["secondary_signers"] = [
-        Account.generate()
-    ]
+    context.world.test_vectors["secondary_signers"] = [Account.generate()]
 
 
 @given("the same RawTransaction and secondary signers")
@@ -115,7 +107,7 @@ def step_given_fee_payer_transaction(context):
         context.world.account = Account.generate()
     if context.world.fee_payer is None:
         context.world.fee_payer = Account.generate()
-    
+
     step_given_fee_payer_payload(context)
     step_create_fee_payer_no_secondary(context)
 
@@ -125,7 +117,7 @@ def step_given_fee_payer_with_all(context):
     context.world.account = Account.generate()
     context.world.fee_payer = Account.generate()
     context.world.test_vectors["secondary_signers"] = [Account.generate()]
-    
+
     step_given_fee_payer_payload(context)
     step_create_fee_payer_raw_tx(context)
 
@@ -147,7 +139,7 @@ def step_given_signed_fee_payer_tx(context):
         context.world.account = Account.generate()
     if context.world.fee_payer is None:
         context.world.fee_payer = Account.generate()
-    
+
     step_given_fee_payer_payload(context)
     step_create_fee_payer_no_secondary(context)
     step_compute_fee_payer_signing_message(context)
@@ -168,11 +160,11 @@ def step_create_fee_payer_raw_tx(context):
         secondary_signers = context.world.test_vectors.get("secondary_signers", [])
         for signer in secondary_signers:
             secondary_addresses.append(signer.address())
-        
+
         context.world.fee_payer_tx = FeePayerRawTransaction(
             raw_transaction=context.world.raw_transaction,
             secondary_signers=secondary_addresses,
-            fee_payer=context.world.fee_payer.address()
+            fee_payer=context.world.fee_payer.address(),
         )
         context.world.clear_error()
     except Exception as e:
@@ -185,7 +177,7 @@ def step_create_fee_payer_no_secondary(context):
         context.world.fee_payer_tx = FeePayerRawTransaction(
             raw_transaction=context.world.raw_transaction,
             secondary_signers=[],
-            fee_payer=context.world.fee_payer.address()
+            fee_payer=context.world.fee_payer.address(),
         )
         context.world.clear_error()
     except Exception as e:
@@ -199,11 +191,11 @@ def step_create_fee_payer_transaction(context):
         secondary_signers = context.world.test_vectors.get("secondary_signers", [])
         for signer in secondary_signers:
             secondary_addresses.append(signer.address())
-        
+
         context.world.fee_payer_tx = FeePayerRawTransaction(
             raw_transaction=context.world.raw_transaction,
             secondary_signers=secondary_addresses,
-            fee_payer=context.world.fee_payer.address()
+            fee_payer=context.world.fee_payer.address(),
         )
         context.world.clear_error()
     except Exception as e:
@@ -219,24 +211,26 @@ def step_build_fee_payer_transaction(context):
 def step_generate_multi_agent_signing_message_fee_payer(context):
     try:
         from aptos_sdk.transactions import MultiAgentRawTransaction
-        
+
         secondary_addresses = []
         secondary_signers = context.world.test_vectors.get("secondary_signers", [])
         for signer in secondary_signers:
             secondary_addresses.append(signer.address())
-        
+
         multi_agent_tx = MultiAgentRawTransaction(
             raw_transaction=context.world.raw_transaction,
-            secondary_signers=secondary_addresses
+            secondary_signers=secondary_addresses,
         )
-        
+
         domain = b"APTOS::RawTransactionWithData"
         domain_hash = hashlib.sha3_256(domain).digest()
-        
+
         serializer = Serializer()
         multi_agent_tx.serialize(serializer)
-        
-        context.world.test_vectors["multi_agent_signing_message"] = domain_hash + serializer.output()
+
+        context.world.test_vectors["multi_agent_signing_message"] = (
+            domain_hash + serializer.output()
+        )
         context.world.clear_error()
     except Exception as e:
         context.world.set_error(e)
@@ -277,11 +271,11 @@ def step_compute_fee_payer_signing_message(context):
     try:
         domain = b"APTOS::RawTransactionWithData"
         domain_hash = hashlib.sha3_256(domain).digest()
-        
+
         serializer = Serializer()
         context.world.fee_payer_tx.serialize(serializer)
         tx_bytes = serializer.output()
-        
+
         context.world.test_vectors["fee_payer_signing_message"] = domain_hash + tx_bytes
         context.world.clear_error()
     except Exception as e:
@@ -292,7 +286,9 @@ def step_compute_fee_payer_signing_message(context):
 def step_sender_signs_fee_payer(context):
     try:
         signing_message = context.world.test_vectors.get("fee_payer_signing_message")
-        context.world.test_vectors["sender_signature"] = context.world.account.sign(signing_message)
+        context.world.test_vectors["sender_signature"] = context.world.account.sign(
+            signing_message
+        )
         context.world.clear_error()
     except Exception as e:
         context.world.set_error(e)
@@ -302,7 +298,9 @@ def step_sender_signs_fee_payer(context):
 def step_fee_payer_signs(context):
     try:
         signing_message = context.world.test_vectors.get("fee_payer_signing_message")
-        context.world.test_vectors["fee_payer_signature"] = context.world.fee_payer.sign(signing_message)
+        context.world.test_vectors["fee_payer_signature"] = (
+            context.world.fee_payer.sign(signing_message)
+        )
         context.world.clear_error()
     except Exception as e:
         context.world.set_error(e)
@@ -313,7 +311,7 @@ def step_secondary_signers_sign_fee_payer(context):
     try:
         signing_message = context.world.test_vectors.get("fee_payer_signing_message")
         secondary_signers = context.world.test_vectors.get("secondary_signers", [])
-        
+
         context.world.test_vectors["secondary_signatures"] = [
             signer.sign(signing_message) for signer in secondary_signers
         ]
@@ -331,52 +329,50 @@ def step_assemble_fee_payer_signed_tx(context):
             FeePayerAuthenticator,
         )
         from aptos_sdk.transactions import SignedTransaction
-        
+
         # Sender authenticator
         sender_auth = AccountAuthenticator(
             Ed25519Authenticator(
                 context.world.account.public_key(),
-                context.world.test_vectors["sender_signature"]
+                context.world.test_vectors["sender_signature"],
             )
         )
-        
+
         # Secondary authenticators
         secondary_auths = []
         secondary_signers = context.world.test_vectors.get("secondary_signers", [])
         secondary_sigs = context.world.test_vectors.get("secondary_signatures", [])
-        
+
         for i, sig in enumerate(secondary_sigs):
-            secondary_auths.append((
-                secondary_signers[i].address(),
-                AccountAuthenticator(
-                    Ed25519Authenticator(
-                        secondary_signers[i].public_key(),
-                        sig
-                    )
+            secondary_auths.append(
+                (
+                    secondary_signers[i].address(),
+                    AccountAuthenticator(
+                        Ed25519Authenticator(secondary_signers[i].public_key(), sig)
+                    ),
                 )
-            ))
-        
+            )
+
         # Fee payer authenticator
         fee_payer_auth = (
             context.world.fee_payer.address(),
             AccountAuthenticator(
                 Ed25519Authenticator(
                     context.world.fee_payer.public_key(),
-                    context.world.test_vectors["fee_payer_signature"]
+                    context.world.test_vectors["fee_payer_signature"],
                 )
-            )
+            ),
         )
-        
+
         # Create fee payer authenticator
         authenticator = FeePayerAuthenticator(
             sender=sender_auth,
             secondary_signers=secondary_auths,
-            fee_payer=fee_payer_auth
+            fee_payer=fee_payer_auth,
         )
-        
+
         context.world.signed_transaction = SignedTransaction(
-            context.world.raw_transaction,
-            authenticator
+            context.world.raw_transaction, authenticator
         )
         context.world.clear_error()
     except Exception as e:

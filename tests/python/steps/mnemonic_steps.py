@@ -3,11 +3,17 @@ Step definitions for mnemonic-derivation.feature
 Tests BIP-39 mnemonic generation and HD key derivation.
 """
 
+from support.vectors import (
+    get_ed25519_derivation_vectors,
+    hex_to_bytes,
+    bytes_to_hex,
+)
+from behave import given, when, then
 import sys
 import os
+
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-from behave import given, when, then
 
 # Try to import mnemonic support from SDK or use fallback
 try:
@@ -19,15 +25,10 @@ except ImportError:
 # Fallback to bip-utils or mnemonic library
 try:
     from mnemonic import Mnemonic
+
     BIP39_AVAILABLE = True
 except ImportError:
     BIP39_AVAILABLE = False
-
-from support.vectors import (
-    get_ed25519_derivation_vectors,
-    hex_to_bytes,
-    bytes_to_hex,
-)
 
 
 # =============================================================================
@@ -40,7 +41,7 @@ def step_generate_12_word_mnemonic(context):
     if not BIP39_AVAILABLE:
         context.world.set_error(ImportError("mnemonic library not available"))
         return
-    
+
     try:
         mnemo = Mnemonic("english")
         context.world.mnemonic = mnemo.generate(strength=128)  # 12 words
@@ -54,7 +55,7 @@ def step_generate_24_word_mnemonic(context):
     if not BIP39_AVAILABLE:
         context.world.set_error(ImportError("mnemonic library not available"))
         return
-    
+
     try:
         mnemo = Mnemonic("english")
         context.world.mnemonic = mnemo.generate(strength=256)  # 24 words
@@ -68,7 +69,7 @@ def step_generate_another_mnemonic(context):
     if not BIP39_AVAILABLE:
         context.world.set_error(ImportError("mnemonic library not available"))
         return
-    
+
     try:
         mnemo = Mnemonic("english")
         context.world.test_vectors["mnemonic_2"] = mnemo.generate(strength=128)
@@ -164,7 +165,7 @@ def step_validate_mnemonic(context):
     if not BIP39_AVAILABLE:
         context.world.set_error(ImportError("mnemonic library not available"))
         return
-    
+
     try:
         mnemo = Mnemonic("english")
         is_valid = mnemo.check(context.world.mnemonic)
@@ -192,52 +193,52 @@ def step_derive_ed25519_from_mnemonic(context):
     if not BIP39_AVAILABLE:
         context.world.set_error(ImportError("mnemonic library not available"))
         return
-    
+
     try:
         mnemo = Mnemonic("english")
         passphrase = context.world.passphrase or ""
-        
+
         # Generate seed
         seed = mnemo.to_seed(context.world.mnemonic, passphrase)
-        
+
         # Parse derivation path
         path = context.world.derivation_path or "m/44'/637'/0'/0'/0'"
-        
+
         # Derive key using SLIP-10 Ed25519
         # This is a simplified implementation
         from hashlib import pbkdf2_hmac
         import hmac
         import hashlib
-        
+
         # SLIP-10 Ed25519 derivation
         def derive_ed25519_slip10(seed, path):
             # Parse path
             if not path.startswith("m/"):
                 raise ValueError("Path must start with m/")
-            
+
             parts = path[2:].split("/")
-            
+
             # Initialize with seed
             I = hmac.new(b"ed25519 seed", seed, hashlib.sha512).digest()
             key = I[:32]
             chain_code = I[32:]
-            
+
             for part in parts:
                 if part.endswith("'"):
                     index = int(part[:-1]) + 0x80000000
                 else:
                     index = int(part)
-                
+
                 # Child key derivation
                 data = b"\x00" + key + index.to_bytes(4, "big")
                 I = hmac.new(chain_code, data, hashlib.sha512).digest()
                 key = I[:32]
                 chain_code = I[32:]
-            
+
             return key
-        
+
         private_key_bytes = derive_ed25519_slip10(seed, path)
-        
+
         # Create account from private key
         private_key = PrivateKey.from_bytes(private_key_bytes)
         context.world.account = Account.load_key(private_key.key.hex())
@@ -289,11 +290,11 @@ def step_mnemonic_24_words(context):
 def step_all_words_in_wordlist(context):
     if not BIP39_AVAILABLE:
         return
-    
+
     mnemo = Mnemonic("english")
     wordlist = mnemo.wordlist
     words = context.world.mnemonic.split()
-    
+
     for word in words:
         assert word.lower() in wordlist, f"Word '{word}' not in BIP-39 wordlist"
 
@@ -348,23 +349,23 @@ def step_same_mnemonic_same_account(context):
     account_1_addr = str(context.world.test_vectors.get("account_1").address())
     step_derive_ed25519_from_mnemonic(context)
     account_2_addr = str(context.world.account.address())
-    
+
     assert account_1_addr == account_2_addr
 
 
 @then("different mnemonics should produce different accounts")
 def step_different_mnemonics_different_accounts(context):
     addr1 = str(context.world.account.address())
-    
+
     # Derive from second mnemonic
     original_mnemonic = context.world.mnemonic
     context.world.mnemonic = context.world.test_vectors.get("mnemonic_2")
     step_derive_ed25519_from_mnemonic(context)
     addr2 = str(context.world.account.address())
-    
+
     # Restore
     context.world.mnemonic = original_mnemonic
-    
+
     assert addr1 != addr2
 
 
@@ -372,7 +373,7 @@ def step_different_mnemonics_different_accounts(context):
 def step_different_paths_different_accounts(context):
     account_1 = context.world.test_vectors.get("account_1")
     account_2 = context.world.test_vectors.get("account_2")
-    
+
     assert str(account_1.address()) != str(account_2.address())
 
 
@@ -380,7 +381,7 @@ def step_different_paths_different_accounts(context):
 def step_different_indices_different_accounts(context):
     account_0 = context.world.test_vectors.get("account_0")
     account_1 = context.world.test_vectors.get("account_1")
-    
+
     assert str(account_0.address()) != str(account_1.address())
 
 
@@ -408,16 +409,16 @@ def step_derived_private_key_should_be(context, expected):
 def step_different_passphrases_different_accounts(context):
     # Derive with passphrase 1
     addr1 = str(context.world.account.address())
-    
+
     # Derive with different passphrase
     original_passphrase = context.world.passphrase
     context.world.passphrase = "different_passphrase"
     step_derive_ed25519_from_mnemonic(context)
     addr2 = str(context.world.account.address())
-    
+
     # Restore
     context.world.passphrase = original_passphrase
-    
+
     assert addr1 != addr2
 
 
@@ -427,11 +428,11 @@ def step_no_passphrase_equals_empty(context):
     context.world.passphrase = ""
     step_derive_ed25519_from_mnemonic(context)
     addr1 = str(context.world.account.address())
-    
+
     context.world.passphrase = None
     step_derive_ed25519_from_mnemonic(context)
     addr2 = str(context.world.account.address())
-    
+
     assert addr1 == addr2
 
 

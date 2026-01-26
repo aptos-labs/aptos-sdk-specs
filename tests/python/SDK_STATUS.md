@@ -7,27 +7,28 @@
 
 ## 1. SDK Information
 
-| Property | Value |
-|----------|-------|
-| **Package** | `aptos-sdk` |
-| **Version Tested** | 0.11.0 |
-| **Publisher** | aptos-labs |
-| **Repository** | https://github.com/aptos-labs/aptos-python-sdk |
-| **Package Registry** | PyPI |
-| **Test Framework** | Behave (Python BDD) |
+| Property             | Value                                          |
+| -------------------- | ---------------------------------------------- |
+| **Package**          | `aptos-sdk`                                    |
+| **Version Tested**   | 0.11.0                                         |
+| **Publisher**        | aptos-labs                                     |
+| **Repository**       | https://github.com/aptos-labs/aptos-python-sdk |
+| **Package Registry** | PyPI                                           |
+| **Test Framework**   | Behave (Python BDD)                            |
 
 ---
 
 ## 2. Coverage Summary
 
-| Priority | Passing | Total | Percentage | Status |
-|----------|---------|-------|------------|--------|
-| Required (P0) | 197 | 370 | 53% | 🟡 |
-| Preferred (P1) | ~20 | 183 | ~11% | ❌ |
-| Optional (P2) | ~10 | 250 | ~4% | ❌ |
-| **Total** | **~227** | **803** | **~28%** | 🟡 |
+| Priority       | Passing  | Total   | Percentage | Status |
+| -------------- | -------- | ------- | ---------- | ------ |
+| Required (P0)  | 197      | 370     | 53%        | 🟡     |
+| Preferred (P1) | ~20      | 183     | ~11%       | ❌     |
+| Optional (P2)  | ~10      | 250     | ~4%        | ❌     |
+| **Total**      | **~227** | **803** | **~28%**   | 🟡     |
 
 > **Notes:**
+>
 > - 332 undefined step definitions
 > - 148 scenarios with errors (missing steps)
 > - 438 scenarios skipped (network tests or features not available)
@@ -38,32 +39,32 @@
 
 ### ✅ Fully Available Features
 
-| Feature | Notes |
-|---------|-------|
-| address | Full address parsing and formatting |
-| ed25519 | Complete Ed25519 support via PyNaCl |
-| hashing | SHA3-256 support |
-| authentication-key | Auth key derivation |
+| Feature            | Notes                               |
+| ------------------ | ----------------------------------- |
+| address            | Full address parsing and formatting |
+| ed25519            | Complete Ed25519 support via PyNaCl |
+| hashing            | SHA3-256 support                    |
+| authentication-key | Auth key derivation                 |
 
 ### 🟡 Partially Available
 
-| Feature | Reason | Impact |
-|---------|--------|--------|
-| serialization | BCS available, some tests not written | Partial coverage |
-| type-tags | TypeTag parsing available, tests partial | Partial coverage |
-| entry-function | SDK supports, tests in progress | Partial coverage |
-| raw-transaction | SDK supports, tests in progress | Partial coverage |
-| signing | SDK supports, tests in progress | Partial coverage |
+| Feature         | Reason                                   | Impact           |
+| --------------- | ---------------------------------------- | ---------------- |
+| serialization   | BCS available, some tests not written    | Partial coverage |
+| type-tags       | TypeTag parsing available, tests partial | Partial coverage |
+| entry-function  | SDK supports, tests in progress          | Partial coverage |
+| raw-transaction | SDK supports, tests in progress          | Partial coverage |
+| signing         | SDK supports, tests in progress          | Partial coverage |
 
 ### ➖ Not Available in SDK
 
-| Feature | Reason | Tracking Issue |
-|---------|--------|----------------|
-| secp256k1 | Not implemented | - |
-| secp256r1 | Not implemented | - |
-| bls12381 | Not implemented | - |
-| keyless | Not implemented | - |
-| codegen | Not implemented | - |
+| Feature   | Reason          | Tracking Issue |
+| --------- | --------------- | -------------- |
+| secp256k1 | Not implemented | -              |
+| secp256r1 | Not implemented | -              |
+| bls12381  | Not implemented | -              |
+| keyless   | Not implemented | -              |
+| codegen   | Not implemented | -              |
 
 ---
 
@@ -77,28 +78,28 @@ No partial implementations currently tracked. Most issues are undefined steps.
 
 ### Required (P0) - High Priority
 
-| Feature | Scenarios | Notes |
-|---------|-----------|-------|
-| type-tags | #23-24 | Error handling scenarios |
-| secp256k1 | All | Feature not in SDK |
-| authentication-key | Partial | Some scenarios undefined |
-| mnemonic-derivation | All | Tests not written |
-| single-key | Most | Tests not written |
-| entry-function | Most | Tests in progress |
-| raw-transaction | Most | Tests in progress |
-| signing | Most | Tests in progress |
-| fullnode-api | Most | Tests not written |
-| transaction-submission | Most | Tests not written |
-| error-handling | Most | Tests not written |
+| Feature                | Scenarios | Notes                    |
+| ---------------------- | --------- | ------------------------ |
+| type-tags              | #23-24    | Error handling scenarios |
+| secp256k1              | All       | Feature not in SDK       |
+| authentication-key     | Partial   | Some scenarios undefined |
+| mnemonic-derivation    | All       | Tests not written        |
+| single-key             | Most      | Tests not written        |
+| entry-function         | Most      | Tests in progress        |
+| raw-transaction        | Most      | Tests in progress        |
+| signing                | Most      | Tests in progress        |
+| fullnode-api           | Most      | Tests not written        |
+| transaction-submission | Most      | Tests not written        |
+| error-handling         | Most      | Tests not written        |
 
 ### Preferred (P1) - Medium Priority
 
-| Feature | Scenarios | Notes |
-|---------|-----------|-------|
-| faucet | All 23 | Tests not written |
-| gas-estimation | All 26 | Tests not written |
-| view-functions | All 28 | Tests not written |
-| retry | All 31 | Tests not written |
+| Feature        | Scenarios | Notes             |
+| -------------- | --------- | ----------------- |
+| faucet         | All 23    | Tests not written |
+| gas-estimation | All 26    | Tests not written |
+| view-functions | All 28    | Tests not written |
+| retry          | All 31    | Tests not written |
 
 ### Optional (P2) - Low Priority
 
@@ -158,6 +159,7 @@ To add or update tests for this SDK:
 ### Setup Notes
 
 Behave requires symlinks in the features directory:
+
 ```bash
 cd features
 ln -sf ../tests/python/steps steps
@@ -173,14 +175,14 @@ ln -sf ../tests/python/support support
 
 ### By Feature Category
 
-| Category | Passed | Failed | Error | Skipped | Total |
-|----------|--------|--------|-------|---------|-------|
-| 01-core-types | 60 | 2 | 10 | 0 | 72 |
-| 02-cryptography | 45 | 5 | 30 | 40 | 120 |
-| 03-account-management | 25 | 3 | 20 | 14 | 62 |
-| 04-transaction-building | 30 | 5 | 25 | 26 | 86 |
-| 05-api-clients | 20 | 5 | 30 | 85 | 140 |
-| 06-advanced | 17 | 5 | 33 | 273 | 328 |
+| Category                | Passed | Failed | Error | Skipped | Total |
+| ----------------------- | ------ | ------ | ----- | ------- | ----- |
+| 01-core-types           | 60     | 2      | 10    | 0       | 72    |
+| 02-cryptography         | 45     | 5      | 30    | 40      | 120   |
+| 03-account-management   | 25     | 3      | 20    | 14      | 62    |
+| 04-transaction-building | 30     | 5      | 25    | 26      | 86    |
+| 05-api-clients          | 20     | 5      | 30    | 85      | 140   |
+| 06-advanced             | 17     | 5      | 33    | 273     | 328   |
 
 ### Test Run Summary
 

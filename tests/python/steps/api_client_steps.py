@@ -6,16 +6,15 @@ Note: The Python SDK uses an async client. These tests use asyncio.run()
 for synchronous execution in the BDD context.
 """
 
+from support.vectors import hex_to_bytes, bytes_to_hex
+from aptos_sdk.account_address import AccountAddress
+from aptos_sdk.async_client import RestClient
+from behave import given, when, then
 import sys
 import os
 import asyncio
+
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
-
-from behave import given, when, then
-from aptos_sdk.async_client import RestClient
-from aptos_sdk.account_address import AccountAddress
-
-from support.vectors import hex_to_bytes, bytes_to_hex
 
 
 # Helper to run async functions synchronously
@@ -77,6 +76,7 @@ def step_given_known_existing_account(context):
 def step_given_random_unused_address(context):
     # Generate a random address that's very unlikely to exist
     import secrets
+
     random_bytes = secrets.token_bytes(32)
     context.world.address = AccountAddress.from_bytes(random_bytes)
 
@@ -91,7 +91,7 @@ def step_given_account_with_apt(context):
     context.world.address = AccountAddress.from_str("0x1")
 
 
-@given('custom headers {headers}')
+@given("custom headers {headers}")
 def step_given_custom_headers(context, headers):
     # Parse headers like "X-Custom: value, Authorization: Bearer token"
     header_dict = {}
@@ -156,9 +156,10 @@ def step_create_client_with_timeout(context):
 @when("I request ledger info")
 def step_request_ledger_info(context):
     try:
+
         async def _get_info():
             return await context.world.client.info()
-        
+
         context.world.result = run_async(_get_info())
         context.world.clear_error()
     except Exception as e:
@@ -173,9 +174,10 @@ def step_get_the_ledger_info(context):
 @when("I get account info for the address")
 def step_get_account_info_for_address(context):
     try:
+
         async def _get_account():
             return await context.world.client.account(context.world.address)
-        
+
         context.world.result = run_async(_get_account())
         context.world.clear_error()
     except Exception as e:
@@ -185,9 +187,10 @@ def step_get_account_info_for_address(context):
 @when("I get account resources")
 def step_get_account_resources_generic(context):
     try:
+
         async def _get_resources():
             return await context.world.client.account_resources(context.world.address)
-        
+
         context.world.result = run_async(_get_resources())
         context.world.clear_error()
     except Exception as e:
@@ -213,9 +216,10 @@ def step_create_api_client_with_headers(context):
 @when("I get ledger info")
 def step_get_ledger_info(context):
     try:
+
         async def _get_info():
             return await context.world.client.info()
-        
+
         context.world.result = run_async(_get_info())
         context.world.clear_error()
     except Exception as e:
@@ -230,10 +234,11 @@ def step_get_ledger_info(context):
 @when('I get account info for "{address}"')
 def step_get_account_info(context, address):
     try:
+
         async def _get_account():
             addr = AccountAddress.from_str(address)
             return await context.world.client.account(addr)
-        
+
         context.world.result = run_async(_get_account())
         context.world.clear_error()
     except Exception as e:
@@ -243,13 +248,14 @@ def step_get_account_info(context, address):
 @when("I get account info for a non-existent address")
 def step_get_nonexistent_account(context):
     try:
+
         async def _get_account():
             # Use a random address that likely doesn't exist
             addr = AccountAddress.from_str(
                 "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
             )
             return await context.world.client.account(addr)
-        
+
         context.world.result = run_async(_get_account())
         context.world.clear_error()
     except Exception as e:
@@ -259,10 +265,11 @@ def step_get_nonexistent_account(context):
 @when('I get account resources for "{address}"')
 def step_get_account_resources(context, address):
     try:
+
         async def _get_resources():
             addr = AccountAddress.from_str(address)
             return await context.world.client.account_resources(addr)
-        
+
         context.world.result = run_async(_get_resources())
         context.world.clear_error()
     except Exception as e:
@@ -272,10 +279,11 @@ def step_get_account_resources(context, address):
 @when('I get account resource "{resource_type}" for "{address}"')
 def step_get_specific_resource(context, resource_type, address):
     try:
+
         async def _get_resource():
             addr = AccountAddress.from_str(address)
             return await context.world.client.account_resource(addr, resource_type)
-        
+
         context.world.result = run_async(_get_resource())
         context.world.clear_error()
     except Exception as e:
@@ -285,10 +293,11 @@ def step_get_specific_resource(context, resource_type, address):
 @when('I get account modules for "{address}"')
 def step_get_account_modules(context, address):
     try:
+
         async def _get_modules():
             addr = AccountAddress.from_str(address)
             return await context.world.client.account_modules(addr)
-        
+
         context.world.result = run_async(_get_modules())
         context.world.clear_error()
     except Exception as e:
@@ -303,9 +312,10 @@ def step_get_account_modules(context, address):
 @when('I get transaction by hash "{tx_hash}"')
 def step_get_transaction_by_hash(context, tx_hash):
     try:
+
         async def _get_tx():
             return await context.world.client.transaction_by_hash(tx_hash)
-        
+
         context.world.result = run_async(_get_tx())
         context.world.clear_error()
     except Exception as e:
@@ -315,9 +325,10 @@ def step_get_transaction_by_hash(context, tx_hash):
 @when("I get transaction by version {version:d}")
 def step_get_transaction_by_version(context, version):
     try:
+
         async def _get_tx():
             return await context.world.client.transaction_by_version(version)
-        
+
         context.world.result = run_async(_get_tx())
         context.world.clear_error()
     except Exception as e:
@@ -327,9 +338,10 @@ def step_get_transaction_by_version(context, version):
 @when("I get transactions with limit {limit:d}")
 def step_get_transactions_with_limit(context, limit):
     try:
+
         async def _get_txs():
             return await context.world.client.transactions(limit=limit)
-        
+
         context.world.result = run_async(_get_txs())
         context.world.clear_error()
     except Exception as e:
@@ -339,10 +351,11 @@ def step_get_transactions_with_limit(context, limit):
 @when('I get account transactions for "{address}"')
 def step_get_account_transactions(context, address):
     try:
+
         async def _get_txs():
             addr = AccountAddress.from_str(address)
             return await context.world.client.account_transactions(addr)
-        
+
         context.world.result = run_async(_get_txs())
         context.world.clear_error()
     except Exception as e:
@@ -357,9 +370,10 @@ def step_get_account_transactions(context, address):
 @when('I get events by key "{event_key}"')
 def step_get_events_by_key(context, event_key):
     try:
+
         async def _get_events():
             return await context.world.client.events_by_event_key(event_key)
-        
+
         context.world.result = run_async(_get_events())
         context.world.clear_error()
     except Exception as e:
@@ -429,7 +443,11 @@ def step_should_receive_ledger_version(context):
 def step_should_receive_block_height(context):
     assert context.world.result is not None
     info = context.world.result
-    assert "block_height" in info or hasattr(info, "block_height") or "ledger_version" in info
+    assert (
+        "block_height" in info
+        or hasattr(info, "block_height")
+        or "ledger_version" in info
+    )
 
 
 @then("chain_id should be 2")
@@ -583,7 +601,10 @@ def step_transactions_returned(context):
 def step_transaction_success(context):
     tx = context.world.result
     if isinstance(tx, dict):
-        assert tx.get("success", True) is True or tx.get("vm_status") == "Executed successfully"
+        assert (
+            tx.get("success", True) is True
+            or tx.get("vm_status") == "Executed successfully"
+        )
     else:
         assert tx.success is True
 
@@ -592,7 +613,9 @@ def step_transaction_success(context):
 def step_transaction_failure(context):
     tx = context.world.result
     if isinstance(tx, dict):
-        assert tx.get("success", True) is False or "error" in str(tx.get("vm_status", ""))
+        assert tx.get("success", True) is False or "error" in str(
+            tx.get("vm_status", "")
+        )
     else:
         assert tx.success is False
 

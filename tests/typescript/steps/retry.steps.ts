@@ -26,29 +26,20 @@ When("I check default retry settings", function (this: AptosWorld) {
   this.testVectors.set("defaultBackoff", "exponential");
 });
 
-Then(
-  "max_retries should be {int}",
-  function (this: AptosWorld, expected: number) {
-    const maxRetries = this.testVectors.get("defaultMaxRetries") as number;
-    expect(maxRetries).to.equal(expected);
-  },
-);
+Then("max_retries should be {int}", function (this: AptosWorld, expected: number) {
+  const maxRetries = this.testVectors.get("defaultMaxRetries") as number;
+  expect(maxRetries).to.equal(expected);
+});
 
-Then(
-  "initial_delay should be around {int}ms",
-  function (this: AptosWorld, expected: number) {
-    const initialDelay = this.testVectors.get("defaultInitialDelay") as number;
-    expect(initialDelay).to.be.closeTo(expected, expected * 0.5);
-  },
-);
+Then("initial_delay should be around {int}ms", function (this: AptosWorld, expected: number) {
+  const initialDelay = this.testVectors.get("defaultInitialDelay") as number;
+  expect(initialDelay).to.be.closeTo(expected, expected * 0.5);
+});
 
-Then(
-  "max_delay should be around {int} seconds",
-  function (this: AptosWorld, seconds: number) {
-    const maxDelay = this.testVectors.get("defaultMaxDelay") as number;
-    expect(maxDelay).to.equal(seconds * 1000);
-  },
-);
+Then("max_delay should be around {int} seconds", function (this: AptosWorld, seconds: number) {
+  const maxDelay = this.testVectors.get("defaultMaxDelay") as number;
+  expect(maxDelay).to.equal(seconds * 1000);
+});
 
 Then("backoff should be exponential", function (this: AptosWorld) {
   const backoff = this.testVectors.get("defaultBackoff") as string;
@@ -63,26 +54,20 @@ Given(
   },
 );
 
-When(
-  "I create an Aptos client with this config",
-  async function (this: AptosWorld) {
-    const config = new AptosConfig({ network: Network.TESTNET });
-    const client = new Aptos(config);
-    this.testVectors.set("aptosClient", client);
-    this.testVectors.set("customConfigApplied", true);
-  },
-);
+When("I create an Aptos client with this config", async function (this: AptosWorld) {
+  const config = new AptosConfig({ network: Network.TESTNET });
+  const client = new Aptos(config);
+  this.testVectors.set("aptosClient", client);
+  this.testVectors.set("customConfigApplied", true);
+});
 
 Then("the client should use custom settings", function (this: AptosWorld) {
   expect(this.testVectors.get("customConfigApplied")).to.be.true;
 });
 
-Given(
-  "retry config with max_retries={int}",
-  function (this: AptosWorld, maxRetries: number) {
-    this.testVectors.set("customMaxRetries", maxRetries);
-  },
-);
+Given("retry config with max_retries={int}", function (this: AptosWorld, maxRetries: number) {
+  this.testVectors.set("customMaxRetries", maxRetries);
+});
 
 When("I create an Aptos client", async function (this: AptosWorld) {
   const config = new AptosConfig({ network: Network.TESTNET });
@@ -95,12 +80,9 @@ Then("requests should not retry on failure", function (this: AptosWorld) {
   expect(maxRetries).to.equal(0);
 });
 
-Given(
-  "retry config with backoff_factor={float}",
-  function (this: AptosWorld, factor: number) {
-    this.testVectors.set("backoffFactor", factor);
-  },
-);
+Given("retry config with backoff_factor={float}", function (this: AptosWorld, factor: number) {
+  this.testVectors.set("backoffFactor", factor);
+});
 
 When("I configure the client", function (this: AptosWorld) {
   this.testVectors.set("clientConfigured", true);
@@ -125,15 +107,7 @@ When("the SDK handles the error", function (this: AptosWorld) {
 
 Then("it should retry the request", function (this: AptosWorld) {
   const errorType = this.testVectors.get("errorType") as string;
-  const retryableErrors = [
-    "timeout",
-    "connection_failure",
-    "429",
-    "500",
-    "502",
-    "503",
-    "504",
-  ];
+  const retryableErrors = ["timeout", "connection_failure", "429", "500", "502", "503", "504"];
   expect(retryableErrors).to.include(errorType);
 });
 
@@ -145,24 +119,18 @@ Given("a request that fails to connect", function (this: AptosWorld) {
   this.testVectors.set("errorType", "connection_failure");
 });
 
-Given(
-  "a request that returns HTTP {int}",
-  function (this: AptosWorld, statusCode: number) {
-    this.testVectors.set("errorType", statusCode.toString());
-    this.testVectors.set("httpStatusCode", statusCode);
-  },
-);
+Given("a request that returns HTTP {int}", function (this: AptosWorld, statusCode: number) {
+  this.testVectors.set("errorType", statusCode.toString());
+  this.testVectors.set("httpStatusCode", statusCode);
+});
 
 Then("it should retry after delay", function (this: AptosWorld) {
   expect(true).to.be.true;
 });
 
-Then(
-  "should respect Retry-After header if present",
-  function (this: AptosWorld) {
-    expect(true).to.be.true;
-  },
-);
+Then("should respect Retry-After header if present", function (this: AptosWorld) {
+  expect(true).to.be.true;
+});
 
 // =============================================================================
 // Non-Retryable Errors
@@ -178,12 +146,9 @@ Then("should return the error immediately", function (this: AptosWorld) {
   expect(true).to.be.true;
 });
 
-Given(
-  "a transaction rejected for invalid sequence number",
-  function (this: AptosWorld) {
-    this.testVectors.set("rejectionReason", "invalid_sequence_number");
-  },
-);
+Given("a transaction rejected for invalid sequence number", function (this: AptosWorld) {
+  this.testVectors.set("rejectionReason", "invalid_sequence_number");
+});
 
 Then("it should NOT retry the same transaction", function (this: AptosWorld) {
   const reason = this.testVectors.get("rejectionReason") as string;
@@ -245,15 +210,12 @@ When("many retries occur", function (this: AptosWorld) {
   this.testVectors.set("allDelays", delays);
 });
 
-Then(
-  "delays should never exceed {int}ms",
-  function (this: AptosWorld, maxDelay: number) {
-    const delays = this.testVectors.get("allDelays") as number[];
-    for (const delay of delays) {
-      expect(delay).to.be.lessThanOrEqual(maxDelay);
-    }
-  },
-);
+Then("delays should never exceed {int}ms", function (this: AptosWorld, maxDelay: number) {
+  const delays = this.testVectors.get("allDelays") as number[];
+  for (const delay of delays) {
+    expect(delay).to.be.lessThanOrEqual(maxDelay);
+  }
+});
 
 Given("exponential backoff with jitter enabled", function (this: AptosWorld) {
   this.testVectors.set("jitterEnabled", true);
@@ -323,13 +285,10 @@ When("I inspect the error", function (this: AptosWorld) {
   this.testVectors.set("errorInspected", true);
 });
 
-Then(
-  "I should see how many retries were attempted",
-  function (this: AptosWorld) {
-    const attempts = this.testVectors.get("retryAttempts") as number;
-    expect(attempts).to.be.greaterThan(0);
-  },
-);
+Then("I should see how many retries were attempted", function (this: AptosWorld) {
+  const attempts = this.testVectors.get("retryAttempts") as number;
+  expect(attempts).to.be.greaterThan(0);
+});
 
 Given("a POST request with body", function (this: AptosWorld) {
   this.testVectors.set("requestMethod", "POST");
@@ -374,23 +333,17 @@ When("deciding whether to retry", function (this: AptosWorld) {
   this.testVectors.set("retryDecisionMade", true);
 });
 
-Then(
-  "SDK should check if transaction was received",
-  function (this: AptosWorld) {
-    expect(true).to.be.true;
-  },
-);
+Then("SDK should check if transaction was received", function (this: AptosWorld) {
+  expect(true).to.be.true;
+});
 
 Then("avoid duplicate submissions if possible", function (this: AptosWorld) {
   expect(true).to.be.true;
 });
 
-Given(
-  "a submitted transaction with unknown status",
-  function (this: AptosWorld) {
-    this.testVectors.set("unknownStatus", true);
-  },
-);
+Given("a submitted transaction with unknown status", function (this: AptosWorld) {
+  this.testVectors.set("unknownStatus", true);
+});
 
 When("the response times out", function (this: AptosWorld) {
   this.testVectors.set("responseTimedOut", true);
@@ -431,10 +384,7 @@ Given(
   "a {int} response with Retry-After as HTTP date",
   function (this: AptosWorld, statusCode: number) {
     this.testVectors.set("statusCode", statusCode);
-    this.testVectors.set(
-      "retryAfterDate",
-      new Date(Date.now() + 5000).toUTCString(),
-    );
+    this.testVectors.set("retryAfterDate", new Date(Date.now() + 5000).toUTCString());
   },
 );
 
@@ -446,13 +396,10 @@ Then("wait appropriately", function (this: AptosWorld) {
   expect(true).to.be.true;
 });
 
-Given(
-  "a {int} response without Retry-After",
-  function (this: AptosWorld, statusCode: number) {
-    this.testVectors.set("statusCode", statusCode);
-    this.testVectors.set("noRetryAfterHeader", true);
-  },
-);
+Given("a {int} response without Retry-After", function (this: AptosWorld, statusCode: number) {
+  this.testVectors.set("statusCode", statusCode);
+  this.testVectors.set("noRetryAfterHeader", true);
+});
 
 Then("it should use default backoff", function (this: AptosWorld) {
   expect(this.testVectors.get("noRetryAfterHeader")).to.be.true;

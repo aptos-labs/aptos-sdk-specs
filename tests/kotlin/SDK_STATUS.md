@@ -7,27 +7,28 @@
 
 ## 1. SDK Information
 
-| Property | Value |
-|----------|-------|
-| **Package** | `xyz.mcxross.kaptos:kaptos-jvm` |
-| **Version Tested** | 0.1.2-beta |
-| **Publisher** | mcxross (community) |
-| **Repository** | https://github.com/mcxross/kaptos |
-| **Package Registry** | Maven Central |
-| **Test Framework** | Cucumber-JVM + Kotlin |
+| Property             | Value                             |
+| -------------------- | --------------------------------- |
+| **Package**          | `xyz.mcxross.kaptos:kaptos-jvm`   |
+| **Version Tested**   | 0.1.2-beta                        |
+| **Publisher**        | mcxross (community)               |
+| **Repository**       | https://github.com/mcxross/kaptos |
+| **Package Registry** | Maven Central                     |
+| **Test Framework**   | Cucumber-JVM + Kotlin             |
 
 ---
 
 ## 2. Coverage Summary
 
-| Priority | Passing | Total | Percentage | Status |
-|----------|---------|-------|------------|--------|
-| Required (P0) | 176 | 370 | 48% | 🟡 |
-| Preferred (P1) | 0 | 183 | 0% | ❌ |
-| Optional (P2) | 0 | 250 | 0% | ❌ |
-| **Total** | **176** | **803** | **22%** | 🟡 |
+| Priority       | Passing | Total   | Percentage | Status |
+| -------------- | ------- | ------- | ---------- | ------ |
+| Required (P0)  | 176     | 370     | 48%        | 🟡     |
+| Preferred (P1) | 0       | 183     | 0%         | ❌     |
+| Optional (P2)  | 0       | 250     | 0%         | ❌     |
+| **Total**      | **176** | **803** | **22%**    | 🟡     |
 
 > **Notes:**
+>
 > - 1440/1616 tests failed (most due to missing step definitions)
 > - Community SDK, not official aptos-labs
 
@@ -37,44 +38,44 @@
 
 ### ✅ Fully Available Features
 
-| Feature | Notes |
-|---------|-------|
-| address | Full address parsing and formatting |
-| ed25519 | Ed25519 key support |
-| hashing | Basic hashing support |
-| serialization | BCS serialization |
+| Feature       | Notes                               |
+| ------------- | ----------------------------------- |
+| address       | Full address parsing and formatting |
+| ed25519       | Ed25519 key support                 |
+| hashing       | Basic hashing support               |
+| serialization | BCS serialization                   |
 
 ### 🟡 Partially Available
 
-| Feature | Reason | Impact |
-|---------|--------|--------|
+| Feature            | Reason                   | Impact           |
+| ------------------ | ------------------------ | ---------------- |
 | authentication-key | Available, tests partial | Partial coverage |
-| entry-function | Available, tests partial | Partial coverage |
-| raw-transaction | Available, tests partial | Partial coverage |
-| signing | Available, tests partial | Partial coverage |
+| entry-function     | Available, tests partial | Partial coverage |
+| raw-transaction    | Available, tests partial | Partial coverage |
+| signing            | Available, tests partial | Partial coverage |
 
 ### ➖ Not Available in SDK
 
-| Feature | Reason | Tracking Issue |
-|---------|--------|----------------|
-| secp256k1 | Not implemented | - |
-| secp256r1 | Not implemented | - |
-| bls12381 | Not implemented | - |
-| mnemonic-derivation | Not implemented | - |
-| keyless | Not implemented | - |
-| codegen | Not implemented | - |
-| simulation | Not implemented | - |
-| multi-agent | Not implemented | - |
-| fee-payer | Not implemented | - |
+| Feature             | Reason          | Tracking Issue |
+| ------------------- | --------------- | -------------- |
+| secp256k1           | Not implemented | -              |
+| secp256r1           | Not implemented | -              |
+| bls12381            | Not implemented | -              |
+| mnemonic-derivation | Not implemented | -              |
+| keyless             | Not implemented | -              |
+| codegen             | Not implemented | -              |
+| simulation          | Not implemented | -              |
+| multi-agent         | Not implemented | -              |
+| fee-payer           | Not implemented | -              |
 
 ---
 
 ## 4. Known Issues
 
-| Scenario | Issue | Workaround |
-|----------|-------|------------|
-| Most tests | Step definitions undefined | Implementation needed |
-| Community SDK | May lag behind official SDKs | Check for updates |
+| Scenario      | Issue                        | Workaround            |
+| ------------- | ---------------------------- | --------------------- |
+| Most tests    | Step definitions undefined   | Implementation needed |
+| Community SDK | May lag behind official SDKs | Check for updates     |
 
 ---
 
@@ -82,19 +83,19 @@
 
 ### Required (P0) - High Priority
 
-| Feature | Scenarios | Notes |
-|---------|-----------|-------|
-| type-tags | Many | Step definitions needed |
-| secp256k1 | All | Feature not in SDK |
-| authentication-key | Partial | More steps needed |
-| mnemonic-derivation | All | Feature not in SDK |
-| single-key | Many | Step definitions needed |
-| entry-function | Partial | More steps needed |
-| raw-transaction | Partial | More steps needed |
-| signing | Partial | More steps needed |
-| fullnode-api | Many | Step definitions needed |
-| transaction-submission | Many | Step definitions needed |
-| error-handling | Most | Step definitions needed |
+| Feature                | Scenarios | Notes                   |
+| ---------------------- | --------- | ----------------------- |
+| type-tags              | Many      | Step definitions needed |
+| secp256k1              | All       | Feature not in SDK      |
+| authentication-key     | Partial   | More steps needed       |
+| mnemonic-derivation    | All       | Feature not in SDK      |
+| single-key             | Many      | Step definitions needed |
+| entry-function         | Partial   | More steps needed       |
+| raw-transaction        | Partial   | More steps needed       |
+| signing                | Partial   | More steps needed       |
+| fullnode-api           | Many      | Step definitions needed |
+| transaction-submission | Many      | Step definitions needed |
+| error-handling         | Most      | Step definitions needed |
 
 ### Preferred (P1) - Medium Priority
 
@@ -164,14 +165,14 @@ fun givenAHexString(hexString: String) {
 
 ### By Feature Category
 
-| Category | Passed | Failed | Total |
-|----------|--------|--------|-------|
-| 01-core-types | 50 | 14 | 64 |
-| 02-cryptography | 45 | 75 | 120 |
-| 03-account-management | 20 | 42 | 62 |
-| 04-transaction-building | 25 | 61 | 86 |
-| 05-api-clients | 20 | 120 | 140 |
-| 06-advanced | 16 | 260 | 276 |
+| Category                | Passed | Failed | Total |
+| ----------------------- | ------ | ------ | ----- |
+| 01-core-types           | 50     | 14     | 64    |
+| 02-cryptography         | 45     | 75     | 120   |
+| 03-account-management   | 20     | 42     | 62    |
+| 04-transaction-building | 25     | 61     | 86    |
+| 05-api-clients          | 20     | 120    | 140   |
+| 06-advanced             | 16     | 260    | 276   |
 
 ### Test Run Summary
 
@@ -184,6 +185,7 @@ fun givenAHexString(hexString: String) {
 ### Community SDK Notes
 
 This is a community-maintained SDK. It may have:
+
 - Different API patterns than official SDKs
 - Features that lag behind official releases
 - Limited documentation

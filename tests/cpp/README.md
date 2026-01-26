@@ -1,7 +1,7 @@
 # Aptos C++ SDK Behavioral Specification Tests
 
-This directory contains BDD tests that validate the Aptos C++ SDK against the Gherkin
-specifications in `../../features/`.
+This directory contains BDD tests that validate the Aptos C++ SDK against the Gherkin specifications
+in `../../features/`.
 
 ## SDK Under Test
 
@@ -133,8 +133,8 @@ cpp/
 
 ## Implementation Status
 
-> **Note**: This test scaffold is prepared but not yet connected to the Aptos C++ SDK.
-> The SDK integration is pending confirmation of the SDK's public API and repository.
+> **Note**: This test scaffold is prepared but not yet connected to the Aptos C++ SDK. The SDK
+> integration is pending confirmation of the SDK's public API and repository.
 
 ### Current State
 
@@ -224,11 +224,11 @@ for (const auto& v : vectors) {
 
 ## Dependencies
 
-| Dependency | Version | Purpose |
-|------------|---------|---------|
-| cwt-cucumber | 2.7+ | BDD test framework |
-| nlohmann_json | 3.11+ | JSON parsing for test vectors |
-| aptos-cpp-sdk | TBD | SDK under test |
+| Dependency    | Version | Purpose                       |
+| ------------- | ------- | ----------------------------- |
+| cwt-cucumber  | 2.7+    | BDD test framework            |
+| nlohmann_json | 3.11+   | JSON parsing for test vectors |
+| aptos-cpp-sdk | TBD     | SDK under test                |
 
 ## Contributing
 

@@ -13,7 +13,7 @@ namespace Aptos.Specs.StepDefinitions;
 public class MnemonicSteps
 {
     private readonly TestWorld _world;
-    
+
     // Known BIP-39 test mnemonic
     private const string TestMnemonic = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
 
@@ -37,12 +37,12 @@ public class MnemonicSteps
             var words = new List<string>();
             var wordlist = GetBip39Wordlist();
             var random = new Random();
-            
+
             for (int i = 0; i < wordCount; i++)
             {
                 words.Add(wordlist[random.Next(wordlist.Length)]);
             }
-            
+
             _world.TestVectors["mnemonic"] = string.Join(" ", words);
             _world.TestVectors["expectedWordCount"] = wordCount;
             _world.ClearError();
@@ -58,10 +58,10 @@ public class MnemonicSteps
     {
         var wordlist = GetBip39Wordlist();
         var random = new Random();
-        
+
         var words1 = Enumerable.Range(0, wordCount).Select(_ => wordlist[random.Next(wordlist.Length)]);
         var words2 = Enumerable.Range(0, wordCount).Select(_ => wordlist[random.Next(wordlist.Length)]);
-        
+
         _world.TestVectors["mnemonic1"] = string.Join(" ", words1);
         _world.TestVectors["mnemonic2"] = string.Join(" ", words2);
     }
@@ -80,7 +80,7 @@ public class MnemonicSteps
         var mnemonic = (string)_world.TestVectors["mnemonic"];
         var words = mnemonic.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries);
         var wordlist = GetBip39Wordlist();
-        
+
         foreach (var word in words)
         {
             wordlist.Should().Contain(word.ToLowerInvariant(), $"Word '{word}' should be in BIP-39 wordlist");
@@ -101,7 +101,7 @@ public class MnemonicSteps
         var mnemonic = (string)_world.TestVectors["mnemonic"];
         var words = mnemonic.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries);
         var wordlist = GetBip39Wordlist();
-        
+
         foreach (var word in words)
         {
             wordlist.Should().Contain(word.ToLowerInvariant());
@@ -128,14 +128,14 @@ public class MnemonicSteps
             var mnemonic = (string)_world.TestVectors["mnemonic"];
             var normalized = mnemonic.ToLowerInvariant().Trim();
             var words = normalized.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-            
+
             // Validate word count
             var validWordCounts = new[] { 12, 15, 18, 21, 24 };
             if (!validWordCounts.Contains(words.Length))
             {
                 throw new ArgumentException($"Invalid word count: {words.Length}. Must be 12, 15, 18, 21, or 24.");
             }
-            
+
             // Validate each word
             var wordlist = GetBip39Wordlist();
             foreach (var word in words)
@@ -145,7 +145,7 @@ public class MnemonicSteps
                     throw new ArgumentException($"Invalid word: {word}");
                 }
             }
-            
+
             _world.TestVectors["parsedMnemonic"] = normalized;
             _world.Result = normalized;
             _world.ClearError();
@@ -216,11 +216,11 @@ public class MnemonicSteps
             // Simplified derivation - in production use NBitcoin
             var mnemonic = (string)_world.TestVectors["mnemonic"];
             var path = _world.TestVectors.TryGetValue("derivation_path", out var p) ? (string)p : "m/44'/637'/0'/0'/0'";
-            
+
             // For now, generate a deterministic account based on mnemonic hash
             var seed = System.Security.Cryptography.SHA256.HashData(
                 System.Text.Encoding.UTF8.GetBytes(mnemonic + path));
-            
+
             var pk = new Ed25519PrivateKey(seed);
             _world.Account = new Ed25519Account(pk);
             _world.TestVectors["derivationPath"] = path;
@@ -253,7 +253,7 @@ public class MnemonicSteps
             System.Text.Encoding.UTF8.GetBytes(mnemonic + "m/44'/637'/0'/0'/0'"));
         var defaultPk = new Ed25519PrivateKey(defaultSeed);
         var defaultAccount = new Ed25519Account(defaultPk);
-        
+
         _world.Account!.Address.ToString().Should().NotBe(defaultAccount.Address.ToString());
     }
 
@@ -262,13 +262,13 @@ public class MnemonicSteps
     {
         var mnemonic = (string)_world.TestVectors["mnemonic"];
         var path = "m/44'/637'/0'/0'/0'";
-        
+
         var seed = System.Security.Cryptography.SHA256.HashData(
             System.Text.Encoding.UTF8.GetBytes(mnemonic + path));
-        
+
         var pk1 = new Ed25519PrivateKey(seed);
         var pk2 = new Ed25519PrivateKey(seed);
-        
+
         _world.NamedAccounts["account1"] = new Ed25519Account(pk1);
         _world.NamedAccounts["account2"] = new Ed25519Account(pk2);
     }
@@ -286,12 +286,12 @@ public class MnemonicSteps
         var mnemonic1 = (string)_world.TestVectors["mnemonic1"];
         var mnemonic2 = (string)_world.TestVectors["mnemonic2"];
         var path = "m/44'/637'/0'/0'/0'";
-        
+
         var seed1 = System.Security.Cryptography.SHA256.HashData(
             System.Text.Encoding.UTF8.GetBytes(mnemonic1 + path));
         var seed2 = System.Security.Cryptography.SHA256.HashData(
             System.Text.Encoding.UTF8.GetBytes(mnemonic2 + path));
-        
+
         _world.NamedAccounts["account1"] = new Ed25519Account(new Ed25519PrivateKey(seed1));
         _world.NamedAccounts["account2"] = new Ed25519Account(new Ed25519PrivateKey(seed2));
     }
@@ -300,12 +300,12 @@ public class MnemonicSteps
     public void WhenIDeriveAccountsAtPaths(string path1, string path2)
     {
         var mnemonic = (string)_world.TestVectors["mnemonic"];
-        
+
         var seed1 = System.Security.Cryptography.SHA256.HashData(
             System.Text.Encoding.UTF8.GetBytes(mnemonic + path1));
         var seed2 = System.Security.Cryptography.SHA256.HashData(
             System.Text.Encoding.UTF8.GetBytes(mnemonic + path2));
-        
+
         _world.NamedAccounts["account1"] = new Ed25519Account(new Ed25519PrivateKey(seed1));
         _world.NamedAccounts["account2"] = new Ed25519Account(new Ed25519PrivateKey(seed2));
     }
@@ -316,7 +316,7 @@ public class MnemonicSteps
         var mnemonic = (string)_world.TestVectors["mnemonic"];
         var indices = new[] { i1, i2, i3, i4, i5 };
         var accounts = new List<Ed25519Account>();
-        
+
         foreach (var index in indices)
         {
             var path = $"m/44'/637'/0'/0'/{index}'";
@@ -324,7 +324,7 @@ public class MnemonicSteps
                 System.Text.Encoding.UTF8.GetBytes(mnemonic + path));
             accounts.Add(new Ed25519Account(new Ed25519PrivateKey(seed)));
         }
-        
+
         _world.TestVectors["derivedAccounts"] = accounts;
     }
 
@@ -358,11 +358,11 @@ public class MnemonicSteps
     {
         var mnemonic = (string)_world.TestVectors["mnemonic"];
         var path = _world.TestVectors.TryGetValue("derivation_path", out var p) ? (string)p : "m/44'/637'/0'/0'/0'";
-        
+
         var seed = System.Security.Cryptography.SHA256.HashData(
             System.Text.Encoding.UTF8.GetBytes(mnemonic + path));
         var account2 = new Ed25519Account(new Ed25519PrivateKey(seed));
-        
+
         _world.Account!.Address.ToString().Should().Be(account2.Address.ToString());
     }
 
@@ -385,10 +385,10 @@ public class MnemonicSteps
             var mnemonic = (string)_world.TestVectors["mnemonic"];
             var passphrase = (string)_world.TestVectors["passphrase"];
             var path = "m/44'/637'/0'/0'/0'";
-            
+
             var seed = System.Security.Cryptography.SHA256.HashData(
                 System.Text.Encoding.UTF8.GetBytes(mnemonic + passphrase + path));
-            
+
             _world.Account = new Ed25519Account(new Ed25519PrivateKey(seed));
             _world.ClearError();
         }
@@ -405,12 +405,12 @@ public class MnemonicSteps
         {
             var mnemonic = (string)_world.TestVectors["mnemonic"];
             var path = "m/44'/637'/0'/0'/0'";
-            
+
             var seed = System.Security.Cryptography.SHA256.HashData(
                 System.Text.Encoding.UTF8.GetBytes(mnemonic + passphrase + path));
-            
+
             var account = new Ed25519Account(new Ed25519PrivateKey(seed));
-            
+
             if (!_world.TestVectors.ContainsKey("accountWithPass1"))
             {
                 _world.TestVectors["accountWithPass1"] = account;
@@ -443,10 +443,10 @@ public class MnemonicSteps
     {
         var mnemonic = (string)_world.TestVectors["mnemonic"];
         var path = "m/44'/637'/0'/0'/0'";
-        
+
         var seed = System.Security.Cryptography.SHA256.HashData(
             System.Text.Encoding.UTF8.GetBytes(mnemonic + path));
-        
+
         _world.Account = new Ed25519Account(new Ed25519PrivateKey(seed));
         _world.TestVectors["accountNoPass"] = _world.Account;
     }
@@ -456,11 +456,11 @@ public class MnemonicSteps
     {
         var mnemonic = (string)_world.TestVectors["mnemonic"];
         var path = "m/44'/637'/0'/0'/0'";
-        
+
         // Empty passphrase should be same as no passphrase
         var seed = System.Security.Cryptography.SHA256.HashData(
             System.Text.Encoding.UTF8.GetBytes(mnemonic + path));
-        
+
         _world.Account = new Ed25519Account(new Ed25519PrivateKey(seed));
         _world.TestVectors["accountEmptyPass"] = _world.Account;
     }
@@ -484,10 +484,10 @@ public class MnemonicSteps
         try
         {
             var mnemonic = (string)_world.TestVectors["mnemonic"];
-            
+
             var seed = System.Security.Cryptography.SHA256.HashData(
                 System.Text.Encoding.UTF8.GetBytes(mnemonic + path));
-            
+
             _world.Account = new Ed25519Account(new Ed25519PrivateKey(seed));
             _world.TestVectors["derivedWithPath"] = _world.Account;
             _world.ClearError();

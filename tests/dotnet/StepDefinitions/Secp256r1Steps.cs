@@ -65,23 +65,23 @@ public class Secp256r1Steps
         var privateKeyParams = new ECPrivateKeyParameters(new BigInteger(1, privateKeyBytes), DomainParams);
         var signer = new ECDsaSigner(new HMacDsaKCalculator(new Sha256Digest()));
         signer.Init(true, privateKeyParams);
-        
+
         // Hash the message with SHA-256
         var digest = new Sha256Digest();
         digest.BlockUpdate(message, 0, message.Length);
         var hash = new byte[digest.GetDigestSize()];
         digest.DoFinal(hash, 0);
-        
+
         var signature = signer.GenerateSignature(hash);
-        
+
         // Convert to 64-byte compact format (r || s)
         var r = signature[0].ToByteArrayUnsigned();
         var s = signature[1].ToByteArrayUnsigned();
-        
+
         var result = new byte[64];
         Array.Copy(r, 0, result, 32 - r.Length, r.Length);
         Array.Copy(s, 0, result, 64 - s.Length, s.Length);
-        
+
         return result;
     }
 
@@ -91,17 +91,17 @@ public class Secp256r1Steps
         {
             var signer = new ECDsaSigner();
             signer.Init(false, publicKey);
-            
+
             // Hash the message with SHA-256
             var digest = new Sha256Digest();
             digest.BlockUpdate(message, 0, message.Length);
             var hash = new byte[digest.GetDigestSize()];
             digest.DoFinal(hash, 0);
-            
+
             // Extract r and s from compact signature
             var r = new BigInteger(1, signatureBytes.Take(32).ToArray());
             var s = new BigInteger(1, signatureBytes.Skip(32).Take(32).ToArray());
-            
+
             return signer.VerifySignature(hash, r, s);
         }
         catch
@@ -122,7 +122,7 @@ public class Secp256r1Steps
         sha3.BlockUpdate(input, 0, input.Length);
         var result = new byte[sha3.GetDigestSize()];
         sha3.DoFinal(result, 0);
-        
+
         return result;
     }
 
@@ -137,7 +137,7 @@ public class Secp256r1Steps
         {
             var privateKeyBytes = GeneratePrivateKey();
             var publicKey = GetPublicKey(privateKeyBytes);
-            
+
             _world.TestVectors["secp256r1PrivateKey"] = privateKeyBytes;
             _world.TestVectors["secp256r1PublicKeyCompressed"] = GetCompressedPublicKey(publicKey);
             _world.TestVectors["secp256r1PublicKeyUncompressed"] = GetUncompressedPublicKey(publicKey);
@@ -162,7 +162,7 @@ public class Secp256r1Steps
         {
             var privateKeyBytes = _world.TestVectors["rawPrivateKeyBytes"] as byte[];
             var publicKey = GetPublicKey(privateKeyBytes!);
-            
+
             _world.TestVectors["secp256r1PrivateKey"] = privateKeyBytes;
             _world.TestVectors["secp256r1PublicKeyCompressed"] = GetCompressedPublicKey(publicKey);
             _world.TestVectors["secp256r1PublicKeyUncompressed"] = GetUncompressedPublicKey(publicKey);
@@ -208,7 +208,7 @@ public class Secp256r1Steps
             var hexKey = (_world.TestVectors["hexEncodedPrivateKey"] as string)!.Replace("0x", "");
             var privateKeyBytes = Convert.FromHexString(hexKey);
             var publicKey = GetPublicKey(privateKeyBytes);
-            
+
             _world.TestVectors["secp256r1PrivateKey"] = privateKeyBytes;
             _world.TestVectors["secp256r1PublicKeyCompressed"] = GetCompressedPublicKey(publicKey);
             _world.TestVectors["secp256r1PublicKeyUncompressed"] = GetUncompressedPublicKey(publicKey);
@@ -233,7 +233,7 @@ public class Secp256r1Steps
         try
         {
             var privateKeyBytes = _world.TestVectors["rawPrivateKeyBytes"] as byte[];
-            
+
             // Check for invalid private key (zero or >= curve order)
             var privKeyBigInt = new BigInteger(1, privateKeyBytes!);
             if (privKeyBigInt.SignValue == 0)
@@ -244,7 +244,7 @@ public class Secp256r1Steps
             {
                 throw new ArgumentException("Invalid private key: must be less than curve order");
             }
-            
+
             var publicKey = GetPublicKey(privateKeyBytes);
             _world.TestVectors["secp256r1PublicKeyUncompressed"] = GetUncompressedPublicKey(publicKey);
             _world.TestVectors["keyPairCreated"] = true;
@@ -273,7 +273,7 @@ public class Secp256r1Steps
     {
         var privateKeyBytes = GeneratePrivateKey();
         var publicKey = GetPublicKey(privateKeyBytes);
-        
+
         _world.TestVectors["secp256r1PrivateKey"] = privateKeyBytes;
         _world.TestVectors["secp256r1PublicKeyCompressed"] = GetCompressedPublicKey(publicKey);
         _world.TestVectors["secp256r1PublicKeyUncompressed"] = GetUncompressedPublicKey(publicKey);
@@ -421,22 +421,22 @@ public class Secp256r1Steps
     {
         var privateKey = _world.TestVectors["secp256r1PrivateKey"] as byte[];
         var hash = _world.TestVectors["messageHash"] as byte[];
-        
+
         // For pre-hashed signing, we sign the hash directly
         var privateKeyParams = new ECPrivateKeyParameters(new BigInteger(1, privateKey!), DomainParams);
         var signer = new ECDsaSigner(new HMacDsaKCalculator(new Sha256Digest()));
         signer.Init(true, privateKeyParams);
-        
+
         var signature = signer.GenerateSignature(hash!);
-        
+
         // Convert to 64-byte compact format
         var r = signature[0].ToByteArrayUnsigned();
         var s = signature[1].ToByteArrayUnsigned();
-        
+
         var result = new byte[64];
         Array.Copy(r, 0, result, 32 - r.Length, r.Length);
         Array.Copy(s, 0, result, 64 - s.Length, s.Length);
-        
+
         _world.TestVectors["secp256r1PreHashSignature"] = result;
     }
 
@@ -495,7 +495,7 @@ public class Secp256r1Steps
     {
         var privateKey1 = GeneratePrivateKey();
         var privateKey2 = GeneratePrivateKey();
-        
+
         _world.TestVectors["secp256r1PrivateKey"] = privateKey1;
         _world.TestVectors["secp256r1PrivateKey2"] = privateKey2;
     }
@@ -515,7 +515,7 @@ public class Secp256r1Steps
         var privateKey2 = _world.TestVectors["secp256r1PrivateKey2"] as byte[];
         var publicKey2 = GetPublicKey(privateKey2!);
         var signature = _world.TestVectors["secp256r1Signature"] as byte[];
-        
+
         try
         {
             var isValid = Verify(_world.Message!, signature!, publicKey2);
@@ -532,7 +532,7 @@ public class Secp256r1Steps
     {
         var privateKeyBytes = GeneratePrivateKey();
         var publicKey = GetPublicKey(privateKeyBytes);
-        
+
         _world.TestVectors["secp256r1PrivateKey"] = privateKeyBytes;
         _world.TestVectors["secp256r1PublicKeyUncompressed"] = GetUncompressedPublicKey(publicKey);
     }
@@ -553,7 +553,7 @@ public class Secp256r1Steps
     {
         var privateKeyBytes = GeneratePrivateKey();
         var publicKey = GetPublicKey(privateKeyBytes);
-        
+
         _world.TestVectors["secp256r1PrivateKey"] = privateKeyBytes;
         _world.TestVectors["secp256r1PublicKeyUncompressed"] = GetUncompressedPublicKey(publicKey);
     }
@@ -575,10 +575,10 @@ public class Secp256r1Steps
     {
         var publicKeyUncompressed = _world.TestVectors["secp256r1PublicKeyUncompressed"] as byte[];
         var authKey = _world.TestVectors["authenticationKey"] as byte[];
-        
+
         // Compute expected
         var expected = DeriveAuthenticationKey(publicKeyUncompressed!);
-        
+
         Assert.That(BitConverter.ToString(authKey!), Is.EqualTo(BitConverter.ToString(expected)));
     }
 
@@ -599,24 +599,24 @@ public class Secp256r1Steps
     public void WhenICreateSecp256k1AndSecp256r1Accounts()
     {
         var privateKey = _world.TestVectors["sharedPrivateKey"] as byte[];
-        
+
         // Create Secp256r1 auth key
         var publicKeyR1 = GetPublicKey(privateKey!);
         var pubKeyBytesR1 = GetUncompressedPublicKey(publicKeyR1);
         var secp256r1AuthKey = DeriveAuthenticationKey(pubKeyBytesR1);
         var secp256r1Address = AccountAddress.FromString("0x" + BitConverter.ToString(secp256r1AuthKey).Replace("-", "").ToLower());
-        
+
         // Create mock Secp256k1 address (different scheme = 0x01)
         var secp256k1Input = new byte[pubKeyBytesR1.Length + 1];
         Array.Copy(pubKeyBytesR1, secp256k1Input, pubKeyBytesR1.Length);
         secp256k1Input[secp256k1Input.Length - 1] = 0x01; // Secp256k1 scheme
-        
+
         var sha3 = new Sha3Digest(256);
         sha3.BlockUpdate(secp256k1Input, 0, secp256k1Input.Length);
         var secp256k1AuthKey = new byte[sha3.GetDigestSize()];
         sha3.DoFinal(secp256k1AuthKey, 0);
         var secp256k1Address = AccountAddress.FromString("0x" + BitConverter.ToString(secp256k1AuthKey).Replace("-", "").ToLower());
-        
+
         _world.TestVectors["secp256r1Address"] = secp256r1Address;
         _world.TestVectors["secp256k1Address"] = secp256k1Address;
     }
@@ -646,7 +646,7 @@ public class Secp256r1Steps
         var privateKeyBytes = GeneratePrivateKey();
         var publicKey = GetPublicKey(privateKeyBytes);
         var uncompressed = GetUncompressedPublicKey(publicKey);
-        
+
         // COSE public key structure (simplified)
         _world.TestVectors["cosePublicKey"] = new Dictionary<string, object>
         {
@@ -667,12 +667,12 @@ public class Secp256r1Steps
         // Reconstruct uncompressed public key from COSE x,y coordinates
         var x = cose!["x"] as byte[];
         var y = cose["y"] as byte[];
-        
+
         var uncompressed = new byte[65];
         uncompressed[0] = 0x04;
         Array.Copy(x!, 0, uncompressed, 1, 32);
         Array.Copy(y!, 0, uncompressed, 33, 32);
-        
+
         _world.TestVectors["parsedPublicKey"] = uncompressed;
         _world.TestVectors["parseSucceeded"] = true;
     }
@@ -682,23 +682,23 @@ public class Secp256r1Steps
     {
         var privateKeyBytes = GeneratePrivateKey();
         _world.TestVectors["secp256r1PrivateKey"] = privateKeyBytes;
-        
+
         // Simulated WebAuthn assertion
         var authenticatorData = new byte[37];
         new Random().NextBytes(authenticatorData);
         var clientDataJSON = "{\"type\":\"webauthn.get\",\"challenge\":\"test-challenge\",\"origin\":\"https://example.com\"}";
-        
+
         // Hash of clientDataJSON
         using var sha256 = SHA256.Create();
         var clientDataHash = sha256.ComputeHash(System.Text.Encoding.UTF8.GetBytes(clientDataJSON));
-        
+
         // signedData = authenticatorData || clientDataHash
         var signedData = new byte[authenticatorData.Length + clientDataHash.Length];
         Array.Copy(authenticatorData, signedData, authenticatorData.Length);
         Array.Copy(clientDataHash, 0, signedData, authenticatorData.Length, clientDataHash.Length);
-        
+
         var signature = Sign(signedData, privateKeyBytes);
-        
+
         _world.TestVectors["authenticatorData"] = authenticatorData;
         _world.TestVectors["clientDataJSON"] = clientDataJSON;
         _world.TestVectors["webauthnSignature"] = signature;
@@ -729,21 +729,21 @@ public class Secp256r1Steps
         var privateKeyBytes = GeneratePrivateKey();
         var publicKey = GetPublicKey(privateKeyBytes);
         var message = System.Text.Encoding.UTF8.GetBytes("test");
-        
+
         // Sign and get DER format (BouncyCastle returns BigInteger array)
         var privateKeyParams = new ECPrivateKeyParameters(new BigInteger(1, privateKeyBytes), DomainParams);
         var signer = new ECDsaSigner(new HMacDsaKCalculator(new Sha256Digest()));
         signer.Init(true, privateKeyParams);
-        
+
         using var sha256 = SHA256.Create();
         var hash = sha256.ComputeHash(message);
-        
+
         var sig = signer.GenerateSignature(hash);
-        
+
         // Create DER format manually
         var r = sig[0].ToByteArray();
         var s = sig[1].ToByteArray();
-        
+
         // Simple DER encoding
         var derLength = 2 + r.Length + 2 + s.Length;
         var der = new List<byte> { 0x30, (byte)derLength, 0x02, (byte)r.Length };
@@ -751,7 +751,7 @@ public class Secp256r1Steps
         der.Add(0x02);
         der.Add((byte)s.Length);
         der.AddRange(s);
-        
+
         _world.TestVectors["derSignature"] = der.ToArray();
         _world.TestVectors["secp256r1PrivateKey"] = privateKeyBytes;
         _world.TestVectors["signatureR"] = sig[0];
@@ -763,15 +763,15 @@ public class Secp256r1Steps
     {
         var r = _world.TestVectors["signatureR"] as BigInteger;
         var s = _world.TestVectors["signatureS"] as BigInteger;
-        
+
         // Convert to 64-byte compact format
         var rBytes = r!.ToByteArrayUnsigned();
         var sBytes = s!.ToByteArrayUnsigned();
-        
+
         var result = new byte[64];
         Array.Copy(rBytes, 0, result, 32 - rBytes.Length, rBytes.Length);
         Array.Copy(sBytes, 0, result, 64 - sBytes.Length, sBytes.Length);
-        
+
         _world.Result = result;
     }
 
@@ -802,7 +802,7 @@ public class Secp256r1Steps
         var uncompressed = GetUncompressedPublicKey(publicKey);
         var authKey = DeriveAuthenticationKey(uncompressed);
         var address = AccountAddress.FromString("0x" + BitConverter.ToString(authKey).Replace("-", "").ToLower());
-        
+
         _world.TestVectors["secp256r1PrivateKey"] = privateKeyBytes;
         _world.TestVectors["secp256r1Address"] = address;
         _world.TestVectors["secp256r1AuthKey"] = authKey;
@@ -838,12 +838,12 @@ public class Secp256r1Steps
     public void WhenISignTheTransactionWithSecp256r1()
     {
         var privateKey = _world.TestVectors["secp256r1PrivateKey"] as byte[];
-        
+
         // Sign a mock transaction message
         var txnMessage = System.Text.Encoding.UTF8.GetBytes("mock transaction signing message");
         var signature = Sign(txnMessage, privateKey!);
         var publicKey = GetPublicKey(privateKey!);
-        
+
         _world.TestVectors["transactionSignature"] = signature;
         _world.TestVectors["signedTransaction"] = new Dictionary<string, object>
         {
@@ -879,7 +879,7 @@ public class Secp256r1Steps
         // Known test vector private key
         var testPrivateKey = "c9afa9d845ba75166b5c215767b1d6934e50c3db36e89b127b8a622b120f6721";
         _world.TestVectors["testPrivateKeyHex"] = testPrivateKey;
-        
+
         var privateKeyBytes = Convert.FromHexString(testPrivateKey);
         _world.TestVectors["secp256r1PrivateKey"] = privateKeyBytes;
     }
@@ -889,7 +889,7 @@ public class Secp256r1Steps
     {
         var privateKeyBytes = _world.TestVectors["secp256r1PrivateKey"] as byte[];
         var publicKey = GetPublicKey(privateKeyBytes!);
-        
+
         _world.TestVectors["derivedCompressedPubKey"] = GetCompressedPublicKey(publicKey);
         _world.TestVectors["derivedUncompressedPubKey"] = GetUncompressedPublicKey(publicKey);
     }

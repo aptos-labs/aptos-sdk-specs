@@ -259,7 +259,7 @@ public class MultiSigSteps
         {
             _world.TestVectors["collectedSignatures"] = new Dictionary<int, Ed25519Signature>();
         }
-        
+
         var collected = (Dictionary<int, Ed25519Signature>)_world.TestVectors["collectedSignatures"];
         collected[partyIndex] = signature;
     }
@@ -442,7 +442,7 @@ public class MultiSigSteps
     public void GivenASignatureFromDifferentKeys()
     {
         var message = System.Text.Encoding.UTF8.GetBytes("verification test");
-        
+
         var wrongKey1 = Ed25519PrivateKey.Generate();
         var wrongKey2 = Ed25519PrivateKey.Generate();
 

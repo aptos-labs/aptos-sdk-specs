@@ -20,35 +20,25 @@ Given("a hex string {string}", function (this: AptosWorld, hex: string) {
 });
 
 // Alternative phrasings for compatibility
-Given(
-  "a valid hex address string {string}",
-  function (this: AptosWorld, hex: string) {
-    this.hexString = hex;
-  },
-);
+Given("a valid hex address string {string}", function (this: AptosWorld, hex: string) {
+  this.hexString = hex;
+});
 
-Given(
-  "the address string {string}",
-  function (this: AptosWorld, address: string) {
-    this.hexString = address;
-  },
-);
+Given("the address string {string}", function (this: AptosWorld, address: string) {
+  this.hexString = address;
+});
 
 Given("a short address {string}", function (this: AptosWorld, address: string) {
   this.hexString = address;
 });
 
 Given("a full 64-character hex address", function (this: AptosWorld) {
-  this.hexString =
-    "0x0000000000000000000000000000000000000000000000000000000000000001";
+  this.hexString = "0x0000000000000000000000000000000000000000000000000000000000000001";
 });
 
-Given(
-  "an invalid hex string {string}",
-  function (this: AptosWorld, hex: string) {
-    this.hexString = hex;
-  },
-);
+Given("an invalid hex string {string}", function (this: AptosWorld, hex: string) {
+  this.hexString = hex;
+});
 
 Given("test vectors from addresses.json", function (this: AptosWorld) {
   const vectors = getAddressParsingVectors();
@@ -59,37 +49,28 @@ Given("test vectors from addresses.json", function (this: AptosWorld) {
 // Given Steps - Address Creation from Value/Hex
 // =============================================================================
 
-Given(
-  "an AccountAddress with value {int}",
-  function (this: AptosWorld, value: number) {
-    // Create address with specific byte value in last position
-    const bytes = new Uint8Array(32);
-    bytes[31] = value;
-    this.address = AccountAddress.from(bytes);
-  },
-);
+Given("an AccountAddress with value {int}", function (this: AptosWorld, value: number) {
+  // Create address with specific byte value in last position
+  const bytes = new Uint8Array(32);
+  bytes[31] = value;
+  this.address = AccountAddress.from(bytes);
+});
 
-Given(
-  "an AccountAddress from hex {string}",
-  function (this: AptosWorld, hex: string) {
-    this.address = AccountAddress.from(normalizeHexAddress(hex));
-    // Store for comparison - initialize addresses array
-    this.addresses = [this.address];
-    this.testVectors.set("original_address", this.address);
-  },
-);
+Given("an AccountAddress from hex {string}", function (this: AptosWorld, hex: string) {
+  this.address = AccountAddress.from(normalizeHexAddress(hex));
+  // Store for comparison - initialize addresses array
+  this.addresses = [this.address];
+  this.testVectors.set("original_address", this.address);
+});
 
-Given(
-  "another AccountAddress from hex {string}",
-  function (this: AptosWorld, hex: string) {
-    const address2 = AccountAddress.from(normalizeHexAddress(hex));
-    // Add second address for comparison
-    if (!this.addresses || this.addresses.length === 0) {
-      this.addresses = [this.address!];
-    }
-    this.addresses.push(address2);
-  },
-);
+Given("another AccountAddress from hex {string}", function (this: AptosWorld, hex: string) {
+  const address2 = AccountAddress.from(normalizeHexAddress(hex));
+  // Add second address for comparison
+  if (!this.addresses || this.addresses.length === 0) {
+    this.addresses = [this.address!];
+  }
+  this.addresses.push(address2);
+});
 
 // =============================================================================
 // Given Steps - Bytes
@@ -100,13 +81,10 @@ Given("32 random bytes", function (this: AptosWorld) {
   crypto.getRandomValues(this.bytes);
 });
 
-Given(
-  "32 bytes with value {int} in the last byte",
-  function (this: AptosWorld, value: number) {
-    this.bytes = new Uint8Array(32);
-    this.bytes[31] = value;
-  },
-);
+Given("32 bytes with value {int} in the last byte", function (this: AptosWorld, value: number) {
+  this.bytes = new Uint8Array(32);
+  this.bytes[31] = value;
+});
 
 // =============================================================================
 // Given Steps - Address Constants
@@ -267,18 +245,15 @@ When("I BCS deserialize as AccountAddress", function (this: AptosWorld) {
   }
 });
 
-When(
-  "I BCS deserialize the result as AccountAddress",
-  function (this: AptosWorld) {
-    try {
-      const deserializer = new Deserializer(this.bytes!);
-      this.result = AccountAddress.deserialize(deserializer);
-      this.clearError();
-    } catch (error) {
-      this.setError(error as Error);
-    }
-  },
-);
+When("I BCS deserialize the result as AccountAddress", function (this: AptosWorld) {
+  try {
+    const deserializer = new Deserializer(this.bytes!);
+    this.result = AccountAddress.deserialize(deserializer);
+    this.clearError();
+  } catch (error) {
+    this.setError(error as Error);
+  }
+});
 
 // =============================================================================
 // When Steps - Comparison
@@ -304,8 +279,7 @@ When("I run all parsing test vectors", function (this: AptosWorld) {
 
       const passed =
         fullHex.toLowerCase() === vector.expected.full_hex.toLowerCase() &&
-        shortString.toLowerCase() ===
-          vector.expected.short_string.toLowerCase();
+        shortString.toLowerCase() === vector.expected.short_string.toLowerCase();
 
       results.push({ name: vector.name, passed });
     } catch (error) {
@@ -348,52 +322,34 @@ Then("parsing should fail with an error", function (this: AptosWorld) {
   expect(this.error).to.not.be.undefined;
 });
 
-Then(
-  "the parsing should fail with an invalid address error",
-  function (this: AptosWorld) {
-    expect(this.error).to.not.be.undefined;
-  },
-);
+Then("the parsing should fail with an invalid address error", function (this: AptosWorld) {
+  expect(this.error).to.not.be.undefined;
+});
 
-Then(
-  "the parsing should fail with an invalid hex error",
-  function (this: AptosWorld) {
-    expect(this.error).to.not.be.undefined;
-  },
-);
+Then("the parsing should fail with an invalid hex error", function (this: AptosWorld) {
+  expect(this.error).to.not.be.undefined;
+});
 
-Then(
-  "the parsing should fail with an invalid length error",
-  function (this: AptosWorld) {
-    expect(this.error).to.not.be.undefined;
-  },
-);
+Then("the parsing should fail with an invalid length error", function (this: AptosWorld) {
+  expect(this.error).to.not.be.undefined;
+});
 
-Then(
-  "it should fail with an InvalidAddress error",
-  function (this: AptosWorld) {
-    expect(this.error).to.not.be.undefined;
-  },
-);
+Then("it should fail with an InvalidAddress error", function (this: AptosWorld) {
+  expect(this.error).to.not.be.undefined;
+});
 
 // =============================================================================
 // Then Steps - Address Byte Assertions
 // =============================================================================
 
-Then(
-  "the address bytes should have length {int}",
-  function (this: AptosWorld, length: number) {
-    expect(this.address!.toUint8Array().length).to.equal(length);
-  },
-);
+Then("the address bytes should have length {int}", function (this: AptosWorld, length: number) {
+  expect(this.address!.toUint8Array().length).to.equal(length);
+});
 
-Then(
-  "byte {int} should equal {int}",
-  function (this: AptosWorld, index: number, value: number) {
-    const bytes = this.address?.toUint8Array() ?? this.bytes;
-    expect(bytes![index]).to.equal(value);
-  },
-);
+Then("byte {int} should equal {int}", function (this: AptosWorld, index: number, value: number) {
+  const bytes = this.address?.toUint8Array() ?? this.bytes;
+  expect(bytes![index]).to.equal(value);
+});
 
 Then(
   "bytes {int}-{int} should all be {int}",
@@ -405,15 +361,12 @@ Then(
   },
 );
 
-Then(
-  "all 32 bytes should be {int}",
-  function (this: AptosWorld, value: number) {
-    const bytes = this.address!.toUint8Array();
-    for (let i = 0; i < 32; i++) {
-      expect(bytes[i]).to.equal(value);
-    }
-  },
-);
+Then("all 32 bytes should be {int}", function (this: AptosWorld, value: number) {
+  const bytes = this.address!.toUint8Array();
+  for (let i = 0; i < 32; i++) {
+    expect(bytes[i]).to.equal(value);
+  }
+});
 
 Then("the byte length should be 32", function (this: AptosWorld) {
   expect(this.bytes!.length).to.equal(32);
@@ -429,25 +382,19 @@ Then("the first byte should be zero", function (this: AptosWorld) {
   expect(this.bytes![0]).to.equal(0);
 });
 
-Then(
-  "the last byte should be {int}",
-  function (this: AptosWorld, expected: number) {
-    const bytes = this.address?.toUint8Array() ?? this.bytes;
-    expect(bytes![31]).to.equal(expected);
-  },
-);
+Then("the last byte should be {int}", function (this: AptosWorld, expected: number) {
+  const bytes = this.address?.toUint8Array() ?? this.bytes;
+  expect(bytes![31]).to.equal(expected);
+});
 
 // =============================================================================
 // Then Steps - String Format Assertions
 // =============================================================================
 
-Then(
-  "the full hex should be {string}",
-  function (this: AptosWorld, expected: string) {
-    const actual = this.address!.toStringLong();
-    expect(actual.toLowerCase()).to.equal(expected.toLowerCase());
-  },
-);
+Then("the full hex should be {string}", function (this: AptosWorld, expected: string) {
+  const actual = this.address!.toStringLong();
+  expect(actual.toLowerCase()).to.equal(expected.toLowerCase());
+});
 
 Then(
   "the full hex representation should be {string}",
@@ -457,43 +404,30 @@ Then(
   },
 );
 
-Then(
-  "the short string should be {string}",
-  function (this: AptosWorld, expected: string) {
-    const actual = toShortString(this.address!);
-    expect(actual.toLowerCase()).to.equal(expected.toLowerCase());
-  },
-);
+Then("the short string should be {string}", function (this: AptosWorld, expected: string) {
+  const actual = toShortString(this.address!);
+  expect(actual.toLowerCase()).to.equal(expected.toLowerCase());
+});
 
-Then(
-  "the address should equal {string}",
-  function (this: AptosWorld, expected: string) {
-    const actual = this.address!.toString();
-    expect(actual.toLowerCase()).to.equal(expected.toLowerCase());
-  },
-);
+Then("the address should equal {string}", function (this: AptosWorld, expected: string) {
+  const actual = this.address!.toString();
+  expect(actual.toLowerCase()).to.equal(expected.toLowerCase());
+});
 
-Then(
-  "the result should be {string}",
-  function (this: AptosWorld, expected: string) {
-    // Check testVectors.formattedString first, then this.result, then this.hexString
-    const actual =
-      this.testVectors.get("formattedString") ?? this.result ?? this.hexString;
-    expect(String(actual).toLowerCase()).to.equal(expected.toLowerCase());
-  },
-);
+Then("the result should be {string}", function (this: AptosWorld, expected: string) {
+  // Check testVectors.formattedString first, then this.result, then this.hexString
+  const actual = this.testVectors.get("formattedString") ?? this.result ?? this.hexString;
+  expect(String(actual).toLowerCase()).to.equal(expected.toLowerCase());
+});
 
 // =============================================================================
 // Then Steps - Address Equality
 // =============================================================================
 
-Then(
-  "it should equal address {string}",
-  function (this: AptosWorld, expected: string) {
-    const expectedAddress = AccountAddress.from(expected);
-    expect(this.address!.equals(expectedAddress)).to.be.true;
-  },
-);
+Then("it should equal address {string}", function (this: AptosWorld, expected: string) {
+  const expectedAddress = AccountAddress.from(expected);
+  expect(this.address!.equals(expectedAddress)).to.be.true;
+});
 
 Then("the two addresses should be equal", function (this: AptosWorld) {
   expect(this.addresses[0].equals(this.addresses[1])).to.be.true;
@@ -524,16 +458,11 @@ Then("they should not be equal", function (this: AptosWorld) {
   expect(this.result).to.be.false;
 });
 
-Then(
-  "the result should equal the original address",
-  function (this: AptosWorld) {
-    const originalAddress = this.testVectors.get(
-      "original_address",
-    ) as AccountAddress;
-    const resultAddress = this.result as AccountAddress;
-    expect(resultAddress.equals(originalAddress)).to.be.true;
-  },
-);
+Then("the result should equal the original address", function (this: AptosWorld) {
+  const originalAddress = this.testVectors.get("original_address") as AccountAddress;
+  const resultAddress = this.result as AccountAddress;
+  expect(resultAddress.equals(originalAddress)).to.be.true;
+});
 
 // =============================================================================
 // Then Steps - Test Vectors
@@ -551,8 +480,6 @@ Then("all test vectors should pass", function (this: AptosWorld) {
     const failureMessages = failures
       .map((f) => `  - ${f.name}: ${f.error || "mismatch"}`)
       .join("\n");
-    throw new Error(
-      `${failures.length} test vectors failed:\n${failureMessages}`,
-    );
+    throw new Error(`${failures.length} test vectors failed:\n${failureMessages}`);
   }
 });

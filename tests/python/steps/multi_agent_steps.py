@@ -3,24 +3,23 @@ Step definitions for multi-agent.feature
 Tests multi-agent transaction creation and signing.
 """
 
-import sys
-import os
-import hashlib
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
-
-from behave import given, when, then
-from aptos_sdk.account import Account
-from aptos_sdk.account_address import AccountAddress
-from aptos_sdk.bcs import Serializer, Deserializer
+from support.vectors import hex_to_bytes, bytes_to_hex
+import time
 from aptos_sdk.transactions import (
     RawTransaction,
     TransactionPayload,
     EntryFunction,
     MultiAgentRawTransaction,
 )
-import time
+from aptos_sdk.bcs import Serializer, Deserializer
+from aptos_sdk.account_address import AccountAddress
+from aptos_sdk.account import Account
+from behave import given, when, then
+import sys
+import os
+import hashlib
 
-from support.vectors import hex_to_bytes, bytes_to_hex
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 
 # =============================================================================
@@ -43,7 +42,7 @@ def step_given_multiple_secondary_signers(context):
     context.world.test_vectors["secondary_signers"] = [
         Account.generate(),
         Account.generate(),
-        Account.generate()
+        Account.generate(),
     ]
 
 
@@ -52,7 +51,7 @@ def step_given_three_secondary_signers(context):
     context.world.test_vectors["secondary_signers"] = [
         Account.generate(),
         Account.generate(),
-        Account.generate()
+        Account.generate(),
     ]
 
 
@@ -66,7 +65,9 @@ def step_given_secondary_addresses_abc(context):
 @given("secondary signer addresses")
 def step_given_secondary_addresses(context):
     if context.world.account_2:
-        context.world.test_vectors["secondary_addresses"] = [context.world.account_2.address()]
+        context.world.test_vectors["secondary_addresses"] = [
+            context.world.account_2.address()
+        ]
     else:
         signer = Account.generate()
         context.world.account_2 = signer
@@ -85,7 +86,7 @@ def step_given_multi_agent_transaction(context):
         context.world.account = Account.generate()
     if context.world.account_2 is None:
         context.world.account_2 = Account.generate()
-    
+
     step_given_multi_agent_payload(context)
     step_create_multi_agent_raw_tx(context)
 
@@ -95,7 +96,7 @@ def step_given_multi_agent_with_2_secondary(context):
     context.world.account = Account.generate()
     context.world.test_vectors["secondary_signers"] = [
         Account.generate(),
-        Account.generate()
+        Account.generate(),
     ]
     step_given_multi_agent_payload(context)
     step_create_multi_agent_raw_tx(context)
@@ -104,21 +105,22 @@ def step_given_multi_agent_with_2_secondary(context):
 @given("a multi-agent transaction payload")
 def step_given_multi_agent_payload(context):
     from aptos_sdk.transactions import TransactionArgument
-    
+
     sender = context.world.account.address()
-    secondary = context.world.account_2.address() if context.world.account_2 else Account.generate().address()
-    
+    secondary = (
+        context.world.account_2.address()
+        if context.world.account_2
+        else Account.generate().address()
+    )
+
     # Create a payload that requires multiple signers
     addr_arg = TransactionArgument(secondary, Serializer.struct)
     amount_arg = TransactionArgument(1000, Serializer.u64)
-    
+
     payload = EntryFunction.natural(
-        "0x1::aptos_account",
-        "transfer",
-        [],
-        [addr_arg, amount_arg]
+        "0x1::aptos_account", "transfer", [], [addr_arg, amount_arg]
     )
-    
+
     context.world.raw_transaction = RawTransaction(
         sender=sender,
         sequence_number=0,
@@ -141,14 +143,14 @@ def step_create_multi_agent_raw_tx(context):
         secondary_addresses = []
         if context.world.account_2:
             secondary_addresses.append(context.world.account_2.address())
-        
+
         secondary_signers = context.world.test_vectors.get("secondary_signers", [])
         for signer in secondary_signers:
             secondary_addresses.append(signer.address())
-        
+
         context.world.multi_agent_tx = MultiAgentRawTransaction(
             raw_transaction=context.world.raw_transaction,
-            secondary_signers=secondary_addresses
+            secondary_signers=secondary_addresses,
         )
         context.world.clear_error()
     except Exception as e:
@@ -170,11 +172,13 @@ def step_generate_single_signer_message(context):
     try:
         domain = b"APTOS::RawTransaction"
         domain_hash = hashlib.sha3_256(domain).digest()
-        
+
         serializer = Serializer()
         context.world.raw_transaction.serialize(serializer)
-        
-        context.world.test_vectors["single_signer_message"] = domain_hash + serializer.output()
+
+        context.world.test_vectors["single_signer_message"] = (
+            domain_hash + serializer.output()
+        )
         context.world.clear_error()
     except Exception as e:
         context.world.set_error(e)
@@ -204,13 +208,15 @@ def step_compute_multi_agent_signing_message(context):
         # Multi-agent signing message includes secondary signer addresses
         domain = b"APTOS::RawTransactionWithData"
         domain_hash = hashlib.sha3_256(domain).digest()
-        
+
         # Serialize the multi-agent transaction
         serializer = Serializer()
         context.world.multi_agent_tx.serialize(serializer)
         tx_bytes = serializer.output()
-        
-        context.world.test_vectors["multi_agent_signing_message"] = domain_hash + tx_bytes
+
+        context.world.test_vectors["multi_agent_signing_message"] = (
+            domain_hash + tx_bytes
+        )
         context.world.clear_error()
     except Exception as e:
         context.world.set_error(e)
@@ -220,7 +226,9 @@ def step_compute_multi_agent_signing_message(context):
 def step_primary_sender_signs(context):
     try:
         signing_message = context.world.test_vectors.get("multi_agent_signing_message")
-        context.world.test_vectors["primary_signature"] = context.world.account.sign(signing_message)
+        context.world.test_vectors["primary_signature"] = context.world.account.sign(
+            signing_message
+        )
         context.world.clear_error()
     except Exception as e:
         context.world.set_error(e)
@@ -230,7 +238,9 @@ def step_primary_sender_signs(context):
 def step_secondary_signer_signs(context):
     try:
         signing_message = context.world.test_vectors.get("multi_agent_signing_message")
-        context.world.test_vectors["secondary_signature"] = context.world.account_2.sign(signing_message)
+        context.world.test_vectors["secondary_signature"] = (
+            context.world.account_2.sign(signing_message)
+        )
         context.world.clear_error()
     except Exception as e:
         context.world.set_error(e)
@@ -241,7 +251,7 @@ def step_all_secondary_signers_sign(context):
     try:
         signing_message = context.world.test_vectors.get("multi_agent_signing_message")
         secondary_signers = context.world.test_vectors.get("secondary_signers", [])
-        
+
         context.world.test_vectors["secondary_signatures"] = [
             signer.sign(signing_message) for signer in secondary_signers
         ]
@@ -259,51 +269,50 @@ def step_assemble_multi_agent_signed_tx(context):
             MultiAgentAuthenticator,
         )
         from aptos_sdk.transactions import SignedTransaction
-        
+
         # Primary authenticator
         primary_auth = AccountAuthenticator(
             Ed25519Authenticator(
                 context.world.account.public_key(),
-                context.world.test_vectors["primary_signature"]
+                context.world.test_vectors["primary_signature"],
             )
         )
-        
+
         # Secondary authenticators
         secondary_auths = []
-        
+
         if "secondary_signature" in context.world.test_vectors:
-            secondary_auths.append((
-                context.world.account_2.address(),
-                AccountAuthenticator(
-                    Ed25519Authenticator(
-                        context.world.account_2.public_key(),
-                        context.world.test_vectors["secondary_signature"]
-                    )
+            secondary_auths.append(
+                (
+                    context.world.account_2.address(),
+                    AccountAuthenticator(
+                        Ed25519Authenticator(
+                            context.world.account_2.public_key(),
+                            context.world.test_vectors["secondary_signature"],
+                        )
+                    ),
                 )
-            ))
-        
+            )
+
         if "secondary_signatures" in context.world.test_vectors:
             secondary_signers = context.world.test_vectors.get("secondary_signers", [])
             for i, sig in enumerate(context.world.test_vectors["secondary_signatures"]):
-                secondary_auths.append((
-                    secondary_signers[i].address(),
-                    AccountAuthenticator(
-                        Ed25519Authenticator(
-                            secondary_signers[i].public_key(),
-                            sig
-                        )
+                secondary_auths.append(
+                    (
+                        secondary_signers[i].address(),
+                        AccountAuthenticator(
+                            Ed25519Authenticator(secondary_signers[i].public_key(), sig)
+                        ),
                     )
-                ))
-        
+                )
+
         # Create multi-agent authenticator
         multi_agent_auth = MultiAgentAuthenticator(
-            sender=primary_auth,
-            secondary_signers=secondary_auths
+            sender=primary_auth, secondary_signers=secondary_auths
         )
-        
+
         context.world.signed_transaction = SignedTransaction(
-            context.world.raw_transaction,
-            multi_agent_auth
+            context.world.raw_transaction, multi_agent_auth
         )
         context.world.clear_error()
     except Exception as e:
@@ -330,7 +339,9 @@ def step_bcs_serialize_multi_agent(context):
 def step_bcs_deserialize_multi_agent(context):
     try:
         deserializer = Deserializer(context.world.bytes_value)
-        context.world.multi_agent_tx = MultiAgentRawTransaction.deserialize(deserializer)
+        context.world.multi_agent_tx = MultiAgentRawTransaction.deserialize(
+            deserializer
+        )
         context.world.clear_error()
     except Exception as e:
         context.world.set_error(e)
@@ -418,13 +429,13 @@ def step_multi_agent_different_signing_message(context):
     # Single signer message
     domain = b"APTOS::RawTransaction"
     domain_hash = hashlib.sha3_256(domain).digest()
-    
+
     serializer = Serializer()
     context.world.raw_transaction.serialize(serializer)
     single_message = domain_hash + serializer.output()
-    
+
     multi_message = context.world.test_vectors.get("multi_agent_signing_message")
-    
+
     assert single_message != multi_message
 
 

@@ -1,4 +1,4 @@
-.PHONY: build test test-required test-preferred test-core-types test-cryptography test-transactions dry-run clean
+.PHONY: build test test-required test-preferred test-core-types test-cryptography test-transactions dry-run clean format lint
 
 # Default target
 all: test
@@ -54,6 +54,14 @@ report:
 # Install Gradle wrapper if needed
 wrapper:
 	gradle wrapper --gradle-version 8.5
+
+# Format code (requires ktlint plugin in build.gradle.kts)
+format:
+	./gradlew ktlintFormat 2>/dev/null || echo "Add ktlint plugin to build.gradle.kts"
+
+# Lint code (requires ktlint plugin in build.gradle.kts)
+lint:
+	./gradlew ktlintCheck 2>/dev/null || echo "Add ktlint plugin to build.gradle.kts"
 
 # Help
 help:

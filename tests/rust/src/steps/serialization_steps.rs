@@ -63,17 +63,33 @@ fn when_bcs_serialize(world: &mut TestWorld) {
 
 #[then(expr = "the result should be {int} byte")]
 fn then_result_byte_count_singular(world: &mut TestWorld, count: usize) {
-    let bytes = world.serialized_bytes.as_ref().expect("No serialized bytes");
-    assert_eq!(bytes.len(), count, "Expected {} byte(s), got {}", count, bytes.len());
+    let bytes = world
+        .serialized_bytes
+        .as_ref()
+        .expect("No serialized bytes");
+    assert_eq!(
+        bytes.len(),
+        count,
+        "Expected {} byte(s), got {}",
+        count,
+        bytes.len()
+    );
 }
 
 // "the result should be {int} bytes" is in common_steps.rs
 
 #[then(expr = "the byte should be {word}")]
 fn then_byte_should_be(world: &mut TestWorld, hex: String) {
-    let bytes = world.serialized_bytes.as_ref().expect("No serialized bytes");
+    let bytes = world
+        .serialized_bytes
+        .as_ref()
+        .expect("No serialized bytes");
     let expected = parse_hex_byte(&hex);
-    assert_eq!(bytes[0], expected, "Expected byte 0x{:02x}, got 0x{:02x}", expected, bytes[0]);
+    assert_eq!(
+        bytes[0], expected,
+        "Expected byte 0x{:02x}, got 0x{:02x}",
+        expected, bytes[0]
+    );
 }
 
 // Use regex pattern for hex byte arrays (like [0x01, 0x02])
@@ -153,14 +169,20 @@ fn given_u256(world: &mut TestWorld, value: u64) {
 
 #[then(expr = "the result should be {int} bytes in little-endian")]
 fn then_bytes_le(world: &mut TestWorld, count: usize) {
-    let bytes = world.serialized_bytes.as_ref().expect("No serialized bytes");
+    let bytes = world
+        .serialized_bytes
+        .as_ref()
+        .expect("No serialized bytes");
     assert_eq!(bytes.len(), count);
 }
 
 // Use regex for byte array assertions
 #[then(regex = r"^the bytes should be \[(.+?)\]$")]
 fn then_bytes_should_be(world: &mut TestWorld, expected_str: String) {
-    let bytes = world.serialized_bytes.as_ref().expect("No serialized bytes");
+    let bytes = world
+        .serialized_bytes
+        .as_ref()
+        .expect("No serialized bytes");
     let expected: Vec<u8> = expected_str
         .split(',')
         .map(|s| parse_hex_byte(s.trim()))
@@ -170,16 +192,26 @@ fn then_bytes_should_be(world: &mut TestWorld, expected_str: String) {
 
 #[then(regex = r"^byte (\d+) should be (0x[0-9a-fA-F]+)$")]
 fn then_byte_at_index(world: &mut TestWorld, idx: usize, hex: String) {
-    let bytes = world.serialized_bytes.as_ref().expect("No serialized bytes");
+    let bytes = world
+        .serialized_bytes
+        .as_ref()
+        .expect("No serialized bytes");
     assert_eq!(bytes[idx], parse_hex_byte(&hex));
 }
 
 #[then(regex = r"^bytes (\d+)-(\d+) should all be (0x[0-9a-fA-F]+)$")]
 fn then_bytes_range_all(world: &mut TestWorld, start: usize, end: usize, hex: String) {
-    let bytes = world.serialized_bytes.as_ref().expect("No serialized bytes");
+    let bytes = world
+        .serialized_bytes
+        .as_ref()
+        .expect("No serialized bytes");
     let expected = parse_hex_byte(&hex);
     for i in start..=end {
-        assert_eq!(bytes[i], expected, "Byte {} should be 0x{:02x}, got 0x{:02x}", i, expected, bytes[i]);
+        assert_eq!(
+            bytes[i], expected,
+            "Byte {} should be 0x{:02x}, got 0x{:02x}",
+            i, expected, bytes[i]
+        );
     }
 }
 
@@ -213,7 +245,10 @@ fn when_uleb128_encode(world: &mut TestWorld) {
 
 #[then(regex = r"^the result should be \[(.+?)\]$")]
 fn then_result_bytes_array(world: &mut TestWorld, expected_str: String) {
-    let bytes = world.serialized_bytes.as_ref().expect("No serialized bytes");
+    let bytes = world
+        .serialized_bytes
+        .as_ref()
+        .expect("No serialized bytes");
     let expected: Vec<u8> = expected_str
         .split(',')
         .map(|s| parse_hex_byte(s.trim()))
@@ -274,19 +309,28 @@ fn given_string(world: &mut TestWorld, s: String) {
 
 #[then(regex = r"^the first byte should be (0x[0-9a-fA-F]+) \(length\)$")]
 fn then_first_byte_length(world: &mut TestWorld, hex: String) {
-    let bytes = world.serialized_bytes.as_ref().expect("No serialized bytes");
+    let bytes = world
+        .serialized_bytes
+        .as_ref()
+        .expect("No serialized bytes");
     assert_eq!(bytes[0], parse_hex_byte(&hex));
 }
 
 #[then(regex = r"^the first byte should be (0x[0-9a-fA-F]+) \(UTF-8 byte length\)$")]
 fn then_first_byte_utf8_length(world: &mut TestWorld, hex: String) {
-    let bytes = world.serialized_bytes.as_ref().expect("No serialized bytes");
+    let bytes = world
+        .serialized_bytes
+        .as_ref()
+        .expect("No serialized bytes");
     assert_eq!(bytes[0], parse_hex_byte(&hex));
 }
 
 #[then(regex = r"^the first byte should be (0x[0-9a-fA-F]+) \(outer length\)$")]
 fn then_first_byte_outer_length(world: &mut TestWorld, hex: String) {
-    let bytes = world.serialized_bytes.as_ref().expect("No serialized bytes");
+    let bytes = world
+        .serialized_bytes
+        .as_ref()
+        .expect("No serialized bytes");
     assert_eq!(bytes[0], parse_hex_byte(&hex));
 }
 
@@ -295,18 +339,27 @@ fn then_each_inner_vector_length_prefixed(world: &mut TestWorld) {
     // For [[1, 2], [3, 4]], the BCS encoding is:
     // 0x02 (outer length) + 0x02 0x01 0x02 (first inner) + 0x02 0x03 0x04 (second inner)
     // Each inner vector has a length prefix followed by its elements
-    let bytes = world.serialized_bytes.as_ref().expect("No serialized bytes");
+    let bytes = world
+        .serialized_bytes
+        .as_ref()
+        .expect("No serialized bytes");
     // Skip outer length byte, then verify inner vectors have length prefixes
-    assert!(bytes.len() >= 7, "Expected at least 7 bytes for nested vector");
+    assert!(
+        bytes.len() >= 7,
+        "Expected at least 7 bytes for nested vector"
+    );
     // First inner vector: length=2, then [1, 2]
     assert_eq!(bytes[1], 0x02, "First inner vector should have length 2");
-    // Second inner vector: length=2, then [3, 4]  
+    // Second inner vector: length=2, then [3, 4]
     assert_eq!(bytes[4], 0x02, "Second inner vector should have length 2");
 }
 
 #[then(regex = r"^the remaining bytes should be \[(.+?)\]$")]
 fn then_remaining_bytes_array(world: &mut TestWorld, expected_str: String) {
-    let bytes = world.serialized_bytes.as_ref().expect("No serialized bytes");
+    let bytes = world
+        .serialized_bytes
+        .as_ref()
+        .expect("No serialized bytes");
     let expected: Vec<u8> = expected_str
         .split(',')
         .map(|s| parse_hex_byte(s.trim()))
@@ -316,7 +369,10 @@ fn then_remaining_bytes_array(world: &mut TestWorld, expected_str: String) {
 
 #[then(expr = "the remaining bytes should be UTF-8 encoded {string}")]
 fn then_remaining_bytes_utf8(world: &mut TestWorld, s: String) {
-    let bytes = world.serialized_bytes.as_ref().expect("No serialized bytes");
+    let bytes = world
+        .serialized_bytes
+        .as_ref()
+        .expect("No serialized bytes");
     let utf8_bytes = s.as_bytes();
     assert_eq!(&bytes[1..], utf8_bytes);
 }
@@ -339,9 +395,17 @@ fn given_option_some_u64(world: &mut TestWorld, value: u64) {
 fn then_first_byte(world: &mut TestWorld, hex: String) {
     let expected = parse_hex_byte(&hex);
     if let Some(ref bytes) = world.serialized_bytes {
-        assert_eq!(bytes[0], expected, "Expected first byte 0x{:02x}, got 0x{:02x}", expected, bytes[0]);
+        assert_eq!(
+            bytes[0], expected,
+            "Expected first byte 0x{:02x}, got 0x{:02x}",
+            expected, bytes[0]
+        );
     } else if let Some(ref bytes) = world.bytes {
-        assert_eq!(bytes[0], expected, "Expected first byte 0x{:02x}, got 0x{:02x}", expected, bytes[0]);
+        assert_eq!(
+            bytes[0], expected,
+            "Expected first byte 0x{:02x}, got 0x{:02x}",
+            expected, bytes[0]
+        );
     } else {
         panic!("No bytes found to check first byte");
     }
@@ -351,19 +415,28 @@ fn then_first_byte(world: &mut TestWorld, hex: String) {
 fn then_first_byte_or(world: &mut TestWorld, hex1: String, hex2: String) {
     let expected1 = parse_hex_byte(&hex1);
     let expected2 = parse_hex_byte(&hex2);
-    let bytes = if let Some(ref b) = world.bytes { b }
-        else if let Some(ref b) = world.serialized_bytes { b }
-        else { panic!("No bytes found") };
+    let bytes = if let Some(ref b) = world.bytes {
+        b
+    } else if let Some(ref b) = world.serialized_bytes {
+        b
+    } else {
+        panic!("No bytes found")
+    };
     assert!(
         bytes[0] == expected1 || bytes[0] == expected2,
         "Expected first byte to be 0x{:02x} or 0x{:02x}, got 0x{:02x}",
-        expected1, expected2, bytes[0]
+        expected1,
+        expected2,
+        bytes[0]
     );
 }
 
 #[then(expr = "the remaining {int} bytes should be the u64 value")]
 fn then_remaining_u64(world: &mut TestWorld, count: usize) {
-    let bytes = world.serialized_bytes.as_ref().expect("No serialized bytes");
+    let bytes = world
+        .serialized_bytes
+        .as_ref()
+        .expect("No serialized bytes");
     assert_eq!(bytes.len() - 1, count);
 }
 
@@ -393,7 +466,10 @@ fn given_vec_vec_u8(world: &mut TestWorld, a: u8, b: u8, c: u8, d: u8) {
 
 #[then(expr = "the remaining bytes should be two u64 values in little-endian")]
 fn then_remaining_two_u64(world: &mut TestWorld) {
-    let bytes = world.serialized_bytes.as_ref().expect("No serialized bytes");
+    let bytes = world
+        .serialized_bytes
+        .as_ref()
+        .expect("No serialized bytes");
     assert_eq!(bytes.len(), 17); // 1 byte length + 2 * 8 bytes
 }
 
@@ -439,7 +515,10 @@ fn then_fields_in_order(_world: &mut TestWorld) {
 
 #[then(regex = r"^the total length should be (\d+) bytes \((\d+) \+ (\d+)\)$")]
 fn then_total_length(world: &mut TestWorld, total: usize, _a: usize, _b: usize) {
-    let bytes = world.serialized_bytes.as_ref().expect("No serialized bytes");
+    let bytes = world
+        .serialized_bytes
+        .as_ref()
+        .expect("No serialized bytes");
     assert_eq!(bytes.len(), total);
 }
 

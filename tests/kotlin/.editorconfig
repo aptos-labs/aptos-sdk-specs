@@ -1,0 +1,20 @@
+# EditorConfig for ktlint
+# https://pinterest.github.io/ktlint/
+
+root = true
+
+[*.{kt,kts}]
+# Disable some rules that are too strict for test code
+ktlint_standard_blank-line-before-declaration = disabled
+ktlint_standard_trailing-comma-on-call-site = disabled
+ktlint_standard_trailing-comma-on-declaration-site = disabled
+ktlint_standard_argument-list-wrapping = disabled
+ktlint_standard_no-empty-first-line-in-class-body = disabled
+
+# Keep useful rules enabled
+ktlint_standard_no-trailing-spaces = enabled
+ktlint_standard_no-unused-imports = enabled
+ktlint_standard_import-ordering = enabled
+
+# Max line length
+max_line_length = 120

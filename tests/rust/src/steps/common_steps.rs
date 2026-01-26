@@ -15,32 +15,35 @@ fn then_parsing_should_succeed(world: &mut TestWorld) {
         );
         return;
     }
-    
+
     // Check if this is a type tag parsing test
     if world.type_tag.is_some() {
         return;
     }
-    
+
     // Check if this is a module ID parsing test
     if world.module_id.is_some() {
         return;
     }
-    
+
     // Check if this is a hash value parsing test
     if world.hash_value.is_some() {
         return;
     }
-    
+
     // Check if this is a mnemonic parsing test
     if world.named_values.contains_key("mnemonic_parsed") {
         return;
     }
-    
+
     // If we have an error, the parsing failed
     if world.error.is_some() || world.last_error.is_some() {
-        panic!("Parsing should succeed but got error: {:?} / {:?}", world.error, world.last_error);
+        panic!(
+            "Parsing should succeed but got error: {:?} / {:?}",
+            world.error, world.last_error
+        );
     }
-    
+
     panic!("No parsing result found");
 }
 
@@ -49,17 +52,25 @@ fn then_parsing_should_succeed(world: &mut TestWorld) {
 fn then_result_should_be(world: &mut TestWorld, expected: String) {
     // Check formatted string first (from type tags)
     if let Some(ref actual) = world.formatted_string {
-        assert_eq!(actual, &expected, "Expected '{}', got '{}'", expected, actual);
+        assert_eq!(
+            actual, &expected,
+            "Expected '{}', got '{}'",
+            expected, actual
+        );
         return;
     }
-    
+
     // Check address formatting
     if let Some(ref addr) = world.address {
         let actual = addr.to_string();
-        assert_eq!(actual, expected, "Expected '{}', got '{}'", expected, actual);
+        assert_eq!(
+            actual, expected,
+            "Expected '{}', got '{}'",
+            expected, actual
+        );
         return;
     }
-    
+
     panic!("No result found to compare");
 }
 
@@ -98,14 +109,20 @@ fn check_bytes_length(world: &TestWorld, n: usize) {
         return;
     }
     if let Some(ref hash) = world.transaction_hash {
-        assert_eq!(hash.as_ref().len(), n, "Expected {} bytes, got {}", n, hash.as_ref().len());
+        assert_eq!(
+            hash.as_ref().len(),
+            n,
+            "Expected {} bytes, got {}",
+            n,
+            hash.as_ref().len()
+        );
         return;
     }
     if let Some(ref hash) = world.hash_result {
         assert_eq!(hash.len(), n, "Expected {} bytes, got {}", n, hash.len());
         return;
     }
-    
+
     panic!("No byte result found to check length");
 }
 
@@ -114,13 +131,22 @@ fn check_bytes_length(world: &TestWorld, n: usize) {
 fn then_result_starts_with(world: &mut TestWorld, prefix: String) {
     // Check both formatted_string and string_value
     if let Some(ref formatted) = world.formatted_string {
-        assert!(formatted.starts_with(&prefix), "Expected to start with '{}', got '{}'", prefix, formatted);
+        assert!(
+            formatted.starts_with(&prefix),
+            "Expected to start with '{}', got '{}'",
+            prefix,
+            formatted
+        );
         return;
     }
     if let Some(ref s) = world.string_value {
-        assert!(s.starts_with(&prefix), "Expected to start with '{}' but got '{}'", prefix, s);
+        assert!(
+            s.starts_with(&prefix),
+            "Expected to start with '{}' but got '{}'",
+            prefix,
+            s
+        );
         return;
     }
     panic!("No string result found to check prefix");
 }
-

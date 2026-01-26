@@ -87,7 +87,7 @@ public class TypeTagSteps
         {
             // Parse the type string - basic parsing for primitive types
             var normalized = typeString.ToLowerInvariant().Trim();
-            
+
             if (normalized == "bool") _world.TestVectors["parsedVariant"] = "Bool";
             else if (normalized == "u8") _world.TestVectors["parsedVariant"] = "U8";
             else if (normalized == "u16") _world.TestVectors["parsedVariant"] = "U16";
@@ -132,7 +132,7 @@ public class TypeTagSteps
             {
                 throw new ArgumentException($"Unknown type: {typeString}");
             }
-            
+
             _world.Result = typeString;
             _world.ClearError();
         }
@@ -149,7 +149,7 @@ public class TypeTagSteps
         {
             _world.TestVectors["formattedString"] = _world.Result.ToString()!;
         }
-        else if (_world.TestVectors.TryGetValue("moduleAddress", out var addr) && 
+        else if (_world.TestVectors.TryGetValue("moduleAddress", out var addr) &&
                  _world.TestVectors.TryGetValue("moduleName", out var name))
         {
             _world.TestVectors["formattedString"] = $"{addr}::{name}";
@@ -198,7 +198,7 @@ public class TypeTagSteps
             var address = (string)_world.TestVectors["structAddress"];
             var module = (string)_world.TestVectors["structModule"];
             var name = (string)_world.TestVectors["structName"];
-            
+
             _world.Result = $"{address}::{module}::{name}";
             _world.ClearError();
         }
@@ -219,7 +219,7 @@ public class TypeTagSteps
         {
             // Simplified serialization based on variant
             var variant = _world.TestVectors.TryGetValue("parsedVariant", out var v) ? (string)v : "Unknown";
-            
+
             // Map variant to BCS type index
             var typeIndex = variant switch
             {
@@ -233,7 +233,7 @@ public class TypeTagSteps
                 "Struct" => (byte)7,
                 _ => (byte)0
             };
-            
+
             _world.Bytes = new byte[] { typeIndex };
             _world.ClearError();
         }

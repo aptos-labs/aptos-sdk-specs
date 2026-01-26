@@ -10,76 +10,63 @@ import * as bip39 from "@scure/bip39";
 import { wordlist } from "@scure/bip39/wordlists/english";
 import { HDKey } from "@scure/bip32";
 import type { AptosWorld } from "../support/world.js";
-import {
-  bytesToHex,
-  hexToBytes,
-  getMnemonicVectors,
-} from "../support/vectors.js";
+import { bytesToHex, hexToBytes, getMnemonicVectors } from "../support/vectors.js";
 
 // =============================================================================
 // Mnemonic Generation
 // =============================================================================
 
-When(
-  "I generate a mnemonic with {int} words",
-  function (this: AptosWorld, wordCount: number) {
-    try {
-      // Word count to entropy bits: 12 words = 128 bits, 15 = 160, 18 = 192, 21 = 224, 24 = 256
-      const strengthMap: Record<number, number> = {
-        12: 128,
-        15: 160,
-        18: 192,
-        21: 224,
-        24: 256,
-      };
-      const strength = strengthMap[wordCount];
-      if (!strength) {
-        throw new Error(`Invalid word count: ${wordCount}`);
-      }
-      const mnemonic = bip39.generateMnemonic(wordlist, strength);
-      this.testVectors.set("mnemonic", mnemonic);
-      this.testVectors.set("expectedWordCount", wordCount);
-      this.clearError();
-    } catch (error) {
-      this.setError(error as Error);
+When("I generate a mnemonic with {int} words", function (this: AptosWorld, wordCount: number) {
+  try {
+    // Word count to entropy bits: 12 words = 128 bits, 15 = 160, 18 = 192, 21 = 224, 24 = 256
+    const strengthMap: Record<number, number> = {
+      12: 128,
+      15: 160,
+      18: 192,
+      21: 224,
+      24: 256,
+    };
+    const strength = strengthMap[wordCount];
+    if (!strength) {
+      throw new Error(`Invalid word count: ${wordCount}`);
     }
-  },
-);
-
-When(
-  "I generate two {int}-word mnemonics",
-  function (this: AptosWorld, wordCount: number) {
-    const strengthMap: Record<number, number> = {
-      12: 128,
-      15: 160,
-      18: 192,
-      21: 224,
-      24: 256,
-    };
-    const strength = strengthMap[wordCount];
-    const mnemonic1 = bip39.generateMnemonic(wordlist, strength);
-    const mnemonic2 = bip39.generateMnemonic(wordlist, strength);
-    this.testVectors.set("mnemonic1", mnemonic1);
-    this.testVectors.set("mnemonic2", mnemonic2);
-  },
-);
-
-When(
-  "I generate a {int}-word mnemonic",
-  function (this: AptosWorld, wordCount: number) {
-    const strengthMap: Record<number, number> = {
-      12: 128,
-      15: 160,
-      18: 192,
-      21: 224,
-      24: 256,
-    };
-    const strength = strengthMap[wordCount];
     const mnemonic = bip39.generateMnemonic(wordlist, strength);
     this.testVectors.set("mnemonic", mnemonic);
     this.testVectors.set("expectedWordCount", wordCount);
-  },
-);
+    this.clearError();
+  } catch (error) {
+    this.setError(error as Error);
+  }
+});
+
+When("I generate two {int}-word mnemonics", function (this: AptosWorld, wordCount: number) {
+  const strengthMap: Record<number, number> = {
+    12: 128,
+    15: 160,
+    18: 192,
+    21: 224,
+    24: 256,
+  };
+  const strength = strengthMap[wordCount];
+  const mnemonic1 = bip39.generateMnemonic(wordlist, strength);
+  const mnemonic2 = bip39.generateMnemonic(wordlist, strength);
+  this.testVectors.set("mnemonic1", mnemonic1);
+  this.testVectors.set("mnemonic2", mnemonic2);
+});
+
+When("I generate a {int}-word mnemonic", function (this: AptosWorld, wordCount: number) {
+  const strengthMap: Record<number, number> = {
+    12: 128,
+    15: 160,
+    18: 192,
+    21: 224,
+    24: 256,
+  };
+  const strength = strengthMap[wordCount];
+  const mnemonic = bip39.generateMnemonic(wordlist, strength);
+  this.testVectors.set("mnemonic", mnemonic);
+  this.testVectors.set("expectedWordCount", wordCount);
+});
 
 Then(
   "the phrase should contain exactly {int} words",
@@ -101,27 +88,21 @@ Then("the phrases should be different", function (this: AptosWorld) {
   expect(mnemonic1).to.not.equal(mnemonic2);
 });
 
-Then(
-  "all words should be in the BIP-39 English wordlist",
-  function (this: AptosWorld) {
-    const mnemonic = this.testVectors.get("mnemonic") as string;
-    const words = mnemonic.trim().split(/\s+/);
-    for (const word of words) {
-      expect(wordlist.includes(word.toLowerCase())).to.be.true;
-    }
-  },
-);
+Then("all words should be in the BIP-39 English wordlist", function (this: AptosWorld) {
+  const mnemonic = this.testVectors.get("mnemonic") as string;
+  const words = mnemonic.trim().split(/\s+/);
+  for (const word of words) {
+    expect(wordlist.includes(word.toLowerCase())).to.be.true;
+  }
+});
 
 // =============================================================================
 // Mnemonic Parsing
 // =============================================================================
 
-Given(
-  "the mnemonic phrase {string}",
-  function (this: AptosWorld, phrase: string) {
-    this.testVectors.set("mnemonic", phrase);
-  },
-);
+Given("the mnemonic phrase {string}", function (this: AptosWorld, phrase: string) {
+  this.testVectors.set("mnemonic", phrase);
+});
 
 When("I parse the mnemonic", function (this: AptosWorld) {
   try {
@@ -142,32 +123,23 @@ When("I parse the mnemonic", function (this: AptosWorld) {
   }
 });
 
-Given(
-  "a mnemonic phrase with {int} words",
-  function (this: AptosWorld, wordCount: number) {
-    // Create an invalid mnemonic with wrong word count
-    const words = Array(wordCount).fill("abandon");
-    this.testVectors.set("mnemonic", words.join(" "));
-  },
-);
+Given("a mnemonic phrase with {int} words", function (this: AptosWorld, wordCount: number) {
+  // Create an invalid mnemonic with wrong word count
+  const words = Array(wordCount).fill("abandon");
+  this.testVectors.set("mnemonic", words.join(" "));
+});
 
-Given(
-  "a mnemonic phrase with valid words but wrong checksum",
-  function (this: AptosWorld) {
-    // Use valid words but invalid checksum combination
-    this.testVectors.set(
-      "mnemonic",
-      "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon",
-    );
-  },
-);
+Given("a mnemonic phrase with valid words but wrong checksum", function (this: AptosWorld) {
+  // Use valid words but invalid checksum combination
+  this.testVectors.set(
+    "mnemonic",
+    "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon",
+  );
+});
 
-Then(
-  "the parsing should fail with an invalid mnemonic error",
-  function (this: AptosWorld) {
-    expect(this.error).to.not.be.undefined;
-  },
-);
+Then("the parsing should fail with an invalid mnemonic error", function (this: AptosWorld) {
+  expect(this.error).to.not.be.undefined;
+});
 
 // =============================================================================
 // Ed25519 Account Derivation
@@ -193,37 +165,31 @@ Then(
 
 // Note: 'derivation path {string}' is defined in account.steps.ts
 
-When(
-  "I derive an Ed25519 account with the custom path",
-  function (this: AptosWorld) {
-    try {
-      const mnemonic = this.testVectors.get("mnemonic") as string;
-      const path = this.testVectors.get("derivation_path") as string;
-
-      this.account = Account.fromDerivationPath({
-        mnemonic,
-        path,
-      });
-      this.clearError();
-    } catch (error) {
-      this.setError(error as Error);
-    }
-  },
-);
-
-Then(
-  "the address should differ from default path",
-  function (this: AptosWorld) {
+When("I derive an Ed25519 account with the custom path", function (this: AptosWorld) {
+  try {
     const mnemonic = this.testVectors.get("mnemonic") as string;
-    const defaultAccount = Account.fromDerivationPath({
+    const path = this.testVectors.get("derivation_path") as string;
+
+    this.account = Account.fromDerivationPath({
       mnemonic,
-      path: "m/44'/637'/0'/0'/0'",
+      path,
     });
-    expect(this.account!.accountAddress.toString()).to.not.equal(
-      defaultAccount.accountAddress.toString(),
-    );
-  },
-);
+    this.clearError();
+  } catch (error) {
+    this.setError(error as Error);
+  }
+});
+
+Then("the address should differ from default path", function (this: AptosWorld) {
+  const mnemonic = this.testVectors.get("mnemonic") as string;
+  const defaultAccount = Account.fromDerivationPath({
+    mnemonic,
+    path: "m/44'/637'/0'/0'/0'",
+  });
+  expect(this.account!.accountAddress.toString()).to.not.equal(
+    defaultAccount.accountAddress.toString(),
+  );
+});
 
 When("I derive an Ed25519 account twice", function (this: AptosWorld) {
   const mnemonic = this.testVectors.get("mnemonic") as string;
@@ -273,14 +239,7 @@ When(
 
 When(
   "I derive accounts at indices {int}, {int}, {int}, {int}, {int}",
-  function (
-    this: AptosWorld,
-    i1: number,
-    i2: number,
-    i3: number,
-    i4: number,
-    i5: number,
-  ) {
+  function (this: AptosWorld, i1: number, i2: number, i3: number, i4: number, i5: number) {
     const mnemonic = this.testVectors.get("mnemonic") as string;
     const indices = [i1, i2, i3, i4, i5];
 
@@ -294,13 +253,10 @@ When(
   },
 );
 
-Then(
-  "I should have {int} different accounts",
-  function (this: AptosWorld, count: number) {
-    const accounts = this.testVectors.get("derivedAccounts") as Account[];
-    expect(accounts.length).to.equal(count);
-  },
-);
+Then("I should have {int} different accounts", function (this: AptosWorld, count: number) {
+  const accounts = this.testVectors.get("derivedAccounts") as Account[];
+  expect(accounts.length).to.equal(count);
+});
 
 Then("all addresses should be unique", function (this: AptosWorld) {
   const accounts = this.testVectors.get("derivedAccounts") as Account[];
@@ -313,30 +269,27 @@ Then("all addresses should be unique", function (this: AptosWorld) {
 // Secp256k1 Account Derivation
 // =============================================================================
 
-When(
-  "I derive a Secp256k1 account from the mnemonic",
-  function (this: AptosWorld) {
-    try {
-      const mnemonic = this.testVectors.get("mnemonic") as string;
-      const path = "m/44'/637'/0'/0'/0'";
+When("I derive a Secp256k1 account from the mnemonic", function (this: AptosWorld) {
+  try {
+    const mnemonic = this.testVectors.get("mnemonic") as string;
+    const path = "m/44'/637'/0'/0'/0'";
 
-      // Derive seed from mnemonic
-      const seed = bip39.mnemonicToSeedSync(mnemonic);
-      const hdKey = HDKey.fromMasterSeed(seed);
-      const derived = hdKey.derive(path);
+    // Derive seed from mnemonic
+    const seed = bip39.mnemonicToSeedSync(mnemonic);
+    const hdKey = HDKey.fromMasterSeed(seed);
+    const derived = hdKey.derive(path);
 
-      if (!derived.privateKey) {
-        throw new Error("Failed to derive private key");
-      }
-
-      const privateKey = new Secp256k1PrivateKey(derived.privateKey);
-      this.account = Account.fromPrivateKey({ privateKey });
-      this.clearError();
-    } catch (error) {
-      this.setError(error as Error);
+    if (!derived.privateKey) {
+      throw new Error("Failed to derive private key");
     }
-  },
-);
+
+    const privateKey = new Secp256k1PrivateKey(derived.privateKey);
+    this.account = Account.fromPrivateKey({ privateKey });
+    this.clearError();
+  } catch (error) {
+    this.setError(error as Error);
+  }
+});
 
 When("I derive an Ed25519 account", function (this: AptosWorld) {
   const mnemonic = this.testVectors.get("mnemonic") as string;
@@ -376,18 +329,13 @@ When("I derive a Secp256k1 account", function (this: AptosWorld) {
   }
 });
 
-Then(
-  "the addresses should be different (Secp vs Ed)",
-  function (this: AptosWorld) {
-    const ed25519Account = this.testVectors.get("ed25519Account") as Account;
-    const secp256k1Account = this.testVectors.get(
-      "secp256k1Account",
-    ) as Account;
-    expect(ed25519Account.accountAddress.toString()).to.not.equal(
-      secp256k1Account.accountAddress.toString(),
-    );
-  },
-);
+Then("the addresses should be different (Secp vs Ed)", function (this: AptosWorld) {
+  const ed25519Account = this.testVectors.get("ed25519Account") as Account;
+  const secp256k1Account = this.testVectors.get("secp256k1Account") as Account;
+  expect(ed25519Account.accountAddress.toString()).to.not.equal(
+    secp256k1Account.accountAddress.toString(),
+  );
+});
 
 // =============================================================================
 // Passphrase Support
@@ -455,16 +403,11 @@ When(
   },
 );
 
-Then(
-  "the addresses should be different (different passphrases)",
-  function (this: AptosWorld) {
-    const account1 = this.testVectors.get("accountWithPass1") as Account;
-    const account2 = this.testVectors.get("accountWithPass2") as Account;
-    expect(account1.accountAddress.toString()).to.not.equal(
-      account2.accountAddress.toString(),
-    );
-  },
-);
+Then("the addresses should be different (different passphrases)", function (this: AptosWorld) {
+  const account1 = this.testVectors.get("accountWithPass1") as Account;
+  const account2 = this.testVectors.get("accountWithPass2") as Account;
+  expect(account1.accountAddress.toString()).to.not.equal(account2.accountAddress.toString());
+});
 
 When("I derive an account with no passphrase", function (this: AptosWorld) {
   const mnemonic = this.testVectors.get("mnemonic") as string;
@@ -475,30 +418,25 @@ When("I derive an account with no passphrase", function (this: AptosWorld) {
   this.testVectors.set("accountNoPass", this.account);
 });
 
-When(
-  "I derive an account with empty string passphrase",
-  function (this: AptosWorld) {
-    try {
-      const mnemonic = this.testVectors.get("mnemonic") as string;
-      const path = "m/44'/637'/0'/0'/0'";
+When("I derive an account with empty string passphrase", function (this: AptosWorld) {
+  try {
+    const mnemonic = this.testVectors.get("mnemonic") as string;
+    const path = "m/44'/637'/0'/0'/0'";
 
-      // Use Account.fromDerivationPath which is the same as no passphrase
-      // In the SDK, empty passphrase is equivalent to no passphrase
-      this.account = Account.fromDerivationPath({ mnemonic, path });
-      this.testVectors.set("accountEmptyPass", this.account);
-      this.clearError();
-    } catch (error) {
-      this.setError(error as Error);
-    }
-  },
-);
+    // Use Account.fromDerivationPath which is the same as no passphrase
+    // In the SDK, empty passphrase is equivalent to no passphrase
+    this.account = Account.fromDerivationPath({ mnemonic, path });
+    this.testVectors.set("accountEmptyPass", this.account);
+    this.clearError();
+  } catch (error) {
+    this.setError(error as Error);
+  }
+});
 
 Then("the addresses should be the same", function (this: AptosWorld) {
   const account1 = this.testVectors.get("accountNoPass") as Account;
   const account2 = this.testVectors.get("accountEmptyPass") as Account;
-  expect(account1.accountAddress.toString()).to.equal(
-    account2.accountAddress.toString(),
-  );
+  expect(account1.accountAddress.toString()).to.equal(account2.accountAddress.toString());
 });
 
 // =============================================================================
@@ -513,21 +451,18 @@ Given("passphrase {string}", function (this: AptosWorld, passphrase: string) {
   this.testVectors.set("passphrase", passphrase);
 });
 
-When(
-  "I derive an Ed25519 account with default path",
-  function (this: AptosWorld) {
-    try {
-      const mnemonic = this.testVectors.get("mnemonic") as string;
-      this.account = Account.fromDerivationPath({
-        mnemonic,
-        path: "m/44'/637'/0'/0'/0'",
-      });
-      this.clearError();
-    } catch (error) {
-      this.setError(error as Error);
-    }
-  },
-);
+When("I derive an Ed25519 account with default path", function (this: AptosWorld) {
+  try {
+    const mnemonic = this.testVectors.get("mnemonic") as string;
+    this.account = Account.fromDerivationPath({
+      mnemonic,
+      path: "m/44'/637'/0'/0'/0'",
+    });
+    this.clearError();
+  } catch (error) {
+    this.setError(error as Error);
+  }
+});
 
 // Note: 'the address should match the expected value from test vectors' is defined in cryptography.steps.ts
 
@@ -615,19 +550,16 @@ Then("the derivation should succeed", function (this: AptosWorld) {
   expect(this.account).to.not.be.undefined;
 });
 
-When(
-  "I try to derive with path {string}",
-  function (this: AptosWorld, path: string) {
-    try {
-      const mnemonic = this.testVectors.get("mnemonic") as string;
-      this.account = Account.fromDerivationPath({ mnemonic, path });
-      this.testVectors.set("derivedWithPath", this.account);
-      this.clearError();
-    } catch (error) {
-      this.setError(error as Error);
-    }
-  },
-);
+When("I try to derive with path {string}", function (this: AptosWorld, path: string) {
+  try {
+    const mnemonic = this.testVectors.get("mnemonic") as string;
+    this.account = Account.fromDerivationPath({ mnemonic, path });
+    this.testVectors.set("derivedWithPath", this.account);
+    this.clearError();
+  } catch (error) {
+    this.setError(error as Error);
+  }
+});
 
 Then("the derivation should fail", function (this: AptosWorld) {
   expect(this.error).to.not.be.undefined;
@@ -655,21 +587,18 @@ Then(
   },
 );
 
-Then(
-  "the derivation should fail or produce different result",
-  function (this: AptosWorld) {
-    const mnemonic = this.testVectors.get("mnemonic") as string;
+Then("the derivation should fail or produce different result", function (this: AptosWorld) {
+  const mnemonic = this.testVectors.get("mnemonic") as string;
 
-    if (this.error) {
-      // Derivation failed, which is acceptable
-      return;
-    }
+  if (this.error) {
+    // Derivation failed, which is acceptable
+    return;
+  }
 
-    // Derivation succeeded - just verify we have a valid account
-    const derivedAccount = this.testVectors.get("derivedWithPath") as Account;
-    expect(derivedAccount).to.not.be.undefined;
-  },
-);
+  // Derivation succeeded - just verify we have a valid account
+  const derivedAccount = this.testVectors.get("derivedWithPath") as Account;
+  expect(derivedAccount).to.not.be.undefined;
+});
 
 // =============================================================================
 // Security
@@ -705,12 +634,9 @@ When("I derive an account", function (this: AptosWorld) {
   });
 });
 
-Then(
-  "the intermediate seed should be zeroized from memory",
-  function (this: AptosWorld) {
-    // In JavaScript, we can't really verify memory zeroization
-    // This is a behavioral specification that may be verifiable in other languages
-    // Just verify the derivation completed successfully
-    expect(this.account).to.not.be.undefined;
-  },
-);
+Then("the intermediate seed should be zeroized from memory", function (this: AptosWorld) {
+  // In JavaScript, we can't really verify memory zeroization
+  // This is a behavioral specification that may be verifiable in other languages
+  // Just verify the derivation completed successfully
+  expect(this.account).to.not.be.undefined;
+});

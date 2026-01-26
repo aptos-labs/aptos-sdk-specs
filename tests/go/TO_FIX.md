@@ -11,6 +11,7 @@ This document tracks test failures and issues that need to be addressed.
 - **Undefined**: 127 scenarios (mostly network-dependent API tests)
 
 Last updated: Fixed serialization tests:
+
 - Added TypeTag struct creation steps
 - Added AccountAddress formatting steps (short/long hex)
 - Added address constant steps (ZERO, ONE, THREE, FOUR)
@@ -26,7 +27,8 @@ Last updated: Fixed serialization tests:
 
 **Error**: `no public key set`
 
-**Issue**: The `a Secp256r1 public key` step is not implemented. Secp256r1 (P-256/prime256v1) keys are not commonly used in the Go SDK.
+**Issue**: The `a Secp256r1 public key` step is not implemented. Secp256r1 (P-256/prime256v1) keys
+are not commonly used in the Go SDK.
 
 **Status**: Feature not implemented
 
@@ -40,7 +42,8 @@ Last updated: Fixed serialization tests:
 
 **Error**: `no public key set`
 
-**Issue**: The `a MultiEd25519 public key` step is not implemented. Multi-signature Ed25519 keys require additional implementation.
+**Issue**: The `a MultiEd25519 public key` step is not implemented. Multi-signature Ed25519 keys
+require additional implementation.
 
 **Status**: Feature not implemented
 
@@ -68,7 +71,8 @@ Last updated: Fixed serialization tests:
 
 **Error**: `expected module 0x1::coin, got 0x1::aptos_account`
 
-**Issue**: The Go SDK's `CoinTransferPayload` uses `0x1::aptos_account::transfer` instead of `0x1::coin::transfer`. This is a design decision in the Go SDK.
+**Issue**: The Go SDK's `CoinTransferPayload` uses `0x1::aptos_account::transfer` instead of
+`0x1::coin::transfer`. This is a design decision in the Go SDK.
 
 **Status**: SDK behavioral difference
 
@@ -79,6 +83,7 @@ Last updated: Fixed serialization tests:
 ## Undefined Features (Major Categories)
 
 ### API Client Features (Require Network)
+
 - Client connection and configuration
 - Transaction submission
 - Account queries
@@ -86,12 +91,14 @@ Last updated: Fixed serialization tests:
 - Ledger queries
 
 ### Advanced Features
+
 - Multi-signature transactions
-- Fee payer transactions  
+- Fee payer transactions
 - Multi-agent transactions
 - Keyless authentication
 
 ### Other Features
+
 - Transaction builder pattern
 - Secp256k1 signing workflows
 

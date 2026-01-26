@@ -1,13 +1,11 @@
 # Kotlin SDK (Kaptos) Test Implementation Plan
 
-> **Status**: Infrastructure Complete, SDK Limitations (0.1.2-beta)
-> **Last Updated**: 2026-01-22
-> **SDK**: [Kaptos](https://github.com/mcxross/kaptos) (Aptos Kotlin Multiplatform SDK)
-> **Maven**: `xyz.mcxross.kaptos:kaptos-jvm:0.1.2-beta`
-> **BDD Framework**: Cucumber-JVM with Kotlin
+> **Status**: Infrastructure Complete, SDK Limitations (0.1.2-beta) **Last Updated**: 2026-01-22
+> **SDK**: [Kaptos](https://github.com/mcxross/kaptos) (Aptos Kotlin Multiplatform SDK) **Maven**:
+> `xyz.mcxross.kaptos:kaptos-jvm:0.1.2-beta` **BDD Framework**: Cucumber-JVM with Kotlin
 >
-> **Note**: The Kaptos SDK is in beta (0.1.2-beta) with limited API exposure.
-> Many step definitions are stubs that will be implemented as the SDK matures.
+> **Note**: The Kaptos SDK is in beta (0.1.2-beta) with limited API exposure. Many step definitions
+> are stubs that will be implemented as the SDK matures.
 
 ## Overview
 
@@ -66,73 +64,82 @@ tests/kotlin/
 ### Phase 2: Core Types (Required)
 
 **Feature Files:**
+
 - `features/01-core-types/address.feature` (22 scenarios)
 - `features/01-core-types/serialization.feature` (18 scenarios)
 - `features/01-core-types/type-tags.feature` (24 scenarios)
 
 **Step Files to Create:**
+
 - [x] `AddressSteps.kt` (Partial - AccountAddress.fromString() works)
 - [~] `SerializationSteps.kt` (Manual BCS impl - SDK doesn't expose Bcs class)
 - [~] `TypeTagSteps.kt` (Manual parsing - TypeTag.fromString() signature differs)
 
-**Total Scenarios:** ~64
-**SDK Limitations:** No direct `Bcs` class access; `TypeTag` API differs from spec
+**Total Scenarios:** ~64 **SDK Limitations:** No direct `Bcs` class access; `TypeTag` API differs
+from spec
 
 ---
 
 ### Phase 3: Cryptography (Required)
 
 **Feature Files:**
+
 - `features/02-cryptography/ed25519.feature` (25 scenarios)
 - `features/02-cryptography/hashing.feature` (20 scenarios)
 
 **Step Files to Create:**
+
 - [~] `CryptoSteps.kt` (Limited - Account.generate() works, no private key access)
 - [x] `HashingSteps.kt` (JVM stdlib - SHA3-256, SHA2-256, HMAC)
 
-**Total Scenarios:** ~45
-**SDK Limitations:** No `Ed25519PrivateKey`, `Secp256k1` classes; no signature verification
+**Total Scenarios:** ~45 **SDK Limitations:** No `Ed25519PrivateKey`, `Secp256k1` classes; no
+signature verification
 
 ---
 
 ### Phase 4: Account Management (Required)
 
 **Feature Files:**
+
 - `features/03-account-management/authentication-key.feature` (17 scenarios)
 - `features/03-account-management/single-key.feature` (28 scenarios)
 
 **Step Files to Create:**
+
 - [~] `AccountSteps.kt` (Limited - Account.generate() works, no auth key derivation)
 - [~] `AuthKeySteps.kt` - merged into AccountSteps.kt
 
-**Total Scenarios:** ~45
-**SDK Limitations:** No `AuthenticationKey` class; no AIP-80 format support
+**Total Scenarios:** ~45 **SDK Limitations:** No `AuthenticationKey` class; no AIP-80 format support
 
 ---
 
 ### Phase 5: Transaction Building (Required)
 
 **Feature Files:**
+
 - `features/04-transaction-building/entry-function.feature` (24 scenarios)
 - `features/04-transaction-building/raw-transaction.feature` (21 scenarios)
 - `features/04-transaction-building/signing.feature` (24 scenarios)
 
 **Step Files to Create:**
+
 - [~] `TransactionSteps.kt` (Stubs - no low-level tx primitives exposed)
 - [~] `EntryFunctionSteps.kt` - merged into TransactionSteps.kt
 
-**Total Scenarios:** ~69
-**SDK Limitations:** No `RawTransaction`, `SignedTransaction`, `EntryFunction` constructors exposed
+**Total Scenarios:** ~69 **SDK Limitations:** No `RawTransaction`, `SignedTransaction`,
+`EntryFunction` constructors exposed
 
 ---
 
 ### Phase 6: API Clients (Required)
 
 **Feature Files:**
+
 - `features/05-api-clients/fullnode-api.feature` (25 scenarios)
 - `features/05-api-clients/transaction-submission.feature` (28 scenarios)
 
 **Step Files to Create:**
+
 - [ ] `ClientSteps.kt`
 
 **Total Scenarios:** ~53
@@ -142,6 +149,7 @@ tests/kotlin/
 ### Phase 7: Preferred Features
 
 **Feature Files:**
+
 - `features/02-cryptography/secp256k1.feature` (19 scenarios)
 - `features/03-account-management/mnemonic-derivation.feature` (29 scenarios)
 - `features/05-api-clients/faucet.feature` (23 scenarios)
@@ -151,6 +159,7 @@ tests/kotlin/
 - `features/06-advanced/simulation.feature` (26 scenarios)
 
 **Step Files to Create:**
+
 - [ ] `MnemonicSteps.kt`
 - [ ] Additional methods in existing step files
 
@@ -161,6 +170,7 @@ tests/kotlin/
 ### Phase 8: Optional/Advanced Features
 
 **Feature Files:**
+
 - `features/02-cryptography/secp256r1.feature` (26 scenarios)
 - `features/02-cryptography/bls12381.feature` (35 scenarios)
 - `features/04-transaction-building/script.feature` (25 scenarios)
@@ -173,6 +183,7 @@ tests/kotlin/
 - `features/06-advanced/codegen.feature` (34 scenarios)
 
 **Step Files to Create:**
+
 - [ ] `AdvancedSteps.kt`
 - [ ] Additional methods in existing step files
 
@@ -183,13 +194,13 @@ tests/kotlin/
 ## Current Test Results
 
 As of 2026-01-22:
+
 - **Total Tests:** 1616
 - **Passed:** 176 (58% of required scenarios)
 - **Failed:** 1440 (mostly undefined steps for preferred/optional features)
 
-The test infrastructure is complete, but the Kaptos SDK (0.1.2-beta) doesn't expose
-the low-level primitives needed for most spec scenarios. Implementation will improve
-as the SDK matures.
+The test infrastructure is complete, but the Kaptos SDK (0.1.2-beta) doesn't expose the low-level
+primitives needed for most spec scenarios. Implementation will improve as the SDK matures.
 
 ## Dependencies
 
@@ -199,23 +210,23 @@ as the SDK matures.
 dependencies {
     // Kaptos SDK - published to Maven Central (JVM variant for pure JVM testing)
     implementation("xyz.mcxross.kaptos:kaptos-jvm:0.1.2-beta")  // Beta version
-    
+
     // Cucumber BDD
     testImplementation("io.cucumber:cucumber-java:7.15.0")
     testImplementation("io.cucumber:cucumber-junit-platform-engine:7.15.0")
     testImplementation("io.cucumber:cucumber-picocontainer:7.15.0")
-    
+
     // JUnit 5
     testImplementation("org.junit.platform:junit-platform-suite:1.10.1")
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.1")
-    
+
     // JSON parsing for test vectors
     testImplementation("com.google.code.gson:gson:2.10.1")
-    
+
     // Kotlin coroutines (if Kaptos uses suspend functions)
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
-    
+
     // Assertions
     testImplementation("io.kotest:kotest-assertions-core:5.8.0")
 }
@@ -224,10 +235,12 @@ dependencies {
 ## Configuration
 
 ### Kotlin Version
+
 - **Target**: Kotlin 1.9+ with JVM 17
 - **Reason**: Latest stable Kotlin with modern JVM support
 
 ### Cucumber Configuration
+
 - Feature files path: `../../features`
 - Glue packages: `com.aptos.specs.steps`, `com.aptos.specs.support`
 - Tags support for filtering: `@required`, `@preferred`, `@optional`
@@ -269,12 +282,12 @@ import io.cucumber.java.en.Then
 import com.aptos.specs.support.World
 
 class AddressSteps(private val world: World) {
-    
+
     @Given("a hex string {string}")
     fun givenAHexString(hex: String) {
         world.hexString = hex
     }
-    
+
     @When("I parse it as an AccountAddress")
     fun whenIParseItAsAnAccountAddress() {
         try {
@@ -284,7 +297,7 @@ class AddressSteps(private val world: World) {
             world.setError(e)
         }
     }
-    
+
     @Then("the parsing should succeed")
     fun thenTheParsingShouldSucceed() {
         world.error shouldBe null
@@ -302,30 +315,30 @@ class World {
     // String/bytes for input
     var hexString: String? = null
     var bytes: ByteArray? = null
-    
+
     // Parsed objects
     var address: AccountAddress? = null
     var privateKey: Ed25519PrivateKey? = null
     var publicKey: Ed25519PublicKey? = null
     var signature: Ed25519Signature? = null
     var keyPair: Ed25519KeyPair? = null
-    
+
     // Transaction objects
     var rawTransaction: RawTransaction? = null
     var signedTransaction: SignedTransaction? = null
     var entryFunction: EntryFunction? = null
-    
+
     // Error handling
     var error: Throwable? = null
-    
+
     fun setError(e: Throwable) {
         error = e
     }
-    
+
     fun clearError() {
         error = null
     }
-    
+
     fun reset() {
         hexString = null
         bytes = null
@@ -361,29 +374,35 @@ fun whenISubmitTheTransaction() = runBlocking {
 ## Progress Tracking
 
 Update `FEATURE_COVERAGE.md` in the repository root as steps are implemented:
+
 - Mark `[ ]` → `[x]` when steps are implemented and tests pass
 - Mark `[ ]` → `[~]` for partial implementation or known issues
 
 ## Notes
 
 ### SDK API Compatibility
+
 The Kaptos SDK API may differ from other SDKs. Step implementations should:
+
 1. Follow Kotlin idioms (null safety, data classes, extension functions)
 2. Document any SDK limitations that prevent implementing certain scenarios
 3. Use Kotlin best practices (sealed classes for errors, coroutines for async)
 
 ### Kotlin-Specific Considerations
+
 - Use `?.let {}` for null-safe operations
 - Use `runCatching {}` for error handling
 - Use Kotest matchers for expressive assertions
 - Handle suspend functions appropriately with `runBlocking` or coroutine test utilities
 
 ### Error Handling
+
 - Use Kotlin's `Result` type or exceptions as appropriate
 - Store errors in World context for assertion steps
 - Follow Cucumber best practices for error scenarios
 
 ### Test Isolation
+
 - Each scenario gets a fresh World instance (via PicoContainer)
 - No state leaks between scenarios
 - Use `@Before` hooks for setup if needed

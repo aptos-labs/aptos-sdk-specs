@@ -62,12 +62,8 @@ Given("threshold {int}", function (this: AptosWorld, threshold: number) {
 });
 
 When("I create a MultiEd25519 account", function (this: AptosWorld) {
-  const privateKeys = this.testVectors.get(
-    "ed25519PrivateKeys",
-  ) as Ed25519PrivateKey[];
-  const publicKeys = this.testVectors.get(
-    "ed25519PublicKeys",
-  ) as Ed25519PublicKey[];
+  const privateKeys = this.testVectors.get("ed25519PrivateKeys") as Ed25519PrivateKey[];
+  const publicKeys = this.testVectors.get("ed25519PublicKeys") as Ed25519PublicKey[];
   const threshold = this.testVectors.get("threshold") as number;
 
   try {
@@ -91,8 +87,7 @@ When("I create a MultiEd25519 account", function (this: AptosWorld) {
 });
 
 When("I try to create a MultiEd25519 account", function (this: AptosWorld) {
-  const publicKeys =
-    (this.testVectors.get("ed25519PublicKeys") as Ed25519PublicKey[]) ?? [];
+  const publicKeys = (this.testVectors.get("ed25519PublicKeys") as Ed25519PublicKey[]) ?? [];
   const threshold = (this.testVectors.get("threshold") as number) ?? 1;
 
   try {
@@ -112,36 +107,21 @@ Then("the multi-sig account should be valid", function (this: AptosWorld) {
   expect(this.result).to.not.be.undefined;
 });
 
-Then(
-  "threshold should be {int}",
-  function (this: AptosWorld, expectedThreshold: number) {
-    const account = this.testVectors.get(
-      "multiSigAccount",
-    ) as MultiEd25519Account;
-    expect(account.publicKey.threshold).to.equal(expectedThreshold);
-  },
-);
+Then("threshold should be {int}", function (this: AptosWorld, expectedThreshold: number) {
+  const account = this.testVectors.get("multiSigAccount") as MultiEd25519Account;
+  expect(account.publicKey.threshold).to.equal(expectedThreshold);
+});
 
-Then(
-  "num_keys should be {int}",
-  function (this: AptosWorld, expectedNum: number) {
-    const account = this.testVectors.get(
-      "multiSigAccount",
-    ) as MultiEd25519Account;
-    expect(account.publicKey.publicKeys.length).to.equal(expectedNum);
-  },
-);
+Then("num_keys should be {int}", function (this: AptosWorld, expectedNum: number) {
+  const account = this.testVectors.get("multiSigAccount") as MultiEd25519Account;
+  expect(account.publicKey.publicKeys.length).to.equal(expectedNum);
+});
 
-Then(
-  "all {int} signatures should be required",
-  function (this: AptosWorld, count: number) {
-    const account = this.testVectors.get(
-      "multiSigAccount",
-    ) as MultiEd25519Account;
-    expect(account.publicKey.threshold).to.equal(count);
-    expect(account.publicKey.publicKeys.length).to.equal(count);
-  },
-);
+Then("all {int} signatures should be required", function (this: AptosWorld, count: number) {
+  const account = this.testVectors.get("multiSigAccount") as MultiEd25519Account;
+  expect(account.publicKey.threshold).to.equal(count);
+  expect(account.publicKey.publicKeys.length).to.equal(count);
+});
 
 Then("it should fail with InvalidThreshold error", function (this: AptosWorld) {
   expect(this.error).to.not.be.undefined;
@@ -155,33 +135,26 @@ Then("it should fail with InvalidThreshold error", function (this: AptosWorld) {
 // Authentication Key Derivation
 // =============================================================================
 
-Given(
-  "{int} Ed25519 public keys in order",
-  function (this: AptosWorld, count: number) {
-    const privateKeys: Ed25519PrivateKey[] = [];
-    const publicKeys: Ed25519PublicKey[] = [];
+Given("{int} Ed25519 public keys in order", function (this: AptosWorld, count: number) {
+  const privateKeys: Ed25519PrivateKey[] = [];
+  const publicKeys: Ed25519PublicKey[] = [];
 
-    for (let i = 0; i < count; i++) {
-      const privateKey = Ed25519PrivateKey.generate();
-      privateKeys.push(privateKey);
-      publicKeys.push(privateKey.publicKey());
-    }
+  for (let i = 0; i < count; i++) {
+    const privateKey = Ed25519PrivateKey.generate();
+    privateKeys.push(privateKey);
+    publicKeys.push(privateKey.publicKey());
+  }
 
-    this.testVectors.set("ed25519PrivateKeys", privateKeys);
-    this.testVectors.set("ed25519PublicKeys", publicKeys);
-  },
-);
+  this.testVectors.set("ed25519PrivateKeys", privateKeys);
+  this.testVectors.set("ed25519PublicKeys", publicKeys);
+});
 
 Then(
   /^it should equal SHA3-256\(pk1 \|\| pk2 \|\| pk3 \|\| threshold \|\| 0x01\)$/,
   function (this: AptosWorld) {
-    const publicKeys = this.testVectors.get(
-      "ed25519PublicKeys",
-    ) as Ed25519PublicKey[];
+    const publicKeys = this.testVectors.get("ed25519PublicKeys") as Ed25519PublicKey[];
     const threshold = this.testVectors.get("threshold") as number;
-    const account = this.testVectors.get(
-      "multiSigAccount",
-    ) as MultiEd25519Account;
+    const account = this.testVectors.get("multiSigAccount") as MultiEd25519Account;
 
     // Build the expected input: pk1 || pk2 || pk3 || threshold
     const keyBytes: number[] = [];
@@ -227,28 +200,23 @@ When("I create multi-sig accounts from each", function (this: AptosWorld) {
   this.testVectors.set("addressCBA", multiPubKeyCBA.authKey().derivedAddress());
 });
 
-Given(
-  "the same {int} public keys in same order",
-  function (this: AptosWorld, count: number) {
-    const privateKeys: Ed25519PrivateKey[] = [];
-    const publicKeys: Ed25519PublicKey[] = [];
+Given("the same {int} public keys in same order", function (this: AptosWorld, count: number) {
+  const privateKeys: Ed25519PrivateKey[] = [];
+  const publicKeys: Ed25519PublicKey[] = [];
 
-    for (let i = 0; i < count; i++) {
-      const privateKey = Ed25519PrivateKey.generate();
-      privateKeys.push(privateKey);
-      publicKeys.push(privateKey.publicKey());
-    }
+  for (let i = 0; i < count; i++) {
+    const privateKey = Ed25519PrivateKey.generate();
+    privateKeys.push(privateKey);
+    publicKeys.push(privateKey.publicKey());
+  }
 
-    this.testVectors.set("ed25519PrivateKeys", privateKeys);
-    this.testVectors.set("ed25519PublicKeys", publicKeys);
-    this.testVectors.set("samePublicKeys", publicKeys);
-  },
-);
+  this.testVectors.set("ed25519PrivateKeys", privateKeys);
+  this.testVectors.set("ed25519PublicKeys", publicKeys);
+  this.testVectors.set("samePublicKeys", publicKeys);
+});
 
 When("I create two multi-sig accounts", function (this: AptosWorld) {
-  const publicKeys = this.testVectors.get(
-    "samePublicKeys",
-  ) as Ed25519PublicKey[];
+  const publicKeys = this.testVectors.get("samePublicKeys") as Ed25519PublicKey[];
   const threshold = this.testVectors.get("threshold") as number;
 
   const multiPubKey1 = new MultiEd25519PublicKey({
@@ -310,32 +278,22 @@ Given(
 );
 
 Given("a message to sign", function (this: AptosWorld) {
-  this.testVectors.set(
-    "messageToSign",
-    new TextEncoder().encode("hello world"),
-  );
+  this.testVectors.set("messageToSign", new TextEncoder().encode("hello world"));
 });
 
 // Signing step that stores the signature in testVectors
 When("I sign the message with multi-sig", function (this: AptosWorld) {
-  const account = this.testVectors.get(
-    "multiSigAccount",
-  ) as MultiEd25519Account;
+  const account = this.testVectors.get("multiSigAccount") as MultiEd25519Account;
   const message = this.testVectors.get("messageToSign") as Uint8Array;
 
   const signature = account.sign(message);
   this.testVectors.set("multiSigSignature", signature);
 });
 
-Then(
-  "it should contain {int} signatures",
-  function (this: AptosWorld, count: number) {
-    const signature = this.testVectors.get(
-      "multiSigSignature",
-    ) as MultiEd25519Signature;
-    expect(signature.signatures.length).to.equal(count);
-  },
-);
+Then("it should contain {int} signatures", function (this: AptosWorld, count: number) {
+  const signature = this.testVectors.get("multiSigSignature") as MultiEd25519Signature;
+  expect(signature.signatures.length).to.equal(count);
+});
 
 Given(
   "a 2-of-3 multi-sig account with only {int} private key",
@@ -356,10 +314,7 @@ Given(
     });
 
     this.testVectors.set("multiSigPublicKey", multiPubKey);
-    this.testVectors.set(
-      "availablePrivateKeys",
-      privateKeys.slice(0, keyCount),
-    );
+    this.testVectors.set("availablePrivateKeys", privateKeys.slice(0, keyCount));
     this.testVectors.set("canSignCheck", keyCount >= 2);
   },
 );
@@ -405,28 +360,20 @@ Given("a 2-of-3 multi-sig with public keys only", function (this: AptosWorld) {
 When(
   "party {int} signs and provides their signature",
   function (this: AptosWorld, partyIndex: number) {
-    const privateKeys = this.testVectors.get(
-      "allPrivateKeys",
-    ) as Ed25519PrivateKey[];
+    const privateKeys = this.testVectors.get("allPrivateKeys") as Ed25519PrivateKey[];
     const message = this.testVectors.get("messageToSign") as Uint8Array;
 
     const signature = privateKeys[partyIndex].sign(message);
 
     const signatures =
-      (this.testVectors.get("collectedSignatures") as Map<
-        number,
-        Ed25519Signature
-      >) ?? new Map();
+      (this.testVectors.get("collectedSignatures") as Map<number, Ed25519Signature>) ?? new Map();
     signatures.set(partyIndex, signature);
     this.testVectors.set("collectedSignatures", signatures);
   },
 );
 
 When("I aggregate the signatures", function (this: AptosWorld) {
-  const signatures = this.testVectors.get("collectedSignatures") as Map<
-    number,
-    Ed25519Signature
-  >;
+  const signatures = this.testVectors.get("collectedSignatures") as Map<number, Ed25519Signature>;
 
   // Sort by index
   const sortedEntries = [...signatures.entries()].sort((a, b) => a[0] - b[0]);
@@ -483,16 +430,12 @@ Given(
 );
 
 When("I serialize the signature", function (this: AptosWorld) {
-  const multiSig = this.testVectors.get(
-    "multiSigSignature",
-  ) as MultiEd25519Signature;
+  const multiSig = this.testVectors.get("multiSigSignature") as MultiEd25519Signature;
   this.bytes = multiSig.toUint8Array();
 });
 
 Then("it should include the signer bitmap", function (this: AptosWorld) {
-  const multiSig = this.testVectors.get(
-    "multiSigSignature",
-  ) as MultiEd25519Signature;
+  const multiSig = this.testVectors.get("multiSigSignature") as MultiEd25519Signature;
   expect(multiSig.bitmap).to.not.be.undefined;
   expect(multiSig.bitmap.length).to.equal(4); // 32-bit bitmap
 });
@@ -500,9 +443,7 @@ Then("it should include the signer bitmap", function (this: AptosWorld) {
 Then(
   "the bitmap should indicate positions {int} and {int}",
   function (this: AptosWorld, pos1: number, pos2: number) {
-    const multiSig = this.testVectors.get(
-      "multiSigSignature",
-    ) as MultiEd25519Signature;
+    const multiSig = this.testVectors.get("multiSigSignature") as MultiEd25519Signature;
 
     // Check bitmap has correct bits set
     const indices: number[] = [];
@@ -563,9 +504,7 @@ When("I serialize the multi-signature", function (this: AptosWorld) {
 Then("signatures should be ordered by index", function (this: AptosWorld) {
   // The MultiEd25519Signature requires signatures to be in ascending order
   // This is validated during construction
-  const multiSig = this.testVectors.get(
-    "serializedMultiSig",
-  ) as MultiEd25519Signature;
+  const multiSig = this.testVectors.get("serializedMultiSig") as MultiEd25519Signature;
   expect(multiSig).to.not.be.undefined;
 });
 
@@ -577,57 +516,40 @@ Given("a multi-sig signature builder", function (this: AptosWorld) {
   this.testVectors.set("signatureBuilder", new Map<number, Ed25519Signature>());
 });
 
-When(
-  "I add signature at index {int}",
-  function (this: AptosWorld, index: number) {
-    const builder = this.testVectors.get("signatureBuilder") as Map<
-      number,
-      Ed25519Signature
-    >;
+When("I add signature at index {int}", function (this: AptosWorld, index: number) {
+  const builder = this.testVectors.get("signatureBuilder") as Map<number, Ed25519Signature>;
+  const privateKey = Ed25519PrivateKey.generate();
+  const sig = privateKey.sign(new TextEncoder().encode("test"));
+  builder.set(index, sig);
+  this.testVectors.set("signatureBuilder", builder);
+});
+
+When("I try to add another signature at index {int}", function (this: AptosWorld, index: number) {
+  try {
+    const builder = this.testVectors.get("signatureBuilder") as Map<number, Ed25519Signature>;
+    const existingSigs = Array.from(builder.entries()).map(([idx, sig]) => sig);
+    const existingIndices = Array.from(builder.keys());
+
+    // Try to add duplicate
     const privateKey = Ed25519PrivateKey.generate();
-    const sig = privateKey.sign(new TextEncoder().encode("test"));
-    builder.set(index, sig);
-    this.testVectors.set("signatureBuilder", builder);
-  },
-);
+    const newSig = privateKey.sign(new TextEncoder().encode("test"));
 
-When(
-  "I try to add another signature at index {int}",
-  function (this: AptosWorld, index: number) {
-    try {
-      const builder = this.testVectors.get("signatureBuilder") as Map<
-        number,
-        Ed25519Signature
-      >;
-      const existingSigs = Array.from(builder.entries()).map(
-        ([idx, sig]) => sig,
-      );
-      const existingIndices = Array.from(builder.keys());
+    // This should fail with duplicate detection
+    const multiSig = new MultiEd25519Signature({
+      signatures: [...existingSigs, newSig],
+      bitmap: [...existingIndices, index], // Duplicate index
+    });
 
-      // Try to add duplicate
-      const privateKey = Ed25519PrivateKey.generate();
-      const newSig = privateKey.sign(new TextEncoder().encode("test"));
+    this.result = multiSig;
+  } catch (e) {
+    this.error = e as Error;
+  }
+});
 
-      // This should fail with duplicate detection
-      const multiSig = new MultiEd25519Signature({
-        signatures: [...existingSigs, newSig],
-        bitmap: [...existingIndices, index], // Duplicate index
-      });
-
-      this.result = multiSig;
-    } catch (e) {
-      this.error = e as Error;
-    }
-  },
-);
-
-Then(
-  "it should fail with DuplicateSignerIndex error",
-  function (this: AptosWorld) {
-    expect(this.error).to.not.be.undefined;
-    expect(this.error!.message).to.match(/[Dd]uplicate/);
-  },
-);
+Then("it should fail with DuplicateSignerIndex error", function (this: AptosWorld) {
+  expect(this.error).to.not.be.undefined;
+  expect(this.error!.message).to.match(/[Dd]uplicate/);
+});
 
 Given("a {int}-key multi-sig", function (this: AptosWorld, keyCount: number) {
   const publicKeys: Ed25519PublicKey[] = [];
@@ -645,48 +567,40 @@ Given("a {int}-key multi-sig", function (this: AptosWorld, keyCount: number) {
   this.testVectors.set("keyCount", keyCount);
 });
 
-When(
-  "I try to add a signature at index {int}",
-  function (this: AptosWorld, index: number) {
-    const keyCount = this.testVectors.get("keyCount") as number;
+When("I try to add a signature at index {int}", function (this: AptosWorld, index: number) {
+  const keyCount = this.testVectors.get("keyCount") as number;
 
-    try {
-      const privateKey = Ed25519PrivateKey.generate();
-      const sig = privateKey.sign(new TextEncoder().encode("test"));
+  try {
+    const privateKey = Ed25519PrivateKey.generate();
+    const sig = privateKey.sign(new TextEncoder().encode("test"));
 
-      // Try to create signature with invalid index
-      const multiSig = new MultiEd25519Signature({
-        signatures: [sig],
-        bitmap: [index],
-      });
+    // Try to create signature with invalid index
+    const multiSig = new MultiEd25519Signature({
+      signatures: [sig],
+      bitmap: [index],
+    });
 
-      this.result = multiSig;
-    } catch (e) {
-      this.error = e as Error;
-    }
-  },
-);
+    this.result = multiSig;
+  } catch (e) {
+    this.error = e as Error;
+  }
+});
 
-Then(
-  "it should fail with InvalidSignerIndex error",
-  function (this: AptosWorld) {
-    // Note: The TS SDK allows creating signatures with any index up to 31
-    // The actual validation happens during verification
-    // So we check if an error occurred or if the index was out of bounds
-    if (this.error) {
-      expect(this.error.message).to.match(/index|Index|signature/i);
-    }
-  },
-);
+Then("it should fail with InvalidSignerIndex error", function (this: AptosWorld) {
+  // Note: The TS SDK allows creating signatures with any index up to 31
+  // The actual validation happens during verification
+  // So we check if an error occurred or if the index was out of bounds
+  if (this.error) {
+    expect(this.error.message).to.match(/index|Index|signature/i);
+  }
+});
 
 // =============================================================================
 // Signing Transactions
 // =============================================================================
 
 Given("a RawTransaction for multi-sig signing", function (this: AptosWorld) {
-  const account = this.testVectors.get(
-    "multiSigAccount",
-  ) as MultiEd25519Account;
+  const account = this.testVectors.get("multiSigAccount") as MultiEd25519Account;
   const sender = account ? account.accountAddress : AccountAddress.from("0x1");
   const payload = new TransactionPayload(
     EntryFunction.build(
@@ -711,9 +625,7 @@ Given("a RawTransaction for multi-sig signing", function (this: AptosWorld) {
 });
 
 When("I sign the transaction with multi-sig", function (this: AptosWorld) {
-  const account = this.testVectors.get(
-    "multiSigAccount",
-  ) as MultiEd25519Account;
+  const account = this.testVectors.get("multiSigAccount") as MultiEd25519Account;
   const rawTxn = this.testVectors.get("rawTransaction") as RawTransaction;
 
   // Sign the transaction
@@ -721,10 +633,7 @@ When("I sign the transaction with multi-sig", function (this: AptosWorld) {
   const signature = account.sign(signingMessage);
 
   // Create the authenticator
-  const authenticator = new TransactionAuthenticatorMultiEd25519(
-    account.publicKey,
-    signature,
-  );
+  const authenticator = new TransactionAuthenticatorMultiEd25519(account.publicKey, signature);
 
   const signedTxn = new SignedTransaction(rawTxn, authenticator);
 
@@ -736,13 +645,10 @@ Then("I should get a multi-sig SignedTransaction", function (this: AptosWorld) {
   expect(this.result).to.be.instanceOf(SignedTransaction);
 });
 
-Then(
-  "the authenticator should be MultiEd25519 variant",
-  function (this: AptosWorld) {
-    const signedTxn = this.result as SignedTransaction;
-    expect(signedTxn.authenticator.isMultiEd25519()).to.be.true;
-  },
-);
+Then("the authenticator should be MultiEd25519 variant", function (this: AptosWorld) {
+  const signedTxn = this.result as SignedTransaction;
+  expect(signedTxn.authenticator.isMultiEd25519()).to.be.true;
+});
 
 // =============================================================================
 // Verification
@@ -768,9 +674,7 @@ Given("a 2-of-3 multi-sig public key", function (this: AptosWorld) {
 });
 
 Given("a message and valid 2-of-3 signature", function (this: AptosWorld) {
-  const privateKeys = this.testVectors.get(
-    "allPrivateKeys",
-  ) as Ed25519PrivateKey[];
+  const privateKeys = this.testVectors.get("allPrivateKeys") as Ed25519PrivateKey[];
   const message = new TextEncoder().encode("verification test");
 
   const sig1 = privateKeys[0].sign(message);
@@ -787,13 +691,9 @@ Given("a message and valid 2-of-3 signature", function (this: AptosWorld) {
 
 // Verify multi-sig signature step that sets this.result for existing verification steps
 When("I verify the multi-sig signature", function (this: AptosWorld) {
-  const multiPubKey = this.testVectors.get(
-    "multiSigPublicKey",
-  ) as MultiEd25519PublicKey;
+  const multiPubKey = this.testVectors.get("multiSigPublicKey") as MultiEd25519PublicKey;
   const message = this.testVectors.get("messageToSign") as Uint8Array;
-  const signature = this.testVectors.get(
-    "multiSigSignature",
-  ) as MultiEd25519Signature;
+  const signature = this.testVectors.get("multiSigSignature") as MultiEd25519Signature;
 
   try {
     const isValid = multiPubKey.verifySignature({ message, signature });
@@ -813,13 +713,9 @@ Then("multi-sig verification should fail", function (this: AptosWorld) {
 });
 
 Then("the multi-sig signature should be valid", function (this: AptosWorld) {
-  const account = this.testVectors.get(
-    "multiSigAccount",
-  ) as MultiEd25519Account;
+  const account = this.testVectors.get("multiSigAccount") as MultiEd25519Account;
   const message = this.testVectors.get("messageToSign") as Uint8Array;
-  const signature = this.testVectors.get(
-    "multiSigSignature",
-  ) as MultiEd25519Signature;
+  const signature = this.testVectors.get("multiSigSignature") as MultiEd25519Signature;
 
   const isValid = account.publicKey.verifySignature({
     message,
@@ -829,33 +725,25 @@ Then("the multi-sig signature should be valid", function (this: AptosWorld) {
   expect(isValid).to.be.true;
 });
 
-Then(
-  "multi-sig creation should fail with no keys",
-  function (this: AptosWorld) {
-    expect(this.error).to.not.be.undefined;
-    expect(this.error!.message).to.match(/key|keys|Key|minimum/i);
-  },
-);
+Then("multi-sig creation should fail with no keys", function (this: AptosWorld) {
+  expect(this.error).to.not.be.undefined;
+  expect(this.error!.message).to.match(/key|keys|Key|minimum/i);
+});
 
-Given(
-  "a signature with only {int} signer",
-  function (this: AptosWorld, count: number) {
-    const privateKeys = this.testVectors.get(
-      "allPrivateKeys",
-    ) as Ed25519PrivateKey[];
-    const message = new TextEncoder().encode("verification test");
+Given("a signature with only {int} signer", function (this: AptosWorld, count: number) {
+  const privateKeys = this.testVectors.get("allPrivateKeys") as Ed25519PrivateKey[];
+  const message = new TextEncoder().encode("verification test");
 
-    const sig1 = privateKeys[0].sign(message);
+  const sig1 = privateKeys[0].sign(message);
 
-    const multiSig = new MultiEd25519Signature({
-      signatures: [sig1],
-      bitmap: [0],
-    });
+  const multiSig = new MultiEd25519Signature({
+    signatures: [sig1],
+    bitmap: [0],
+  });
 
-    this.testVectors.set("messageToSign", message);
-    this.testVectors.set("multiSigSignature", multiSig);
-  },
-);
+  this.testVectors.set("messageToSign", message);
+  this.testVectors.set("multiSigSignature", multiSig);
+});
 
 Given("a signature from different keys", function (this: AptosWorld) {
   const message = new TextEncoder().encode("verification test");
@@ -897,12 +785,8 @@ Given("threshold from test vectors", function (this: AptosWorld) {
 });
 
 When("I create a multi-sig account", function (this: AptosWorld) {
-  const publicKeys = this.testVectors.get(
-    "ed25519PublicKeys",
-  ) as Ed25519PublicKey[];
-  const privateKeys = this.testVectors.get(
-    "ed25519PrivateKeys",
-  ) as Ed25519PrivateKey[];
+  const publicKeys = this.testVectors.get("ed25519PublicKeys") as Ed25519PublicKey[];
+  const privateKeys = this.testVectors.get("ed25519PrivateKeys") as Ed25519PrivateKey[];
   const threshold = this.testVectors.get("threshold") as number;
 
   const multiPubKey = new MultiEd25519PublicKey({
@@ -919,53 +803,40 @@ When("I create a multi-sig account", function (this: AptosWorld) {
   this.result = account;
 });
 
-Then(
-  "the address should match expected value from test vectors",
-  function (this: AptosWorld) {
-    const account = this.testVectors.get(
-      "multiSigAccount",
-    ) as MultiEd25519Account;
-    // Since we're using generated keys, we just verify the address is valid
-    expect(account.accountAddress).to.not.be.undefined;
-    expect(account.accountAddress.toStringLong().length).to.equal(66); // 0x + 64 hex chars
-  },
-);
+Then("the address should match expected value from test vectors", function (this: AptosWorld) {
+  const account = this.testVectors.get("multiSigAccount") as MultiEd25519Account;
+  // Since we're using generated keys, we just verify the address is valid
+  expect(account.accountAddress).to.not.be.undefined;
+  expect(account.accountAddress.toStringLong().length).to.equal(66); // 0x + 64 hex chars
+});
 
-Given(
-  "a multi-sig account and message from test vectors",
-  function (this: AptosWorld) {
-    const publicKeys: Ed25519PublicKey[] = [];
-    const privateKeys: Ed25519PrivateKey[] = [];
+Given("a multi-sig account and message from test vectors", function (this: AptosWorld) {
+  const publicKeys: Ed25519PublicKey[] = [];
+  const privateKeys: Ed25519PrivateKey[] = [];
 
-    for (let i = 0; i < 3; i++) {
-      const privateKey = Ed25519PrivateKey.generate();
-      privateKeys.push(privateKey);
-      publicKeys.push(privateKey.publicKey());
-    }
+  for (let i = 0; i < 3; i++) {
+    const privateKey = Ed25519PrivateKey.generate();
+    privateKeys.push(privateKey);
+    publicKeys.push(privateKey.publicKey());
+  }
 
-    const multiPubKey = new MultiEd25519PublicKey({
-      publicKeys,
-      threshold: 2,
-    });
+  const multiPubKey = new MultiEd25519PublicKey({
+    publicKeys,
+    threshold: 2,
+  });
 
-    const account = new MultiEd25519Account({
-      publicKey: multiPubKey,
-      signers: privateKeys.slice(0, 2),
-    });
+  const account = new MultiEd25519Account({
+    publicKey: multiPubKey,
+    signers: privateKeys.slice(0, 2),
+  });
 
-    this.testVectors.set("multiSigAccount", account);
-    this.testVectors.set("allPrivateKeys", privateKeys);
-    this.testVectors.set(
-      "messageToSign",
-      new TextEncoder().encode("test vector message"),
-    );
-  },
-);
+  this.testVectors.set("multiSigAccount", account);
+  this.testVectors.set("allPrivateKeys", privateKeys);
+  this.testVectors.set("messageToSign", new TextEncoder().encode("test vector message"));
+});
 
 When("I sign with the specified keys", function (this: AptosWorld) {
-  const account = this.testVectors.get(
-    "multiSigAccount",
-  ) as MultiEd25519Account;
+  const account = this.testVectors.get("multiSigAccount") as MultiEd25519Account;
   const message = this.testVectors.get("messageToSign") as Uint8Array;
 
   const signature = account.sign(message);
@@ -973,17 +844,12 @@ When("I sign with the specified keys", function (this: AptosWorld) {
   this.result = signature;
 });
 
-Then(
-  "the signature should match expected value from test vectors",
-  function (this: AptosWorld) {
-    const signature = this.testVectors.get(
-      "multiSigSignature",
-    ) as MultiEd25519Signature;
-    // Since we're using generated keys, we just verify the signature structure
-    expect(signature).to.not.be.undefined;
-    expect(signature.signatures.length).to.equal(2);
-  },
-);
+Then("the signature should match expected value from test vectors", function (this: AptosWorld) {
+  const signature = this.testVectors.get("multiSigSignature") as MultiEd25519Signature;
+  // Since we're using generated keys, we just verify the signature structure
+  expect(signature).to.not.be.undefined;
+  expect(signature.signatures.length).to.equal(2);
+});
 
 // =============================================================================
 // Multi-sig Authenticator Structure Steps

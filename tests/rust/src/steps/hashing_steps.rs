@@ -96,7 +96,9 @@ fn given_megabyte_of_data(world: &mut TestWorld, n: usize) {
 #[when(expr = "I compute SHA3-256")]
 fn when_compute_sha3_256(world: &mut TestWorld) {
     // Check multiple possible input sources
-    let input = world.hash_input.as_ref()
+    let input = world
+        .hash_input
+        .as_ref()
         .or(world.bytes.as_ref())
         .expect("No input bytes");
     let hash = sha3_256(input);
@@ -144,12 +146,12 @@ fn when_compute_sha2_256(world: &mut TestWorld) {
 fn when_compute_both_hashes(world: &mut TestWorld) {
     use sha2::{Digest, Sha256};
     let input = world.hash_input.as_ref().expect("No input bytes");
-    
+
     let mut hasher = Sha256::new();
     hasher.update(input);
     let sha2_result: [u8; 32] = hasher.finalize().into();
     world.hash_result = Some(sha2_result);
-    
+
     world.hash_result2 = Some(sha3_256(input));
 }
 
@@ -157,7 +159,7 @@ fn when_compute_both_hashes(world: &mut TestWorld) {
 fn when_compute_domain_separated_hash(world: &mut TestWorld) {
     let domain = world.domain_string.as_ref().expect("No domain");
     let data = world.hash_input.as_ref().expect("No input");
-    
+
     // Domain-separated hash: SHA3-256(SHA3-256(domain) || data)
     let domain_hash = sha3_256(domain.as_bytes());
     let mut combined = domain_hash.to_vec();
@@ -170,12 +172,12 @@ fn when_compute_domain_separated_hashes(world: &mut TestWorld) {
     let domain1 = world.domain_string.as_ref().expect("No domain 1");
     let domain2 = world.domain_string2.as_ref().expect("No domain 2");
     let data = world.hash_input.as_ref().expect("No input");
-    
+
     let domain_hash1 = sha3_256(domain1.as_bytes());
     let mut combined1 = domain_hash1.to_vec();
     combined1.extend(data);
     world.hash_result = Some(sha3_256(&combined1));
-    
+
     let domain_hash2 = sha3_256(domain2.as_bytes());
     let mut combined2 = domain_hash2.to_vec();
     combined2.extend(data);
@@ -203,14 +205,18 @@ fn given_mnemonic_entropy_and_passphrase(world: &mut TestWorld) {
 fn when_compute_hmac_sha512(world: &mut TestWorld) {
     use hmac::{Hmac, Mac};
     use sha2::Sha512;
-    
-    let passphrase = world.string_value.as_ref().map(|s| s.as_str()).unwrap_or("");
+
+    let passphrase = world
+        .string_value
+        .as_ref()
+        .map(|s| s.as_str())
+        .unwrap_or("");
     let key = format!("mnemonic{}", passphrase);
     let data = world.hash_input.as_ref().expect("No input bytes");
-    
+
     type HmacSha512 = Hmac<Sha512>;
-    let mut mac = HmacSha512::new_from_slice(key.as_bytes())
-        .expect("HMAC can take key of any size");
+    let mut mac =
+        HmacSha512::new_from_slice(key.as_bytes()).expect("HMAC can take key of any size");
     mac.update(data);
     let result = mac.finalize();
     world.serialized_bytes = Some(result.into_bytes().to_vec());
@@ -287,8 +293,12 @@ fn then_hex_should_be(world: &mut TestWorld, expected: String) {
     } else {
         panic!("No hash result to check hex");
     };
-    
-    assert_eq!(actual, expected, "Expected hex {}, got {}", expected, actual);
+
+    assert_eq!(
+        actual, expected,
+        "Expected hex {}, got {}",
+        expected, actual
+    );
 }
 
 #[then(expr = "the hashes should be different")]
@@ -355,7 +365,12 @@ fn then_hash_value_contains_bytes(world: &mut TestWorld) {
 #[then(expr = "it should fail with an invalid length error")]
 fn then_fails_invalid_length(world: &mut TestWorld) {
     assert!(world.error.is_some(), "Expected error");
-    assert!(world.error.as_ref().unwrap().to_lowercase().contains("length"));
+    assert!(world
+        .error
+        .as_ref()
+        .unwrap()
+        .to_lowercase()
+        .contains("length"));
 }
 
 #[then(expr = "all {int} bytes should be zero")]
@@ -370,8 +385,17 @@ fn then_all_bytes_zero(world: &mut TestWorld, n: usize) {
 
 #[then(expr = "the hex length should be {int} characters")]
 fn then_hex_length_is(world: &mut TestWorld, len: usize) {
-    let formatted = world.formatted_string.as_ref().expect("No formatted string");
-    assert_eq!(formatted.len(), len, "Expected {} chars, got {}", len, formatted.len());
+    let formatted = world
+        .formatted_string
+        .as_ref()
+        .expect("No formatted string");
+    assert_eq!(
+        formatted.len(),
+        len,
+        "Expected {} chars, got {}",
+        len,
+        formatted.len()
+    );
 }
 
 #[then(expr = "they should be equal")]
@@ -412,4 +436,3 @@ fn then_result_equals_expected_hash(world: &mut TestWorld) {
 fn then_operation_complete(_world: &mut TestWorld) {
     // If we got here, the operation completed
 }
-

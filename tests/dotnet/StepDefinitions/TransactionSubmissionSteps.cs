@@ -35,7 +35,7 @@ public class TransactionSubmissionSteps
     public void GivenAValidSignedAPTTransferTransaction()
     {
         var account = _world.TestVectors.TryGetValue("fundedAccount", out var fa) ? fa as Account : Account.Generate();
-        
+
         // Create a mock signed transaction
         _world.TestVectors["signedTransaction"] = new Dictionary<string, object>
         {
@@ -108,7 +108,7 @@ public class TransactionSubmissionSteps
     {
         _world.Account = Account.Generate();
         _world.TestVectors["signingAccount"] = _world.Account;
-        
+
         _world.TestVectors["signedTransaction"] = new Dictionary<string, object>
         {
             { "sender", _world.Account.Address },

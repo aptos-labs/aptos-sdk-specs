@@ -67,9 +67,7 @@ Given("a transaction I haven't signed yet", function (this: AptosWorld) {
   const account = Account.fromPrivateKey({ privateKey });
   this.account = account;
   this.testVectors.set("unsignedTransaction", true);
-  this.testVectors.set("simulationResponse", [
-    { success: true, gas_used: "500" },
-  ]);
+  this.testVectors.set("simulationResponse", [{ success: true, gas_used: "500" }]);
 });
 
 Then("simulation should work", function (this: AptosWorld) {
@@ -113,9 +111,7 @@ Given("a transaction", function (this: AptosWorld) {
   const privateKey = Ed25519PrivateKey.generate();
   const account = Account.fromPrivateKey({ privateKey });
   this.account = account;
-  this.testVectors.set("simulationResponse", [
-    { success: true, gas_used: "1000" },
-  ]);
+  this.testVectors.set("simulationResponse", [{ success: true, gas_used: "1000" }]);
 });
 
 Then("gas_used tells me actual consumption", function (this: AptosWorld) {
@@ -314,9 +310,7 @@ Given("a historical ledger version", function (this: AptosWorld) {
 
 When("I simulate at that version", function (this: AptosWorld) {
   this.testVectors.set("simulatedAtVersion", true);
-  this.testVectors.set("simulationResponse", [
-    { success: true, gas_used: "500" },
-  ]);
+  this.testVectors.set("simulationResponse", [{ success: true, gas_used: "500" }]);
 });
 
 Then("simulation uses state at that version", function (this: AptosWorld) {
@@ -325,9 +319,7 @@ Then("simulation uses state at that version", function (this: AptosWorld) {
 
 When("I simulate with specific max_gas_amount", function (this: AptosWorld) {
   this.testVectors.set("specificMaxGas", 50000);
-  this.testVectors.set("simulationResponse", [
-    { success: true, gas_used: "1000" },
-  ]);
+  this.testVectors.set("simulationResponse", [{ success: true, gas_used: "1000" }]);
 });
 
 Then("simulation respects that limit", function (this: AptosWorld) {
@@ -339,9 +331,7 @@ Then("simulation respects that limit", function (this: AptosWorld) {
 
 When("I simulate with specific gas_unit_price", function (this: AptosWorld) {
   this.testVectors.set("specificGasPrice", 200);
-  this.testVectors.set("simulationResponse", [
-    { success: true, gas_used: "1000" },
-  ]);
+  this.testVectors.set("simulationResponse", [{ success: true, gas_used: "1000" }]);
 });
 
 Then("simulation uses that price for calculations", function (this: AptosWorld) {
@@ -357,7 +347,10 @@ Then("show changes for all involved accounts", function (this: AptosWorld) {
 });
 
 Then("gas should be charged to fee payer", function (this: AptosWorld) {
-  expect(this.testVectors.get("feePayerTransaction") || this.testVectors.get("feePayerTransactionCreated")).to.be.true;
+  expect(
+    this.testVectors.get("feePayerTransaction") ||
+      this.testVectors.get("feePayerTransactionCreated"),
+  ).to.be.true;
 });
 
 Then("simulation should reflect that", function (this: AptosWorld) {
@@ -368,9 +361,7 @@ Then("simulation should reflect that", function (this: AptosWorld) {
 // Simulation vs execution
 Given("a simulation", function (this: AptosWorld) {
   this.testVectors.set("simulationDone", true);
-  this.testVectors.set("simulationResponse", [
-    { success: true, gas_used: "1000" },
-  ]);
+  this.testVectors.set("simulationResponse", [{ success: true, gas_used: "1000" }]);
 });
 
 When("it completes", function (this: AptosWorld) {
@@ -410,15 +401,16 @@ Given("current sequence number is {int}", function (this: AptosWorld, seqNum: nu
 
 When("I simulate transaction with seq num {int}", function (this: AptosWorld, seqNum: number) {
   this.testVectors.set("simulatedSeqNum", seqNum);
-  this.testVectors.set("simulationResponse", [
-    { success: true, gas_used: "500" },
-  ]);
+  this.testVectors.set("simulationResponse", [{ success: true, gas_used: "500" }]);
 });
 
-Then("simulation should work even if account hasn't committed seq {int} yet", function (this: AptosWorld, seqNum: number) {
-  const response = this.testVectors.get("simulationResponse") as any[];
-  expect(response?.[0]?.success).to.be.true;
-});
+Then(
+  "simulation should work even if account hasn't committed seq {int} yet",
+  function (this: AptosWorld, seqNum: number) {
+    const response = this.testVectors.get("simulationResponse") as any[];
+    expect(response?.[0]?.success).to.be.true;
+  },
+);
 
 // Batch simulation
 Given("multiple transactions", function (this: AptosWorld) {
@@ -512,14 +504,11 @@ Given("sender public key", function (this: AptosWorld) {
 // This is an integration test that needs testnet/devnet access.
 // See features/06-advanced/simulation.feature
 
-Then(
-  "I should receive simulation results without broadcasting",
-  function (this: AptosWorld) {
-    const response = this.testVectors.get("simulationResponse") as any[];
-    expect(response).to.not.be.undefined;
-    expect(Array.isArray(response)).to.be.true;
-  },
-);
+Then("I should receive simulation results without broadcasting", function (this: AptosWorld) {
+  const response = this.testVectors.get("simulationResponse") as any[];
+  expect(response).to.not.be.undefined;
+  expect(Array.isArray(response)).to.be.true;
+});
 
 Then("transaction should NOT appear on chain", function (this: AptosWorld) {
   // Simulation doesn't broadcast
@@ -587,10 +576,7 @@ Given(
 
 When("I simulate the failing transaction", function (this: AptosWorld) {
   // Simulation already prepared
-  this.testVectors.set(
-    "inspectedSimulation",
-    this.testVectors.get("simulationResponse")[0],
-  );
+  this.testVectors.set("inspectedSimulation", this.testVectors.get("simulationResponse")[0]);
 });
 
 // Note: "I should see success: false" is defined in transaction-submission.steps.ts
@@ -616,10 +602,7 @@ Given("a transaction that aborts", function (this: AptosWorld) {
 });
 
 When("I simulate the aborting transaction", function (this: AptosWorld) {
-  this.testVectors.set(
-    "inspectedSimulation",
-    this.testVectors.get("simulationResponse")[0],
-  );
+  this.testVectors.set("inspectedSimulation", this.testVectors.get("simulationResponse")[0]);
 });
 
 Then("I should see the abort code", function (this: AptosWorld) {
@@ -627,38 +610,29 @@ Then("I should see the abort code", function (this: AptosWorld) {
   expect(sim.vm_status).to.include("abort");
 });
 
-Then(
-  "I should see the module and error name if available",
-  function (this: AptosWorld) {
-    const sim = this.testVectors.get("inspectedSimulation") as any;
-    expect(sim.vm_status).to.include("::");
-  },
-);
+Then("I should see the module and error name if available", function (this: AptosWorld) {
+  const sim = this.testVectors.get("inspectedSimulation") as any;
+  expect(sim.vm_status).to.include("::");
+});
 
 // =============================================================================
 // Gas Estimation via Simulation
 // =============================================================================
 
-Given(
-  "an unsigned transaction for gas estimation",
-  function (this: AptosWorld) {
-    const privateKey = Ed25519PrivateKey.generate();
-    const account = Account.fromPrivateKey({ privateKey });
-    this.testVectors.set("gasEstimationAccount", account);
-    this.testVectors.set("simulationResponse", [
-      {
-        success: true,
-        gas_used: "500",
-      },
-    ]);
-  },
-);
+Given("an unsigned transaction for gas estimation", function (this: AptosWorld) {
+  const privateKey = Ed25519PrivateKey.generate();
+  const account = Account.fromPrivateKey({ privateKey });
+  this.testVectors.set("gasEstimationAccount", account);
+  this.testVectors.set("simulationResponse", [
+    {
+      success: true,
+      gas_used: "500",
+    },
+  ]);
+});
 
 When("I simulate for gas estimation", function (this: AptosWorld) {
-  this.testVectors.set(
-    "gasEstimationResult",
-    this.testVectors.get("simulationResponse")[0],
-  );
+  this.testVectors.set("gasEstimationResult", this.testVectors.get("simulationResponse")[0]);
 });
 
 Then("I should get gas_used estimate", function (this: AptosWorld) {
@@ -666,16 +640,13 @@ Then("I should get gas_used estimate", function (this: AptosWorld) {
   expect(result.gas_used).to.not.be.undefined;
 });
 
-Then(
-  "I can use this to set max_gas_amount with margin",
-  function (this: AptosWorld) {
-    const result = this.testVectors.get("gasEstimationResult") as any;
-    const gasUsed = parseInt(result.gas_used, 10);
-    const maxGasWithMargin = Math.ceil(gasUsed * 1.2); // 20% margin
-    this.testVectors.set("recommendedMaxGas", maxGasWithMargin);
-    expect(maxGasWithMargin).to.be.greaterThan(gasUsed);
-  },
-);
+Then("I can use this to set max_gas_amount with margin", function (this: AptosWorld) {
+  const result = this.testVectors.get("gasEstimationResult") as any;
+  const gasUsed = parseInt(result.gas_used, 10);
+  const maxGasWithMargin = Math.ceil(gasUsed * 1.2); // 20% margin
+  this.testVectors.set("recommendedMaxGas", maxGasWithMargin);
+  expect(maxGasWithMargin).to.be.greaterThan(gasUsed);
+});
 
 // =============================================================================
 // State Preview
@@ -707,25 +678,19 @@ When("I simulate and inspect changes", function (this: AptosWorld) {
   this.testVectors.set("simulationChanges", response[0].changes);
 });
 
-Then(
-  "I should see the resources that would be modified",
-  function (this: AptosWorld) {
-    const changes = this.testVectors.get("simulationChanges") as any[];
-    expect(changes.length).to.be.greaterThan(0);
-  },
-);
+Then("I should see the resources that would be modified", function (this: AptosWorld) {
+  const changes = this.testVectors.get("simulationChanges") as any[];
+  expect(changes.length).to.be.greaterThan(0);
+});
 
-Then(
-  "I should see the new values \\(for writes\\)",
-  function (this: AptosWorld) {
-    const changes = this.testVectors.get("simulationChanges") as any[];
-    for (const change of changes) {
-      if (change.type === "write_resource") {
-        expect(change.data).to.not.be.undefined;
-      }
+Then("I should see the new values \\(for writes\\)", function (this: AptosWorld) {
+  const changes = this.testVectors.get("simulationChanges") as any[];
+  for (const change of changes) {
+    if (change.type === "write_resource") {
+      expect(change.data).to.not.be.undefined;
     }
-  },
-);
+  }
+});
 
 // =============================================================================
 // Event Preview
@@ -760,13 +725,10 @@ When("I simulate and inspect events", function (this: AptosWorld) {
   this.testVectors.set("simulationEvents", response[0].events);
 });
 
-Then(
-  "I should see the events that would be emitted",
-  function (this: AptosWorld) {
-    const events = this.testVectors.get("simulationEvents") as any[];
-    expect(events.length).to.be.greaterThan(0);
-  },
-);
+Then("I should see the events that would be emitted", function (this: AptosWorld) {
+  const events = this.testVectors.get("simulationEvents") as any[];
+  expect(events.length).to.be.greaterThan(0);
+});
 
 Then("each event should have type and data", function (this: AptosWorld) {
   const events = this.testVectors.get("simulationEvents") as any[];
@@ -784,22 +746,16 @@ Given("an unsigned transaction", function (this: AptosWorld) {
   this.testVectors.set("unsignedTxn", true);
 });
 
-When(
-  "I provide only the public key for simulation",
-  function (this: AptosWorld) {
-    const privateKey = Ed25519PrivateKey.generate();
-    const account = Account.fromPrivateKey({ privateKey });
-    this.testVectors.set("simulationPublicKey", account.publicKey);
-  },
-);
+When("I provide only the public key for simulation", function (this: AptosWorld) {
+  const privateKey = Ed25519PrivateKey.generate();
+  const account = Account.fromPrivateKey({ privateKey });
+  this.testVectors.set("simulationPublicKey", account.publicKey);
+});
 
-Then(
-  "simulation should work without valid signature",
-  function (this: AptosWorld) {
-    // Simulation doesn't require actual signature
-    expect(true).to.be.true;
-  },
-);
+Then("simulation should work without valid signature", function (this: AptosWorld) {
+  // Simulation doesn't require actual signature
+  expect(true).to.be.true;
+});
 
 Then(
   "the result should reflect what would happen with valid signature",
@@ -808,12 +764,9 @@ Then(
   },
 );
 
-Given(
-  "a signed transaction with incorrect signature",
-  function (this: AptosWorld) {
-    this.testVectors.set("incorrectSignature", true);
-  },
-);
+Given("a signed transaction with incorrect signature", function (this: AptosWorld) {
+  this.testVectors.set("incorrectSignature", true);
+});
 
 When("I simulate it with skip_signature_check", function (this: AptosWorld) {
   this.testVectors.set("skipSignatureCheck", true);
@@ -881,12 +834,9 @@ When("I simulate at that ledger version", function (this: AptosWorld) {
   ]);
 });
 
-Then(
-  "simulation should use state at that version",
-  function (this: AptosWorld) {
-    expect(this.testVectors.get("simulatedAtVersion")).to.be.true;
-  },
-);
+Then("simulation should use state at that version", function (this: AptosWorld) {
+  expect(this.testVectors.get("simulatedAtVersion")).to.be.true;
+});
 
 // =============================================================================
 // Error Cases
@@ -917,13 +867,10 @@ When("simulation takes too long", function (this: AptosWorld) {
   this.error = new Error("Simulation timeout");
 });
 
-Then(
-  "I should get timeout error with suggestion to increase timeout",
-  function (this: AptosWorld) {
-    expect(this.error).to.not.be.undefined;
-    expect(this.error!.message).to.include("timeout");
-  },
-);
+Then("I should get timeout error with suggestion to increase timeout", function (this: AptosWorld) {
+  expect(this.error).to.not.be.undefined;
+  expect(this.error!.message).to.include("timeout");
+});
 
 // =============================================================================
 // Comparison Helpers
@@ -953,9 +900,7 @@ When("I compare them", function (this: AptosWorld) {
 
   this.testVectors.set("comparison", {
     successMatch: sim.success === exec.success,
-    gasDifference: Math.abs(
-      parseInt(sim.gas_used, 10) - parseInt(exec.gas_used, 10),
-    ),
+    gasDifference: Math.abs(parseInt(sim.gas_used, 10) - parseInt(exec.gas_used, 10)),
   });
 });
 
@@ -964,16 +909,13 @@ Then("success status should match", function (this: AptosWorld) {
   expect(comparison.successMatch).to.be.true;
 });
 
-Then(
-  "gas_used should be similar \\(may differ slightly\\)",
-  function (this: AptosWorld) {
-    const comparison = this.testVectors.get("comparison") as any;
-    // Allow up to 10% difference
-    const sim = this.testVectors.get("simulationResult") as any;
-    const tolerance = parseInt(sim.gas_used, 10) * 0.1;
-    expect(comparison.gasDifference).to.be.lessThan(tolerance);
-  },
-);
+Then("gas_used should be similar \\(may differ slightly\\)", function (this: AptosWorld) {
+  const comparison = this.testVectors.get("comparison") as any;
+  // Allow up to 10% difference
+  const sim = this.testVectors.get("simulationResult") as any;
+  const tolerance = parseInt(sim.gas_used, 10) * 0.1;
+  expect(comparison.gasDifference).to.be.lessThan(tolerance);
+});
 
 Then("events should match", function (this: AptosWorld) {
   // Events should match between simulation and execution

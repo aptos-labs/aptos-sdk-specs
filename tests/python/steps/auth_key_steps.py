@@ -3,20 +3,24 @@ Step definitions for authentication-key.feature
 Tests authentication key derivation and conversion.
 """
 
+from support.vectors import hex_to_bytes, bytes_to_hex
+from aptos_sdk.account_address import AccountAddress
+from aptos_sdk.account import Account
+from aptos_sdk.ed25519 import (
+    PrivateKey as Ed25519PrivateKey,
+    PublicKey as Ed25519PublicKey,
+)
+from behave import given, when, then
 import sys
 import os
 import hashlib
+
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-from behave import given, when, then
-from aptos_sdk.ed25519 import PrivateKey as Ed25519PrivateKey, PublicKey as Ed25519PublicKey
-from aptos_sdk.account import Account
-from aptos_sdk.account_address import AccountAddress
 
-from support.vectors import hex_to_bytes, bytes_to_hex
-
-
-def derive_auth_key_from_public_key(public_key_bytes: bytes, scheme_id: int = 0x00) -> str:
+def derive_auth_key_from_public_key(
+    public_key_bytes: bytes, scheme_id: int = 0x00
+) -> str:
     """Derive authentication key from public key bytes and scheme identifier."""
     data = public_key_bytes + bytes([scheme_id])
     hash_result = hashlib.sha3_256(data).digest()
@@ -51,7 +55,7 @@ def step_given_scheme_identifier(context):
     context.world.scheme_id = 0x00  # Ed25519
 
 
-@given('a {key_type} public key')
+@given("a {key_type} public key")
 def step_given_typed_public_key(context, key_type):
     context.world.key_type = key_type
     if key_type == "Ed25519":
@@ -61,21 +65,31 @@ def step_given_typed_public_key(context, key_type):
     elif key_type == "Secp256k1":
         try:
             from ecdsa import SECP256k1, SigningKey
+
             private_key = SigningKey.generate(curve=SECP256k1)
             # Compressed public key (33 bytes)
-            context.world.public_key_bytes = private_key.get_verifying_key().to_string("compressed")
+            context.world.public_key_bytes = private_key.get_verifying_key().to_string(
+                "compressed"
+            )
             context.world.scheme_id = 0x01
         except ImportError:
-            context.world.set_error(ImportError("ecdsa library not available for Secp256k1"))
+            context.world.set_error(
+                ImportError("ecdsa library not available for Secp256k1")
+            )
     elif key_type == "Secp256r1":
         try:
             from ecdsa import NIST256p, SigningKey
+
             private_key = SigningKey.generate(curve=NIST256p)
             # Compressed public key (33 bytes)
-            context.world.public_key_bytes = private_key.get_verifying_key().to_string("compressed")
+            context.world.public_key_bytes = private_key.get_verifying_key().to_string(
+                "compressed"
+            )
             context.world.scheme_id = 0x02
         except ImportError:
-            context.world.set_error(ImportError("ecdsa library not available for Secp256r1"))
+            context.world.set_error(
+                ImportError("ecdsa library not available for Secp256r1")
+            )
     elif key_type == "MultiEd25519":
         context.world.scheme_id = 0x01
     elif key_type == "MultiKey":
@@ -115,13 +129,18 @@ def step_given_ed25519_from_test_vectors(context):
 def step_given_secp256k1_from_test_vectors(context):
     try:
         from ecdsa import SECP256k1, SigningKey
+
         # Generate a deterministic Secp256k1 key for test vectors
         private_key = SigningKey.generate(curve=SECP256k1)
-        context.world.public_key_bytes = private_key.get_verifying_key().to_string("compressed")
+        context.world.public_key_bytes = private_key.get_verifying_key().to_string(
+            "compressed"
+        )
         context.world.scheme_id = 0x01
         context.world.clear_error()
     except ImportError:
-        context.world.set_error(ImportError("ecdsa library not available for Secp256k1"))
+        context.world.set_error(
+            ImportError("ecdsa library not available for Secp256k1")
+        )
 
 
 # =============================================================================

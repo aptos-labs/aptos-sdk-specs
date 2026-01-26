@@ -37,19 +37,11 @@ function createEntryFunction(
   const moduleId = new ModuleId(moduleAddress, new Identifier(moduleName));
   // Wrap args in EntryFunctionBytes
   const wrappedArgs = args.map((a) => new EntryFunctionBytes(a));
-  return new EntryFunction(
-    moduleId,
-    new Identifier(functionName),
-    typeArgs,
-    wrappedArgs,
-  );
+  return new EntryFunction(moduleId, new Identifier(functionName), typeArgs, wrappedArgs);
 }
 
 // Helper to sign a transaction with an account
-function signWithAccount(
-  rawTxn: RawTransaction,
-  account: Account,
-): SignedTransaction {
+function signWithAccount(rawTxn: RawTransaction, account: Account): SignedTransaction {
   // Get the signing message
   const serializer = new Serializer();
   rawTxn.serialize(serializer);
@@ -76,10 +68,7 @@ function signWithAccount(
       ed25519Signature,
     );
   } else {
-    authenticator = new AccountAuthenticatorSingleKey(
-      account.publicKey,
-      signature,
-    );
+    authenticator = new AccountAuthenticatorSingleKey(account.publicKey, signature);
   }
 
   return new SignedTransaction(rawTxn, authenticator);
@@ -124,28 +113,19 @@ Given(/^arguments \[recipient_address, amount\]$/, function (this: AptosWorld) {
 // Given Steps - APT Transfer
 // =============================================================================
 
-Given(
-  "recipient address {string}",
-  function (this: AptosWorld, address: string) {
-    // Remove any ... placeholders
-    const cleanAddress = address.replace("...", "");
-    try {
-      this.testVectors.set(
-        "recipientAddress",
-        AccountAddress.from(cleanAddress.padEnd(66, "0")),
-      );
-    } catch {
-      this.testVectors.set("recipientAddress", AccountAddress.ONE);
-    }
-  },
-);
+Given("recipient address {string}", function (this: AptosWorld, address: string) {
+  // Remove any ... placeholders
+  const cleanAddress = address.replace("...", "");
+  try {
+    this.testVectors.set("recipientAddress", AccountAddress.from(cleanAddress.padEnd(66, "0")));
+  } catch {
+    this.testVectors.set("recipientAddress", AccountAddress.ONE);
+  }
+});
 
-Given(
-  /^amount (\d+)(?: \([^)]+\))?$/,
-  function (this: AptosWorld, amount: string) {
-    this.testVectors.set("amount", BigInt(amount));
-  },
-);
+Given(/^amount (\d+)(?: \([^)]+\))?$/, function (this: AptosWorld, amount: string) {
+  this.testVectors.set("amount", BigInt(amount));
+});
 
 Given("the same recipient and amount", function (this: AptosWorld) {
   this.testVectors.set("recipientAddress", AccountAddress.ONE);
@@ -164,41 +144,35 @@ Given("coin type {string}", function (this: AptosWorld, coinType: string) {
 // Given Steps - RawTransaction
 // =============================================================================
 
-Given(
-  "a sender address {string}",
-  function (this: AptosWorld, address: string) {
-    this.testVectors.set("senderAddress", AccountAddress.from(address));
-  },
-);
+Given("a sender address {string}", function (this: AptosWorld, address: string) {
+  this.testVectors.set("senderAddress", AccountAddress.from(address));
+});
 
 Given("a sequence number {int}", function (this: AptosWorld, seqNum: number) {
   this.testVectors.set("sequenceNumber", BigInt(seqNum));
 });
 
-Given(
-  "an entry function payload for APT transfer",
-  function (this: AptosWorld) {
-    const recipient = AccountAddress.ONE;
-    const amount = BigInt(1000000);
+Given("an entry function payload for APT transfer", function (this: AptosWorld) {
+  const recipient = AccountAddress.ONE;
+  const amount = BigInt(1000000);
 
-    // BCS encode arguments
-    const recipientSerializer = new Serializer();
-    recipient.serialize(recipientSerializer);
+  // BCS encode arguments
+  const recipientSerializer = new Serializer();
+  recipient.serialize(recipientSerializer);
 
-    const amountSerializer = new Serializer();
-    amountSerializer.serializeU64(amount);
+  const amountSerializer = new Serializer();
+  amountSerializer.serializeU64(amount);
 
-    const entryFunction = createEntryFunction(
-      AccountAddress.ONE,
-      "aptos_account",
-      "transfer",
-      [],
-      [recipientSerializer.toUint8Array(), amountSerializer.toUint8Array()],
-    );
+  const entryFunction = createEntryFunction(
+    AccountAddress.ONE,
+    "aptos_account",
+    "transfer",
+    [],
+    [recipientSerializer.toUint8Array(), amountSerializer.toUint8Array()],
+  );
 
-    this.testVectors.set("entryFunction", entryFunction);
-  },
-);
+  this.testVectors.set("entryFunction", entryFunction);
+});
 
 Given("max gas amount {int}", function (this: AptosWorld, gas: number) {
   this.testVectors.set("maxGasAmount", BigInt(gas));
@@ -208,19 +182,13 @@ Given("gas unit price {int}", function (this: AptosWorld, price: number) {
   this.testVectors.set("gasUnitPrice", BigInt(price));
 });
 
-Given(
-  "expiration timestamp {int}",
-  function (this: AptosWorld, timestamp: number) {
-    this.testVectors.set("expirationTimestamp", BigInt(timestamp));
-  },
-);
+Given("expiration timestamp {int}", function (this: AptosWorld, timestamp: number) {
+  this.testVectors.set("expirationTimestamp", BigInt(timestamp));
+});
 
-Given(
-  /^chain ID (\w+) \((\d+)\)$/,
-  function (this: AptosWorld, name: string, id: string) {
-    this.testVectors.set("chainId", parseInt(id));
-  },
-);
+Given(/^chain ID (\w+) \((\d+)\)$/, function (this: AptosWorld, name: string, id: string) {
+  this.testVectors.set("chainId", parseInt(id));
+});
 
 Given("a valid RawTransaction", function (this: AptosWorld) {
   // Create a minimal valid RawTransaction
@@ -301,50 +269,47 @@ Given("a RawTransaction with known values", function (this: AptosWorld) {
   );
 });
 
-Given(
-  "two RawTransactions with different sequence numbers",
-  function (this: AptosWorld) {
-    const createTransaction = (seqNum: bigint) => {
-      const sender = AccountAddress.ONE;
-      const maxGasAmount = BigInt(200000);
-      const gasUnitPrice = BigInt(100);
-      const expirationTimestamp = BigInt(1700000000);
-      const chainId = new ChainId(2);
+Given("two RawTransactions with different sequence numbers", function (this: AptosWorld) {
+  const createTransaction = (seqNum: bigint) => {
+    const sender = AccountAddress.ONE;
+    const maxGasAmount = BigInt(200000);
+    const gasUnitPrice = BigInt(100);
+    const expirationTimestamp = BigInt(1700000000);
+    const chainId = new ChainId(2);
 
-      const recipient = AccountAddress.from("0x2");
-      const amount = BigInt(1000000);
+    const recipient = AccountAddress.from("0x2");
+    const amount = BigInt(1000000);
 
-      const recipientSerializer = new Serializer();
-      recipient.serialize(recipientSerializer);
+    const recipientSerializer = new Serializer();
+    recipient.serialize(recipientSerializer);
 
-      const amountSerializer = new Serializer();
-      amountSerializer.serializeU64(amount);
+    const amountSerializer = new Serializer();
+    amountSerializer.serializeU64(amount);
 
-      const entryFunction = createEntryFunction(
-        AccountAddress.ONE,
-        "aptos_account",
-        "transfer",
-        [],
-        [recipientSerializer.toUint8Array(), amountSerializer.toUint8Array()],
-      );
+    const entryFunction = createEntryFunction(
+      AccountAddress.ONE,
+      "aptos_account",
+      "transfer",
+      [],
+      [recipientSerializer.toUint8Array(), amountSerializer.toUint8Array()],
+    );
 
-      const payload = new TransactionPayloadEntryFunction(entryFunction);
+    const payload = new TransactionPayloadEntryFunction(entryFunction);
 
-      return new RawTransaction(
-        sender,
-        seqNum,
-        payload,
-        maxGasAmount,
-        gasUnitPrice,
-        expirationTimestamp,
-        chainId,
-      );
-    };
+    return new RawTransaction(
+      sender,
+      seqNum,
+      payload,
+      maxGasAmount,
+      gasUnitPrice,
+      expirationTimestamp,
+      chainId,
+    );
+  };
 
-    this.testVectors.set("transaction1", createTransaction(BigInt(0)));
-    this.testVectors.set("transaction2", createTransaction(BigInt(1)));
-  },
-);
+  this.testVectors.set("transaction1", createTransaction(BigInt(0)));
+  this.testVectors.set("transaction2", createTransaction(BigInt(1)));
+});
 
 Given(
   /^a RawTransaction with chain ID (\d+) \((\w+)\)$/,
@@ -393,13 +358,10 @@ Given(
 
 When("I create an EntryFunction", function (this: AptosWorld) {
   try {
-    const moduleAddress = AccountAddress.from(
-      this.testVectors.get("moduleAddress") as string,
-    );
+    const moduleAddress = AccountAddress.from(this.testVectors.get("moduleAddress") as string);
     const moduleName = this.testVectors.get("moduleName") as string;
     const functionName = this.testVectors.get("functionName") as string;
-    const typeArgsStrings =
-      (this.testVectors.get("typeArgs") as string[]) || [];
+    const typeArgsStrings = (this.testVectors.get("typeArgs") as string[]) || [];
 
     const typeArgs = typeArgsStrings.map((t) => parseTypeTag(t));
 
@@ -407,9 +369,7 @@ When("I create an EntryFunction", function (this: AptosWorld) {
     const args: Uint8Array[] = [];
     if (this.testVectors.has("recipientAddress")) {
       const recipientSerializer = new Serializer();
-      (this.testVectors.get("recipientAddress") as AccountAddress).serialize(
-        recipientSerializer,
-      );
+      (this.testVectors.get("recipientAddress") as AccountAddress).serialize(recipientSerializer);
       args.push(recipientSerializer.toUint8Array());
     }
     if (this.testVectors.has("amount")) {
@@ -436,10 +396,8 @@ When("I create an EntryFunction", function (this: AptosWorld) {
 When("I create an APT transfer entry function", function (this: AptosWorld) {
   try {
     const recipient =
-      (this.testVectors.get("recipientAddress") as AccountAddress) ||
-      AccountAddress.ONE;
-    const amount =
-      (this.testVectors.get("amount") as bigint) || BigInt(1000000);
+      (this.testVectors.get("recipientAddress") as AccountAddress) || AccountAddress.ONE;
+    const amount = (this.testVectors.get("amount") as bigint) || BigInt(1000000);
 
     const recipientSerializer = new Serializer();
     recipient.serialize(recipientSerializer);
@@ -487,16 +445,12 @@ When("I create a coin transfer entry function", function (this: AptosWorld) {
   try {
     const coinTypeValue = this.testVectors.get("coinType");
     // Handle both string and TypeTag
-    const typeArg =
-      typeof coinTypeValue === "string"
-        ? parseTypeTag(coinTypeValue)
-        : coinTypeValue;
+    const typeArg = typeof coinTypeValue === "string" ? parseTypeTag(coinTypeValue) : coinTypeValue;
     const recipient =
       (this.testVectors.get("recipient") as AccountAddress) ||
       (this.testVectors.get("recipientAddress") as AccountAddress) ||
       AccountAddress.ONE;
-    const amount =
-      (this.testVectors.get("amount") as bigint) || BigInt(1000000);
+    const amount = (this.testVectors.get("amount") as bigint) || BigInt(1000000);
 
     const recipientSerializer = new Serializer();
     recipient.serialize(recipientSerializer);
@@ -572,14 +526,10 @@ When("I create a RawTransaction", function (this: AptosWorld) {
   try {
     const sender = this.testVectors.get("senderAddress") as AccountAddress;
     const sequenceNumber = this.testVectors.get("sequenceNumber") as bigint;
-    const entryFunction = this.testVectors.get(
-      "entryFunction",
-    ) as EntryFunction;
+    const entryFunction = this.testVectors.get("entryFunction") as EntryFunction;
     const maxGasAmount = this.testVectors.get("maxGasAmount") as bigint;
     const gasUnitPrice = this.testVectors.get("gasUnitPrice") as bigint;
-    const expirationTimestamp = this.testVectors.get(
-      "expirationTimestamp",
-    ) as bigint;
+    const expirationTimestamp = this.testVectors.get("expirationTimestamp") as bigint;
     const chainIdValue = this.testVectors.get("chainId") as number;
 
     const payload = new TransactionPayloadEntryFunction(entryFunction);
@@ -667,12 +617,9 @@ When("I generate signing messages for both", function (this: AptosWorld) {
   this.testVectors.set("signingMessage2", createSigningMessage(tx2));
 });
 
-When(
-  /^I compute SHA3-256 of "([^"]+)"$/,
-  function (this: AptosWorld, input: string) {
-    this.bytes = sha3_256(new TextEncoder().encode(input));
-  },
-);
+When(/^I compute SHA3-256 of "([^"]+)"$/, function (this: AptosWorld, input: string) {
+  this.bytes = sha3_256(new TextEncoder().encode(input));
+});
 
 // =============================================================================
 // Then Steps - Entry Function Validation
@@ -683,104 +630,72 @@ Then("the payload should be valid", function (this: AptosWorld) {
   expect(this.result).to.not.be.undefined;
 });
 
-Then(
-  "module should be {string}",
-  function (this: AptosWorld, expected: string) {
-    const entryFunction = this.result as EntryFunction;
-    const moduleName = entryFunction.module_name?.name?.identifier || "";
-    expect(expected.toLowerCase()).to.include(moduleName.toLowerCase());
-  },
-);
+Then("module should be {string}", function (this: AptosWorld, expected: string) {
+  const entryFunction = this.result as EntryFunction;
+  const moduleName = entryFunction.module_name?.name?.identifier || "";
+  expect(expected.toLowerCase()).to.include(moduleName.toLowerCase());
+});
 
-Then(
-  "function should be {string}",
-  function (this: AptosWorld, expected: string) {
-    const entryFunction = this.result as EntryFunction;
-    expect(entryFunction.function_name?.identifier).to.equal(expected);
-  },
-);
+Then("function should be {string}", function (this: AptosWorld, expected: string) {
+  const entryFunction = this.result as EntryFunction;
+  expect(entryFunction.function_name?.identifier).to.equal(expected);
+});
 
-Then(
-  "the payload should have {int} type argument(s)",
-  function (this: AptosWorld, count: number) {
-    const entryFunction = this.result as EntryFunction;
-    expect(entryFunction.type_args?.length || 0).to.equal(count);
-  },
-);
+Then("the payload should have {int} type argument(s)", function (this: AptosWorld, count: number) {
+  const entryFunction = this.result as EntryFunction;
+  expect(entryFunction.type_args?.length || 0).to.equal(count);
+});
 
-Then(
-  "the module should be {string}",
-  function (this: AptosWorld, expected: string) {
-    const entryFunction = this.result as EntryFunction;
-    const moduleName = entryFunction.module_name?.name?.identifier || "";
-    expect(expected.toLowerCase()).to.include(moduleName.toLowerCase());
-  },
-);
+Then("the module should be {string}", function (this: AptosWorld, expected: string) {
+  const entryFunction = this.result as EntryFunction;
+  const moduleName = entryFunction.module_name?.name?.identifier || "";
+  expect(expected.toLowerCase()).to.include(moduleName.toLowerCase());
+});
 
-Then(
-  "the function should be {string}",
-  function (this: AptosWorld, expected: string) {
-    const entryFunction = this.result as EntryFunction;
-    expect(entryFunction.function_name?.identifier).to.equal(expected);
-  },
-);
+Then("the function should be {string}", function (this: AptosWorld, expected: string) {
+  const entryFunction = this.result as EntryFunction;
+  expect(entryFunction.function_name?.identifier).to.equal(expected);
+});
 
-Then(
-  "there should be {int} type arguments",
-  function (this: AptosWorld, count: number) {
-    const entryFunction = this.result as EntryFunction;
-    expect(entryFunction.type_args?.length || 0).to.equal(count);
-  },
-);
+Then("there should be {int} type arguments", function (this: AptosWorld, count: number) {
+  const entryFunction = this.result as EntryFunction;
+  expect(entryFunction.type_args?.length || 0).to.equal(count);
+});
 
-Then(
-  "there should be {int} arguments",
-  function (this: AptosWorld, count: number) {
-    const entryFunction = this.result as EntryFunction;
-    expect(entryFunction.args?.length || 0).to.equal(count);
-  },
-);
+Then("there should be {int} arguments", function (this: AptosWorld, count: number) {
+  const entryFunction = this.result as EntryFunction;
+  expect(entryFunction.args?.length || 0).to.equal(count);
+});
 
 Then(
   /^type argument (\d+) should be "([^"]+)"$/,
   function (this: AptosWorld, index: string, expected: string) {
     const entryFunction = this.result as EntryFunction;
     const typeArg = entryFunction.type_args?.[parseInt(index)];
-    expect(typeArg?.toString().toLowerCase()).to.include(
-      expected.split("::").pop()!.toLowerCase(),
-    );
+    expect(typeArg?.toString().toLowerCase()).to.include(expected.split("::").pop()!.toLowerCase());
   },
 );
 
 // Removed duplicate module_address and module_name steps - use typetags.steps.ts versions
 
-Then(
-  "the function name should be {string}",
-  function (this: AptosWorld, expected: string) {
-    const entryFunction = this.result as EntryFunction;
-    expect(entryFunction.function_name?.identifier).to.equal(expected);
-  },
-);
+Then("the function name should be {string}", function (this: AptosWorld, expected: string) {
+  const entryFunction = this.result as EntryFunction;
+  expect(entryFunction.function_name?.identifier).to.equal(expected);
+});
 
-Then(
-  "the payloads should be different in structure",
-  function (this: AptosWorld) {
-    const aptTransfer = this.testVectors.get("aptTransfer") as EntryFunction;
-    const coinTransfer = this.testVectors.get("coinTransfer") as EntryFunction;
+Then("the payloads should be different in structure", function (this: AptosWorld) {
+  const aptTransfer = this.testVectors.get("aptTransfer") as EntryFunction;
+  const coinTransfer = this.testVectors.get("coinTransfer") as EntryFunction;
 
-    expect(aptTransfer.module_name?.name?.identifier).to.not.equal(
-      coinTransfer.module_name?.name?.identifier,
-    );
-  },
-);
+  expect(aptTransfer.module_name?.name?.identifier).to.not.equal(
+    coinTransfer.module_name?.name?.identifier,
+  );
+});
 
-Then(
-  "APT transfer should use aptos_account module",
-  function (this: AptosWorld) {
-    const aptTransfer = this.testVectors.get("aptTransfer") as EntryFunction;
-    expect(aptTransfer.module_name?.name?.identifier).to.equal("aptos_account");
-  },
-);
+Then("APT transfer should use aptos_account module", function (this: AptosWorld) {
+  const aptTransfer = this.testVectors.get("aptTransfer") as EntryFunction;
+  expect(aptTransfer.module_name?.name?.identifier).to.equal("aptos_account");
+});
 
 Then("coin transfer should use coin module", function (this: AptosWorld) {
   const coinTransfer = this.testVectors.get("coinTransfer") as EntryFunction;
@@ -796,61 +711,40 @@ Then("the transaction should be valid", function (this: AptosWorld) {
   expect(this.rawTransaction).to.not.be.undefined;
 });
 
-Then(
-  "sender should be {string}",
-  function (this: AptosWorld, expected: string) {
-    const normalizedExpected = AccountAddress.from(expected).toString();
-    expect(this.rawTransaction!.sender.toString().toLowerCase()).to.equal(
-      normalizedExpected.toLowerCase(),
-    );
-  },
-);
+Then("sender should be {string}", function (this: AptosWorld, expected: string) {
+  const normalizedExpected = AccountAddress.from(expected).toString();
+  expect(this.rawTransaction!.sender.toString().toLowerCase()).to.equal(
+    normalizedExpected.toLowerCase(),
+  );
+});
 
-Then(
-  "sequence number should be {int}",
-  function (this: AptosWorld, expected: number) {
-    expect(this.rawTransaction!.sequence_number).to.equal(BigInt(expected));
-  },
-);
+Then("sequence number should be {int}", function (this: AptosWorld, expected: number) {
+  expect(this.rawTransaction!.sequence_number).to.equal(BigInt(expected));
+});
 
-Then(
-  /^sender\(\) should return the sender address$/,
-  function (this: AptosWorld) {
-    expect(this.rawTransaction!.sender).to.not.be.undefined;
-  },
-);
+Then(/^sender\(\) should return the sender address$/, function (this: AptosWorld) {
+  expect(this.rawTransaction!.sender).to.not.be.undefined;
+});
 
-Then(
-  /^sequence_number\(\) should return the sequence number$/,
-  function (this: AptosWorld) {
-    expect(this.rawTransaction!.sequence_number).to.not.be.undefined;
-  },
-);
+Then(/^sequence_number\(\) should return the sequence number$/, function (this: AptosWorld) {
+  expect(this.rawTransaction!.sequence_number).to.not.be.undefined;
+});
 
 Then(/^payload\(\) should return the payload$/, function (this: AptosWorld) {
   expect(this.rawTransaction!.payload).to.not.be.undefined;
 });
 
-Then(
-  /^max_gas_amount\(\) should return the max gas$/,
-  function (this: AptosWorld) {
-    expect(this.rawTransaction!.max_gas_amount).to.not.be.undefined;
-  },
-);
+Then(/^max_gas_amount\(\) should return the max gas$/, function (this: AptosWorld) {
+  expect(this.rawTransaction!.max_gas_amount).to.not.be.undefined;
+});
 
-Then(
-  /^gas_unit_price\(\) should return the gas price$/,
-  function (this: AptosWorld) {
-    expect(this.rawTransaction!.gas_unit_price).to.not.be.undefined;
-  },
-);
+Then(/^gas_unit_price\(\) should return the gas price$/, function (this: AptosWorld) {
+  expect(this.rawTransaction!.gas_unit_price).to.not.be.undefined;
+});
 
-Then(
-  /^expiration_timestamp_secs\(\) should return the expiration$/,
-  function (this: AptosWorld) {
-    expect(this.rawTransaction!.expiration_timestamp_secs).to.not.be.undefined;
-  },
-);
+Then(/^expiration_timestamp_secs\(\) should return the expiration$/, function (this: AptosWorld) {
+  expect(this.rawTransaction!.expiration_timestamp_secs).to.not.be.undefined;
+});
 
 Then(/^chain_id\(\) should return the chain ID$/, function (this: AptosWorld) {
   expect(this.rawTransaction!.chain_id).to.not.be.undefined;
@@ -862,9 +756,7 @@ Then("the bytes should be deterministic", function (this: AptosWorld) {
   const serializer2 = new Serializer();
   this.rawTransaction!.serialize(serializer1);
   this.rawTransaction!.serialize(serializer2);
-  expect(bytesToHex(serializer1.toUint8Array())).to.equal(
-    bytesToHex(serializer2.toUint8Array()),
-  );
+  expect(bytesToHex(serializer1.toUint8Array())).to.equal(bytesToHex(serializer2.toUint8Array()));
 });
 
 Then(
@@ -878,20 +770,15 @@ Then(
 Then(
   "the message should start with SHA3-256\\({string})",
   function (this: AptosWorld, domain: string) {
-    const expectedPrefix = sha3_256(
-      new TextEncoder().encode(domain.replace(/"/g, "")),
-    );
+    const expectedPrefix = sha3_256(new TextEncoder().encode(domain.replace(/"/g, "")));
     const actualPrefix = this.bytes!.slice(0, 32);
     expect(bytesToHex(actualPrefix)).to.equal(bytesToHex(expectedPrefix));
   },
 );
 
-Then(
-  "the message should contain the BCS-serialized transaction",
-  function (this: AptosWorld) {
-    expect(this.bytes!.length).to.be.greaterThan(32);
-  },
-);
+Then("the message should contain the BCS-serialized transaction", function (this: AptosWorld) {
+  expect(this.bytes!.length).to.be.greaterThan(32);
+});
 
 Then("both messages should be identical", function (this: AptosWorld) {
   const msg1 = this.testVectors.get("signingMessage1") as Uint8Array;
@@ -901,22 +788,21 @@ Then("both messages should be identical", function (this: AptosWorld) {
 
 Then("the messages should be different", function (this: AptosWorld) {
   // Support both naming conventions
-  const msg1 = (this.testVectors.get("signingMessage1") ?? this.testVectors.get("multiAgentMessage")) as Uint8Array;
-  const msg2 = (this.testVectors.get("signingMessage2") ?? this.testVectors.get("feePayerMessage")) as Uint8Array;
-  
+  const msg1 = (this.testVectors.get("signingMessage1") ??
+    this.testVectors.get("multiAgentMessage")) as Uint8Array;
+  const msg2 = (this.testVectors.get("signingMessage2") ??
+    this.testVectors.get("feePayerMessage")) as Uint8Array;
+
   if (!msg1 || !msg2) {
     throw new Error("Missing message data for comparison - check step names match");
   }
-  
+
   expect(bytesToHex(msg1)).to.not.equal(bytesToHex(msg2));
 });
 
-Then(
-  "it should be the prefix of all single-signer signing messages",
-  function (this: AptosWorld) {
-    expect(this.bytes!.length).to.equal(32);
-  },
-);
+Then("it should be the prefix of all single-signer signing messages", function (this: AptosWorld) {
+  expect(this.bytes!.length).to.equal(32);
+});
 
 Then(
   /^the chain_id byte should be (0x[0-9a-fA-F]+)$/,
@@ -1384,149 +1270,137 @@ Given("an account implementing Account trait", function (this: AptosWorld) {
   this.account = Account.generate();
 });
 
-Given(
-  /^a RawTransaction with sender "([^"]+)"$/,
-  function (this: AptosWorld, senderAddr: string) {
-    const sender = AccountAddress.from(senderAddr);
-    const sequenceNumber = BigInt(0);
-    const maxGasAmount = BigInt(200000);
-    const gasUnitPrice = BigInt(100);
-    const expirationTimestamp = BigInt(1700000000);
-    const chainId = new ChainId(2);
+Given(/^a RawTransaction with sender "([^"]+)"$/, function (this: AptosWorld, senderAddr: string) {
+  const sender = AccountAddress.from(senderAddr);
+  const sequenceNumber = BigInt(0);
+  const maxGasAmount = BigInt(200000);
+  const gasUnitPrice = BigInt(100);
+  const expirationTimestamp = BigInt(1700000000);
+  const chainId = new ChainId(2);
 
-    const recipient = AccountAddress.from("0x2");
-    const amount = BigInt(1000000);
+  const recipient = AccountAddress.from("0x2");
+  const amount = BigInt(1000000);
 
-    const recipientSerializer = new Serializer();
-    recipient.serialize(recipientSerializer);
+  const recipientSerializer = new Serializer();
+  recipient.serialize(recipientSerializer);
 
-    const amountSerializer = new Serializer();
-    amountSerializer.serializeU64(amount);
+  const amountSerializer = new Serializer();
+  amountSerializer.serializeU64(amount);
 
-    const entryFunction = createEntryFunction(
-      AccountAddress.ONE,
-      "aptos_account",
-      "transfer",
-      [],
-      [recipientSerializer.toUint8Array(), amountSerializer.toUint8Array()],
-    );
+  const entryFunction = createEntryFunction(
+    AccountAddress.ONE,
+    "aptos_account",
+    "transfer",
+    [],
+    [recipientSerializer.toUint8Array(), amountSerializer.toUint8Array()],
+  );
 
-    const payload = new TransactionPayloadEntryFunction(entryFunction);
+  const payload = new TransactionPayloadEntryFunction(entryFunction);
 
-    this.rawTransaction = new RawTransaction(
-      sender,
-      sequenceNumber,
-      payload,
-      maxGasAmount,
-      gasUnitPrice,
-      expirationTimestamp,
-      chainId,
-    );
-  },
-);
+  this.rawTransaction = new RawTransaction(
+    sender,
+    sequenceNumber,
+    payload,
+    maxGasAmount,
+    gasUnitPrice,
+    expirationTimestamp,
+    chainId,
+  );
+});
 
-Given(
-  /^an Ed25519 account with address "([^"]+)"$/,
-  function (this: AptosWorld, _address: string) {
-    // Generate an account - the address will be different from what's specified
-    // (SDK generates from public key, we can't force a specific address)
-    this.account = Account.generate();
-  },
-);
+Given(/^an Ed25519 account with address "([^"]+)"$/, function (this: AptosWorld, _address: string) {
+  // Generate an account - the address will be different from what's specified
+  // (SDK generates from public key, we can't force a specific address)
+  this.account = Account.generate();
+});
 
-Given(
-  "a RawTransaction and Ed25519 key from test vectors",
-  function (this: AptosWorld) {
-    // Use deterministic key
-    const privateKey = new Ed25519PrivateKey(
-      "0x0000000000000000000000000000000000000000000000000000000000000001",
-    );
-    this.account = Account.fromPrivateKey({ privateKey });
+Given("a RawTransaction and Ed25519 key from test vectors", function (this: AptosWorld) {
+  // Use deterministic key
+  const privateKey = new Ed25519PrivateKey(
+    "0x0000000000000000000000000000000000000000000000000000000000000001",
+  );
+  this.account = Account.fromPrivateKey({ privateKey });
 
-    const sender = this.account.accountAddress;
-    const sequenceNumber = BigInt(0);
-    const maxGasAmount = BigInt(200000);
-    const gasUnitPrice = BigInt(100);
-    const expirationTimestamp = BigInt(1700000000);
-    const chainId = new ChainId(2);
+  const sender = this.account.accountAddress;
+  const sequenceNumber = BigInt(0);
+  const maxGasAmount = BigInt(200000);
+  const gasUnitPrice = BigInt(100);
+  const expirationTimestamp = BigInt(1700000000);
+  const chainId = new ChainId(2);
 
-    const recipient = AccountAddress.from("0x2");
-    const amount = BigInt(1000000);
+  const recipient = AccountAddress.from("0x2");
+  const amount = BigInt(1000000);
 
-    const recipientSerializer = new Serializer();
-    recipient.serialize(recipientSerializer);
+  const recipientSerializer = new Serializer();
+  recipient.serialize(recipientSerializer);
 
-    const amountSerializer = new Serializer();
-    amountSerializer.serializeU64(amount);
+  const amountSerializer = new Serializer();
+  amountSerializer.serializeU64(amount);
 
-    const entryFunction = createEntryFunction(
-      AccountAddress.ONE,
-      "aptos_account",
-      "transfer",
-      [],
-      [recipientSerializer.toUint8Array(), amountSerializer.toUint8Array()],
-    );
+  const entryFunction = createEntryFunction(
+    AccountAddress.ONE,
+    "aptos_account",
+    "transfer",
+    [],
+    [recipientSerializer.toUint8Array(), amountSerializer.toUint8Array()],
+  );
 
-    const payload = new TransactionPayloadEntryFunction(entryFunction);
+  const payload = new TransactionPayloadEntryFunction(entryFunction);
 
-    this.rawTransaction = new RawTransaction(
-      sender,
-      sequenceNumber,
-      payload,
-      maxGasAmount,
-      gasUnitPrice,
-      expirationTimestamp,
-      chainId,
-    );
-  },
-);
+  this.rawTransaction = new RawTransaction(
+    sender,
+    sequenceNumber,
+    payload,
+    maxGasAmount,
+    gasUnitPrice,
+    expirationTimestamp,
+    chainId,
+  );
+});
 
-Given(
-  "a RawTransaction and Secp256k1 key from test vectors",
-  function (this: AptosWorld) {
-    // Use deterministic key
-    const privateKey = new Secp256k1PrivateKey(
-      "0x0000000000000000000000000000000000000000000000000000000000000001",
-    );
-    this.account = Account.fromPrivateKey({ privateKey });
+Given("a RawTransaction and Secp256k1 key from test vectors", function (this: AptosWorld) {
+  // Use deterministic key
+  const privateKey = new Secp256k1PrivateKey(
+    "0x0000000000000000000000000000000000000000000000000000000000000001",
+  );
+  this.account = Account.fromPrivateKey({ privateKey });
 
-    const sender = this.account.accountAddress;
-    const sequenceNumber = BigInt(0);
-    const maxGasAmount = BigInt(200000);
-    const gasUnitPrice = BigInt(100);
-    const expirationTimestamp = BigInt(1700000000);
-    const chainId = new ChainId(2);
+  const sender = this.account.accountAddress;
+  const sequenceNumber = BigInt(0);
+  const maxGasAmount = BigInt(200000);
+  const gasUnitPrice = BigInt(100);
+  const expirationTimestamp = BigInt(1700000000);
+  const chainId = new ChainId(2);
 
-    const recipient = AccountAddress.from("0x2");
-    const amount = BigInt(1000000);
+  const recipient = AccountAddress.from("0x2");
+  const amount = BigInt(1000000);
 
-    const recipientSerializer = new Serializer();
-    recipient.serialize(recipientSerializer);
+  const recipientSerializer = new Serializer();
+  recipient.serialize(recipientSerializer);
 
-    const amountSerializer = new Serializer();
-    amountSerializer.serializeU64(amount);
+  const amountSerializer = new Serializer();
+  amountSerializer.serializeU64(amount);
 
-    const entryFunction = createEntryFunction(
-      AccountAddress.ONE,
-      "aptos_account",
-      "transfer",
-      [],
-      [recipientSerializer.toUint8Array(), amountSerializer.toUint8Array()],
-    );
+  const entryFunction = createEntryFunction(
+    AccountAddress.ONE,
+    "aptos_account",
+    "transfer",
+    [],
+    [recipientSerializer.toUint8Array(), amountSerializer.toUint8Array()],
+  );
 
-    const payload = new TransactionPayloadEntryFunction(entryFunction);
+  const payload = new TransactionPayloadEntryFunction(entryFunction);
 
-    this.rawTransaction = new RawTransaction(
-      sender,
-      sequenceNumber,
-      payload,
-      maxGasAmount,
-      gasUnitPrice,
-      expirationTimestamp,
-      chainId,
-    );
-  },
-);
+  this.rawTransaction = new RawTransaction(
+    sender,
+    sequenceNumber,
+    payload,
+    maxGasAmount,
+    gasUnitPrice,
+    expirationTimestamp,
+    chainId,
+  );
+});
 
 Given("a SignedTransaction from test vectors", function (this: AptosWorld) {
   // Use deterministic key and values
@@ -1580,10 +1454,7 @@ Given("a SignedTransaction from test vectors", function (this: AptosWorld) {
 
 When("I sign the transaction with the account", function (this: AptosWorld) {
   try {
-    this.signedTransaction = signWithAccount(
-      this.rawTransaction!,
-      this.account!,
-    );
+    this.signedTransaction = signWithAccount(this.rawTransaction!, this.account!);
     this.clearError();
   } catch (error) {
     this.setError(error as Error);
@@ -1592,10 +1463,7 @@ When("I sign the transaction with the account", function (this: AptosWorld) {
 
 When("I sign the transaction", function (this: AptosWorld) {
   try {
-    this.signedTransaction = signWithAccount(
-      this.rawTransaction!,
-      this.account!,
-    );
+    this.signedTransaction = signWithAccount(this.rawTransaction!, this.account!);
     this.clearError();
   } catch (error) {
     this.setError(error as Error);
@@ -1606,14 +1474,11 @@ When("I get the raw_transaction", function (this: AptosWorld) {
   this.result = this.signedTransaction!.raw_txn;
 });
 
-When(
-  "I extract the signature from the authenticator",
-  function (this: AptosWorld) {
-    const auth = this.signedTransaction!.authenticator;
-    // The signature is in auth.signature for SingleSender authenticator
-    this.testVectors.set("extractedSignature", (auth as any).signature ?? auth);
-  },
-);
+When("I extract the signature from the authenticator", function (this: AptosWorld) {
+  const auth = this.signedTransaction!.authenticator;
+  // The signature is in auth.signature for SingleSender authenticator
+  this.testVectors.set("extractedSignature", (auth as any).signature ?? auth);
+});
 
 When("I get the authenticator", function (this: AptosWorld) {
   this.result = this.signedTransaction!.authenticator;
@@ -1753,35 +1618,23 @@ When("I compute their hashes", function (this: AptosWorld) {
   this.testVectors.set("hash2", computeHash(signedTx2));
 });
 
-When(
-  /^I call sign_transaction\(raw_txn, account\)$/,
-  function (this: AptosWorld) {
-    try {
-      this.signedTransaction = signWithAccount(
-        this.rawTransaction!,
-        this.account!,
-      );
-      this.clearError();
-    } catch (error) {
-      this.setError(error as Error);
-    }
-  },
-);
+When(/^I call sign_transaction\(raw_txn, account\)$/, function (this: AptosWorld) {
+  try {
+    this.signedTransaction = signWithAccount(this.rawTransaction!, this.account!);
+    this.clearError();
+  } catch (error) {
+    this.setError(error as Error);
+  }
+});
 
-When(
-  /^I call account\.sign_transaction\(raw_txn\)$/,
-  function (this: AptosWorld) {
-    try {
-      this.signedTransaction = signWithAccount(
-        this.rawTransaction!,
-        this.account!,
-      );
-      this.clearError();
-    } catch (error) {
-      this.setError(error as Error);
-    }
-  },
-);
+When(/^I call account\.sign_transaction\(raw_txn\)$/, function (this: AptosWorld) {
+  try {
+    this.signedTransaction = signWithAccount(this.rawTransaction!, this.account!);
+    this.clearError();
+  } catch (error) {
+    this.setError(error as Error);
+  }
+});
 
 When("I serialize it to bytes", function (this: AptosWorld) {
   try {
@@ -1803,42 +1656,30 @@ Then("I should get a SignedTransaction", function (this: AptosWorld) {
   expect(this.signedTransaction).to.not.be.undefined;
 });
 
-Then(
-  "the authenticator should be Ed25519 variant",
-  function (this: AptosWorld) {
-    const auth = this.signedTransaction!.authenticator;
-    // Check authenticator type - Ed25519 single sender uses AccountAuthenticatorEd25519 variant
-    expect(auth).to.not.be.undefined;
-  },
-);
+Then("the authenticator should be Ed25519 variant", function (this: AptosWorld) {
+  const auth = this.signedTransaction!.authenticator;
+  // Check authenticator type - Ed25519 single sender uses AccountAuthenticatorEd25519 variant
+  expect(auth).to.not.be.undefined;
+});
 
-Then(
-  "the authenticator should be Secp256k1Ecdsa variant",
-  function (this: AptosWorld) {
-    const auth = this.signedTransaction!.authenticator;
-    expect(auth).to.not.be.undefined;
-  },
-);
+Then("the authenticator should be Secp256k1Ecdsa variant", function (this: AptosWorld) {
+  const auth = this.signedTransaction!.authenticator;
+  expect(auth).to.not.be.undefined;
+});
 
-Then(
-  "it should equal the original RawTransaction",
-  function (this: AptosWorld) {
-    const original = this.rawTransaction!;
-    const fromSigned = this.result as RawTransaction;
+Then("it should equal the original RawTransaction", function (this: AptosWorld) {
+  const original = this.rawTransaction!;
+  const fromSigned = this.result as RawTransaction;
 
-    expect(fromSigned.sender.toString()).to.equal(original.sender.toString());
-    expect(fromSigned.sequence_number).to.equal(original.sequence_number);
-  },
-);
+  expect(fromSigned.sender.toString()).to.equal(original.sender.toString());
+  expect(fromSigned.sequence_number).to.equal(original.sequence_number);
+});
 
-Then(
-  "the signature should verify against the signing message",
-  function (this: AptosWorld) {
-    // The signature was extracted and stored - we just verify it exists
-    const sig = this.testVectors.get("extractedSignature");
-    expect(sig).to.not.be.undefined;
-  },
-);
+Then("the signature should verify against the signing message", function (this: AptosWorld) {
+  // The signature was extracted and stored - we just verify it exists
+  const sig = this.testVectors.get("extractedSignature");
+  expect(sig).to.not.be.undefined;
+});
 
 Then("it should contain the signer's public key", function (this: AptosWorld) {
   const auth = this.result;
@@ -1854,22 +1695,17 @@ Then("it should contain the signature", function (this: AptosWorld) {
   expect((auth as any).signature).to.not.be.undefined;
 });
 
-Then(
-  "both SignedTransactions should be identical",
-  function (this: AptosWorld) {
-    const tx1 = this.testVectors.get("signedTx1") as SignedTransaction;
-    const tx2 = this.testVectors.get("signedTx2") as SignedTransaction;
+Then("both SignedTransactions should be identical", function (this: AptosWorld) {
+  const tx1 = this.testVectors.get("signedTx1") as SignedTransaction;
+  const tx2 = this.testVectors.get("signedTx2") as SignedTransaction;
 
-    const serializer1 = new Serializer();
-    const serializer2 = new Serializer();
-    tx1.serialize(serializer1);
-    tx2.serialize(serializer2);
+  const serializer1 = new Serializer();
+  const serializer2 = new Serializer();
+  tx1.serialize(serializer1);
+  tx2.serialize(serializer2);
 
-    expect(bytesToHex(serializer1.toUint8Array())).to.equal(
-      bytesToHex(serializer2.toUint8Array()),
-    );
-  },
-);
+  expect(bytesToHex(serializer1.toUint8Array())).to.equal(bytesToHex(serializer2.toUint8Array()));
+});
 
 // Note: "the signatures should be different" step is in cryptography.steps.ts
 
@@ -1883,9 +1719,7 @@ Then("the result should be valid BCS", function (this: AptosWorld) {
 Then("the result should equal the original", function (this: AptosWorld) {
   // Handle both RawTransaction and SignedTransaction round-trips
   if (this.testVectors.has("originalSignedTx")) {
-    const original = this.testVectors.get(
-      "originalSignedTx",
-    ) as SignedTransaction;
+    const original = this.testVectors.get("originalSignedTx") as SignedTransaction;
     const deserialized = this.result as SignedTransaction;
 
     const serializer1 = new Serializer();
@@ -1893,9 +1727,7 @@ Then("the result should equal the original", function (this: AptosWorld) {
     original.serialize(serializer1);
     deserialized.serialize(serializer2);
 
-    expect(bytesToHex(serializer1.toUint8Array())).to.equal(
-      bytesToHex(serializer2.toUint8Array()),
-    );
+    expect(bytesToHex(serializer1.toUint8Array())).to.equal(bytesToHex(serializer2.toUint8Array()));
   } else if (this.testVectors.has("originalRawTx")) {
     // For RawTransaction round-trips
     const original = this.testVectors.get("originalRawTx") as RawTransaction;
@@ -1906,14 +1738,10 @@ Then("the result should equal the original", function (this: AptosWorld) {
     original.serialize(serializer1);
     deserialized.serialize(serializer2);
 
-    expect(bytesToHex(serializer1.toUint8Array())).to.equal(
-      bytesToHex(serializer2.toUint8Array()),
-    );
+    expect(bytesToHex(serializer1.toUint8Array())).to.equal(bytesToHex(serializer2.toUint8Array()));
   } else if (this.testVectors.has("originalEntryFunction")) {
     // For EntryFunction round-trips
-    const original = this.testVectors.get(
-      "originalEntryFunction",
-    ) as EntryFunction;
+    const original = this.testVectors.get("originalEntryFunction") as EntryFunction;
     const deserialized = this.result as EntryFunction;
 
     const serializer1 = new Serializer();
@@ -1921,9 +1749,7 @@ Then("the result should equal the original", function (this: AptosWorld) {
     original.serialize(serializer1);
     deserialized.serialize(serializer2);
 
-    expect(bytesToHex(serializer1.toUint8Array())).to.equal(
-      bytesToHex(serializer2.toUint8Array()),
-    );
+    expect(bytesToHex(serializer1.toUint8Array())).to.equal(bytesToHex(serializer2.toUint8Array()));
   } else if (this.testVectors.has("originalTypeTag")) {
     // For TypeTag round-trips, already handled in typetags.steps.ts
     expect(true).to.be.true;
@@ -1961,8 +1787,7 @@ Then(
     const auth = this.result;
     expect(auth).to.not.be.undefined;
     // Just verify the authenticator exists - actual byte count varies by implementation
-    expect((auth as any).public_key || (auth as any).sender).to.not.be
-      .undefined;
+    expect((auth as any).public_key || (auth as any).sender).to.not.be.undefined;
   },
 );
 
@@ -2002,21 +1827,15 @@ Then("the first byte should indicate the variant", function (this: AptosWorld) {
   expect(bytes![0]).to.be.a("number");
 });
 
-Then(
-  "the remaining bytes should contain the authenticator data",
-  function (this: AptosWorld) {
-    expect(this.bytes!.length).to.be.greaterThan(1);
-  },
-);
+Then("the remaining bytes should contain the authenticator data", function (this: AptosWorld) {
+  expect(this.bytes!.length).to.be.greaterThan(1);
+});
 
-Then(
-  "the sender should match the account address",
-  function (this: AptosWorld) {
-    expect(this.signedTransaction!.raw_txn.sender.toString()).to.equal(
-      this.account!.accountAddress.toString(),
-    );
-  },
-);
+Then("the sender should match the account address", function (this: AptosWorld) {
+  expect(this.signedTransaction!.raw_txn.sender.toString()).to.equal(
+    this.account!.accountAddress.toString(),
+  );
+});
 
 Then(
   /^the signing should succeed \(SDK doesn't validate sender match\)$/,
@@ -2033,37 +1852,31 @@ Then("the transaction will fail on-chain", function (this: AptosWorld) {
 
 // Note: "the signature should match the expected value from test vectors" is in cryptography.steps.ts
 
-Then(
-  "the transaction hash should match the expected value",
-  function (this: AptosWorld) {
-    // Compute the hash
-    const serializer = new Serializer();
-    this.signedTransaction!.serialize(serializer);
-    const txnBytes = serializer.toUint8Array();
+Then("the transaction hash should match the expected value", function (this: AptosWorld) {
+  // Compute the hash
+  const serializer = new Serializer();
+  this.signedTransaction!.serialize(serializer);
+  const txnBytes = serializer.toUint8Array();
 
-    const domain = "APTOS::Transaction";
-    const domainHash = sha3_256(new TextEncoder().encode(domain));
+  const domain = "APTOS::Transaction";
+  const domainHash = sha3_256(new TextEncoder().encode(domain));
 
-    const combined = new Uint8Array(domainHash.length + txnBytes.length);
-    combined.set(domainHash, 0);
-    combined.set(txnBytes, domainHash.length);
+  const combined = new Uint8Array(domainHash.length + txnBytes.length);
+  combined.set(domainHash, 0);
+  combined.set(txnBytes, domainHash.length);
 
-    const hash = sha3_256(combined);
-    expect(hash.length).to.equal(32);
-  },
-);
+  const hash = sha3_256(combined);
+  expect(hash.length).to.equal(32);
+});
 
-Then(
-  "the bytes should match the expected value from test vectors",
-  function (this: AptosWorld) {
-    // With placeholder test vectors, just verify we have bytes
-    expect(this.bytes, "this.bytes should be defined").to.not.be.undefined;
-    expect(
-      this.bytes!.length,
-      `bytes length should be > 0, got ${this.bytes!.length}`,
-    ).to.be.greaterThan(0);
-  },
-);
+Then("the bytes should match the expected value from test vectors", function (this: AptosWorld) {
+  // With placeholder test vectors, just verify we have bytes
+  expect(this.bytes, "this.bytes should be defined").to.not.be.undefined;
+  expect(
+    this.bytes!.length,
+    `bytes length should be > 0, got ${this.bytes!.length}`,
+  ).to.be.greaterThan(0);
+});
 
 // =============================================================================
 // Entry Function Argument Encoding Steps
@@ -2095,33 +1908,30 @@ Then(
   },
 );
 
-When(
-  "I BCS encode it as an entry function argument",
-  function (this: AptosWorld) {
-    const serializer = new Serializer();
+When("I BCS encode it as an entry function argument", function (this: AptosWorld) {
+  const serializer = new Serializer();
 
-    if (this.address) {
-      this.address.serialize(serializer);
-    } else if (this.testVectors.has("accountAddress")) {
-      const address = this.testVectors.get("accountAddress") as AccountAddress;
-      address.serialize(serializer);
-    } else if (this.testVectors.has("u64Value")) {
-      serializer.serializeU64(this.testVectors.get("u64Value"));
-    } else if (this.testVectors.has("boolValue")) {
-      serializer.serializeBool(this.testVectors.get("boolValue"));
-    } else if (this.bytes) {
-      serializer.serializeBytes(this.bytes);
-    } else if (this.testVectors.has("stringValue")) {
-      serializer.serializeStr(this.testVectors.get("stringValue"));
-    } else if (this.testVectors.has("u128Value")) {
-      serializer.serializeU128(this.testVectors.get("u128Value"));
-    } else {
-      throw new Error("No value found to encode as entry function argument");
-    }
+  if (this.address) {
+    this.address.serialize(serializer);
+  } else if (this.testVectors.has("accountAddress")) {
+    const address = this.testVectors.get("accountAddress") as AccountAddress;
+    address.serialize(serializer);
+  } else if (this.testVectors.has("u64Value")) {
+    serializer.serializeU64(this.testVectors.get("u64Value"));
+  } else if (this.testVectors.has("boolValue")) {
+    serializer.serializeBool(this.testVectors.get("boolValue"));
+  } else if (this.bytes) {
+    serializer.serializeBytes(this.bytes);
+  } else if (this.testVectors.has("stringValue")) {
+    serializer.serializeStr(this.testVectors.get("stringValue"));
+  } else if (this.testVectors.has("u128Value")) {
+    serializer.serializeU128(this.testVectors.get("u128Value"));
+  } else {
+    throw new Error("No value found to encode as entry function argument");
+  }
 
-    this.bytes = serializer.toUint8Array();
-  },
-);
+  this.bytes = serializer.toUint8Array();
+});
 
 Given("a bool value true", function (this: AptosWorld) {
   this.testVectors.set("boolValue", true);
@@ -2139,41 +1949,29 @@ Then(
   },
 );
 
-Given(
-  /^bytes \[(\d+(?:,\s*\d+)*)\]$/,
-  function (this: AptosWorld, bytesStr: string) {
-    const byteValues = bytesStr.split(",").map((b) => parseInt(b.trim(), 10));
-    this.bytes = new Uint8Array(byteValues);
-  },
-);
+Given(/^bytes \[(\d+(?:,\s*\d+)*)\]$/, function (this: AptosWorld, bytesStr: string) {
+  const byteValues = bytesStr.split(",").map((b) => parseInt(b.trim(), 10));
+  this.bytes = new Uint8Array(byteValues);
+});
 
-Then(
-  "the result should be ULEB128 length + bytes",
-  function (this: AptosWorld) {
-    // First byte(s) should be length, then the actual bytes
-    expect(this.bytes!.length).to.be.greaterThan(0);
-    // For small vectors, first byte is the length
-    const originalLength = this.testVectors.get("originalBytesLength") || 5; // default from test
-    expect(this.bytes!.length).to.equal(1 + originalLength); // 1 byte for length + actual bytes
-  },
-);
+Then("the result should be ULEB128 length + bytes", function (this: AptosWorld) {
+  // First byte(s) should be length, then the actual bytes
+  expect(this.bytes!.length).to.be.greaterThan(0);
+  // For small vectors, first byte is the length
+  const originalLength = this.testVectors.get("originalBytesLength") || 5; // default from test
+  expect(this.bytes!.length).to.equal(1 + originalLength); // 1 byte for length + actual bytes
+});
 
-Then(
-  "the result should be ULEB128 length + UTF-8 bytes",
-  function (this: AptosWorld) {
-    // First byte(s) should be length, then the UTF-8 encoded bytes
-    expect(this.bytes!.length).to.be.greaterThan(0);
-    const str = this.testVectors.get("stringValue") as string;
-    const utf8Bytes = new TextEncoder().encode(str);
-    expect(this.bytes!.length).to.equal(1 + utf8Bytes.length); // 1 byte for length + UTF-8 bytes
-  },
-);
+Then("the result should be ULEB128 length + UTF-8 bytes", function (this: AptosWorld) {
+  // First byte(s) should be length, then the UTF-8 encoded bytes
+  expect(this.bytes!.length).to.be.greaterThan(0);
+  const str = this.testVectors.get("stringValue") as string;
+  const utf8Bytes = new TextEncoder().encode(str);
+  expect(this.bytes!.length).to.equal(1 + utf8Bytes.length); // 1 byte for length + UTF-8 bytes
+});
 
 Given("a u128 value", function (this: AptosWorld) {
-  this.testVectors.set(
-    "u128Value",
-    BigInt("340282366920938463463374607431768211455"),
-  ); // Max u128
+  this.testVectors.set("u128Value", BigInt("340282366920938463463374607431768211455")); // Max u128
 });
 
 Given("an EntryFunction for APT transfer", function (this: AptosWorld) {
@@ -2259,28 +2057,25 @@ Then("the bytes should be identical", function (this: AptosWorld) {
   expect(bytesToHex(bytes1)).to.equal(bytesToHex(bytes2));
 });
 
-Given(
-  "an EntryFunction with type arguments and arguments",
-  function (this: AptosWorld) {
-    const aptosCoinType = parseTypeTag("0x1::aptos_coin::AptosCoin");
-    const recipient = AccountAddress.from("0x2");
-    const amount = BigInt(1000000);
+Given("an EntryFunction with type arguments and arguments", function (this: AptosWorld) {
+  const aptosCoinType = parseTypeTag("0x1::aptos_coin::AptosCoin");
+  const recipient = AccountAddress.from("0x2");
+  const amount = BigInt(1000000);
 
-    const recipientSerializer = new Serializer();
-    recipient.serialize(recipientSerializer);
+  const recipientSerializer = new Serializer();
+  recipient.serialize(recipientSerializer);
 
-    const amountSerializer = new Serializer();
-    amountSerializer.serializeU64(amount);
+  const amountSerializer = new Serializer();
+  amountSerializer.serializeU64(amount);
 
-    this.result = createEntryFunction(
-      AccountAddress.ONE,
-      "coin",
-      "transfer",
-      [aptosCoinType],
-      [recipientSerializer.toUint8Array(), amountSerializer.toUint8Array()],
-    );
-  },
-);
+  this.result = createEntryFunction(
+    AccountAddress.ONE,
+    "coin",
+    "transfer",
+    [aptosCoinType],
+    [recipientSerializer.toUint8Array(), amountSerializer.toUint8Array()],
+  );
+});
 
 // =============================================================================
 // Test Vector Steps
@@ -2330,15 +2125,12 @@ Given("a RawTransaction from test vectors", function (this: AptosWorld) {
   );
 });
 
-Then(
-  "it should match the expected value from test vectors",
-  function (this: AptosWorld) {
-    // Verify we have a signing message
-    expect(this.bytes).to.not.be.undefined;
-    expect(this.bytes!.length).to.be.greaterThan(0);
-    // With real test vectors, we would compare exact bytes
-  },
-);
+Then("it should match the expected value from test vectors", function (this: AptosWorld) {
+  // Verify we have a signing message
+  expect(this.bytes).to.not.be.undefined;
+  expect(this.bytes!.length).to.be.greaterThan(0);
+  // With real test vectors, we would compare exact bytes
+});
 
 // =============================================================================
 // Script Transaction Steps
@@ -2431,9 +2223,7 @@ Then("serialization should succeed", function (this: AptosWorld) {
 });
 
 Given("a Script payload", function (this: AptosWorld) {
-  const scriptBytecode = new Uint8Array([
-    0xa1, 0x1c, 0xeb, 0x0b, 0x06, 0x00, 0x00, 0x00,
-  ]);
+  const scriptBytecode = new Uint8Array([0xa1, 0x1c, 0xeb, 0x0b, 0x06, 0x00, 0x00, 0x00]);
   this.testVectors.set("scriptBytecode", scriptBytecode);
   this.testVectors.set("scriptTypeArgs", []);
   this.testVectors.set("scriptArgs", []);
@@ -2449,8 +2239,7 @@ Given("a Script payload", function (this: AptosWorld) {
 Then("I should recover the original Script", function (this: AptosWorld) {
   // Verify we have the script payload back (from deserialization)
   const payload =
-    this.testVectors.get("deserializedScriptPayload") ||
-    this.testVectors.get("scriptPayload");
+    this.testVectors.get("deserializedScriptPayload") || this.testVectors.get("scriptPayload");
   expect(payload).to.not.be.undefined;
 
   // Verify key properties if we have the deserialized version
@@ -2493,45 +2282,36 @@ When("I convert it to TransactionPayload", function (this: AptosWorld) {
   this.result = new TransactionPayloadEntryFunction(entryFunction);
 });
 
-Then(
-  "the payload variant should be EntryFunction",
-  function (this: AptosWorld) {
-    expect(this.result).to.be.instanceOf(TransactionPayloadEntryFunction);
-  },
-);
+Then("the payload variant should be EntryFunction", function (this: AptosWorld) {
+  expect(this.result).to.be.instanceOf(TransactionPayloadEntryFunction);
+});
 
-Given(
-  "a TransactionPayload containing an EntryFunction",
-  function (this: AptosWorld) {
-    const recipient = AccountAddress.from("0x2");
-    const amount = BigInt(1000000);
+Given("a TransactionPayload containing an EntryFunction", function (this: AptosWorld) {
+  const recipient = AccountAddress.from("0x2");
+  const amount = BigInt(1000000);
 
-    const recipientSerializer = new Serializer();
-    recipient.serialize(recipientSerializer);
+  const recipientSerializer = new Serializer();
+  recipient.serialize(recipientSerializer);
 
-    const amountSerializer = new Serializer();
-    amountSerializer.serializeU64(amount);
+  const amountSerializer = new Serializer();
+  amountSerializer.serializeU64(amount);
 
-    const entryFunction = createEntryFunction(
-      AccountAddress.ONE,
-      "aptos_account",
-      "transfer",
-      [],
-      [recipientSerializer.toUint8Array(), amountSerializer.toUint8Array()],
-    );
+  const entryFunction = createEntryFunction(
+    AccountAddress.ONE,
+    "aptos_account",
+    "transfer",
+    [],
+    [recipientSerializer.toUint8Array(), amountSerializer.toUint8Array()],
+  );
 
-    this.result = new TransactionPayloadEntryFunction(entryFunction);
-  },
-);
+  this.result = new TransactionPayloadEntryFunction(entryFunction);
+});
 
-Then(
-  "the first byte should indicate EntryFunction variant",
-  function (this: AptosWorld) {
-    // TransactionPayloadEntryFunction has variant index 2 in the TS SDK
-    // (0: Script, 1: ModuleBundle, 2: EntryFunction)
-    expect(this.bytes![0]).to.equal(2);
-  },
-);
+Then("the first byte should indicate EntryFunction variant", function (this: AptosWorld) {
+  // TransactionPayloadEntryFunction has variant index 2 in the TS SDK
+  // (0: Script, 1: ModuleBundle, 2: EntryFunction)
+  expect(this.bytes![0]).to.equal(2);
+});
 
 Given("an EntryFunction with no type arguments", function (this: AptosWorld) {
   const recipient = AccountAddress.from("0x2");
@@ -2552,45 +2332,34 @@ Given("an EntryFunction with no type arguments", function (this: AptosWorld) {
   );
 });
 
-Then(
-  /^type_args should serialize as empty vector \(0x00\)$/,
-  function (this: AptosWorld) {
-    // The serialized bytes should contain 0x00 for empty type args vector
-    expect(this.bytes).to.not.be.undefined;
-    expect(this.bytes!.length).to.be.greaterThan(0);
-    // Detailed byte verification would require parsing the BCS structure
-  },
-);
+Then(/^type_args should serialize as empty vector \(0x00\)$/, function (this: AptosWorld) {
+  // The serialized bytes should contain 0x00 for empty type args vector
+  expect(this.bytes).to.not.be.undefined;
+  expect(this.bytes!.length).to.be.greaterThan(0);
+  // Detailed byte verification would require parsing the BCS structure
+});
 
-Given(
-  /^an EntryFunction with no arguments \(e\.g\., initialize\)$/,
-  function (this: AptosWorld) {
-    this.result = createEntryFunction(
-      AccountAddress.ONE,
-      "resource_account",
-      "initialize",
-      [], // No type arguments
-      [], // No arguments
-    );
-  },
-);
+Given(/^an EntryFunction with no arguments \(e\.g\., initialize\)$/, function (this: AptosWorld) {
+  this.result = createEntryFunction(
+    AccountAddress.ONE,
+    "resource_account",
+    "initialize",
+    [], // No type arguments
+    [], // No arguments
+  );
+});
 
-Then(
-  /^args should serialize as empty vector \(0x00\)$/,
-  function (this: AptosWorld) {
-    // The serialized bytes should contain 0x00 for empty args vector
-    expect(this.bytes).to.not.be.undefined;
-    expect(this.bytes!.length).to.be.greaterThan(0);
-  },
-);
+Then(/^args should serialize as empty vector \(0x00\)$/, function (this: AptosWorld) {
+  // The serialized bytes should contain 0x00 for empty args vector
+  expect(this.bytes).to.not.be.undefined;
+  expect(this.bytes!.length).to.be.greaterThan(0);
+});
 
 Given("a u256 value near max", function (this: AptosWorld) {
   // Near max u256
   this.testVectors.set(
     "u256Value",
-    BigInt(
-      "115792089237316195423570985008687907853269984665640564039457584007913129639935",
-    ),
+    BigInt("115792089237316195423570985008687907853269984665640564039457584007913129639935"),
   );
 });
 
@@ -2614,17 +2383,11 @@ Given("recipient and amount from test vectors", function (this: AptosWorld) {
   this.testVectors.set("amount", BigInt(1000000));
 });
 
-Given(
-  "coin type, recipient, and amount from test vectors",
-  function (this: AptosWorld) {
-    this.testVectors.set(
-      "coinType",
-      parseTypeTag("0x1::aptos_coin::AptosCoin"),
-    );
-    this.testVectors.set("recipient", AccountAddress.from("0x2"));
-    this.testVectors.set("amount", BigInt(1000000));
-  },
-);
+Given("coin type, recipient, and amount from test vectors", function (this: AptosWorld) {
+  this.testVectors.set("coinType", parseTypeTag("0x1::aptos_coin::AptosCoin"));
+  this.testVectors.set("recipient", AccountAddress.from("0x2"));
+  this.testVectors.set("amount", BigInt(1000000));
+});
 
 Then(
   /^sequence_number should be next \((\d+) bytes\)$/,
@@ -2655,13 +2418,10 @@ Then("gas_unit_price should be present", function (this: AptosWorld) {
   // gas_unit_price is 8 bytes (u64)
 });
 
-Then(
-  "expiration_timestamp_secs should be present",
-  function (this: AptosWorld) {
-    expect(this.bytes).to.not.be.undefined;
-    // expiration_timestamp_secs is 8 bytes (u64)
-  },
-);
+Then("expiration_timestamp_secs should be present", function (this: AptosWorld) {
+  expect(this.bytes).to.not.be.undefined;
+  // expiration_timestamp_secs is 8 bytes (u64)
+});
 
 Then("chain_id should be last", function (this: AptosWorld) {
   expect(this.bytes).to.not.be.undefined;
@@ -2745,12 +2505,9 @@ Given("a RawTransaction with invalid ChainId", function (this: AptosWorld) {
   );
 });
 
-Then(
-  "the SDK should accept it \\(validation happens on-chain)",
-  function (this: AptosWorld) {
-    expect(this.rawTransaction).to.not.be.undefined;
-  },
-);
+Then("the SDK should accept it \\(validation happens on-chain)", function (this: AptosWorld) {
+  expect(this.rawTransaction).to.not.be.undefined;
+});
 
 Given("a RawTransaction with expired timestamp", function (this: AptosWorld) {
   this.account = Account.generate();
@@ -3008,18 +2765,21 @@ When("I set expiration_from_now to {int} seconds", function (this: AptosWorld, s
 
 // Note: "I set max_gas_amount to {int}" step is defined in gas-estimation.steps.ts
 // We hook into the testVectors map pattern to make it work with both contexts
-When("I set TransactionBuilder max_gas_amount to {int}", function (this: AptosWorld, amount: number) {
-  const builder = this.testVectors.get("transactionBuilder") as TransactionBuilderState;
-  if (builder) {
-    builder.maxGasAmount = BigInt(amount);
-  }
-});
+When(
+  "I set TransactionBuilder max_gas_amount to {int}",
+  function (this: AptosWorld, amount: number) {
+    const builder = this.testVectors.get("transactionBuilder") as TransactionBuilderState;
+    if (builder) {
+      builder.maxGasAmount = BigInt(amount);
+    }
+  },
+);
 
 // Note: "I set gas_unit_price to {int}" is now defined in gas-estimation.steps.ts
 
 When("I call build\\()", function (this: AptosWorld) {
   const builder = this.testVectors.get("transactionBuilder") as TransactionBuilderState;
-  
+
   try {
     if (!builder.sender) throw new Error("MissingSender");
     if (builder.sequenceNumber === undefined) throw new Error("MissingSequenceNumber");
@@ -3043,13 +2803,13 @@ When("I call build\\()", function (this: AptosWorld) {
 
 When("I build the transaction", function (this: AptosWorld) {
   const builder = this.testVectors.get("transactionBuilder") as TransactionBuilderState;
-  
+
   try {
     // For @preferred scenarios testing specific fields, provide defaults
     const sender = builder.sender ?? AccountAddress.ONE;
     const sequenceNumber = builder.sequenceNumber ?? BigInt(0);
     const chainId = builder.chainId ?? new ChainId(2);
-    
+
     let payload = builder.payload;
     if (!payload) {
       const recipient = AccountAddress.from("0x2");
@@ -3088,7 +2848,7 @@ When("I build the transaction", function (this: AptosWorld) {
 
 When("I build with all required fields", function (this: AptosWorld) {
   const builder = this.testVectors.get("transactionBuilder") as TransactionBuilderState;
-  
+
   // Set any missing required fields with defaults
   if (!builder.sender) builder.sender = AccountAddress.ONE;
   if (builder.sequenceNumber === undefined) builder.sequenceNumber = BigInt(0);
@@ -3096,7 +2856,7 @@ When("I build with all required fields", function (this: AptosWorld) {
   if (!builder.expirationTimestamp) {
     builder.expirationTimestamp = BigInt(Math.floor(Date.now() / 1000) + 600);
   }
-  
+
   if (!builder.payload) {
     const recipient = AccountAddress.from("0x2");
     const amount = BigInt(1000000);

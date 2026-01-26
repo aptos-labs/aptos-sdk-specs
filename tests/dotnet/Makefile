@@ -1,4 +1,4 @@
-.PHONY: all build test test-required test-preferred test-optional clean restore
+.PHONY: all build test test-required test-preferred test-optional clean restore format lint
 .PHONY: test-core-types test-cryptography test-accounts test-transactions test-api-clients test-advanced
 
 # Default target
@@ -53,6 +53,10 @@ clean:
 # Format code (requires dotnet-format tool)
 format:
 	dotnet format
+
+# Lint code (check formatting without changes)
+lint:
+	dotnet format --verify-no-changes
 
 # Check for outdated packages
 outdated:

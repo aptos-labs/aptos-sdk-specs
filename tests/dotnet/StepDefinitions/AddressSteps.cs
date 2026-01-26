@@ -57,7 +57,7 @@ public class AddressSteps
     // =========================================================================
     // Given Steps - Address Constants
     // =========================================================================
-    
+
     // Well-known address constants (SDK may not expose these as statics)
     private static readonly string AddressZero = "0x0000000000000000000000000000000000000000000000000000000000000000";
     private static readonly string AddressOne = "0x0000000000000000000000000000000000000000000000000000000000000001";
