@@ -22,15 +22,15 @@
 
 | Priority       | Passing | Total   | Percentage | Status |
 | -------------- | ------- | ------- | ---------- | ------ |
-| Required (P0)  | 212     | 370     | 57%        | 🟡     |
+| Required (P0)  | 239     | 370     | 65%        | 🟡     |
 | Preferred (P1) | 20      | 183     | 11%        | ❌     |
 | Optional (P2)  | 0       | 250     | 0%         | ❌     |
-| **Total**      | **232** | **803** | **29%**    | 🟡     |
+| **Total**      | **259** | **803** | **32%**    | 🟡     |
 
 > **Notes:**
 >
 > - 8 failures: 4 SDK limitations, 4 network-dependent
-> - 154 scenarios undefined (step definitions not written)
+> - 127 scenarios undefined (step definitions not written)
 
 ---
 
@@ -38,25 +38,23 @@
 
 ### ✅ Fully Available Features
 
-| Feature                | Notes                               |
-| ---------------------- | ----------------------------------- |
-| address                | Full address parsing and formatting |
-| ed25519                | Complete Ed25519 support            |
-| hashing                | SHA3-256 basic support              |
-| authentication-key     | Ed25519 auth keys                   |
-| entry-function         | Basic entry function building       |
-| raw-transaction        | Transaction building                |
-| signing                | Ed25519 transaction signing         |
-| fullnode-api           | Basic API client                    |
-| transaction-submission | Submit transactions                 |
+| Feature                | Notes                                              |
+| ---------------------- | -------------------------------------------------- |
+| address                | Full address parsing and formatting                |
+| serialization          | BCS via `bcs` package                              |
+| type-tags              | TypeTag parsing and serialization                  |
+| ed25519                | Complete Ed25519 support                           |
+| hashing                | SHA2-256, SHA3-256, domain separation, HashValue   |
+| authentication-key     | Ed25519 auth keys                                  |
+| entry-function         | Basic entry function building                      |
+| raw-transaction        | Transaction building                               |
+| signing                | Ed25519 transaction signing                        |
+| fullnode-api           | Basic API client                                   |
+| transaction-submission | Submit transactions                                |
 
 ### 🟡 Partially Available
 
-| Feature       | Reason                                   | Impact                      |
-| ------------- | ---------------------------------------- | --------------------------- |
-| serialization | BCS primitives not exposed in public API | Cannot test low-level BCS   |
-| type-tags     | TypeTag parsing not exposed              | Cannot test TypeTag parsing |
-| hashing       | Domain separation not exposed            | Limited hashing tests       |
+(No features in this category - all available features are fully tested)
 
 ### ➖ Not Available in SDK
 
@@ -93,9 +91,6 @@ Issues with tests marked 🟡 (partial):
 
 | Feature                | Scenarios                   | Notes                                |
 | ---------------------- | --------------------------- | ------------------------------------ |
-| serialization          | All 18                      | BCS primitives not exposed           |
-| type-tags              | All 24                      | TypeTag parsing not exposed          |
-| hashing                | #9-20                       | Domain separation, HashValue wrapper |
 | ed25519                | #24-25                      | Private key zeroization/debug hiding |
 | authentication-key     | #5-8, #15                   | Secp256k1-related                    |
 | single-key             | #6-7, #15-20, #22, #26-28   | AIP-80, Secp256k1                    |
@@ -244,7 +239,7 @@ To add or update tests for this SDK:
 
 | Category                | Passed | Failed | Undefined | Total |
 | ----------------------- | ------ | ------ | --------- | ----- |
-| 01-core-types           | 22     | 0      | 42        | 64    |
+| 01-core-types           | 121    | 0      | 0         | 121   |
 | 02-cryptography         | 45     | 4      | ~70       | ~120  |
 | 03-account-management   | 30     | 0      | ~32       | ~62   |
 | 04-transaction-building | 50     | 0      | ~36       | ~86   |
@@ -254,7 +249,7 @@ To add or update tests for this SDK:
 ### Required Tests Summary
 
 ```
-370 scenarios (212 passed, 8 failed, 154 undefined)
+370 scenarios (239 passed, 8 failed, 127 undefined)
 ```
 
 ### Failure Details

@@ -70,8 +70,8 @@
 | Feature           | TS       | Go       | Rust     | Java     | Kotlin | Python   | .NET | C++      | Swift |
 | ----------------- | -------- | -------- | -------- | -------- | ------ | -------- | ---- | -------- | ----- |
 | **address**       | ✅ 22/22 | ✅ 22/22 | 🟡 20/22 | ✅ 22/22 | 🟡     | ✅ 22/22 | 🟡   | 🟡 21/22 | ✅ 32 |
-| **serialization** | ✅ 18/18 | ❌ 0/18  | ✅ 18/18 | ✅ 18/18 | ❌     | 🟡 16/18 | ❌   | 🟡 1/18  | ✅ 23 |
-| **type-tags**     | ✅ 24/24 | ❌ 0/24  | ✅ 24/24 | ✅ 24/24 | ❌     | 🟡 22/24 | ❌   | ❌ 0/24  | ✅ 32 |
+| **serialization** | ✅ 18/18 | ✅ 18/18 | ✅ 18/18 | ✅ 18/18 | ❌     | 🟡 16/18 | ❌   | 🟡 1/18  | ✅ 23 |
+| **type-tags**     | ✅ 24/24 | ✅ 24/24 | ✅ 24/24 | ✅ 24/24 | ❌     | 🟡 22/24 | ❌   | ❌ 0/24  | ✅ 32 |
 
 ### address.feature `@required`
 
@@ -104,53 +104,53 @@
 
 | #   | Scenario                                         | TS  | Go  | Rust | Java | Kotlin | Python | .NET | C++ | Swift |
 | --- | ------------------------------------------------ | --- | --- | ---- | ---- | ------ | ------ | ---- | --- | ----- |
-| 1   | ULEB128 round-trip                               | ✅  | ❌  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
-| 2   | Serialize empty bytes                            | ✅  | ❌  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
-| 3   | Serialize short bytes                            | ✅  | ❌  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
-| 4   | Serialize string                                 | ✅  | ❌  | ✅   | ✅   | ❌     | ✅     | ❌   | ✅  | ✅    |
-| 5   | Serialize empty string                           | ✅  | ❌  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
-| 6   | Serialize string with unicode                    | ✅  | ❌  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
-| 7   | Serialize None option                            | ✅  | ❌  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
-| 8   | Serialize Some option with u64                   | ✅  | ❌  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
-| 9   | Serialize empty vector                           | ✅  | ❌  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
-| 10  | Serialize vector of u8                           | ✅  | ❌  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
-| 11  | Serialize vector of u64                          | ✅  | ❌  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
-| 12  | Serialize nested vector                          | ✅  | ❌  | ✅   | ✅   | ❌     | 🟡     | ❌   | ❌  | ✅    |
-| 13  | Serialize AccountAddress                         | ✅  | ❌  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
-| 14  | Deserialize AccountAddress                       | ✅  | ❌  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
-| 15  | Serialize struct with multiple fields            | ✅  | ❌  | ✅   | ✅   | ❌     | 🟡     | ❌   | ❌  | ✅    |
-| 16  | Fail to deserialize truncated data               | ✅  | ❌  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
-| 17  | Fail to deserialize invalid boolean              | ✅  | ❌  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
-| 18  | Fail to deserialize sequence with invalid length | ✅  | ❌  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
+| 1   | ULEB128 round-trip                               | ✅  | ✅  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
+| 2   | Serialize empty bytes                            | ✅  | ✅  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
+| 3   | Serialize short bytes                            | ✅  | ✅  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
+| 4   | Serialize string                                 | ✅  | ✅  | ✅   | ✅   | ❌     | ✅     | ❌   | ✅  | ✅    |
+| 5   | Serialize empty string                           | ✅  | ✅  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
+| 6   | Serialize string with unicode                    | ✅  | ✅  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
+| 7   | Serialize None option                            | ✅  | ✅  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
+| 8   | Serialize Some option with u64                   | ✅  | ✅  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
+| 9   | Serialize empty vector                           | ✅  | ✅  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
+| 10  | Serialize vector of u8                           | ✅  | ✅  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
+| 11  | Serialize vector of u64                          | ✅  | ✅  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
+| 12  | Serialize nested vector                          | ✅  | ✅  | ✅   | ✅   | ❌     | 🟡     | ❌   | ❌  | ✅    |
+| 13  | Serialize AccountAddress                         | ✅  | ✅  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
+| 14  | Deserialize AccountAddress                       | ✅  | ✅  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
+| 15  | Serialize struct with multiple fields            | ✅  | ✅  | ✅   | ✅   | ❌     | 🟡     | ❌   | ❌  | ✅    |
+| 16  | Fail to deserialize truncated data               | ✅  | ✅  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
+| 17  | Fail to deserialize invalid boolean              | ✅  | ✅  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
+| 18  | Fail to deserialize sequence with invalid length | ✅  | ✅  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
 
 ### type-tags.feature `@required`
 
 | #   | Scenario                                  | TS  | Go  | Rust | Java | Kotlin | Python | .NET | C++ | Swift |
 | --- | ----------------------------------------- | --- | --- | ---- | ---- | ------ | ------ | ---- | --- | ----- |
-| 1   | Format primitive types                    | ✅  | ❌  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
-| 2   | Parse vector of u8                        | ✅  | ❌  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
-| 3   | Parse nested vector                       | ✅  | ❌  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
-| 4   | Parse vector of struct                    | ✅  | ❌  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
-| 5   | Format vector type                        | ✅  | ❌  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
-| 6   | Parse simple struct type                  | ✅  | ❌  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
-| 7   | Parse struct with type argument           | ✅  | ❌  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
-| 8   | Parse struct with multiple type arguments | ✅  | ❌  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
-| 9   | Parse struct with full address            | ✅  | ❌  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
-| 10  | Format struct type without type args      | ✅  | ❌  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
-| 11  | Format struct type with type args         | ✅  | ❌  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
-| 12  | Reject empty type string                  | ✅  | ❌  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
-| 13  | Reject unknown primitive                  | ✅  | ❌  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
-| 14  | Reject malformed vector                   | ✅  | ❌  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
-| 15  | Reject unclosed vector bracket            | ✅  | ❌  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
-| 16  | Reject invalid struct format              | ✅  | ❌  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
-| 17  | Reject struct with invalid address        | ✅  | ❌  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
-| 18  | Parse module ID                           | ✅  | ❌  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
-| 19  | Format module ID                          | ✅  | ❌  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
-| 20  | Reject invalid module ID                  | ✅  | ❌  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
-| 21  | Create MoveStructTag from components      | ✅  | ❌  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
-| 22  | BCS serialize primitive TypeTag           | ✅  | ❌  | ✅   | ✅   | ❌     | 🟡     | ❌   | ❌  | ✅    |
-| 23  | BCS serialize struct TypeTag              | ✅  | ❌  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
-| 24  | BCS round-trip for complex TypeTag        | ✅  | ❌  | ✅   | ✅   | ❌     | 🟡     | ❌   | ❌  | ✅    |
+| 1   | Format primitive types                    | ✅  | ✅  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
+| 2   | Parse vector of u8                        | ✅  | ✅  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
+| 3   | Parse nested vector                       | ✅  | ✅  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
+| 4   | Parse vector of struct                    | ✅  | ✅  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
+| 5   | Format vector type                        | ✅  | ✅  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
+| 6   | Parse simple struct type                  | ✅  | ✅  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
+| 7   | Parse struct with type argument           | ✅  | ✅  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
+| 8   | Parse struct with multiple type arguments | ✅  | ✅  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
+| 9   | Parse struct with full address            | ✅  | ✅  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
+| 10  | Format struct type without type args      | ✅  | ✅  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
+| 11  | Format struct type with type args         | ✅  | ✅  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
+| 12  | Reject empty type string                  | ✅  | ✅  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
+| 13  | Reject unknown primitive                  | ✅  | ✅  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
+| 14  | Reject malformed vector                   | ✅  | ✅  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
+| 15  | Reject unclosed vector bracket            | ✅  | ✅  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
+| 16  | Reject invalid struct format              | ✅  | ✅  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
+| 17  | Reject struct with invalid address        | ✅  | ✅  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
+| 18  | Parse module ID                           | ✅  | ✅  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
+| 19  | Format module ID                          | ✅  | ✅  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
+| 20  | Reject invalid module ID                  | ✅  | ✅  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
+| 21  | Create MoveStructTag from components      | ✅  | ✅  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
+| 22  | BCS serialize primitive TypeTag           | ✅  | ✅  | ✅   | ✅   | ❌     | 🟡     | ❌   | ❌  | ✅    |
+| 23  | BCS serialize struct TypeTag              | ✅  | ✅  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
+| 24  | BCS round-trip for complex TypeTag        | ✅  | ✅  | ✅   | ✅   | ❌     | 🟡     | ❌   | ❌  | ✅    |
 
 ---
 
@@ -161,7 +161,7 @@
 | Feature                    | TS       | Go       | Rust     | Java     | Kotlin | Python   | .NET | C++      | Swift |
 | -------------------------- | -------- | -------- | -------- | -------- | ------ | -------- | ---- | -------- | ----- |
 | **ed25519** `@required`    | ✅ 25/25 | 🟡 23/25 | ✅ 25/25 | ✅ 25/25 | 🟡     | 🟡 23/25 | 🟡   | 🟡 20/25 | ✅ 18 |
-| **hashing** `@required`    | ✅ 20/20 | 🟡 8/20  | ✅ 20/20 | ✅ 20/20 | 🟡     | 🟡 19/20 | 🟡   | 🟡 7/20  | ✅ 9  |
+| **hashing** `@required`    | ✅ 20/20 | ✅ 20/20 | ✅ 20/20 | ✅ 20/20 | 🟡     | 🟡 19/20 | 🟡   | 🟡 7/20  | ✅ 9  |
 | **secp256k1** `@preferred` | ✅ 19/19 | ➖       | ✅ 19/19 | ➖       | ➖     | ❌ 0/19  | ➖   | ➖       | ✅ 18 |
 | **secp256r1** `@optional`  | ✅ 26/26 | ➖       | 🟡 23/26 | ➖       | ➖     | ❌ 0/26  | ➖   | ➖       | ➖    |
 | **bls12381** `@optional`   | ❌ 0/35  | ➖       | ❌ 0/35  | ➖       | ➖     | ❌ 0/35  | ➖   | ➖       | ➖    |
@@ -208,18 +208,18 @@
 | 6   | Compute SHA2-256 of empty data                 | ✅  | ✅  | ✅   | ✅   | ✅     | ✅     | ✅   | ✅  | ✅    |
 | 7   | Compute SHA2-256 of "hello"                    | ✅  | ✅  | ✅   | ✅   | ✅     | ✅     | ✅   | ✅  | ✅    |
 | 8   | SHA2-256 differs from SHA3-256                 | ✅  | ✅  | ✅   | ✅   | ✅     | ✅     | ✅   | ✅  | ✅    |
-| 9   | Domain-separated hash for RawTransaction       | ✅  | ❌  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ❌    |
-| 10  | Different domains produce different hashes     | ✅  | ❌  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ❌    |
-| 11  | Domain hash prefix computed correctly          | ✅  | ❌  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ❌    |
-| 12  | Create HashValue from bytes                    | ✅  | ❌  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ❌    |
-| 13  | Create HashValue from hex                      | ✅  | ❌  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ❌    |
-| 14  | Reject invalid HashValue length                | ✅  | ❌  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ❌    |
-| 15  | HashValue ZERO constant                        | ✅  | ❌  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ❌    |
-| 16  | Format HashValue as hex                        | ✅  | ❌  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ❌    |
-| 17  | HashValue equality                             | ✅  | ❌  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ❌    |
-| 18  | HashValue from SHA3-256                        | ✅  | ❌  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ❌    |
-| 19  | HMAC-SHA512 for BIP-39 seed derivation         | ✅  | ❌  | ✅   | ✅   | ❌     | ❌     | ❌   | ❌  | ❌    |
-| 20  | Hashing large data                             | ✅  | ❌  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
+| 9   | Domain-separated hash for RawTransaction       | ✅  | ✅  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ❌    |
+| 10  | Different domains produce different hashes     | ✅  | ✅  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ❌    |
+| 11  | Domain hash prefix computed correctly          | ✅  | ✅  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ❌    |
+| 12  | Create HashValue from bytes                    | ✅  | ✅  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ❌    |
+| 13  | Create HashValue from hex                      | ✅  | ✅  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ❌    |
+| 14  | Reject invalid HashValue length                | ✅  | ✅  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ❌    |
+| 15  | HashValue ZERO constant                        | ✅  | ✅  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ❌    |
+| 16  | Format HashValue as hex                        | ✅  | ✅  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ❌    |
+| 17  | HashValue equality                             | ✅  | ✅  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ❌    |
+| 18  | HashValue from SHA3-256                        | ✅  | ✅  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ❌    |
+| 19  | HMAC-SHA512 for BIP-39 seed derivation         | ✅  | ✅  | ✅   | ✅   | ❌     | ❌     | ❌   | ❌  | ❌    |
+| 20  | Hashing large data                             | ✅  | ✅  | ✅   | ✅   | ❌     | ✅     | ❌   | ❌  | ✅    |
 
 ### secp256k1.feature `@preferred`
 

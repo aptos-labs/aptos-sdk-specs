@@ -1,19 +1,22 @@
 //! Test world - holds state between Cucumber steps.
 
-use aptos_rust_sdk_v2::account::{Ed25519Account, MultiEd25519Account};
+use aptos_rust_sdk_v2::account::{Account, AnyAccount, Ed25519Account, MultiEd25519Account, Secp256k1Account, Secp256r1Account};
 use aptos_rust_sdk_v2::api::{FaucetClient, FullnodeClient};
+use aptos_rust_sdk_v2::Aptos;
 use aptos_rust_sdk_v2::crypto::{
-    Ed25519PrivateKey, Ed25519PublicKey, Ed25519Signature, MultiEd25519PublicKey,
-    MultiEd25519Signature, Secp256k1PrivateKey, Secp256k1PublicKey, Secp256k1Signature,
+    Bls12381PrivateKey, Bls12381ProofOfPossession, Bls12381PublicKey, Bls12381Signature,
+    Ed25519PrivateKey, Ed25519PublicKey, Ed25519Signature,
+    MultiEd25519PublicKey, MultiEd25519Signature,
+    Secp256k1PrivateKey, Secp256k1PublicKey, Secp256k1Signature,
     Secp256r1PrivateKey, Secp256r1PublicKey, Secp256r1Signature,
 };
-use aptos_rust_sdk_v2::transaction::authenticator::TransactionAuthenticator;
-use aptos_rust_sdk_v2::transaction::types::{FeePayerRawTransaction, MultiAgentRawTransaction};
 use aptos_rust_sdk_v2::transaction::{
-    PartiallySigned, RawTransaction, SignedTransaction, TransactionPayload,
+    EntryFunction, PartiallySigned, RawTransaction, SignedTransaction, TransactionPayload,
 };
-use aptos_rust_sdk_v2::types::{AccountAddress, HashValue, MoveModuleId, MoveStructTag, TypeTag};
+use aptos_rust_sdk_v2::transaction::types::{FeePayerRawTransaction, MultiAgentRawTransaction};
+use aptos_rust_sdk_v2::transaction::authenticator::TransactionAuthenticator;
 use aptos_rust_sdk_v2::ChainId;
+use aptos_rust_sdk_v2::types::{AccountAddress, HashValue, MoveModuleId, MoveStructTag, TypeTag};
 use cucumber::World;
 use std::collections::HashMap;
 
@@ -90,8 +93,38 @@ pub struct TestWorld {
     /// Second Ed25519 account.
     pub ed25519_account2: Option<Ed25519Account>,
 
+    /// Secp256k1 account.
+    #[world(skip)]
+    pub secp256k1_account: Option<Secp256k1Account>,
+
+    /// Second Secp256k1 account.
+    #[world(skip)]
+    pub secp256k1_account2: Option<Secp256k1Account>,
+
+    /// Secp256r1 (P-256) account.
+    #[world(skip)]
+    pub secp256r1_account: Option<Secp256r1Account>,
+
+    /// Second Secp256r1 account.
+    #[world(skip)]
+    pub secp256r1_account2: Option<Secp256r1Account>,
+
+    /// AnyAccount (for polymorphism tests).
+    #[world(skip)]
+    pub any_account: Option<AnyAccount>,
+
+    /// Second AnyAccount.
+    #[world(skip)]
+    pub any_account2: Option<AnyAccount>,
+
+    /// Flag indicating we're testing through Account interface.
+    pub testing_account_interface: bool,
+
     /// Authentication key bytes.
     pub auth_key_bytes: Option<Vec<u8>>,
+
+    /// Second authentication key bytes for comparison.
+    pub auth_key_bytes2: Option<Vec<u8>>,
 
     // ==========================================================================
     // Type Tag State
@@ -156,6 +189,36 @@ pub struct TestWorld {
     /// Second Secp256r1 signature.
     pub secp256r1_signature2: Option<Secp256r1Signature>,
 
+    // ==========================================================================
+    // BLS12-381 State
+    // ==========================================================================
+    /// BLS12-381 private key.
+    #[world(skip)]
+    pub bls_private_key: Option<Bls12381PrivateKey>,
+    /// BLS12-381 public key.
+    pub bls_public_key: Option<Bls12381PublicKey>,
+    /// Second BLS12-381 private key.
+    #[world(skip)]
+    pub bls_private_key2: Option<Bls12381PrivateKey>,
+    /// Second BLS12-381 public key.
+    pub bls_public_key2: Option<Bls12381PublicKey>,
+    /// BLS12-381 signature.
+    pub bls_signature: Option<Bls12381Signature>,
+    /// Second BLS12-381 signature.
+    pub bls_signature2: Option<Bls12381Signature>,
+    /// BLS12-381 proof of possession.
+    pub bls_pop: Option<Bls12381ProofOfPossession>,
+    /// Aggregated BLS12-381 signature.
+    pub bls_aggregated_signature: Option<Bls12381Signature>,
+    /// Aggregated BLS12-381 public key.
+    pub bls_aggregated_public_key: Option<Bls12381PublicKey>,
+    /// Multiple BLS signatures for aggregation.
+    pub bls_signatures: Vec<Bls12381Signature>,
+    /// Multiple BLS public keys for aggregation.
+    pub bls_public_keys: Vec<Bls12381PublicKey>,
+    /// Multiple BLS proofs of possession.
+    pub bls_pops: Vec<Bls12381ProofOfPossession>,
+
     /// Private key bytes (for creating keys from bytes).
     pub private_key_bytes: Option<Vec<u8>>,
 
@@ -215,6 +278,39 @@ pub struct TestWorld {
 
     /// Second serialized bytes.
     pub serialized_bytes2: Option<Vec<u8>>,
+
+    // ==========================================================================
+    // Entry Function State
+    // ==========================================================================
+    /// Entry function.
+    pub entry_function: Option<EntryFunction>,
+
+    /// Second entry function (for comparison).
+    pub entry_function2: Option<EntryFunction>,
+
+    /// Module ID string input.
+    pub module_id_str: Option<String>,
+
+    /// Function name input.
+    pub function_name: Option<String>,
+
+    /// Type arguments.
+    pub type_args: Option<Vec<TypeTag>>,
+
+    /// Entry function arguments (BCS-encoded).
+    pub entry_fn_args: Option<Vec<Vec<u8>>>,
+
+    /// Recipient address for transfers.
+    pub recipient_address: Option<AccountAddress>,
+
+    /// Transfer amount.
+    pub transfer_amount: Option<u64>,
+
+    /// Coin type for coin transfers.
+    pub coin_type: Option<TypeTag>,
+
+    /// Input bytes (for encoding tests).
+    pub input_bytes: Option<Vec<u8>>,
 
     // ==========================================================================
     // Multi-Agent Transaction State
@@ -347,6 +443,10 @@ pub struct TestWorld {
     // ==========================================================================
     // API Client State
     // ==========================================================================
+    /// High-level Aptos client.
+    #[world(skip)]
+    pub aptos_client: Option<Aptos>,
+
     /// Fullnode REST API client.
     #[world(skip)]
     pub fullnode_client: Option<FullnodeClient>,
@@ -354,6 +454,18 @@ pub struct TestWorld {
     /// Faucet client.
     #[world(skip)]
     pub faucet_client: Option<FaucetClient>,
+
+    /// Funded account for testing.
+    pub funded_account: Option<Ed25519Account>,
+
+    // ==========================================================================
+    // Benchmark State
+    // ==========================================================================
+    /// Benchmark timings in microseconds.
+    pub benchmark_timings: Vec<u64>,
+
+    /// Benchmark results.
+    pub benchmark_results: HashMap<String, f64>,
 
     // ==========================================================================
     // Generic State
@@ -397,3 +509,4 @@ impl TestWorld {
         self.last_error = None;
     }
 }
+

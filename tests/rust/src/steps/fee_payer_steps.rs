@@ -223,6 +223,10 @@ fn given_same_fee_payer_transaction(world: &mut TestWorld) {
     if world.fee_payer_txn.is_none() {
         given_fee_payer_transaction(world);
     }
+    // Also sign it for serialization tests
+    if world.signed_transaction.is_none() {
+        when_sign_fee_payer_both_parties(world);
+    }
 }
 
 #[given("a RawTransaction and fee payer address from test vectors")]
@@ -454,6 +458,22 @@ fn when_sender_creates_raw_tx(world: &mut TestWorld) {
 #[when("sender signs the fee payer signing message")]
 fn when_sender_signs_fee_payer_msg(world: &mut TestWorld) {
     use aptos_rust_sdk_v2::account::Account;
+
+    // Create fee_payer_txn if not exists
+    if world.fee_payer_txn.is_none() {
+        if let Some(raw_txn) = &world.raw_transaction {
+            let fee_payer_addr = world.fee_payer_address.unwrap_or_else(|| {
+                let account = Ed25519Account::generate();
+                world.fee_payer_account = Some(account.clone());
+                account.address()
+            });
+            world.fee_payer_txn = Some(FeePayerRawTransaction::new(
+                raw_txn.clone(),
+                world.secondary_signer_addresses.clone(),
+                fee_payer_addr,
+            ));
+        }
+    }
 
     if let (Some(fee_payer_txn), Some(sender)) = (&world.fee_payer_txn, &world.ed25519_account) {
         if let Ok(signing_message) = fee_payer_txn.signing_message() {
