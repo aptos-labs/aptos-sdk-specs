@@ -83,7 +83,7 @@ fn when_create_raw_transaction(world: &mut TestWorld) {
     let gas_unit_price = world.tx_gas_price.unwrap_or(100);
     let expiration_timestamp_secs = world.tx_expiration.unwrap_or(1700000000);
     let chain_id = world.tx_chain_id.unwrap_or(ChainId::testnet());
-    
+
     world.raw_transaction = Some(RawTransaction::new(
         sender,
         sequence_number,
@@ -119,7 +119,7 @@ fn given_two_raw_transactions(world: &mut TestWorld) {
     world.tx_sequence_number = Some(0);
     when_create_raw_transaction(world);
     world.raw_transaction2 = world.raw_transaction.clone();
-    
+
     world.tx_sequence_number = Some(1);
     when_create_raw_transaction(world);
 }
@@ -149,7 +149,10 @@ fn then_sequence_number_returns(world: &mut TestWorld) {
 #[then(regex = r"^payload\(\) should return the payload$")]
 fn then_payload_returns(world: &mut TestWorld) {
     let raw_tx = world.raw_transaction.as_ref().expect("No RawTransaction");
-    assert!(matches!(raw_tx.payload, TransactionPayload::EntryFunction(_)));
+    assert!(matches!(
+        raw_tx.payload,
+        TransactionPayload::EntryFunction(_)
+    ));
 }
 
 #[then(regex = r"^max_gas_amount\(\) should return the max gas$")]
@@ -167,7 +170,10 @@ fn then_gas_price_returns(world: &mut TestWorld) {
 #[then(regex = r"^expiration_timestamp_secs\(\) should return the expiration$")]
 fn then_expiration_returns(world: &mut TestWorld) {
     let raw_tx = world.raw_transaction.as_ref().expect("No RawTransaction");
-    assert_eq!(raw_tx.expiration_timestamp_secs, world.tx_expiration.unwrap_or(1700000000));
+    assert_eq!(
+        raw_tx.expiration_timestamp_secs,
+        world.tx_expiration.unwrap_or(1700000000)
+    );
 }
 
 #[then(regex = r"^chain_id\(\) should return the chain ID$")]
@@ -215,7 +221,10 @@ fn then_bytes_deterministic(world: &mut TestWorld) {
 
 #[then(regex = r"^sender should be serialized first \((\d+) bytes\)$")]
 fn then_sender_serialized_first(world: &mut TestWorld, n: usize) {
-    let bytes = world.serialized_bytes.as_ref().expect("No serialized bytes");
+    let bytes = world
+        .serialized_bytes
+        .as_ref()
+        .expect("No serialized bytes");
     assert!(bytes.len() >= n);
 }
 
@@ -238,12 +247,19 @@ fn then_fields_in_order(world: &mut TestWorld) {
 
 #[then(expr = "the result should equal the original")]
 fn then_result_equals_original(world: &mut TestWorld) {
-    if let (Some(original), Some(deserialized)) = (&world.signed_transaction, &world.signed_transaction2) {
+    if let (Some(original), Some(deserialized)) =
+        (&world.signed_transaction, &world.signed_transaction2)
+    {
         // Compare SignedTransactions
         let orig_bytes = aptos_bcs::to_bytes(original).unwrap();
         let deser_bytes = aptos_bcs::to_bytes(deserialized).unwrap();
-        assert_eq!(orig_bytes, deser_bytes, "SignedTransaction roundtrip failed");
-    } else if let (Some(original), Some(deserialized)) = (&world.raw_transaction, &world.raw_transaction2) {
+        assert_eq!(
+            orig_bytes, deser_bytes,
+            "SignedTransaction roundtrip failed"
+        );
+    } else if let (Some(original), Some(deserialized)) =
+        (&world.raw_transaction, &world.raw_transaction2)
+    {
         // Compare RawTransactions
         assert_eq!(original.sender, deserialized.sender);
         assert_eq!(original.sequence_number, deserialized.sequence_number);
@@ -259,22 +275,48 @@ fn then_result_equals_original(world: &mut TestWorld) {
 #[when(expr = "I generate the signing message")]
 fn when_generate_signing_message(world: &mut TestWorld) {
     let raw_tx = world.raw_transaction.as_ref().expect("No RawTransaction");
-    world.signing_message = Some(raw_tx.signing_message().expect("Failed to generate signing message"));
+    world.signing_message = Some(
+        raw_tx
+            .signing_message()
+            .expect("Failed to generate signing message"),
+    );
 }
 
 #[when(expr = "I generate the signing message twice")]
 fn when_generate_signing_message_twice(world: &mut TestWorld) {
     let raw_tx = world.raw_transaction.as_ref().expect("No RawTransaction");
-    world.signing_message = Some(raw_tx.signing_message().expect("Failed to generate signing message"));
-    world.signing_message2 = Some(raw_tx.signing_message().expect("Failed to generate signing message"));
+    world.signing_message = Some(
+        raw_tx
+            .signing_message()
+            .expect("Failed to generate signing message"),
+    );
+    world.signing_message2 = Some(
+        raw_tx
+            .signing_message()
+            .expect("Failed to generate signing message"),
+    );
 }
 
 #[when(expr = "I generate signing messages for both")]
 fn when_generate_signing_messages_both(world: &mut TestWorld) {
-    let raw_tx1 = world.raw_transaction.as_ref().expect("No first RawTransaction");
-    let raw_tx2 = world.raw_transaction2.as_ref().expect("No second RawTransaction");
-    world.signing_message = Some(raw_tx1.signing_message().expect("Failed to generate signing message"));
-    world.signing_message2 = Some(raw_tx2.signing_message().expect("Failed to generate signing message"));
+    let raw_tx1 = world
+        .raw_transaction
+        .as_ref()
+        .expect("No first RawTransaction");
+    let raw_tx2 = world
+        .raw_transaction2
+        .as_ref()
+        .expect("No second RawTransaction");
+    world.signing_message = Some(
+        raw_tx1
+            .signing_message()
+            .expect("Failed to generate signing message"),
+    );
+    world.signing_message2 = Some(
+        raw_tx2
+            .signing_message()
+            .expect("Failed to generate signing message"),
+    );
 }
 
 #[then(regex = r#"^the message should start with SHA3-256\("APTOS::RawTransaction"\)$"#)]
@@ -309,7 +351,10 @@ fn then_messages_different(world: &mut TestWorld) {
 
 #[then(expr = "the chain_id byte should be {word}")]
 fn then_chain_id_byte(world: &mut TestWorld, hex: String) {
-    let bytes = world.serialized_bytes.as_ref().expect("No serialized bytes");
+    let bytes = world
+        .serialized_bytes
+        .as_ref()
+        .expect("No serialized bytes");
     let expected = parse_hex_byte(&hex);
     // Chain ID is the last byte in the serialized transaction
     let last_byte = bytes.last().expect("Empty bytes");
@@ -327,7 +372,7 @@ fn then_chain_id_byte(world: &mut TestWorld, hex: String) {
 #[when(expr = "I sign the transaction with the account")]
 fn when_sign_with_account(world: &mut TestWorld) {
     use aptos_rust_sdk_v2::transaction::sign_transaction;
-    
+
     let raw_tx = world.raw_transaction.as_ref().expect("No RawTransaction");
     let account = world.ed25519_account.as_ref().expect("No account");
     let signed_tx = sign_transaction(raw_tx, account).expect("Failed to sign");
@@ -342,7 +387,7 @@ fn when_sign_transaction(world: &mut TestWorld) {
 #[when(expr = "I sign the transaction twice")]
 fn when_sign_transaction_twice(world: &mut TestWorld) {
     use aptos_rust_sdk_v2::transaction::sign_transaction;
-    
+
     let raw_tx = world.raw_transaction.as_ref().expect("No RawTransaction");
     let account = world.ed25519_account.as_ref().expect("No account");
     world.signed_transaction = Some(sign_transaction(raw_tx, account).expect("Failed to sign"));
@@ -352,7 +397,7 @@ fn when_sign_transaction_twice(world: &mut TestWorld) {
 #[when(expr = "both accounts sign the transaction")]
 fn when_both_accounts_sign(world: &mut TestWorld) {
     use aptos_rust_sdk_v2::transaction::sign_transaction;
-    
+
     let raw_tx = world.raw_transaction.as_ref().expect("No RawTransaction");
     let account1 = world.ed25519_account.as_ref().expect("No first account");
     let account2 = world.ed25519_account2.as_ref().expect("No second account");
@@ -367,15 +412,24 @@ fn then_get_signed_transaction(world: &mut TestWorld) {
 
 #[then(expr = "the authenticator should be Ed25519 variant")]
 fn then_authenticator_ed25519(world: &mut TestWorld) {
-    let signed_tx = world.signed_transaction.as_ref().expect("No SignedTransaction");
+    let signed_tx = world
+        .signed_transaction
+        .as_ref()
+        .expect("No SignedTransaction");
     // The authenticator is Ed25519 if the transaction was signed with an Ed25519 account
     assert!(world.ed25519_account.is_some());
 }
 
 #[then(expr = "both SignedTransactions should be identical")]
 fn then_signed_txs_identical(world: &mut TestWorld) {
-    let tx1 = world.signed_transaction.as_ref().expect("No first SignedTransaction");
-    let tx2 = world.signed_transaction2.as_ref().expect("No second SignedTransaction");
+    let tx1 = world
+        .signed_transaction
+        .as_ref()
+        .expect("No first SignedTransaction");
+    let tx2 = world
+        .signed_transaction2
+        .as_ref()
+        .expect("No second SignedTransaction");
     let bytes1 = aptos_bcs::to_bytes(tx1).unwrap();
     let bytes2 = aptos_bcs::to_bytes(tx2).unwrap();
     assert_eq!(bytes1, bytes2);
@@ -385,8 +439,14 @@ fn then_signed_txs_identical(world: &mut TestWorld) {
 // The transaction-level version is "the SignedTransactions should be different"
 #[then(expr = "the SignedTransactions should be different")]
 fn then_tx_signatures_different(world: &mut TestWorld) {
-    let tx1 = world.signed_transaction.as_ref().expect("No first SignedTransaction");
-    let tx2 = world.signed_transaction2.as_ref().expect("No second SignedTransaction");
+    let tx1 = world
+        .signed_transaction
+        .as_ref()
+        .expect("No first SignedTransaction");
+    let tx2 = world
+        .signed_transaction2
+        .as_ref()
+        .expect("No second SignedTransaction");
     let bytes1 = aptos_bcs::to_bytes(tx1).unwrap();
     let bytes2 = aptos_bcs::to_bytes(tx2).unwrap();
     assert_ne!(bytes1, bytes2);
@@ -425,7 +485,10 @@ fn given_two_signed_transactions(world: &mut TestWorld) {
 
 #[when(expr = "I get the raw_transaction")]
 fn when_get_raw_transaction(world: &mut TestWorld) {
-    let signed_tx = world.signed_transaction.as_ref().expect("No SignedTransaction");
+    let signed_tx = world
+        .signed_transaction
+        .as_ref()
+        .expect("No SignedTransaction");
     world.raw_transaction2 = Some(signed_tx.raw_txn.clone());
 }
 
@@ -440,7 +503,10 @@ fn then_equals_original_raw_tx(world: &mut TestWorld) {
 
 #[when(regex = r"^I call to_bytes\(\)$")]
 fn when_call_to_bytes(world: &mut TestWorld) {
-    let signed_tx = world.signed_transaction.as_ref().expect("No SignedTransaction");
+    let signed_tx = world
+        .signed_transaction
+        .as_ref()
+        .expect("No SignedTransaction");
     world.serialized_bytes = Some(aptos_bcs::to_bytes(signed_tx).unwrap());
 }
 
@@ -452,7 +518,10 @@ fn then_result_valid_bcs(world: &mut TestWorld) {
 
 #[when(expr = "I serialize it twice")]
 fn when_serialize_twice(world: &mut TestWorld) {
-    let signed_tx = world.signed_transaction.as_ref().expect("No SignedTransaction");
+    let signed_tx = world
+        .signed_transaction
+        .as_ref()
+        .expect("No SignedTransaction");
     world.serialized_bytes = Some(aptos_bcs::to_bytes(signed_tx).unwrap());
     world.serialized_bytes2 = Some(aptos_bcs::to_bytes(signed_tx).unwrap());
 }
@@ -461,7 +530,10 @@ fn when_serialize_twice(world: &mut TestWorld) {
 
 #[when(expr = "I serialize and deserialize it")]
 fn when_serialize_deserialize(world: &mut TestWorld) {
-    let signed_tx = world.signed_transaction.as_ref().expect("No SignedTransaction");
+    let signed_tx = world
+        .signed_transaction
+        .as_ref()
+        .expect("No SignedTransaction");
     let bytes = aptos_bcs::to_bytes(signed_tx).unwrap();
     let deserialized: SignedTransaction = aptos_bcs::from_bytes(&bytes).unwrap();
     world.signed_transaction2 = Some(deserialized);
@@ -473,21 +545,33 @@ fn when_serialize_deserialize(world: &mut TestWorld) {
 
 #[when(expr = "I compute the hash")]
 fn when_compute_hash(world: &mut TestWorld) {
-    let signed_tx = world.signed_transaction.as_ref().expect("No SignedTransaction");
+    let signed_tx = world
+        .signed_transaction
+        .as_ref()
+        .expect("No SignedTransaction");
     world.transaction_hash = Some(signed_tx.hash().expect("Failed to compute hash"));
 }
 
 #[when(expr = "I compute the hash twice")]
 fn when_compute_hash_twice(world: &mut TestWorld) {
-    let signed_tx = world.signed_transaction.as_ref().expect("No SignedTransaction");
+    let signed_tx = world
+        .signed_transaction
+        .as_ref()
+        .expect("No SignedTransaction");
     world.transaction_hash = Some(signed_tx.hash().expect("Failed to compute hash"));
     world.transaction_hash2 = Some(signed_tx.hash().expect("Failed to compute hash"));
 }
 
 #[when(expr = "I compute their hashes")]
 fn when_compute_both_hashes(world: &mut TestWorld) {
-    let tx1 = world.signed_transaction.as_ref().expect("No first SignedTransaction");
-    let tx2 = world.signed_transaction2.as_ref().expect("No second SignedTransaction");
+    let tx1 = world
+        .signed_transaction
+        .as_ref()
+        .expect("No first SignedTransaction");
+    let tx2 = world
+        .signed_transaction2
+        .as_ref()
+        .expect("No second SignedTransaction");
     world.transaction_hash = Some(tx1.hash().expect("Failed to compute hash"));
     world.transaction_hash2 = Some(tx2.hash().expect("Failed to compute hash"));
 }
@@ -526,4 +610,3 @@ fn parse_hex_byte(s: &str) -> u8 {
     let s = s.trim_start_matches("0x").trim_start_matches("0X");
     u8::from_str_radix(s, 16).unwrap_or_else(|_| panic!("Invalid hex byte: {}", s))
 }
-

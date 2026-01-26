@@ -6,9 +6,8 @@
 use crate::support::TestWorld;
 use aptos_rust_sdk_v2::account::{Account, AuthenticationKey, Ed25519Account};
 use aptos_rust_sdk_v2::crypto::{
-    derive_authentication_key, sha3_256, Ed25519PrivateKey,
-    Secp256k1PrivateKey, Secp256r1PrivateKey,
-    ED25519_SCHEME, MULTI_ED25519_SCHEME, MULTI_KEY_SCHEME, SINGLE_KEY_SCHEME,
+    derive_authentication_key, sha3_256, Ed25519PrivateKey, Secp256k1PrivateKey,
+    Secp256r1PrivateKey, ED25519_SCHEME, MULTI_ED25519_SCHEME, MULTI_KEY_SCHEME, SINGLE_KEY_SCHEME,
 };
 use cucumber::{given, then, when};
 
@@ -59,7 +58,9 @@ fn given_multi_ed25519_public_key(world: &mut TestWorld) {
     let public_key = private_key.public_key();
     world.ed25519_private_key = Some(private_key);
     world.ed25519_public_key = Some(public_key);
-    world.named_values.insert("key_type".to_string(), "MultiEd25519".to_string());
+    world
+        .named_values
+        .insert("key_type".to_string(), "MultiEd25519".to_string());
 }
 
 #[given("a MultiKey public key")]
@@ -69,7 +70,9 @@ fn given_multi_key_public_key(world: &mut TestWorld) {
     let public_key = private_key.public_key();
     world.ed25519_private_key = Some(private_key);
     world.ed25519_public_key = Some(public_key);
-    world.named_values.insert("key_type".to_string(), "MultiKey".to_string());
+    world
+        .named_values
+        .insert("key_type".to_string(), "MultiKey".to_string());
 }
 
 #[given("a Secp256r1 public key")]
@@ -96,7 +99,9 @@ fn given_public_key_bytes(world: &mut TestWorld) {
 #[given("a scheme identifier")]
 fn given_scheme_identifier(world: &mut TestWorld) {
     // Default to Ed25519 scheme
-    world.named_values.insert("scheme_id".to_string(), "0x00".to_string());
+    world
+        .named_values
+        .insert("scheme_id".to_string(), "0x00".to_string());
 }
 
 #[given("an authentication key")]
@@ -157,7 +162,8 @@ fn when_derive_auth_key_twice(world: &mut TestWorld) {
 
 #[when("I derive authentication keys from each")]
 fn when_derive_auth_keys_from_each(world: &mut TestWorld) {
-    if let (Some(ref pk1), Some(ref pk2)) = (&world.ed25519_public_key, &world.ed25519_public_key2) {
+    if let (Some(ref pk1), Some(ref pk2)) = (&world.ed25519_public_key, &world.ed25519_public_key2)
+    {
         let auth_key1 = derive_authentication_key(&pk1.to_bytes(), ED25519_SCHEME);
         let auth_key2 = derive_authentication_key(&pk2.to_bytes(), ED25519_SCHEME);
         world.auth_key_bytes = Some(auth_key1.to_vec());
@@ -183,7 +189,11 @@ fn when_prepare_auth_key_input(world: &mut TestWorld) {
 #[when("I derive the authentication key using from_public_key")]
 fn when_derive_auth_key_from_public_key(world: &mut TestWorld) {
     if let Some(ref bytes) = world.bytes {
-        let scheme_str = world.named_values.get("scheme_id").map(|s| s.as_str()).unwrap_or("0x00");
+        let scheme_str = world
+            .named_values
+            .get("scheme_id")
+            .map(|s| s.as_str())
+            .unwrap_or("0x00");
         let scheme = u8::from_str_radix(scheme_str.trim_start_matches("0x"), 16).unwrap_or(0);
         let auth_key_bytes = derive_authentication_key(bytes, scheme);
         world.auth_key_bytes = Some(auth_key_bytes.to_vec());
@@ -213,7 +223,7 @@ fn when_compare_address_to_auth_key(world: &mut TestWorld) {
 fn when_create_auth_key_from_bytes(world: &mut TestWorld) {
     // Try hash_input first (from "32 random bytes" step in hashing_steps.rs)
     let bytes = world.hash_input.clone().or_else(|| world.bytes.clone());
-    
+
     if let Some(ref bytes) = bytes {
         if bytes.len() == 32 {
             let mut arr = [0u8; 32];
@@ -231,11 +241,14 @@ fn when_create_auth_key_from_bytes(world: &mut TestWorld) {
 #[when("I try to create an authentication key")]
 fn when_try_create_auth_key(world: &mut TestWorld) {
     let bytes = world.hash_input.clone().or_else(|| world.bytes.clone());
-    
+
     if let Some(ref bytes) = bytes {
         if bytes.len() != 32 {
             // Set both error fields for compatibility with different step definitions
-            let err_msg = format!("Invalid authentication key length: expected 32, got {}", bytes.len());
+            let err_msg = format!(
+                "Invalid authentication key length: expected 32, got {}",
+                bytes.len()
+            );
             world.error = Some(err_msg.clone());
             world.last_error = Some(err_msg);
         } else {
@@ -283,7 +296,7 @@ fn then_equals_sha3_256_alt(world: &mut TestWorld, scheme_hex: String) {
 
 fn verify_sha3_256_auth_key(world: &mut TestWorld, scheme_hex: String) {
     let scheme = u8::from_str_radix(scheme_hex.trim_start_matches("0x"), 16).unwrap_or(0);
-    
+
     let public_key_bytes = if let Some(ref pk) = world.ed25519_public_key {
         pk.to_bytes().to_vec()
     } else if let Some(ref pk) = world.secp256k1_public_key {
@@ -293,11 +306,11 @@ fn verify_sha3_256_auth_key(world: &mut TestWorld, scheme_hex: String) {
     } else {
         panic!("No public key available");
     };
-    
+
     let mut input = public_key_bytes.clone();
     input.push(scheme);
     let expected = sha3_256(&input);
-    
+
     if let Some(ref auth_key_bytes) = world.auth_key_bytes {
         assert_eq!(
             auth_key_bytes.as_slice(),
@@ -345,22 +358,33 @@ fn then_auth_keys_different(world: &mut TestWorld) {
 #[then("it should be the uncompressed format (65 bytes)")]
 fn then_uncompressed_65_bytes(world: &mut TestWorld) {
     if let Some(ref bytes) = world.bytes {
-        assert_eq!(bytes.len(), 65, "Uncompressed public key should be 65 bytes");
+        assert_eq!(
+            bytes.len(),
+            65,
+            "Uncompressed public key should be 65 bytes"
+        );
     }
 }
 
 #[then("uncompressed key first byte should be 0x04")]
 fn then_uncompressed_first_byte_04(world: &mut TestWorld) {
     if let Some(ref bytes) = world.bytes {
-        assert_eq!(bytes[0], 0x04, "First byte of uncompressed key should be 0x04");
+        assert_eq!(
+            bytes[0], 0x04,
+            "First byte of uncompressed key should be 0x04"
+        );
     }
 }
 
 #[then(expr = "the scheme identifier should be {word}")]
 fn then_scheme_identifier_is(world: &mut TestWorld, expected_hex: String) {
     let expected = u8::from_str_radix(expected_hex.trim_start_matches("0x"), 16).unwrap_or(0);
-    let key_type = world.named_values.get("key_type").map(|s| s.as_str()).unwrap_or("");
-    
+    let key_type = world
+        .named_values
+        .get("key_type")
+        .map(|s| s.as_str())
+        .unwrap_or("");
+
     let actual_scheme = match key_type {
         "MultiEd25519" => MULTI_ED25519_SCHEME,
         "MultiKey" => MULTI_KEY_SCHEME,
@@ -374,7 +398,7 @@ fn then_scheme_identifier_is(world: &mut TestWorld, expected_hex: String) {
             }
         }
     };
-    
+
     // Note: The expected value from the feature file may differ from actual implementation
     // This is a behavioral test, so we verify the scheme used
     assert!(
@@ -388,13 +412,17 @@ fn then_scheme_identifier_is(world: &mut TestWorld, expected_hex: String) {
 #[then(expr = "the result should equal SHA3-256\\(public_key_bytes || scheme_id\\)")]
 fn then_result_equals_sha3_256_generic(world: &mut TestWorld) {
     if let (Some(ref bytes), Some(ref auth_key_bytes)) = (&world.bytes, &world.auth_key_bytes) {
-        let scheme_str = world.named_values.get("scheme_id").map(|s| s.as_str()).unwrap_or("0x00");
+        let scheme_str = world
+            .named_values
+            .get("scheme_id")
+            .map(|s| s.as_str())
+            .unwrap_or("0x00");
         let scheme = u8::from_str_radix(scheme_str.trim_start_matches("0x"), 16).unwrap_or(0);
-        
+
         let mut input = bytes.clone();
         input.push(scheme);
         let expected = sha3_256(&input);
-        
+
         assert_eq!(
             auth_key_bytes.as_slice(),
             expected.as_slice(),
@@ -436,7 +464,10 @@ fn then_address_and_auth_key_equal(world: &mut TestWorld) {
 #[then("the authentication key should contain those bytes")]
 fn then_auth_key_contains_bytes(world: &mut TestWorld) {
     if let (Some(ref original), Some(ref auth_key_bytes)) = (&world.bytes, &world.auth_key_bytes) {
-        assert_eq!(original, auth_key_bytes, "Authentication key should contain original bytes");
+        assert_eq!(
+            original, auth_key_bytes,
+            "Authentication key should contain original bytes"
+        );
     }
 }
 
@@ -466,7 +497,11 @@ fn then_get_32_byte_array(world: &mut TestWorld) {
 fn then_64_hex_chars_with_prefix(world: &mut TestWorld) {
     if let Some(ref formatted) = world.formatted_string {
         assert!(formatted.starts_with("0x"), "Should start with 0x prefix");
-        assert_eq!(formatted.len(), 66, "Should be 64 hex chars + 2 for 0x prefix");
+        assert_eq!(
+            formatted.len(),
+            66,
+            "Should be 64 hex chars + 2 for 0x prefix"
+        );
     }
 }
 
@@ -474,7 +509,11 @@ fn then_64_hex_chars_with_prefix(world: &mut TestWorld) {
 fn then_matches_test_vector(world: &mut TestWorld) {
     // For now, we just verify we got a valid 32-byte auth key
     if let Some(ref auth_key_bytes) = world.auth_key_bytes {
-        assert_eq!(auth_key_bytes.len(), 32, "Authentication key should be 32 bytes");
+        assert_eq!(
+            auth_key_bytes.len(),
+            32,
+            "Authentication key should be 32 bytes"
+        );
     }
 }
 

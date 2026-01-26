@@ -67,12 +67,14 @@ When updating `FEATURE_COVERAGE.md`:
 5. **Partially working tests = `[~]`** (partial implementation)
 
 **What counts as coverage:**
+
 - Test runs against the real SDK
 - Test makes actual SDK API calls
 - Test validates actual SDK behavior
 - Test passes (green)
 
 **What does NOT count:**
+
 - Step definitions that exist but use mocks/placeholders
 - Steps that return hardcoded values
 - Steps that simulate behavior without SDK calls
@@ -89,10 +91,71 @@ cd tests/go && go mod download && make test
 
 # Rust
 cd tests/rust && cargo test --test specs
-
-# Formatting
-bun run prettier --write "**/*.feature"
 ```
+
+### Formatting & Linting
+
+The root `Makefile` provides unified commands for formatting and linting across all languages:
+
+```bash
+# Format everything (docs, features, and all test code)
+make format
+
+# Check formatting without making changes
+make format-check
+
+# Lint all test implementations
+make lint
+
+# Individual languages (format or lint)
+make format-typescript    make lint-typescript
+make format-go            make lint-go
+make format-rust          make lint-rust
+make format-python        make lint-python
+make format-dotnet        make lint-dotnet
+make format-java          make lint-java
+make format-kotlin        make lint-kotlin
+make format-swift         make lint-swift
+make format-cpp           make lint-cpp
+```
+
+Each formatter/linter gracefully skips if the tool isn't installed.
+
+| Language      | Formatter     | Linter                 |
+| ------------- | ------------- | ---------------------- |
+| Docs/Features | Prettier      | -                      |
+| TypeScript    | Prettier      | tsc --noEmit           |
+| Go            | go fmt        | golangci-lint / go vet |
+| Rust          | cargo fmt     | cargo clippy           |
+| Python        | black         | flake8                 |
+| .NET          | dotnet format | dotnet format --verify |
+| Java          | spotless/fmt  | checkstyle/spotless    |
+| Kotlin        | ktlint        | ktlint                 |
+| Swift         | swift-format  | swiftlint              |
+| C++           | clang-format  | clang-tidy/cppcheck    |
+
+### Continuous Integration
+
+GitHub Actions workflows are configured in `.github/workflows/`:
+
+| Workflow      | Trigger                    | Description                             |
+| ------------- | -------------------------- | --------------------------------------- |
+| `ci.yml`      | Push/PR to main            | Format check + required/preferred tests |
+| `nightly.yml` | Daily at 2 AM UTC / Manual | Full test suite for all SDKs            |
+
+**CI Behavior:**
+
+- **Required tests** (`@required`) must pass for CI to succeed
+- **Preferred tests** (`@preferred`) run but don't block CI
+- **Optional tests** (`@optional`) run in nightly only
+- Format check must pass on all PRs
+
+**Manual Test Runs:**
+
+You can manually trigger the nightly workflow for a specific SDK:
+
+1. Go to Actions > Nightly Tests > Run workflow
+2. Select the SDK to test (or "all")
 
 ---
 
@@ -366,20 +429,25 @@ Invoke when:
 ## Feature: [Name]
 
 ### Problem Statement
+
 What user need does this address?
 
 ### Proposed Solution
+
 How should SDKs implement this?
 
 ### Priority Recommendation
+
 - [ ] Required (P0) - Essential for basic functionality
 - [ ] Preferred (P1) - Expected in production SDKs
 - [ ] Optional (P2) - Nice to have
 
 ### Dependencies
+
 What other features does this depend on?
 
 ### Reference Implementation
+
 Link to existing SDK implementation if available.
 ```
 
@@ -412,12 +480,19 @@ Invoke when:
 
 ### Workflow
 
-1. Run formatting tools:
+1. Run formatting and linting tools from root directory:
+
    ```bash
-   bun run prettier --write "**/*.feature"
-   bun run prettier --write "**/*.json"
-   bun run prettier --write "**/*.md"
+   # Format everything (docs, features, all test code)
+   make format
+
+   # Lint all test implementations
+   make lint
+
+   # Or check formatting without changes
+   make format-check
    ```
+
 2. Check for linting issues:
    - Run language-specific linters on step definitions
    - Validate JSON structure in test vectors
@@ -449,8 +524,19 @@ Invoke when:
 ### Common Fixes
 
 ```bash
-# Format all Gherkin files
-bun run prettier --write "features/**/*.feature"
+# Format everything at once (from repo root)
+make format
+
+# Format only docs and feature files
+make format-docs
+
+# Lint all test code
+make lint
+
+# Individual language formatting/linting
+make format-typescript && make lint-typescript
+make format-go && make lint-go
+# ... etc for each language
 
 # Validate JSON
 for f in test-vectors/*.json; do
@@ -472,15 +558,15 @@ done
 
 ## Agent Selection Guide
 
-| Task                                    | Agent                  |
-| --------------------------------------- | ---------------------- |
-| "Is this API intuitive?"                | Spec Reviewer          |
-| "Can we implement this in Go?"          | Implementation Reviewer|
-| "What's missing from the Rust SDK?"     | Coverage Reviewer      |
-| "Should we add keyless auth specs?"     | Architect              |
-| "Format all files before release"       | Cleanup                |
-| "Review this new feature file"          | Spec Reviewer          |
-| "Debug why this test fails"             | Implementation Reviewer|
-| "Compare SDK coverage"                  | Coverage Reviewer      |
-| "What features should we add next?"     | Architect              |
-| "Fix linting errors"                    | Cleanup                |
+| Task                                | Agent                   |
+| ----------------------------------- | ----------------------- |
+| "Is this API intuitive?"            | Spec Reviewer           |
+| "Can we implement this in Go?"      | Implementation Reviewer |
+| "What's missing from the Rust SDK?" | Coverage Reviewer       |
+| "Should we add keyless auth specs?" | Architect               |
+| "Format all files before release"   | Cleanup                 |
+| "Review this new feature file"      | Spec Reviewer           |
+| "Debug why this test fails"         | Implementation Reviewer |
+| "Compare SDK coverage"              | Coverage Reviewer       |
+| "What features should we add next?" | Architect               |
+| "Fix linting errors"                | Cleanup                 |

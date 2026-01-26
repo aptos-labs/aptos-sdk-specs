@@ -14,15 +14,16 @@
     "test:transactions": "bun run cucumber-js --tags @transaction-building",
     "test:api-clients": "bun run cucumber-js --tags @api-clients",
     "test:advanced": "bun run cucumber-js --tags @advanced",
+    "test:performance": "bun run cucumber-js --tags @performance",
     "format": "prettier --write \"steps/**/*.ts\" \"support/**/*.ts\"",
     "lint": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
     "@aptos-labs/ts-sdk": "^5.2.0",
-    "@noble/hashes": "2.0.1",
     "@noble/curves": "^1.9.7",
-    "@scure/bip39": "^1.5.0",
-    "@scure/bip32": "^1.6.0"
+    "@noble/hashes": "2.0.1",
+    "@scure/bip32": "^1.6.0",
+    "@scure/bip39": "^1.5.0"
   },
   "devDependencies": {
     "@cucumber/cucumber": "^12.5.0",

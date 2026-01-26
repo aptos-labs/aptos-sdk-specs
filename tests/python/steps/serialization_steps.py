@@ -3,15 +3,14 @@ Step definitions for serialization.feature
 Tests BCS serialization and deserialization.
 """
 
+from support.vectors import hex_to_bytes, bytes_to_hex
+from aptos_sdk.bcs import Serializer, Deserializer
+from behave import given, when, then, use_step_matcher
 import sys
 import os
 import re
+
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
-
-from behave import given, when, then, use_step_matcher
-from aptos_sdk.bcs import Serializer, Deserializer
-
-from support.vectors import hex_to_bytes, bytes_to_hex
 
 
 def parse_hex_value(value_str):
@@ -113,18 +112,18 @@ def step_given_length_value(context, value):
 use_step_matcher("re")
 
 
-@given(r'an empty byte array')
+@given(r"an empty byte array")
 def step_given_empty_bytes(context):
     context.world.bytes_value = bytes()
 
 
-@given(r'bytes (?P<byte_array>\[[^\]]+\]) intended for u64')
+@given(r"bytes (?P<byte_array>\[[^\]]+\]) intended for u64")
 def step_given_bytes_for_u64(context, byte_array):
     context.world.bytes_value = parse_byte_array(byte_array)
     context.world.expected_type = "u64"
 
 
-@given(r'bytes (?P<byte_array>\[[^\]]+\])')
+@given(r"bytes (?P<byte_array>\[[^\]]+\])")
 def step_given_bytes(context, byte_array):
     context.world.bytes_value = parse_byte_array(byte_array)
 
@@ -137,8 +136,6 @@ def step_given_32_bytes_with_last(context, value):
     data = bytearray(32)
     data[31] = parse_hex_value(value)
     context.world.bytes_value = bytes(data)
-
-
 
 
 # =============================================================================
@@ -186,19 +183,19 @@ def step_given_empty_vector_u8(context):
 use_step_matcher("re")
 
 
-@given(r'a vector \[(?P<values>[^\]]+)\] of u8')
+@given(r"a vector \[(?P<values>[^\]]+)\] of u8")
 def step_given_vector_u8(context, values):
     context.world.vector_value = [int(v.strip()) for v in values.split(",")]
     context.world.vector_type = "u8"
 
 
-@given(r'a vector \[(?P<values>[^\]]+)\] of u64')
+@given(r"a vector \[(?P<values>[^\]]+)\] of u64")
 def step_given_vector_u64(context, values):
     context.world.vector_value = [int(v.strip()) for v in values.split(",")]
     context.world.vector_type = "u64"
 
 
-@given(r'a vector \[\[(?P<inner1>[^\]]+)\], \[(?P<inner2>[^\]]+)\]\] of vectors of u8')
+@given(r"a vector \[\[(?P<inner1>[^\]]+)\], \[(?P<inner2>[^\]]+)\]\] of vectors of u8")
 def step_given_nested_vector(context, inner1, inner2):
     vec1 = [int(v.strip()) for v in inner1.split(",")]
     vec2 = [int(v.strip()) for v in inner2.split(",")]
@@ -217,6 +214,7 @@ use_step_matcher("parse")
 @given('an AccountAddress "{address}"')
 def step_given_account_address_for_bcs(context, address):
     from aptos_sdk.account_address import AccountAddress
+
     context.world.address = AccountAddress.from_str(address)
 
 
@@ -230,11 +228,9 @@ def step_given_struct_with_fields(context):
     """Parse table of struct fields."""
     context.world.struct_fields = []
     for row in context.table:
-        context.world.struct_fields.append({
-            "field": row["field"],
-            "type": row["type"],
-            "value": row["value"]
-        })
+        context.world.struct_fields.append(
+            {"field": row["field"], "type": row["type"], "value": row["value"]}
+        )
 
 
 # =============================================================================
@@ -246,10 +242,10 @@ def step_given_struct_with_fields(context):
 def step_bcs_serialize_it(context):
     try:
         serializer = Serializer()
-        
-        if hasattr(context.world, 'bool_value'):
+
+        if hasattr(context.world, "bool_value"):
             serializer.bool(context.world.bool_value)
-        elif hasattr(context.world, 'int_type'):
+        elif hasattr(context.world, "int_type"):
             value = context.world.int_value
             int_type = context.world.int_type
             if int_type == "u8":
@@ -266,18 +262,21 @@ def step_bcs_serialize_it(context):
                 serializer.u256(value)
             elif int_type == "uleb128":
                 serializer.uleb128(value)
-        elif hasattr(context.world, 'bytes_value') and context.world.bytes_value is not None:
+        elif (
+            hasattr(context.world, "bytes_value")
+            and context.world.bytes_value is not None
+        ):
             serializer.to_bytes(context.world.bytes_value)
-        elif hasattr(context.world, 'string_value'):
+        elif hasattr(context.world, "string_value"):
             serializer.str(context.world.string_value)
-        elif hasattr(context.world, 'option_value'):
+        elif hasattr(context.world, "option_value"):
             if context.world.option_value is None:
                 serializer.u8(0)  # None
             else:
                 serializer.u8(1)  # Some
                 if context.world.option_type == "u64":
                     serializer.u64(context.world.option_value)
-        elif hasattr(context.world, 'vector_value'):
+        elif hasattr(context.world, "vector_value"):
             vec = context.world.vector_value
             vec_type = context.world.vector_type
             if vec_type == "u8":
@@ -288,17 +287,18 @@ def step_bcs_serialize_it(context):
                 serializer.uleb128(len(vec))
                 for inner in vec:
                     serializer.sequence(inner, Serializer.u8)
-        elif hasattr(context.world, 'address'):
+        elif hasattr(context.world, "address"):
             serializer.struct(context.world.address)
-        elif hasattr(context.world, 'struct_fields'):
+        elif hasattr(context.world, "struct_fields"):
             for field in context.world.struct_fields:
                 if field["type"] == "address":
                     from aptos_sdk.account_address import AccountAddress
+
                     addr = AccountAddress.from_str(field["value"])
                     serializer.struct(addr)
                 elif field["type"] == "u64":
                     serializer.u64(int(field["value"]))
-        
+
         context.world.result_bytes = serializer.output()
         context.world.clear_error()
     except Exception as e:
@@ -322,7 +322,7 @@ def step_uleb128_roundtrip(context):
         serializer = Serializer()
         serializer.uleb128(context.world.int_value)
         encoded = serializer.output()
-        
+
         deserializer = Deserializer(encoded)
         context.world.result = deserializer.uleb128()
         context.world.clear_error()
@@ -426,37 +426,39 @@ def step_byte_should_be(context, expected):
 @then("the bytes should be {expected}")
 def step_bytes_should_be(context, expected):
     expected_bytes = parse_byte_array(expected)
-    assert context.world.result_bytes == expected_bytes, f"Expected {expected_bytes.hex()}, got {context.world.result_bytes.hex()}"
+    assert (
+        context.world.result_bytes == expected_bytes
+    ), f"Expected {expected_bytes.hex()}, got {context.world.result_bytes.hex()}"
 
 
 use_step_matcher("re")
 
 
-@then(r'the result should be (?P<expected>\[[^\]]+\])')
+@then(r"the result should be (?P<expected>\[[^\]]+\])")
 def step_result_should_be_bytes(context, expected):
     expected_bytes = parse_byte_array(expected)
     assert context.world.result_bytes == expected_bytes
 
 
-@then(r'the first byte should be (?P<expected>0x[0-9a-fA-F]+)')
+@then(r"the first byte should be (?P<expected>0x[0-9a-fA-F]+)")
 def step_first_byte_should_be_hex(context, expected):
     expected_val = parse_hex_value(expected)
     assert context.world.result_bytes[0] == expected_val
 
 
-@then(r'the first byte should be (?P<expected>0x[0-9a-fA-F]+) \(length\)')
+@then(r"the first byte should be (?P<expected>0x[0-9a-fA-F]+) \(length\)")
 def step_first_byte_should_be_with_comment(context, expected):
     expected_val = parse_hex_value(expected)
     assert context.world.result_bytes[0] == expected_val
 
 
-@then(r'the first byte should be (?P<expected>0x[0-9a-fA-F]+) \(UTF-8 byte length\)')
+@then(r"the first byte should be (?P<expected>0x[0-9a-fA-F]+) \(UTF-8 byte length\)")
 def step_first_byte_should_be_utf8_length(context, expected):
     expected_val = parse_hex_value(expected)
     assert context.world.result_bytes[0] == expected_val
 
 
-@then(r'the first byte should be (?P<expected>0x[0-9a-fA-F]+) \(outer length\)')
+@then(r"the first byte should be (?P<expected>0x[0-9a-fA-F]+) \(outer length\)")
 def step_first_byte_should_be_outer_length(context, expected):
     expected_val = parse_hex_value(expected)
     assert context.world.result_bytes[0] == expected_val
@@ -475,7 +477,7 @@ def step_remaining_bytes_utf8(context, text):
     assert actual == expected
 
 
-@then(r'the remaining bytes should be (?P<expected>\[[^\]]+\])')
+@then(r"the remaining bytes should be (?P<expected>\[[^\]]+\])")
 def step_remaining_bytes_should_be(context, expected):
     expected_bytes = parse_byte_array(expected)
     actual = context.world.result_bytes[1:]

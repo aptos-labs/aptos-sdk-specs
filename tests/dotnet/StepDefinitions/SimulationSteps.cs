@@ -234,8 +234,8 @@ public class SimulationSteps
             { "gas_used", "1000" },
             { "changes", new List<object>
                 {
-                    new Dictionary<string, object?> 
-                    { 
+                    new Dictionary<string, object?>
+                    {
                         { "type", "write_resource" },
                         { "address", "0x1" },
                         { "data", new { type = "0x1::coin::CoinStore" } }

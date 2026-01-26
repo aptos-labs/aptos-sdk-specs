@@ -1,15 +1,19 @@
 //! Test world - holds state between Cucumber steps.
 
-use aptos_rust_sdk_v2::account::Ed25519Account;
+use aptos_rust_sdk_v2::account::{Ed25519Account, MultiEd25519Account};
 use aptos_rust_sdk_v2::api::{FaucetClient, FullnodeClient};
 use aptos_rust_sdk_v2::crypto::{
-    Ed25519PrivateKey, Ed25519PublicKey, Ed25519Signature,
-    Secp256k1PrivateKey, Secp256k1PublicKey, Secp256k1Signature,
+    Ed25519PrivateKey, Ed25519PublicKey, Ed25519Signature, MultiEd25519PublicKey,
+    MultiEd25519Signature, Secp256k1PrivateKey, Secp256k1PublicKey, Secp256k1Signature,
     Secp256r1PrivateKey, Secp256r1PublicKey, Secp256r1Signature,
 };
-use aptos_rust_sdk_v2::transaction::{RawTransaction, SignedTransaction, TransactionPayload};
-use aptos_rust_sdk_v2::ChainId;
+use aptos_rust_sdk_v2::transaction::authenticator::TransactionAuthenticator;
+use aptos_rust_sdk_v2::transaction::types::{FeePayerRawTransaction, MultiAgentRawTransaction};
+use aptos_rust_sdk_v2::transaction::{
+    PartiallySigned, RawTransaction, SignedTransaction, TransactionPayload,
+};
 use aptos_rust_sdk_v2::types::{AccountAddress, HashValue, MoveModuleId, MoveStructTag, TypeTag};
+use aptos_rust_sdk_v2::ChainId;
 use cucumber::World;
 use std::collections::HashMap;
 
@@ -213,6 +217,59 @@ pub struct TestWorld {
     pub serialized_bytes2: Option<Vec<u8>>,
 
     // ==========================================================================
+    // Multi-Agent Transaction State
+    // ==========================================================================
+    /// Multi-agent raw transaction.
+    pub multi_agent_txn: Option<MultiAgentRawTransaction>,
+
+    /// Secondary signer addresses.
+    pub secondary_signer_addresses: Vec<AccountAddress>,
+
+    /// Secondary signer accounts.
+    pub secondary_accounts: Vec<Ed25519Account>,
+
+    // ==========================================================================
+    // Fee Payer Transaction State
+    // ==========================================================================
+    /// Fee payer raw transaction.
+    pub fee_payer_txn: Option<FeePayerRawTransaction>,
+
+    /// Fee payer address.
+    pub fee_payer_address: Option<AccountAddress>,
+
+    /// Fee payer account.
+    pub fee_payer_account: Option<Ed25519Account>,
+
+    /// Partially signed transaction.
+    #[world(skip)]
+    pub partially_signed: Option<PartiallySigned>,
+
+    // ==========================================================================
+    // Multi-Signature State
+    // ==========================================================================
+    /// Multi-Ed25519 account.
+    #[world(skip)]
+    pub multi_ed25519_account: Option<MultiEd25519Account>,
+
+    /// Multi-Ed25519 public key.
+    pub multi_ed25519_public_key: Option<MultiEd25519PublicKey>,
+
+    /// Multi-Ed25519 signature.
+    pub multi_ed25519_signature: Option<MultiEd25519Signature>,
+
+    /// Ed25519 public keys for multi-sig creation.
+    pub ed25519_public_keys: Vec<Ed25519PublicKey>,
+
+    /// Ed25519 private keys for multi-sig creation.
+    pub ed25519_private_keys: Vec<Ed25519PrivateKey>,
+
+    /// Multi-sig threshold.
+    pub multi_sig_threshold: Option<u8>,
+
+    /// Individual signature contributions.
+    pub signature_contributions: Vec<(u8, Ed25519Signature)>,
+
+    // ==========================================================================
     // Serialization State
     // ==========================================================================
     /// Boolean value for serialization tests.
@@ -340,4 +397,3 @@ impl TestWorld {
         self.last_error = None;
     }
 }
-

@@ -332,7 +332,7 @@ public class FeePayerSteps
         _world.TestVectors["senderAccount"] = sender;
         _world.TestVectors["feePayerAccount"] = feePayer;
         _world.TestVectors["feePayerAddress"] = feePayer.Address;
-        
+
         var message = new byte[32];
         Random.Shared.NextBytes(message);
         _world.TestVectors["signingMessage"] = message;
@@ -406,7 +406,7 @@ public class FeePayerSteps
     {
         var sender = Ed25519Account.Generate();
         var feePayer = Ed25519Account.Generate();
-        
+
         _world.TestVectors["senderAccount"] = sender;
         _world.TestVectors["feePayerAccount"] = feePayer;
         _world.TestVectors["feePayerAuthenticator"] = true;

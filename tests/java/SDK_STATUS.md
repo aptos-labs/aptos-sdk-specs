@@ -7,27 +7,28 @@
 
 ## 1. SDK Information
 
-| Property | Value |
-|----------|-------|
-| **Package** | `io.github.aptos-labs:japtos` |
-| **Version Tested** | 1.1.8 |
-| **Publisher** | aptos-labs |
-| **Repository** | https://github.com/aptos-labs/aptos-java-sdk |
-| **Package Registry** | Maven Central |
-| **Test Framework** | Cucumber-JVM + JUnit 5 |
+| Property             | Value                                        |
+| -------------------- | -------------------------------------------- |
+| **Package**          | `io.github.aptos-labs:japtos`                |
+| **Version Tested**   | 1.1.8                                        |
+| **Publisher**        | aptos-labs                                   |
+| **Repository**       | https://github.com/aptos-labs/aptos-java-sdk |
+| **Package Registry** | Maven Central                                |
+| **Test Framework**   | Cucumber-JVM + JUnit 5                       |
 
 ---
 
 ## 2. Coverage Summary
 
-| Priority | Passing | Total | Percentage | Status |
-|----------|---------|-------|------------|--------|
-| Required (P0) | 22 | 370 | 6% | ❌ |
-| Preferred (P1) | 0 | 183 | 0% | ❌ |
-| Optional (P2) | 0 | 250 | 0% | ❌ |
-| **Total** | **22** | **803** | **3%** | ❌ |
+| Priority       | Passing | Total   | Percentage | Status |
+| -------------- | ------- | ------- | ---------- | ------ |
+| Required (P0)  | 22      | 370     | 6%         | ❌     |
+| Preferred (P1) | 0       | 183     | 0%         | ❌     |
+| Optional (P2)  | 0       | 250     | 0%         | ❌     |
+| **Total**      | **22**  | **803** | **3%**     | ❌     |
 
 > **Notes:**
+>
 > - 797/819 step definitions are undefined
 > - Only address parsing and basic Ed25519 implemented
 
@@ -37,29 +38,29 @@
 
 ### ✅ Fully Available Features
 
-| Feature | Notes |
-|---------|-------|
-| address | Full address parsing and formatting |
+| Feature | Notes                                |
+| ------- | ------------------------------------ |
+| address | Full address parsing and formatting  |
 | ed25519 | Key generation (signing in progress) |
 
 ### 🟡 Partially Available
 
-| Feature | Reason | Impact |
-|---------|--------|--------|
-| serialization | BCS available but tests not written | Need step definitions |
-| authentication-key | SDK supports but tests not written | Need step definitions |
-| entry-function | SDK supports but tests not written | Need step definitions |
+| Feature            | Reason                              | Impact                |
+| ------------------ | ----------------------------------- | --------------------- |
+| serialization      | BCS available but tests not written | Need step definitions |
+| authentication-key | SDK supports but tests not written  | Need step definitions |
+| entry-function     | SDK supports but tests not written  | Need step definitions |
 
 ### ➖ Not Available in SDK
 
-| Feature | Reason | Tracking Issue |
-|---------|--------|----------------|
-| secp256k1 | Not implemented | - |
-| secp256r1 | Not implemented | - |
-| bls12381 | Not implemented | - |
-| mnemonic-derivation | Not implemented | - |
-| keyless | Not implemented | - |
-| codegen | Not implemented | - |
+| Feature             | Reason          | Tracking Issue |
+| ------------------- | --------------- | -------------- |
+| secp256k1           | Not implemented | -              |
+| secp256r1           | Not implemented | -              |
+| bls12381            | Not implemented | -              |
+| mnemonic-derivation | Not implemented | -              |
+| keyless             | Not implemented | -              |
+| codegen             | Not implemented | -              |
 
 ---
 
@@ -73,23 +74,23 @@ No partial implementations currently tracked. Most tests fail due to undefined s
 
 ### Required (P0) - High Priority
 
-| Feature | Scenarios | Notes |
-|---------|-----------|-------|
-| address | #6-10, #19-22 | Error handling, BCS serialization |
-| serialization | All 18 | Need step definitions |
-| type-tags | All 24 | Need step definitions |
-| ed25519 | #2-25 | Signing, verification, deterministic |
-| secp256k1 | All | Feature not in SDK |
-| hashing | All 20 | Need step definitions |
-| authentication-key | All 15 | Need step definitions |
-| mnemonic-derivation | All | Feature not in SDK |
-| single-key | All | Need step definitions |
-| entry-function | All | Need step definitions |
-| raw-transaction | All | Need step definitions |
-| signing | All | Need step definitions |
-| fullnode-api | All | Need step definitions |
-| transaction-submission | All | Need step definitions |
-| error-handling | All | Need step definitions |
+| Feature                | Scenarios     | Notes                                |
+| ---------------------- | ------------- | ------------------------------------ |
+| address                | #6-10, #19-22 | Error handling, BCS serialization    |
+| serialization          | All 18        | Need step definitions                |
+| type-tags              | All 24        | Need step definitions                |
+| ed25519                | #2-25         | Signing, verification, deterministic |
+| secp256k1              | All           | Feature not in SDK                   |
+| hashing                | All 20        | Need step definitions                |
+| authentication-key     | All 15        | Need step definitions                |
+| mnemonic-derivation    | All           | Feature not in SDK                   |
+| single-key             | All           | Need step definitions                |
+| entry-function         | All           | Need step definitions                |
+| raw-transaction        | All           | Need step definitions                |
+| signing                | All           | Need step definitions                |
+| fullnode-api           | All           | Need step definitions                |
+| transaction-submission | All           | Need step definitions                |
+| error-handling         | All           | Need step definitions                |
 
 ### Preferred (P1) - Medium Priority
 
@@ -165,14 +166,14 @@ To add or update tests for this SDK:
 
 ### By Feature Category
 
-| Category | Passed | Failed | Undefined | Total |
-|----------|--------|--------|-----------|-------|
-| 01-core-types | 11 | 0 | 53 | 64 |
-| 02-cryptography | 11 | 0 | 109 | 120 |
-| 03-account-management | 0 | 0 | 62 | 62 |
-| 04-transaction-building | 0 | 0 | 86 | 86 |
-| 05-api-clients | 0 | 0 | 140 | 140 |
-| 06-advanced | 0 | 0 | 276 | 276 |
+| Category                | Passed | Failed | Undefined | Total |
+| ----------------------- | ------ | ------ | --------- | ----- |
+| 01-core-types           | 11     | 0      | 53        | 64    |
+| 02-cryptography         | 11     | 0      | 109       | 120   |
+| 03-account-management   | 0      | 0      | 62        | 62    |
+| 04-transaction-building | 0      | 0      | 86        | 86    |
+| 05-api-clients          | 0      | 0      | 140       | 140   |
+| 06-advanced             | 0      | 0      | 276       | 276   |
 
 ### Test Run Summary
 
@@ -185,11 +186,11 @@ Failed: 0
 
 ### Passing Tests Detail
 
-| Test | Feature |
-|------|---------|
-| Parse hex address without 0x prefix | address.feature |
-| Parse full 64-character hex address | address.feature |
-| Parse uppercase hex address | address.feature |
-| Parse mixed case hex address | address.feature |
+| Test                                      | Feature         |
+| ----------------------------------------- | --------------- |
+| Parse hex address without 0x prefix       | address.feature |
+| Parse full 64-character hex address       | address.feature |
+| Parse uppercase hex address               | address.feature |
+| Parse mixed case hex address              | address.feature |
 | Parse various valid formats (6 scenarios) | address.feature |
-| Generate random Ed25519 key pair | ed25519.feature |
+| Generate random Ed25519 key pair          | ed25519.feature |

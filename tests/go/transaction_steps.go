@@ -870,7 +870,7 @@ func initTransactionSteps(ctx *godog.ScenarioContext, world *World) {
 		if world.Error != nil {
 			return fmt.Errorf("serialization failed: %v", world.Error)
 		}
-		if world.Bytes == nil || len(world.Bytes) == 0 {
+		if len(world.Bytes) == 0 {
 			return fmt.Errorf("serialization produced empty bytes")
 		}
 		return nil
@@ -969,7 +969,7 @@ func initTransactionSteps(ctx *godog.ScenarioContext, world *World) {
 
 	ctx.Step(`^the chain_id byte should be 0x0(\d+)$`, func(expected int) error {
 		// The chain ID should be at the end of the serialized bytes
-		if world.Bytes == nil || len(world.Bytes) == 0 {
+		if len(world.Bytes) == 0 {
 			return fmt.Errorf("no serialized bytes")
 		}
 		lastByte := world.Bytes[len(world.Bytes)-1]
@@ -1043,7 +1043,7 @@ func initTransactionSteps(ctx *godog.ScenarioContext, world *World) {
 
 	ctx.Step(`^the message should start with SHA3-256\("APTOS::RawTransaction"\)$`, func() error {
 		// Verify the signing message starts with the domain separator
-		if world.Bytes == nil || len(world.Bytes) < 32 {
+		if len(world.Bytes) < 32 {
 			return fmt.Errorf("signing message too short")
 		}
 		return nil
@@ -1051,7 +1051,7 @@ func initTransactionSteps(ctx *godog.ScenarioContext, world *World) {
 
 	ctx.Step(`^the message should contain the BCS-serialized transaction$`, func() error {
 		// The signing message should contain the BCS-serialized transaction
-		if world.Bytes == nil || len(world.Bytes) == 0 {
+		if len(world.Bytes) == 0 {
 			return fmt.Errorf("no signing message")
 		}
 		return nil
@@ -1059,7 +1059,7 @@ func initTransactionSteps(ctx *godog.ScenarioContext, world *World) {
 
 	ctx.Step(`^the bytes should match the expected value from test vectors$`, func() error {
 		// Just verify we have bytes
-		if world.Bytes == nil || len(world.Bytes) == 0 {
+		if len(world.Bytes) == 0 {
 			return fmt.Errorf("no serialized bytes")
 		}
 		return nil
@@ -1067,7 +1067,7 @@ func initTransactionSteps(ctx *godog.ScenarioContext, world *World) {
 
 	ctx.Step(`^it should match the expected value from test vectors$`, func() error {
 		// Just verify we have a signing message
-		if world.Bytes == nil || len(world.Bytes) == 0 {
+		if len(world.Bytes) == 0 {
 			return fmt.Errorf("no signing message")
 		}
 		return nil
@@ -1079,14 +1079,14 @@ func initTransactionSteps(ctx *godog.ScenarioContext, world *World) {
 	})
 
 	ctx.Step(`^sender should be serialized first \(32 bytes\)$`, func() error {
-		if world.Bytes == nil || len(world.Bytes) < 32 {
+		if len(world.Bytes) < 32 {
 			return fmt.Errorf("serialized bytes too short")
 		}
 		return nil
 	})
 
 	ctx.Step(`^sequence_number should be next \(8 bytes\)$`, func() error {
-		if world.Bytes == nil || len(world.Bytes) < 40 {
+		if len(world.Bytes) < 40 {
 			return fmt.Errorf("serialized bytes too short for sequence number")
 		}
 		return nil

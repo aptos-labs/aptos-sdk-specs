@@ -39,60 +39,45 @@ async function withTimeout<T>(
 // Client Configuration
 // =============================================================================
 
-When(
-  "I create a client with testnet configuration",
-  function (this: AptosWorld) {
-    const config = new AptosConfig({ network: Network.TESTNET });
-    const client = new Aptos(config);
-    this.testVectors.set("aptosClient", client);
-    this.testVectors.set("aptosConfig", config);
-  },
-);
+When("I create a client with testnet configuration", function (this: AptosWorld) {
+  const config = new AptosConfig({ network: Network.TESTNET });
+  const client = new Aptos(config);
+  this.testVectors.set("aptosClient", client);
+  this.testVectors.set("aptosConfig", config);
+});
 
-Then(
-  "the client should be configured for testnet",
-  function (this: AptosWorld) {
-    const config = this.testVectors.get("aptosConfig") as AptosConfig;
-    expect(config.network).to.equal(Network.TESTNET);
-  },
-);
+Then("the client should be configured for testnet", function (this: AptosWorld) {
+  const config = this.testVectors.get("aptosConfig") as AptosConfig;
+  expect(config.network).to.equal(Network.TESTNET);
+});
 
-Then(
-  "the base URL should be {string}",
-  function (this: AptosWorld, expectedUrl: string) {
-    const config = this.testVectors.get("aptosConfig") as AptosConfig;
-    // Check if URL contains the expected base (may differ by /v1 suffix)
-    const baseUrl = expectedUrl.replace("/v1", "").replace("https://", "").replace("http://", "");
-    const fullnodeUrl = config.fullnode || "";
-    // For faucet URLs, check the faucet config; for fullnode, check fullnode
-    if (expectedUrl.includes("faucet")) {
-      // Faucet URL check - the SDK stores faucet URL internally
-      // The network config provides appropriate defaults
-      expect(true).to.be.true; // Faucet URL is managed by network config
-    } else {
-      // Fullnode URL check
-      expect(fullnodeUrl.toLowerCase()).to.include(baseUrl.toLowerCase().split("/")[0]);
-    }
-  },
-);
+Then("the base URL should be {string}", function (this: AptosWorld, expectedUrl: string) {
+  const config = this.testVectors.get("aptosConfig") as AptosConfig;
+  // Check if URL contains the expected base (may differ by /v1 suffix)
+  const baseUrl = expectedUrl.replace("/v1", "").replace("https://", "").replace("http://", "");
+  const fullnodeUrl = config.fullnode || "";
+  // For faucet URLs, check the faucet config; for fullnode, check fullnode
+  if (expectedUrl.includes("faucet")) {
+    // Faucet URL check - the SDK stores faucet URL internally
+    // The network config provides appropriate defaults
+    expect(true).to.be.true; // Faucet URL is managed by network config
+  } else {
+    // Fullnode URL check
+    expect(fullnodeUrl.toLowerCase()).to.include(baseUrl.toLowerCase().split("/")[0]);
+  }
+});
 
-When(
-  "I create a client with mainnet configuration",
-  function (this: AptosWorld) {
-    const config = new AptosConfig({ network: Network.MAINNET });
-    const client = new Aptos(config);
-    this.testVectors.set("aptosClient", client);
-    this.testVectors.set("aptosConfig", config);
-  },
-);
+When("I create a client with mainnet configuration", function (this: AptosWorld) {
+  const config = new AptosConfig({ network: Network.MAINNET });
+  const client = new Aptos(config);
+  this.testVectors.set("aptosClient", client);
+  this.testVectors.set("aptosConfig", config);
+});
 
-Then(
-  "the client should be configured for mainnet",
-  function (this: AptosWorld) {
-    const config = this.testVectors.get("aptosConfig") as AptosConfig;
-    expect(config.network).to.equal(Network.MAINNET);
-  },
-);
+Then("the client should be configured for mainnet", function (this: AptosWorld) {
+  const config = this.testVectors.get("aptosConfig") as AptosConfig;
+  expect(config.network).to.equal(Network.MAINNET);
+});
 
 Given("a custom URL {string}", function (this: AptosWorld, url: string) {
   this.testVectors.set("customUrl", url);
@@ -113,38 +98,29 @@ When("I create a client with the custom URL", function (this: AptosWorld) {
   }
 });
 
-Then(
-  "the client should use that URL for requests",
-  function (this: AptosWorld) {
-    const config = this.testVectors.get("aptosConfig") as AptosConfig;
-    const customUrl = this.testVectors.get("customUrl") as string;
-    expect(config.fullnode).to.equal(customUrl);
-  },
-);
+Then("the client should use that URL for requests", function (this: AptosWorld) {
+  const config = this.testVectors.get("aptosConfig") as AptosConfig;
+  const customUrl = this.testVectors.get("customUrl") as string;
+  expect(config.fullnode).to.equal(customUrl);
+});
 
-When(
-  "I create a client with {int} second timeout",
-  function (this: AptosWorld, seconds: number) {
-    const config = new AptosConfig({
-      network: Network.TESTNET,
-      clientConfig: {
-        API_KEY: undefined,
-      },
-    });
-    const client = new Aptos(config);
-    this.testVectors.set("aptosClient", client);
-    this.testVectors.set("timeoutSeconds", seconds);
-  },
-);
+When("I create a client with {int} second timeout", function (this: AptosWorld, seconds: number) {
+  const config = new AptosConfig({
+    network: Network.TESTNET,
+    clientConfig: {
+      API_KEY: undefined,
+    },
+  });
+  const client = new Aptos(config);
+  this.testVectors.set("aptosClient", client);
+  this.testVectors.set("timeoutSeconds", seconds);
+});
 
-Then(
-  "requests should timeout after {int} seconds",
-  function (this: AptosWorld, seconds: number) {
-    // Note: Timeout configuration depends on SDK implementation
-    const timeout = this.testVectors.get("timeoutSeconds") as number;
-    expect(timeout).to.equal(seconds);
-  },
-);
+Then("requests should timeout after {int} seconds", function (this: AptosWorld, seconds: number) {
+  // Note: Timeout configuration depends on SDK implementation
+  const timeout = this.testVectors.get("timeoutSeconds") as number;
+  expect(timeout).to.equal(seconds);
+});
 
 // =============================================================================
 // Ledger Information
@@ -206,13 +182,10 @@ When("I get the ledger info", async function (this: AptosWorld) {
   }
 });
 
-Then(
-  "chain_id should be {int}",
-  function (this: AptosWorld, expectedChainId: number) {
-    const ledgerInfo = this.testVectors.get("ledgerInfo") as any;
-    expect(Number(ledgerInfo.chain_id)).to.equal(expectedChainId);
-  },
-);
+Then("chain_id should be {int}", function (this: AptosWorld, expectedChainId: number) {
+  const ledgerInfo = this.testVectors.get("ledgerInfo") as any;
+  expect(Number(ledgerInfo.chain_id)).to.equal(expectedChainId);
+});
 
 // =============================================================================
 // Account Queries
@@ -227,9 +200,7 @@ When("I get account info for the address", async function (this: AptosWorld) {
   const client = this.testVectors.get("aptosClient") as Aptos;
   const address = this.testVectors.get("accountAddress") as AccountAddress;
   try {
-    const accountInfo = await withTimeout(
-      client.getAccountInfo({ accountAddress: address }),
-    );
+    const accountInfo = await withTimeout(client.getAccountInfo({ accountAddress: address }));
     this.testVectors.set("accountInfo", accountInfo);
     this.result = accountInfo;
   } catch (e) {
@@ -256,17 +227,12 @@ Given("a random unused account address", function (this: AptosWorld) {
   this.testVectors.set("accountAddress", account.accountAddress);
 });
 
-Then(
-  "I should receive a {int} NotFound error",
-  function (this: AptosWorld, statusCode: number) {
-    expect(this.error).to.not.be.undefined;
-    // Check error message or status code
-    const errorMessage = this.error!.message.toLowerCase();
-    expect(errorMessage).to.match(
-      /not found|404|doesn't exist|does not exist/i,
-    );
-  },
-);
+Then("I should receive a {int} NotFound error", function (this: AptosWorld, statusCode: number) {
+  expect(this.error).to.not.be.undefined;
+  // Check error message or status code
+  const errorMessage = this.error!.message.toLowerCase();
+  expect(errorMessage).to.match(/not found|404|doesn't exist|does not exist/i);
+});
 
 Given("an account address with resources", function (this: AptosWorld) {
   // Use the framework account which has resources
@@ -277,9 +243,7 @@ When("I get account resources", async function (this: AptosWorld) {
   const client = this.testVectors.get("aptosClient") as Aptos;
   const address = this.testVectors.get("accountAddress") as AccountAddress;
   try {
-    const resources = await withTimeout(
-      client.getAccountResources({ accountAddress: address }),
-    );
+    const resources = await withTimeout(client.getAccountResources({ accountAddress: address }));
     this.testVectors.set("accountResources", resources);
     this.result = resources;
   } catch (e) {
@@ -309,25 +273,22 @@ Given("an account with APT balance", function (this: AptosWorld) {
   this.testVectors.set("accountAddress", AccountAddress.from("0x1"));
 });
 
-When(
-  "I get resource {string}",
-  async function (this: AptosWorld, resourceType: string) {
-    const client = this.testVectors.get("aptosClient") as Aptos;
-    const address = this.testVectors.get("accountAddress") as AccountAddress;
-    try {
-      const resource = await withTimeout(
-        client.getAccountResource({
-          accountAddress: address,
-          resourceType: resourceType as any,
-        }),
-      );
-      this.testVectors.set("resource", resource);
-      this.result = resource;
-    } catch (e) {
-      this.error = e as Error;
-    }
-  },
-);
+When("I get resource {string}", async function (this: AptosWorld, resourceType: string) {
+  const client = this.testVectors.get("aptosClient") as Aptos;
+  const address = this.testVectors.get("accountAddress") as AccountAddress;
+  try {
+    const resource = await withTimeout(
+      client.getAccountResource({
+        accountAddress: address,
+        resourceType: resourceType as any,
+      }),
+    );
+    this.testVectors.set("resource", resource);
+    this.result = resource;
+  } catch (e) {
+    this.error = e as Error;
+  }
+});
 
 Then("I should receive the coin store resource", function (this: AptosWorld) {
   if (this.error) return; // Skip if network request failed
@@ -346,39 +307,31 @@ Given("an account address", function (this: AptosWorld) {
   this.testVectors.set("accountAddress", AccountAddress.from("0x1"));
 });
 
-When(
-  "I get a resource type that doesn't exist",
-  async function (this: AptosWorld) {
-    const client = this.testVectors.get("aptosClient") as Aptos;
-    const address = this.testVectors.get("accountAddress") as AccountAddress;
-    try {
-      const resource = await withTimeout(
-        client.getAccountResource({
-          accountAddress: address,
-          resourceType: "0x1::nonexistent::Resource" as any,
-        }),
-      );
-      this.result = resource;
-    } catch (e) {
-      this.error = e as Error;
-    }
-  },
-);
+When("I get a resource type that doesn't exist", async function (this: AptosWorld) {
+  const client = this.testVectors.get("aptosClient") as Aptos;
+  const address = this.testVectors.get("accountAddress") as AccountAddress;
+  try {
+    const resource = await withTimeout(
+      client.getAccountResource({
+        accountAddress: address,
+        resourceType: "0x1::nonexistent::Resource" as any,
+      }),
+    );
+    this.result = resource;
+  } catch (e) {
+    this.error = e as Error;
+  }
+});
 
-Given(
-  "an account with published modules \\(e.g., 0x1\\)",
-  function (this: AptosWorld) {
-    this.testVectors.set("accountAddress", AccountAddress.from("0x1"));
-  },
-);
+Given("an account with published modules \\(e.g., 0x1\\)", function (this: AptosWorld) {
+  this.testVectors.set("accountAddress", AccountAddress.from("0x1"));
+});
 
 When("I get account modules", async function (this: AptosWorld) {
   const client = this.testVectors.get("aptosClient") as Aptos;
   const address = this.testVectors.get("accountAddress") as AccountAddress;
   try {
-    const modules = await withTimeout(
-      client.getAccountModules({ accountAddress: address }),
-    );
+    const modules = await withTimeout(client.getAccountModules({ accountAddress: address }));
     this.testVectors.set("accountModules", modules);
     this.result = modules;
   } catch (e) {
@@ -461,14 +414,11 @@ When("I get transaction by version", async function (this: AptosWorld) {
   }
 });
 
-Then(
-  "I should receive the transaction at that version",
-  function (this: AptosWorld) {
-    const txn = this.testVectors.get("transaction") as any;
-    expect(txn).to.not.be.undefined;
-    expect(txn.version).to.not.be.undefined;
-  },
-);
+Then("I should receive the transaction at that version", function (this: AptosWorld) {
+  const txn = this.testVectors.get("transaction") as any;
+  expect(txn).to.not.be.undefined;
+  expect(txn.version).to.not.be.undefined;
+});
 
 Given("an account with transaction history", function (this: AptosWorld) {
   // Use the framework account which has transactions
@@ -527,21 +477,15 @@ When(
   },
 );
 
-Then(
-  "I should receive at most {int} transactions",
-  function (this: AptosWorld, limit: number) {
-    const txns = this.testVectors.get("accountTransactions") as any[];
-    expect(txns.length).to.be.lessThanOrEqual(limit);
-  },
-);
+Then("I should receive at most {int} transactions", function (this: AptosWorld, limit: number) {
+  const txns = this.testVectors.get("accountTransactions") as any[];
+  expect(txns.length).to.be.lessThanOrEqual(limit);
+});
 
-Then(
-  "they should start from the specified offset",
-  function (this: AptosWorld) {
-    // Verified by the API call parameters
-    expect(true).to.be.true;
-  },
-);
+Then("they should start from the specified offset", function (this: AptosWorld) {
+  // Verified by the API call parameters
+  expect(true).to.be.true;
+});
 
 // =============================================================================
 // Response Headers / Ledger State
@@ -593,17 +537,12 @@ When("I get ledger info twice with delay", async function (this: AptosWorld) {
   }
 });
 
-Then(
-  "the second ledger_version should be >= first",
-  function (this: AptosWorld) {
-    const first = this.testVectors.get("firstLedgerInfo") as any;
-    const second = this.testVectors.get("secondLedgerInfo") as any;
+Then("the second ledger_version should be >= first", function (this: AptosWorld) {
+  const first = this.testVectors.get("firstLedgerInfo") as any;
+  const second = this.testVectors.get("secondLedgerInfo") as any;
 
-    expect(BigInt(second.ledger_version)).to.be.greaterThanOrEqual(
-      BigInt(first.ledger_version),
-    );
-  },
-);
+  expect(BigInt(second.ledger_version)).to.be.greaterThanOrEqual(BigInt(first.ledger_version));
+});
 
 // =============================================================================
 // Error Handling
@@ -630,17 +569,14 @@ Then("I should receive a Network error", function (this: AptosWorld) {
   expect(this.error).to.not.be.undefined;
 });
 
-Given(
-  "a client with {int}ms timeout",
-  function (this: AptosWorld, timeout: number) {
-    const config = new AptosConfig({
-      network: Network.TESTNET,
-    });
-    const client = new Aptos(config);
-    this.testVectors.set("aptosClient", client);
-    this.testVectors.set("timeout", timeout);
-  },
-);
+Given("a client with {int}ms timeout", function (this: AptosWorld, timeout: number) {
+  const config = new AptosConfig({
+    network: Network.TESTNET,
+  });
+  const client = new Aptos(config);
+  this.testVectors.set("aptosClient", client);
+  this.testVectors.set("timeout", timeout);
+});
 
 Then("I should receive a Timeout error", function (this: AptosWorld) {
   // Very short timeout may result in network or timeout error
@@ -683,32 +619,26 @@ Given("many rapid requests", function (this: AptosWorld) {
   this.testVectors.set("rapidRequestCount", 100);
 });
 
-When(
-  "the API returns {int}",
-  async function (this: AptosWorld, statusCode: number) {
-    // Simulated - actual rate limiting depends on the API
-    this.testVectors.set("statusCode", statusCode);
-  },
-);
+When("the API returns {int}", async function (this: AptosWorld, statusCode: number) {
+  // Simulated - actual rate limiting depends on the API
+  this.testVectors.set("statusCode", statusCode);
+});
 
 Then("the error should indicate rate limiting", function (this: AptosWorld) {
   // Rate limiting can be indicated by status code 429 or by error message
   const statusCode = this.testVectors.get("statusCode") as number;
   const rateLimited = this.testVectors.get("rateLimited") as boolean;
   const errorMsg = this.error?.message?.toLowerCase() || "";
-  
+
   expect(
     statusCode === 429 || rateLimited || errorMsg.includes("rate") || errorMsg.includes("limit"),
   ).to.be.true;
 });
 
-Then(
-  "the SDK should respect retry-after if present",
-  function (this: AptosWorld) {
-    // This is a behavioral expectation for the SDK
-    expect(true).to.be.true;
-  },
-);
+Then("the SDK should respect retry-after if present", function (this: AptosWorld) {
+  // This is a behavioral expectation for the SDK
+  expect(true).to.be.true;
+});
 
 // =============================================================================
 // Test Vectors / Known Values
@@ -720,21 +650,18 @@ Given("a client connected to any network", async function (this: AptosWorld) {
   this.testVectors.set("aptosClient", client);
 });
 
-When(
-  "I get account info for {string}",
-  async function (this: AptosWorld, address: string) {
-    const client = this.testVectors.get("aptosClient") as Aptos;
-    try {
-      const accountInfo = await client.getAccountInfo({
-        accountAddress: AccountAddress.from(address),
-      });
-      this.testVectors.set("accountInfo", accountInfo);
-      this.result = accountInfo;
-    } catch (e) {
-      this.error = e as Error;
-    }
-  },
-);
+When("I get account info for {string}", async function (this: AptosWorld, address: string) {
+  const client = this.testVectors.get("aptosClient") as Aptos;
+  try {
+    const accountInfo = await client.getAccountInfo({
+      accountAddress: AccountAddress.from(address),
+    });
+    this.testVectors.set("accountInfo", accountInfo);
+    this.result = accountInfo;
+  } catch (e) {
+    this.error = e as Error;
+  }
+});
 
 Then("the account should exist", function (this: AptosWorld) {
   expect(this.error).to.be.undefined;
@@ -750,43 +677,31 @@ Then("it should have resources", async function (this: AptosWorld) {
   expect(resources.length).to.be.greaterThan(0);
 });
 
-When(
-  "I get the CoinInfo resource for AptosCoin",
-  async function (this: AptosWorld) {
-    const client = this.testVectors.get("aptosClient") as Aptos;
-    try {
-      const resource = await client.getAccountResource({
-        accountAddress: AccountAddress.from("0x1"),
-        resourceType: "0x1::coin::CoinInfo<0x1::aptos_coin::AptosCoin>" as any,
-      });
-      this.testVectors.set("coinInfo", resource);
-      this.result = resource;
-    } catch (e) {
-      this.error = e as Error;
-    }
-  },
-);
+When("I get the CoinInfo resource for AptosCoin", async function (this: AptosWorld) {
+  const client = this.testVectors.get("aptosClient") as Aptos;
+  try {
+    const resource = await client.getAccountResource({
+      accountAddress: AccountAddress.from("0x1"),
+      resourceType: "0x1::coin::CoinInfo<0x1::aptos_coin::AptosCoin>" as any,
+    });
+    this.testVectors.set("coinInfo", resource);
+    this.result = resource;
+  } catch (e) {
+    this.error = e as Error;
+  }
+});
 
-Then(
-  "I should see name {string}",
-  function (this: AptosWorld, expectedName: string) {
-    const coinInfo = this.testVectors.get("coinInfo") as any;
-    expect(coinInfo.name).to.equal(expectedName);
-  },
-);
+Then("I should see name {string}", function (this: AptosWorld, expectedName: string) {
+  const coinInfo = this.testVectors.get("coinInfo") as any;
+  expect(coinInfo.name).to.equal(expectedName);
+});
 
-Then(
-  "I should see symbol {string}",
-  function (this: AptosWorld, expectedSymbol: string) {
-    const coinInfo = this.testVectors.get("coinInfo") as any;
-    expect(coinInfo.symbol).to.equal(expectedSymbol);
-  },
-);
+Then("I should see symbol {string}", function (this: AptosWorld, expectedSymbol: string) {
+  const coinInfo = this.testVectors.get("coinInfo") as any;
+  expect(coinInfo.symbol).to.equal(expectedSymbol);
+});
 
-Then(
-  "I should see decimals {int}",
-  function (this: AptosWorld, expectedDecimals: number) {
-    const coinInfo = this.testVectors.get("coinInfo") as any;
-    expect(Number(coinInfo.decimals)).to.equal(expectedDecimals);
-  },
-);
+Then("I should see decimals {int}", function (this: AptosWorld, expectedDecimals: number) {
+  const coinInfo = this.testVectors.get("coinInfo") as any;
+  expect(Number(coinInfo.decimals)).to.equal(expectedDecimals);
+});

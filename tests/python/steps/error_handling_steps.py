@@ -3,11 +3,11 @@ Step definitions for error-handling.feature
 Tests error classification and handling patterns.
 """
 
+from behave import given, when, then
 import sys
 import os
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-from behave import given, when, then
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 
 # =============================================================================
@@ -17,6 +17,7 @@ from behave import given, when, then
 
 class AptosApiError(Exception):
     """Base class for API errors."""
+
     def __init__(self, message, status_code=None, request_id=None):
         super().__init__(message)
         self.status_code = status_code
@@ -25,16 +26,19 @@ class AptosApiError(Exception):
 
 class NetworkError(AptosApiError):
     """Network-related errors (connection, timeout)."""
+
     pass
 
 
 class ValidationError(AptosApiError):
     """Input validation errors."""
+
     pass
 
 
 class TransactionError(AptosApiError):
     """Transaction execution errors."""
+
     def __init__(self, message, vm_status=None, abort_code=None, **kwargs):
         super().__init__(message, **kwargs)
         self.vm_status = vm_status
@@ -43,6 +47,7 @@ class TransactionError(AptosApiError):
 
 class SimulationError(TransactionError):
     """Simulation-specific errors."""
+
     def __init__(self, message, gas_used=None, **kwargs):
         super().__init__(message, **kwargs)
         self.gas_used = gas_used
@@ -75,7 +80,9 @@ def step_given_validation_error(context, message):
 
 @given("a transaction error")
 def step_given_transaction_error(context):
-    context.world.error = TransactionError("Transaction failed", vm_status="EXECUTION_FAILURE")
+    context.world.error = TransactionError(
+        "Transaction failed", vm_status="EXECUTION_FAILURE"
+    )
 
 
 @given("an out of gas error")
@@ -85,15 +92,19 @@ def step_given_out_of_gas(context):
 
 @given("a sequence number error")
 def step_given_sequence_number_error(context):
-    context.world.error = TransactionError("Sequence number too old", vm_status="SEQUENCE_NUMBER_TOO_OLD")
+    context.world.error = TransactionError(
+        "Sequence number too old", vm_status="SEQUENCE_NUMBER_TOO_OLD"
+    )
 
 
 @given("an insufficient balance error")
 def step_given_insufficient_balance(context):
-    context.world.error = TransactionError("Insufficient balance", vm_status="INSUFFICIENT_BALANCE_FOR_TRANSACTION_FEE")
+    context.world.error = TransactionError(
+        "Insufficient balance", vm_status="INSUFFICIENT_BALANCE_FOR_TRANSACTION_FEE"
+    )
 
 
-@given('an abort with code {code:d}')
+@given("an abort with code {code:d}")
 def step_given_abort_code(context, code):
     context.world.error = TransactionError(f"Aborted with code {code}", abort_code=code)
 
@@ -103,13 +114,15 @@ def step_given_module_abort(context, module, code):
     context.world.error = TransactionError(
         f"Module {module} aborted with code {code}",
         vm_status="ABORTED",
-        abort_code=code
+        abort_code=code,
     )
 
 
 @given("a simulation failure")
 def step_given_simulation_failure(context):
-    context.world.error = SimulationError("Simulation failed", vm_status="SIMULATION_FAILED")
+    context.world.error = SimulationError(
+        "Simulation failed", vm_status="SIMULATION_FAILED"
+    )
 
 
 @given("a simulation with gas estimate")
@@ -286,10 +299,10 @@ def step_error_has_context(context):
     error = context.world.error
     # Should have some additional information beyond just a message
     has_context = (
-        hasattr(error, "status_code") or
-        hasattr(error, "vm_status") or
-        hasattr(error, "abort_code") or
-        hasattr(error, "request_id")
+        hasattr(error, "status_code")
+        or hasattr(error, "vm_status")
+        or hasattr(error, "abort_code")
+        or hasattr(error, "request_id")
     )
     assert has_context
 

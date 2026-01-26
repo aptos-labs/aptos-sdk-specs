@@ -1,0 +1,28 @@
+# SwiftLint configuration
+# Excludes generated files and build directories
+
+excluded:
+  - .build
+  - build
+  - Packages
+  - Tests/AptosSpecsTests/Features
+  - Tests/AptosSpecsTests/TestVectors
+
+# Disable rules that conflict with swift-format
+disabled_rules:
+  - trailing_whitespace
+  - vertical_whitespace
+  - opening_brace
+
+# Relax some rules for test code
+opt_in_rules:
+  - empty_count
+  - empty_string
+
+# Allow longer lines in test files
+line_length:
+  warning: 120
+  error: 200
+  ignores_urls: true
+  ignores_function_declarations: true
+  ignores_comments: true

@@ -9,12 +9,13 @@ use cucumber::{given, then, when};
 // =============================================================================
 
 /// The canonical BIP-39 test mnemonic.
-const TEST_MNEMONIC: &str = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
+const TEST_MNEMONIC: &str =
+    "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
 
 /// BIP-39 English wordlist (first few words for validation)
 const BIP39_WORDS: [&str; 10] = [
-    "abandon", "ability", "able", "about", "above",
-    "absent", "absorb", "abstract", "absurd", "abuse",
+    "abandon", "ability", "able", "about", "above", "absent", "absorb", "abstract", "absurd",
+    "abuse",
 ];
 
 // =============================================================================
@@ -36,13 +37,18 @@ fn given_two_different_mnemonics(world: &mut TestWorld) {
     world.string_value = Some(TEST_MNEMONIC.to_string());
     // Generate a different mnemonic for comparison
     let mnemonic2 = Mnemonic::generate(12).expect("Should generate mnemonic");
-    world.named_values.insert("mnemonic2".to_string(), mnemonic2.phrase().to_string());
+    world
+        .named_values
+        .insert("mnemonic2".to_string(), mnemonic2.phrase().to_string());
 }
 
 #[given(expr = "a mnemonic phrase with 11 words")]
 fn given_11_word_mnemonic(world: &mut TestWorld) {
     // 11 words is invalid (must be 12, 15, 18, 21, or 24)
-    world.string_value = Some("abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon".to_string());
+    world.string_value = Some(
+        "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon"
+            .to_string(),
+    );
 }
 
 #[given(expr = "a mnemonic phrase with valid words but wrong checksum")]
@@ -69,12 +75,16 @@ fn given_mnemonic_literal(world: &mut TestWorld, phrase: String) {
 
 #[given(expr = "a passphrase {string}")]
 fn given_passphrase(world: &mut TestWorld, passphrase: String) {
-    world.named_values.insert("passphrase".to_string(), passphrase);
+    world
+        .named_values
+        .insert("passphrase".to_string(), passphrase);
 }
 
 #[given(expr = "passphrase {string}")]
 fn given_passphrase_simple(world: &mut TestWorld, passphrase: String) {
-    world.named_values.insert("passphrase".to_string(), passphrase);
+    world
+        .named_values
+        .insert("passphrase".to_string(), passphrase);
 }
 
 #[given("a mnemonic phrase")]
@@ -99,7 +109,9 @@ fn when_generate_two_mnemonics(world: &mut TestWorld) {
     let mnemonic1 = Mnemonic::generate(12).expect("Should generate mnemonic");
     let mnemonic2 = Mnemonic::generate(12).expect("Should generate mnemonic");
     world.string_value = Some(mnemonic1.phrase().to_string());
-    world.named_values.insert("mnemonic2".to_string(), mnemonic2.phrase().to_string());
+    world
+        .named_values
+        .insert("mnemonic2".to_string(), mnemonic2.phrase().to_string());
 }
 
 #[when("I generate a 12-word mnemonic")]
@@ -120,7 +132,9 @@ fn when_parse_mnemonic(world: &mut TestWorld) {
         match Mnemonic::from_phrase(&normalized_phrase) {
             Ok(mnemonic) => {
                 // Store success state
-                world.named_values.insert("mnemonic_parsed".to_string(), mnemonic.phrase().to_string());
+                world
+                    .named_values
+                    .insert("mnemonic_parsed".to_string(), mnemonic.phrase().to_string());
             }
             Err(e) => world.set_error(e),
         }
@@ -150,11 +164,12 @@ fn derive_ed25519_account(world: &mut TestWorld, index: u32) {
 #[when("I derive an Ed25519 account with the custom path")]
 fn when_derive_ed25519_custom_path(world: &mut TestWorld) {
     // Get the derivation index from the path
-    let index = world.named_values
+    let index = world
+        .named_values
         .get("derivation_index")
         .and_then(|s| s.parse::<u32>().ok())
         .unwrap_or(0);
-    
+
     if let Some(ref phrase) = world.string_value {
         match Ed25519Account::from_mnemonic(phrase, index) {
             Ok(account) => world.ed25519_account = Some(account),
@@ -179,7 +194,7 @@ fn when_derive_from_each_mnemonic(world: &mut TestWorld) {
         let account1 = Ed25519Account::from_mnemonic(phrase1, 0).expect("Should derive account");
         world.ed25519_account = Some(account1);
     }
-    
+
     if let Some(phrase2) = world.named_values.get("mnemonic2").cloned() {
         let account2 = Ed25519Account::from_mnemonic(&phrase2, 0).expect("Should derive account");
         world.ed25519_account2 = Some(account2);
@@ -191,7 +206,7 @@ fn when_derive_at_two_paths(world: &mut TestWorld, path1: String, path2: String)
     // Parse indices from paths like "m/44'/637'/0'/0'/0'"
     let index1 = parse_path_index(&path1).unwrap_or(0);
     let index2 = parse_path_index(&path2).unwrap_or(1);
-    
+
     if let Some(ref phrase) = world.string_value {
         let account1 = Ed25519Account::from_mnemonic(phrase, index1).expect("Should derive");
         let account2 = Ed25519Account::from_mnemonic(phrase, index2).expect("Should derive");
@@ -207,10 +222,13 @@ fn when_derive_at_five_indices(world: &mut TestWorld, i0: u32, i1: u32, i2: u32,
             .iter()
             .map(|&i| Ed25519Account::from_mnemonic(phrase, i).expect("Should derive"))
             .collect();
-        
+
         // Store addresses for verification
         for (i, account) in accounts.iter().enumerate() {
-            world.named_values.insert(format!("address_{}", i), account.address().to_short_string());
+            world.named_values.insert(
+                format!("address_{}", i),
+                account.address().to_short_string(),
+            );
         }
         world.ed25519_account = Some(accounts.into_iter().next().unwrap());
     }
@@ -231,7 +249,9 @@ fn when_derive_secp256k1_account(world: &mut TestWorld) {
         match Ed25519Account::from_mnemonic(phrase, 0) {
             Ok(account) => {
                 world.ed25519_account = Some(account);
-                world.named_values.insert("secp256k1_limitation".to_string(), "true".to_string());
+                world
+                    .named_values
+                    .insert("secp256k1_limitation".to_string(), "true".to_string());
             }
             Err(e) => world.set_error(e),
         }
@@ -253,7 +273,11 @@ fn when_derive_with_passphrase(world: &mut TestWorld) {
     // SDK doesn't yet support passphrase in from_mnemonic
     // We'd need to use Mnemonic directly with to_seed_with_passphrase
     if let Some(ref phrase) = world.string_value {
-        let passphrase = world.named_values.get("passphrase").map(|s| s.as_str()).unwrap_or("");
+        let passphrase = world
+            .named_values
+            .get("passphrase")
+            .map(|s| s.as_str())
+            .unwrap_or("");
         let mnemonic = Mnemonic::from_phrase(phrase).expect("Valid mnemonic");
         let _seed = mnemonic.to_seed_with_passphrase(passphrase);
         // For now, derive without passphrase as SDK doesn't expose passphrase derivation
@@ -266,7 +290,9 @@ fn when_derive_with_passphrase(world: &mut TestWorld) {
 
 #[when(expr = "I derive an account with passphrase {string}")]
 fn when_derive_with_passphrase_string(world: &mut TestWorld, passphrase: String) {
-    world.named_values.insert("passphrase".to_string(), passphrase);
+    world
+        .named_values
+        .insert("passphrase".to_string(), passphrase);
     when_derive_with_passphrase(world);
 }
 
@@ -303,7 +329,7 @@ fn when_try_derive_with_path(world: &mut TestWorld, path: String) {
         world.set_error("Invalid derivation path format");
         return;
     }
-    
+
     let index = parse_path_index(&path).unwrap_or(0);
     if let Some(ref phrase) = world.string_value {
         match Ed25519Account::from_mnemonic(phrase, index) {
@@ -318,7 +344,9 @@ fn when_get_phrase_as_string(world: &mut TestWorld) {
     // The phrase is already stored in string_value
     // Just verify we can access it
     if world.string_value.is_some() {
-        world.named_values.insert("phrase_retrieved".to_string(), "true".to_string());
+        world
+            .named_values
+            .insert("phrase_retrieved".to_string(), "true".to_string());
     }
 }
 
@@ -356,7 +384,10 @@ fn then_phrase_is_valid_bip39(world: &mut TestWorld) {
 #[then("the phrases should be different")]
 fn then_phrases_different(world: &mut TestWorld) {
     let phrase1 = world.string_value.as_ref().expect("No first phrase");
-    let phrase2 = world.named_values.get("mnemonic2").expect("No second phrase");
+    let phrase2 = world
+        .named_values
+        .get("mnemonic2")
+        .expect("No second phrase");
     assert_ne!(phrase1, phrase2, "Phrases should be different");
 }
 
@@ -495,7 +526,8 @@ fn then_each_address_matches_test_vectors(world: &mut TestWorld) {
     for i in 0..5 {
         assert!(
             world.named_values.contains_key(&format!("address_{}", i)),
-            "Should have address_{}", i
+            "Should have address_{}",
+            i
         );
     }
 }
@@ -510,10 +542,7 @@ fn then_derivation_succeeds(world: &mut TestWorld) {
 
 #[then("the derivation should fail")]
 fn then_derivation_fails(world: &mut TestWorld) {
-    assert!(
-        world.has_error(),
-        "Derivation should fail"
-    );
+    assert!(world.has_error(), "Derivation should fail");
 }
 
 #[then("the derivation should either fail or produce a different result than Aptos default")]
@@ -561,4 +590,3 @@ fn parse_path_index(path: &str) -> Option<u32> {
         .last()
         .and_then(|s| s.trim_end_matches('\'').parse::<u32>().ok())
 }
-

@@ -57,10 +57,10 @@ public class MultiAgentSteps
     [When("I create a multi-agent transaction")]
     public void WhenICreateAMultiAgentTransaction()
     {
-        var secondaries = _world.TestVectors.TryGetValue("secondaryAccounts", out var s) 
-            ? (List<Ed25519Account>)s 
+        var secondaries = _world.TestVectors.TryGetValue("secondaryAccounts", out var s)
+            ? (List<Ed25519Account>)s
             : new List<Ed25519Account>();
-        
+
         _world.TestVectors["multiAgentTransaction"] = true;
         _world.TestVectors["secondaryAddresses"] = secondaries.Select(a => a.Address).ToList();
         _world.Result = true;
@@ -202,7 +202,7 @@ public class MultiAgentSteps
     {
         var message = new byte[64];
         Random.Shared.NextBytes(message);
-        
+
         _world.TestVectors["senderMessage"] = message;
         _world.TestVectors["secondary1Message"] = message;
         _world.TestVectors["secondary2Message"] = message;
@@ -234,7 +234,7 @@ public class MultiAgentSteps
     {
         var sender = (Account)_world.TestVectors["senderAccount"];
         var secondaries = (List<Ed25519Account>)_world.TestVectors["secondaryAccounts"];
-        
+
         var message = new byte[32];
         Random.Shared.NextBytes(message);
 

@@ -3,17 +3,16 @@ Step definitions for entry-function.feature
 Tests entry function payload creation and BCS serialization.
 """
 
+from support.vectors import hex_to_bytes, bytes_to_hex
+from aptos_sdk.transactions import EntryFunction, TransactionArgument
+from aptos_sdk.bcs import Serializer, Deserializer
+from aptos_sdk.type_tag import TypeTag, StructTag
+from aptos_sdk.account_address import AccountAddress
+from behave import given, when, then
 import sys
 import os
+
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
-
-from behave import given, when, then
-from aptos_sdk.account_address import AccountAddress
-from aptos_sdk.type_tag import TypeTag, StructTag
-from aptos_sdk.bcs import Serializer, Deserializer
-from aptos_sdk.transactions import EntryFunction, TransactionArgument
-
-from support.vectors import hex_to_bytes, bytes_to_hex
 
 
 # =============================================================================
@@ -47,10 +46,7 @@ def step_given_entry_function_name(context, function):
 @given("arguments [recipient_address, amount]")
 def step_given_standard_transfer_args(context):
     # Set up standard transfer arguments
-    context.world.test_vectors["entry_args"] = [
-        ("address", "0x1"),
-        ("u64", 1000000)
-    ]
+    context.world.test_vectors["entry_args"] = [("address", "0x1"), ("u64", 1000000)]
 
 
 @given("no arguments")
@@ -66,28 +62,27 @@ def step_given_no_entry_type_args(context):
 @given("a TransactionPayload containing an EntryFunction")
 def step_given_transaction_payload_with_entry_function(context):
     from aptos_sdk.transactions import TransactionPayload
-    
+
     # Create entry function if not exists
     if context.world.result is None and context.world.entry_function is None:
         # Create a default transfer entry function
-        addr_arg = TransactionArgument(AccountAddress.from_str("0x1"), Serializer.struct)
+        addr_arg = TransactionArgument(
+            AccountAddress.from_str("0x1"), Serializer.struct
+        )
         amount_arg = TransactionArgument(1000, Serializer.u64)
-        
+
         entry_fn = EntryFunction.natural(
-            "0x1::aptos_account",
-            "transfer",
-            [],
-            [addr_arg, amount_arg]
+            "0x1::aptos_account", "transfer", [], [addr_arg, amount_arg]
         )
         context.world.entry_function = entry_fn
         context.world.result = entry_fn
-    
+
     # Wrap in TransactionPayload
     entry_fn = context.world.result or context.world.entry_function
     context.world.transaction_payload = TransactionPayload(entry_fn)
 
 
-@given('a u64 argument {value:d}')
+@given("a u64 argument {value:d}")
 def step_given_u64_argument(context, value):
     args = context.world.test_vectors.get("entry_args", [])
     args.append(("u64", value))
@@ -108,7 +103,7 @@ def step_given_string_argument(context, text):
     context.world.test_vectors["entry_args"] = args
 
 
-@given('a bool argument {value}')
+@given("a bool argument {value}")
 def step_given_bool_argument(context, value):
     args = context.world.test_vectors.get("entry_args", [])
     bool_val = value.lower() == "true"
@@ -116,7 +111,7 @@ def step_given_bool_argument(context, value):
     context.world.test_vectors["entry_args"] = args
 
 
-@given('a vector<u8> argument [{values}]')
+@given("a vector<u8> argument [{values}]")
 def step_given_vector_u8_argument(context, values):
     args = context.world.test_vectors.get("entry_args", [])
     if values.strip():
@@ -127,35 +122,35 @@ def step_given_vector_u8_argument(context, values):
     context.world.test_vectors["entry_args"] = args
 
 
-@given('a u8 argument {value:d}')
+@given("a u8 argument {value:d}")
 def step_given_u8_argument(context, value):
     args = context.world.test_vectors.get("entry_args", [])
     args.append(("u8", value))
     context.world.test_vectors["entry_args"] = args
 
 
-@given('a u16 argument {value:d}')
+@given("a u16 argument {value:d}")
 def step_given_u16_argument(context, value):
     args = context.world.test_vectors.get("entry_args", [])
     args.append(("u16", value))
     context.world.test_vectors["entry_args"] = args
 
 
-@given('a u32 argument {value:d}')
+@given("a u32 argument {value:d}")
 def step_given_u32_argument(context, value):
     args = context.world.test_vectors.get("entry_args", [])
     args.append(("u32", value))
     context.world.test_vectors["entry_args"] = args
 
 
-@given('a u128 argument {value:d}')
+@given("a u128 argument {value:d}")
 def step_given_u128_argument(context, value):
     args = context.world.test_vectors.get("entry_args", [])
     args.append(("u128", value))
     context.world.test_vectors["entry_args"] = args
 
 
-@given('a u256 argument {value}')
+@given("a u256 argument {value}")
 def step_given_u256_argument(context, value):
     args = context.world.test_vectors.get("entry_args", [])
     args.append(("u256", int(value)))
@@ -184,7 +179,7 @@ def step_given_type_arguments_list(context, type_args):
 def _encode_entry_args(args):
     """Helper function to encode entry function arguments as TransactionArgument objects."""
     from aptos_sdk.transactions import TransactionArgument
-    
+
     encoded_args = []
     for arg_type, arg_value in args:
         if arg_type == "u8":
@@ -207,7 +202,11 @@ def _encode_entry_args(args):
         elif arg_type == "string":
             encoded_args.append(TransactionArgument(arg_value, Serializer.str))
         elif arg_type == "vector_u8":
-            encoded_args.append(TransactionArgument(arg_value, lambda s, v: s.sequence(v, Serializer.u8)))
+            encoded_args.append(
+                TransactionArgument(
+                    arg_value, lambda s, v: s.sequence(v, Serializer.u8)
+                )
+            )
     return encoded_args
 
 
@@ -215,6 +214,7 @@ def _parse_type_args(type_args):
     """Helper function to parse type arguments."""
     # Custom TypeTag parsing since SDK may not have from_str
     from support.vectors import parse_type_tag
+
     parsed = []
     for ta in type_args:
         try:
@@ -240,10 +240,7 @@ def step_create_entry_function(context):
 
         # Create entry function
         context.world.entry_function = EntryFunction.natural(
-            f"{address}::{module}",
-            function,
-            parsed_type_args,
-            encoded_args
+            f"{address}::{module}", function, parsed_type_args, encoded_args
         )
         context.world.result = context.world.entry_function
         context.world.clear_error()
@@ -386,13 +383,13 @@ def step_serializations_identical(context):
 def step_deserialized_entry_function_matches(context):
     # Serialize both and compare bytes
     original = context.world.test_vectors.get("original_entry_fn", context.world.result)
-    
+
     serializer1 = Serializer()
     original.serialize(serializer1)
-    
+
     serializer2 = Serializer()
     context.world.result.serialize(serializer2)
-    
+
     assert serializer1.output() == serializer2.output()
 
 
@@ -449,6 +446,7 @@ def step_given_bytes_array_5(context, values, v2, v3, v4, v5):
 # Note: 'a string "{text}"' is defined in serialization_steps.py
 # We use the encode_string vector entry for entry function encoding
 
+
 @given('string value "{text}" for encoding')
 def step_given_string_for_encoding(context, text):
     context.world.test_vectors["encode_string"] = text
@@ -468,17 +466,11 @@ def step_given_u256_near_max(context):
 def step_given_entry_function_apt_transfer(context):
     recipient = context.world.test_vectors.get("recipient", "0x1")
     amount = context.world.test_vectors.get("amount", 1000000)
-    
-    encoded_args = _encode_entry_args([
-        ("address", recipient),
-        ("u64", amount)
-    ])
-    
+
+    encoded_args = _encode_entry_args([("address", recipient), ("u64", amount)])
+
     context.world.entry_function = EntryFunction.natural(
-        "0x1::aptos_account",
-        "transfer",
-        [],
-        encoded_args
+        "0x1::aptos_account", "transfer", [], encoded_args
     )
     context.world.result = context.world.entry_function
 
@@ -497,28 +489,19 @@ def step_given_entry_function_no_type_args(context):
 @given("an EntryFunction with no arguments (e.g., initialize)")
 def step_given_entry_function_no_args(context):
     context.world.entry_function = EntryFunction.natural(
-        "0x1::some_module",
-        "initialize",
-        [],
-        []
+        "0x1::some_module", "initialize", [], []
     )
     context.world.result = context.world.entry_function
 
 
 @given("an EntryFunction with type arguments and arguments")
 def step_given_entry_function_full(context):
-    encoded_args = _encode_entry_args([
-        ("address", "0x1"),
-        ("u64", 1000000)
-    ])
-    
+    encoded_args = _encode_entry_args([("address", "0x1"), ("u64", 1000000)])
+
     parsed_type_args = _parse_type_args(["0x1::aptos_coin::AptosCoin"])
-    
+
     context.world.entry_function = EntryFunction.natural(
-        "0x1::coin",
-        "transfer",
-        parsed_type_args,
-        encoded_args
+        "0x1::coin", "transfer", parsed_type_args, encoded_args
     )
     context.world.result = context.world.entry_function
 
@@ -554,17 +537,11 @@ def step_create_apt_transfer(context):
     try:
         recipient = context.world.test_vectors.get("recipient", "0x1")
         amount = context.world.test_vectors.get("amount", 1000000)
-        
-        encoded_args = _encode_entry_args([
-            ("address", recipient),
-            ("u64", amount)
-        ])
-        
+
+        encoded_args = _encode_entry_args([("address", recipient), ("u64", amount)])
+
         context.world.entry_function = EntryFunction.natural(
-            "0x1::aptos_account",
-            "transfer",
-            [],
-            encoded_args
+            "0x1::aptos_account", "transfer", [], encoded_args
         )
         context.world.result = context.world.entry_function
         context.world.clear_error()
@@ -580,22 +557,18 @@ def step_create_any_apt_transfer(context):
 @when("I create a coin transfer entry function")
 def step_create_coin_transfer(context):
     try:
-        coin_type = context.world.test_vectors.get("coin_type", "0x1::aptos_coin::AptosCoin")
+        coin_type = context.world.test_vectors.get(
+            "coin_type", "0x1::aptos_coin::AptosCoin"
+        )
         recipient = context.world.test_vectors.get("recipient", "0x1")
         amount = context.world.test_vectors.get("amount", 1000000)
-        
-        encoded_args = _encode_entry_args([
-            ("address", recipient),
-            ("u64", amount)
-        ])
-        
+
+        encoded_args = _encode_entry_args([("address", recipient), ("u64", amount)])
+
         parsed_type_args = _parse_type_args([coin_type])
-        
+
         context.world.entry_function = EntryFunction.natural(
-            "0x1::coin",
-            "transfer",
-            parsed_type_args,
-            encoded_args
+            "0x1::coin", "transfer", parsed_type_args, encoded_args
         )
         context.world.result = context.world.entry_function
         context.world.clear_error()
@@ -620,7 +593,7 @@ def step_create_coin_transfer_aptos(context):
 def step_bcs_encode_argument(context):
     try:
         serializer = Serializer()
-        
+
         if "encode_address" in context.world.test_vectors:
             addr = AccountAddress.from_str(context.world.test_vectors["encode_address"])
             serializer.struct(addr)
@@ -629,14 +602,16 @@ def step_bcs_encode_argument(context):
         elif "encode_bool" in context.world.test_vectors:
             serializer.bool(context.world.test_vectors["encode_bool"])
         elif "encode_bytes" in context.world.test_vectors:
-            serializer.sequence(context.world.test_vectors["encode_bytes"], Serializer.u8)
+            serializer.sequence(
+                context.world.test_vectors["encode_bytes"], Serializer.u8
+            )
         elif "encode_string" in context.world.test_vectors:
             serializer.str(context.world.test_vectors["encode_string"])
         elif "encode_u128" in context.world.test_vectors:
             serializer.u128(context.world.test_vectors["encode_u128"])
         elif "encode_u256" in context.world.test_vectors:
             serializer.u256(context.world.test_vectors["encode_u256"])
-        
+
         context.world.bytes_value = serializer.output()
         context.world.clear_error()
     except Exception as e:
@@ -649,6 +624,7 @@ def step_encode_argument(context):
 
 
 # Note: "I BCS serialize it" is defined in serialization_steps.py
+
 
 @when("I BCS serialize the entry function")
 def step_bcs_serialize_entry_func_explicit(context):
@@ -664,6 +640,7 @@ def step_bcs_serialize_entry_func_explicit(context):
 
 # Note: "I BCS serialize and deserialize it" is defined in type_tags_steps.py
 
+
 @when("I BCS serialize and deserialize the entry function")
 def step_bcs_roundtrip_entry_func(context):
     try:
@@ -671,10 +648,10 @@ def step_bcs_roundtrip_entry_func(context):
         serializer = Serializer()
         context.world.entry_function.serialize(serializer)
         serialized = serializer.output()
-        
+
         # Store original
         context.world.test_vectors["original_entry_fn"] = context.world.entry_function
-        
+
         # Deserialize
         deserializer = Deserializer(serialized)
         context.world.result = EntryFunction.deserialize(deserializer)
@@ -687,15 +664,19 @@ def step_bcs_roundtrip_entry_func(context):
 @when("I BCS serialize both")
 def step_bcs_serialize_both(context):
     try:
-        ef1 = context.world.test_vectors.get("entry_function_1", context.world.entry_function)
-        ef2 = context.world.test_vectors.get("entry_function_2", context.world.entry_function)
-        
+        ef1 = context.world.test_vectors.get(
+            "entry_function_1", context.world.entry_function
+        )
+        ef2 = context.world.test_vectors.get(
+            "entry_function_2", context.world.entry_function
+        )
+
         serializer1 = Serializer()
         ef1.serialize(serializer1)
-        
+
         serializer2 = Serializer()
         ef2.serialize(serializer2)
-        
+
         context.world.test_vectors["bytes1"] = serializer1.output()
         context.world.test_vectors["bytes2"] = serializer2.output()
         context.world.clear_error()
@@ -707,7 +688,10 @@ def step_bcs_serialize_both(context):
 def step_convert_to_payload(context):
     try:
         from aptos_sdk.transactions import TransactionPayload
-        context.world.transaction_payload = TransactionPayload(context.world.entry_function)
+
+        context.world.transaction_payload = TransactionPayload(
+            context.world.entry_function
+        )
         context.world.clear_error()
     except Exception as e:
         context.world.set_error(e)
@@ -803,7 +787,7 @@ def step_type_arg_0_should_be(context, expected):
 def step_payloads_different(context):
     apt = context.world.test_vectors.get("apt_transfer")
     coin = context.world.test_vectors.get("coin_transfer")
-    
+
     # Different modules
     apt_module = f"{apt.module.address}::{apt.module.name}"
     coin_module = f"{coin.module.address}::{coin.module.name}"
@@ -857,23 +841,24 @@ def step_result_includes_all(context):
 
 # Note: "the bytes should be identical" is defined in type_tags_steps.py
 
+
 @then("the result should equal the original")
 def step_result_equals_original_generic(context):
     # Compare serializations to verify equality
     original = context.world.test_vectors.get("original")
     result = context.world.result or context.world.entry_function
-    
+
     if original is None:
         # Just verify result exists
         assert result is not None
         return
-    
+
     serializer1 = Serializer()
     original.serialize(serializer1)
-    
+
     serializer2 = Serializer()
     result.serialize(serializer2)
-    
+
     assert serializer1.output() == serializer2.output()
 
 
@@ -881,13 +866,13 @@ def step_result_equals_original_generic(context):
 def step_ef_result_equals_original(context):
     original = context.world.test_vectors.get("original_entry_fn")
     result = context.world.result or context.world.entry_function
-    
+
     serializer1 = Serializer()
     original.serialize(serializer1)
-    
+
     serializer2 = Serializer()
     result.serialize(serializer2)
-    
+
     assert serializer1.output() == serializer2.output()
 
 

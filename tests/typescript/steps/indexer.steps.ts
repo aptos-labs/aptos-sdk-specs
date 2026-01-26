@@ -5,12 +5,7 @@
  */
 import { Given, When, Then } from "@cucumber/cucumber";
 import { expect } from "chai";
-import {
-  Aptos,
-  AptosConfig,
-  Network,
-  AccountAddress,
-} from "@aptos-labs/ts-sdk";
+import { Aptos, AptosConfig, Network, AccountAddress } from "@aptos-labs/ts-sdk";
 import type { AptosWorld } from "../support/world.js";
 
 // =============================================================================
@@ -87,13 +82,16 @@ Given("an indexer client", function (this: AptosWorld) {
 });
 
 Given("a GraphQL query string", function (this: AptosWorld) {
-  this.testVectors.set("graphqlQuery", `
+  this.testVectors.set(
+    "graphqlQuery",
+    `
     query GetLedgerInfo {
       ledger_infos {
         chain_id
       }
     }
-  `);
+  `,
+  );
 });
 
 // NOTE: "I execute the query" requires network access to query the indexer.
@@ -106,14 +104,17 @@ Then("I should receive the query result", function (this: AptosWorld) {
 });
 
 Given("a GraphQL query with variables", function (this: AptosWorld) {
-  this.testVectors.set("graphqlQuery", `
+  this.testVectors.set(
+    "graphqlQuery",
+    `
     query GetAccountTokens($address: String!) {
       current_token_ownerships_v2(where: {owner_address: {_eq: $address}}) {
         token_data_id
         amount
       }
     }
-  `);
+  `,
+  );
 });
 
 Given("variable values", function (this: AptosWorld) {
@@ -188,15 +189,18 @@ Given("an account with many NFTs", function (this: AptosWorld) {
   this.testVectors.set("totalNfts", 25);
 });
 
-When("I query tokens with limit {int} and offset {int}", async function (this: AptosWorld, limit: number, offset: number) {
-  const totalNfts = this.testVectors.get("totalNfts") as number;
-  const tokens = [];
-  for (let i = offset; i < Math.min(offset + limit, totalNfts); i++) {
-    tokens.push({ token_data_id: `token_${i}`, amount: 1 });
-  }
-  this.testVectors.set("tokensResult", tokens);
-  this.testVectors.set("queryLimit", limit);
-});
+When(
+  "I query tokens with limit {int} and offset {int}",
+  async function (this: AptosWorld, limit: number, offset: number) {
+    const totalNfts = this.testVectors.get("totalNfts") as number;
+    const tokens = [];
+    for (let i = offset; i < Math.min(offset + limit, totalNfts); i++) {
+      tokens.push({ token_data_id: `token_${i}`, amount: 1 });
+    }
+    this.testVectors.set("tokensResult", tokens);
+    this.testVectors.set("queryLimit", limit);
+  },
+);
 
 Then("I should receive at most {int} tokens", function (this: AptosWorld, limit: number) {
   const tokens = this.testVectors.get("tokensResult") as any[];
@@ -205,7 +209,7 @@ Then("I should receive at most {int} tokens", function (this: AptosWorld, limit:
 
 When("I query with offset {int}", async function (this: AptosWorld, offset: number) {
   const totalNfts = this.testVectors.get("totalNfts") as number;
-  const limit = this.testVectors.get("queryLimit") as number || 10;
+  const limit = (this.testVectors.get("queryLimit") as number) || 10;
   const tokens = [];
   for (let i = offset; i < Math.min(offset + limit, totalNfts); i++) {
     tokens.push({ token_data_id: `token_${i}`, amount: 1 });
@@ -355,19 +359,20 @@ When("I query with limit {int}", async function (this: AptosWorld, limit: number
   this.testVectors.set("transactionHistory", txns);
 });
 
-Then("I should receive at most {int} indexed transactions", function (this: AptosWorld, limit: number) {
-  const txns = this.testVectors.get("transactionHistory") as any[];
-  expect(txns.length).to.be.lessThanOrEqual(limit);
-});
+Then(
+  "I should receive at most {int} indexed transactions",
+  function (this: AptosWorld, limit: number) {
+    const txns = this.testVectors.get("transactionHistory") as any[];
+    expect(txns.length).to.be.lessThanOrEqual(limit);
+  },
+);
 
 Given("a user_transaction type filter", function (this: AptosWorld) {
   this.testVectors.set("transactionTypeFilter", "user_transaction");
 });
 
 When("I query with the filter", async function (this: AptosWorld) {
-  this.testVectors.set("transactionHistory", [
-    { version: "1", type: "user_transaction" },
-  ]);
+  this.testVectors.set("transactionHistory", [{ version: "1", type: "user_transaction" }]);
 });
 
 Then("all transactions should be user_transactions", function (this: AptosWorld) {
@@ -532,7 +537,10 @@ Given("current ledger version is known", function (this: AptosWorld) {
 });
 
 When("I compare indexer version to ledger version", function (this: AptosWorld) {
-  const indexerVersion = parseInt(this.testVectors.get("processorStatus")?.last_success_version || "12345678", 10);
+  const indexerVersion = parseInt(
+    this.testVectors.get("processorStatus")?.last_success_version || "12345678",
+    10,
+  );
   const ledgerVersion = parseInt(this.testVectors.get("currentLedgerVersion") as string, 10);
   this.testVectors.set("indexerLag", ledgerVersion - indexerVersion);
 });
@@ -657,8 +665,22 @@ Then("I should see decimals", function (this: AptosWorld) {
 Given("an account with indexed transaction history", function (this: AptosWorld) {
   this.testVectors.set("accountAddress", AccountAddress.from("0x1"));
   this.testVectors.set("transactionHistory", [
-    { version: "100", type: "user_transaction", hash: "0xabc", sender: "0x1", success: true, timestamp: "2024-01-01T00:00:00Z" },
-    { version: "99", type: "user_transaction", hash: "0xdef", sender: "0x1", success: true, timestamp: "2024-01-01T00:00:00Z" },
+    {
+      version: "100",
+      type: "user_transaction",
+      hash: "0xabc",
+      sender: "0x1",
+      success: true,
+      timestamp: "2024-01-01T00:00:00Z",
+    },
+    {
+      version: "99",
+      type: "user_transaction",
+      hash: "0xdef",
+      sender: "0x1",
+      success: true,
+      timestamp: "2024-01-01T00:00:00Z",
+    },
   ]);
 });
 
@@ -671,7 +693,9 @@ When("I query account transactions", async function (this: AptosWorld) {
 Then("transactions should be ordered by version", function (this: AptosWorld) {
   const txns = this.testVectors.get("transactionQueryResult") as any[];
   for (let i = 1; i < txns.length; i++) {
-    expect(parseInt(txns[i - 1].version, 10)).to.be.greaterThanOrEqual(parseInt(txns[i].version, 10));
+    expect(parseInt(txns[i - 1].version, 10)).to.be.greaterThanOrEqual(
+      parseInt(txns[i].version, 10),
+    );
   }
 });
 
@@ -724,7 +748,10 @@ Given("an account with various transaction types", function (this: AptosWorld) {
 
 When("I query only user transactions", async function (this: AptosWorld) {
   const txns = this.testVectors.get("transactionHistory") as any[];
-  this.testVectors.set("filteredTransactions", txns.filter(t => t.type === "user_transaction"));
+  this.testVectors.set(
+    "filteredTransactions",
+    txns.filter((t) => t.type === "user_transaction"),
+  );
 });
 
 Then("I should only receive user transactions", function (this: AptosWorld) {
@@ -881,21 +908,27 @@ Then("I should receive relevant events", function (this: AptosWorld) {
 // Note: "an event query result" is defined at line 791
 
 Then("each event should have sequence_number", function (this: AptosWorld) {
-  const events = this.testVectors.get("eventQueryResult") as any[] ?? this.testVectors.get("eventsResult") as any[];
+  const events =
+    (this.testVectors.get("eventQueryResult") as any[]) ??
+    (this.testVectors.get("eventsResult") as any[]);
   for (const event of events) {
     expect(event.sequence_number).to.not.be.undefined;
   }
 });
 
 Then("each event should have type", function (this: AptosWorld) {
-  const events = this.testVectors.get("eventQueryResult") as any[] ?? this.testVectors.get("eventsResult") as any[];
+  const events =
+    (this.testVectors.get("eventQueryResult") as any[]) ??
+    (this.testVectors.get("eventsResult") as any[]);
   for (const event of events) {
     expect(event.type).to.not.be.undefined;
   }
 });
 
 Then("each event should have data", function (this: AptosWorld) {
-  const events = this.testVectors.get("eventQueryResult") as any[] ?? this.testVectors.get("eventsResult") as any[];
+  const events =
+    (this.testVectors.get("eventQueryResult") as any[]) ??
+    (this.testVectors.get("eventsResult") as any[]);
   for (const event of events) {
     expect(event.data).to.not.be.undefined;
   }

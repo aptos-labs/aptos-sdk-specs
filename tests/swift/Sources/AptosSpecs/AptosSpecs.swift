@@ -3,5 +3,5 @@
 // This file exists to satisfy Swift Package Manager requirements.
 
 public struct AptosSpecs {
-    public static let version = "1.0.0"
+  public static let version = "1.0.0"
 }

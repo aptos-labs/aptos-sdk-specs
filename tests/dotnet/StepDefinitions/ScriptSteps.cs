@@ -343,8 +343,8 @@ public class ScriptSteps
     public void WhenIBuildTheRawTransaction()
     {
         var txnParams = _world.TestVectors["txnParams"] as Dictionary<string, object>;
-        var scriptPayload = _world.TestVectors.TryGetValue("scriptPayload", out var sp) 
-            ? sp as Dictionary<string, object> 
+        var scriptPayload = _world.TestVectors.TryGetValue("scriptPayload", out var sp)
+            ? sp as Dictionary<string, object>
             : new Dictionary<string, object>
             {
                 { "code", SAMPLE_SCRIPT_BYTECODE },
@@ -920,11 +920,11 @@ script {
         // Manually serialize the script payload structure (simplified)
         var codeBytes = SAMPLE_SCRIPT_BYTECODE;
         var serialized = new List<byte>();
-        
+
         // Add length prefix for code
         serialized.Add((byte)codeBytes.Length);
         serialized.AddRange(codeBytes);
-        
+
         // Add empty type_args and args vectors (length 0)
         serialized.Add(0); // type_args length
         serialized.Add(0); // args length

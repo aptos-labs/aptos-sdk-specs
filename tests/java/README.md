@@ -1,7 +1,8 @@
 # Aptos Java SDK BDD Tests
 
-This directory contains Cucumber-JVM BDD tests that validate the [japtos](https://github.com/aptos-labs/japtos) 
-(Aptos Java SDK) against the shared Gherkin specifications.
+This directory contains Cucumber-JVM BDD tests that validate the
+[japtos](https://github.com/aptos-labs/japtos) (Aptos Java SDK) against the shared Gherkin
+specifications.
 
 ## Prerequisites
 
@@ -94,23 +95,24 @@ mvn test -Dcucumber.execution.dry-run=true
 ## Test Reports
 
 After running tests, reports are generated in:
+
 - **HTML Report**: `target/cucumber-reports/cucumber.html`
 - **JSON Report**: `target/cucumber-reports/cucumber.json`
 
 ## Test Tags
 
-| Tag | Description |
-|-----|-------------|
-| `@required` | Must-have features (P0) |
-| `@preferred` | Recommended features (P1) |
-| `@optional` | Nice-to-have features (P2) |
-| `@core-types` | Address, TypeTag, serialization |
-| `@cryptography` | Keys, signatures, hashing |
-| `@accounts` | Account creation, derivation |
-| `@transactions` | Transaction building |
-| `@api-clients` | REST API, faucet, indexer |
-| `@advanced` | Multi-sig, keyless, etc. |
-| `@network` | Requires network connectivity |
+| Tag             | Description                     |
+| --------------- | ------------------------------- |
+| `@required`     | Must-have features (P0)         |
+| `@preferred`    | Recommended features (P1)       |
+| `@optional`     | Nice-to-have features (P2)      |
+| `@core-types`   | Address, TypeTag, serialization |
+| `@cryptography` | Keys, signatures, hashing       |
+| `@accounts`     | Account creation, derivation    |
+| `@transactions` | Transaction building            |
+| `@api-clients`  | REST API, faucet, indexer       |
+| `@advanced`     | Multi-sig, keyless, etc.        |
+| `@network`      | Requires network connectivity   |
 
 ## Writing Step Definitions
 
@@ -127,16 +129,16 @@ import static org.assertj.core.api.Assertions.*;
 
 public class ExampleSteps {
     private final World world;
-    
+
     public ExampleSteps(World world) {
         this.world = world;
     }
-    
+
     @Given("a hex string {string}")
     public void givenHexString(String hex) {
         world.setHexString(hex);
     }
-    
+
     @When("I parse it as an AccountAddress")
     public void whenParseAddress() {
         try {
@@ -147,7 +149,7 @@ public class ExampleSteps {
             world.setError(e);
         }
     }
-    
+
     @Then("the parsing should succeed")
     public void thenParsingShouldSucceed() {
         assertThat(world.getError()).isNull();
@@ -158,16 +160,16 @@ public class ExampleSteps {
 
 ## Key japtos SDK Classes
 
-| Class | Package | Purpose |
-|-------|---------|---------|
-| `AccountAddress` | `com.aptoslabs.japtos.types` | 32-byte account addresses |
-| `Ed25519Account` | `com.aptoslabs.japtos.account` | Ed25519 key pairs and signing |
-| `Ed25519PrivateKey` | `com.aptoslabs.japtos.crypto` | Private key operations |
-| `Ed25519PublicKey` | `com.aptoslabs.japtos.crypto` | Public key verification |
-| `AuthenticationKey` | `com.aptoslabs.japtos.types` | Auth key derivation |
-| `HashValue` | `com.aptoslabs.japtos.types` | 32-byte hash values |
-| `AptosClient` | `com.aptoslabs.japtos.client` | REST API client |
-| `HexUtils` | `com.aptoslabs.japtos.utils` | Hex encoding/decoding |
+| Class               | Package                        | Purpose                       |
+| ------------------- | ------------------------------ | ----------------------------- |
+| `AccountAddress`    | `com.aptoslabs.japtos.types`   | 32-byte account addresses     |
+| `Ed25519Account`    | `com.aptoslabs.japtos.account` | Ed25519 key pairs and signing |
+| `Ed25519PrivateKey` | `com.aptoslabs.japtos.crypto`  | Private key operations        |
+| `Ed25519PublicKey`  | `com.aptoslabs.japtos.crypto`  | Public key verification       |
+| `AuthenticationKey` | `com.aptoslabs.japtos.types`   | Auth key derivation           |
+| `HashValue`         | `com.aptoslabs.japtos.types`   | 32-byte hash values           |
+| `AptosClient`       | `com.aptoslabs.japtos.client`  | REST API client               |
+| `HexUtils`          | `com.aptoslabs.japtos.utils`   | Hex encoding/decoding         |
 
 ## Test Vectors
 
@@ -199,6 +201,7 @@ If Maven cannot resolve the japtos dependency:
 ### Tests failing with "Step not implemented"
 
 Run dry-run to check which steps are missing:
+
 ```bash
 make dry-run
 ```
@@ -206,6 +209,7 @@ make dry-run
 ### Network-dependent tests failing
 
 Run offline tests only:
+
 ```bash
 make test-offline
 ```
@@ -215,6 +219,7 @@ make test-offline
 See [PLAN.md](./PLAN.md) for the implementation roadmap and status.
 
 When implementing new steps:
+
 1. Follow existing patterns in step definition files
 2. Update `FEATURE_COVERAGE.md` in the repo root
 3. Run tests to verify implementation

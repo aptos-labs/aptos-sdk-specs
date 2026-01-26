@@ -1,5 +1,6 @@
 plugins {
     kotlin("jvm") version "1.9.22"
+    id("org.jlleitschuh.gradle.ktlint") version "12.1.0"
 }
 
 group = "com.aptos"
@@ -13,23 +14,23 @@ dependencies {
     // Kaptos SDK - Kotlin Multiplatform SDK for Aptos (published to Maven Central)
     // Use the JVM-specific artifact for pure JVM testing
     implementation("xyz.mcxross.kaptos:kaptos-jvm:0.1.2-beta")
-    
+
     // Cucumber BDD Framework
     testImplementation("io.cucumber:cucumber-java:7.15.0")
     testImplementation("io.cucumber:cucumber-junit-platform-engine:7.15.0")
     testImplementation("io.cucumber:cucumber-picocontainer:7.15.0")
-    
+
     // JUnit 5 Platform
     testImplementation("org.junit.platform:junit-platform-suite:1.10.1")
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.1")
-    
+
     // JSON parsing for test vectors
     testImplementation("com.google.code.gson:gson:2.10.1")
-    
+
     // Kotlin coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
-    
+
     // Kotest assertions
     testImplementation("io.kotest:kotest-assertions-core:5.8.0")
 }
@@ -40,12 +41,12 @@ kotlin {
 
 tasks.test {
     useJUnitPlatform()
-    
+
     systemProperty("cucumber.junit-platform.naming-strategy", "long")
     systemProperty("cucumber.plugin", "pretty,html:build/reports/cucumber/cucumber.html,json:build/reports/cucumber/cucumber.json")
     systemProperty("cucumber.features", "../../features")
     systemProperty("cucumber.glue", "com.aptos.specs.steps,com.aptos.specs.support")
-    
+
     // Pass through tag filter from command line
     systemProperty("cucumber.filter.tags", System.getProperty("cucumber.filter.tags") ?: "")
 }
@@ -96,4 +97,16 @@ tasks.register<Test>("dryRun") {
     systemProperty("cucumber.execution.dry-run", "true")
     systemProperty("cucumber.features", "../../features")
     systemProperty("cucumber.glue", "com.aptos.specs.steps,com.aptos.specs.support")
+}
+
+// ktlint configuration
+ktlint {
+    version.set("1.1.1")
+    android.set(false)
+    outputToConsole.set(true)
+    ignoreFailures.set(true) // Don't fail build on style issues
+    filter {
+        exclude("**/build/**")
+        exclude("**/generated/**")
+    }
 }

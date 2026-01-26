@@ -4,10 +4,8 @@
 //! are defined in cryptography_steps.rs and handle all key types.
 
 use crate::support::world::TestWorld;
-use aptos_rust_sdk_v2::crypto::{
-    Secp256k1PrivateKey, Secp256r1PrivateKey,
-};
-use cucumber::{given, when, then};
+use aptos_rust_sdk_v2::crypto::{Secp256k1PrivateKey, Secp256r1PrivateKey};
+use cucumber::{given, then, when};
 
 // =============================================================================
 // Secp256k1 Key Generation
@@ -35,7 +33,10 @@ fn given_large_secp256r1_private_key(world: &mut TestWorld) {
 
 #[when(expr = "I create a Secp256k1 key pair from the bytes")]
 fn when_create_secp256k1_from_bytes(world: &mut TestWorld) {
-    let bytes = world.private_key_bytes.as_ref().expect("No private key bytes");
+    let bytes = world
+        .private_key_bytes
+        .as_ref()
+        .expect("No private key bytes");
     match Secp256k1PrivateKey::from_bytes(bytes) {
         Ok(private_key) => {
             let public_key = private_key.public_key();
@@ -57,16 +58,14 @@ fn when_create_secp256k1_from_hex(world: &mut TestWorld) {
     let hex = world.hex_string.as_ref().expect("No hex string");
     let hex_clean = hex.trim_start_matches("0x");
     match hex::decode(hex_clean) {
-        Ok(bytes) => {
-            match Secp256k1PrivateKey::from_bytes(&bytes) {
-                Ok(private_key) => {
-                    let public_key = private_key.public_key();
-                    world.secp256k1_private_key = Some(private_key);
-                    world.secp256k1_public_key = Some(public_key);
-                }
-                Err(e) => world.error = Some(e.to_string()),
+        Ok(bytes) => match Secp256k1PrivateKey::from_bytes(&bytes) {
+            Ok(private_key) => {
+                let public_key = private_key.public_key();
+                world.secp256k1_private_key = Some(private_key);
+                world.secp256k1_public_key = Some(public_key);
             }
-        }
+            Err(e) => world.error = Some(e.to_string()),
+        },
         Err(e) => world.error = Some(e.to_string()),
     }
 }
@@ -90,7 +89,7 @@ fn given_two_secp256k1_keypairs(world: &mut TestWorld) {
     let public_key1 = private_key1.public_key();
     let private_key2 = Secp256k1PrivateKey::generate();
     let public_key2 = private_key2.public_key();
-    
+
     world.secp256k1_private_key = Some(private_key1);
     world.secp256k1_public_key = Some(public_key1);
     world.secp256k1_private_key2 = Some(private_key2);
@@ -111,7 +110,10 @@ fn when_generate_secp256r1_keypair(world: &mut TestWorld) {
 
 #[when(expr = "I create a Secp256r1 key pair from the bytes")]
 fn when_create_secp256r1_from_bytes(world: &mut TestWorld) {
-    let bytes = world.private_key_bytes.as_ref().expect("No private key bytes");
+    let bytes = world
+        .private_key_bytes
+        .as_ref()
+        .expect("No private key bytes");
     match Secp256r1PrivateKey::from_bytes(bytes) {
         Ok(private_key) => {
             let public_key = private_key.public_key();
@@ -132,16 +134,14 @@ fn when_create_secp256r1_from_hex(world: &mut TestWorld) {
     let hex = world.hex_string.as_ref().expect("No hex string");
     let hex_clean = hex.trim_start_matches("0x");
     match hex::decode(hex_clean) {
-        Ok(bytes) => {
-            match Secp256r1PrivateKey::from_bytes(&bytes) {
-                Ok(private_key) => {
-                    let public_key = private_key.public_key();
-                    world.secp256r1_private_key = Some(private_key);
-                    world.secp256r1_public_key = Some(public_key);
-                }
-                Err(e) => world.error = Some(e.to_string()),
+        Ok(bytes) => match Secp256r1PrivateKey::from_bytes(&bytes) {
+            Ok(private_key) => {
+                let public_key = private_key.public_key();
+                world.secp256r1_private_key = Some(private_key);
+                world.secp256r1_public_key = Some(public_key);
             }
-        }
+            Err(e) => world.error = Some(e.to_string()),
+        },
         Err(e) => world.error = Some(e.to_string()),
     }
 }
@@ -165,7 +165,7 @@ fn given_two_secp256r1_keypairs(world: &mut TestWorld) {
     let public_key1 = private_key1.public_key();
     let private_key2 = Secp256r1PrivateKey::generate();
     let public_key2 = private_key2.public_key();
-    
+
     world.secp256r1_private_key = Some(private_key1);
     world.secp256r1_public_key = Some(public_key1);
     world.secp256r1_private_key2 = Some(private_key2);
@@ -235,7 +235,7 @@ fn given_secp256r1_uncompressed(world: &mut TestWorld) {
 #[when(expr = "I derive the Secp authentication key")]
 fn when_derive_secp_auth_key(world: &mut TestWorld) {
     use aptos_rust_sdk_v2::crypto::derive_authentication_key;
-    
+
     if let Some(ref pk) = world.secp256k1_public_key {
         let auth_key = derive_authentication_key(&pk.to_uncompressed_bytes(), 0x01);
         world.auth_key_bytes = Some(auth_key.to_vec());
@@ -248,10 +248,10 @@ fn when_derive_secp_auth_key(world: &mut TestWorld) {
 #[then(regex = r"^it should equal SHA3-256\(uncompressed_public_key \|\| (0x[0-9a-fA-F]+)\)$")]
 fn then_auth_key_equals(world: &mut TestWorld, scheme: String) {
     use aptos_rust_sdk_v2::crypto::sha3_256;
-    
+
     let scheme_byte = parse_hex_byte(&scheme);
     let auth_key = world.auth_key_bytes.as_ref().expect("No auth key");
-    
+
     let pk_bytes = if let Some(ref pk) = world.secp256k1_public_key {
         pk.to_uncompressed_bytes().to_vec()
     } else if let Some(ref pk) = world.secp256r1_public_key {
@@ -259,11 +259,11 @@ fn then_auth_key_equals(world: &mut TestWorld, scheme: String) {
     } else {
         panic!("No public key");
     };
-    
+
     let mut combined = pk_bytes;
     combined.push(scheme_byte);
     let expected = sha3_256(&combined);
-    
+
     assert_eq!(auth_key.as_slice(), expected.as_slice());
 }
 

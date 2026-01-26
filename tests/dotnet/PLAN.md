@@ -126,8 +126,8 @@ tests/dotnet/
 
 ### Unsupported Features (Throw NotImplementedException)
 
-The following features are **not currently supported** by the Aptos .NET SDK and
-will throw `NotImplementedException`:
+The following features are **not currently supported** by the Aptos .NET SDK and will throw
+`NotImplementedException`:
 
 - **Keyless Accounts (OIDC)** - `KeylessSteps.cs` - Ephemeral keys, JWT/OIDC flow, ZK proofs
 - **BLS12-381 Cryptography** - `BLSSteps.cs` - BLS key pairs, signatures, PoP

@@ -3,18 +3,17 @@ Step definitions for single-key.feature
 Tests account creation and management.
 """
 
+from support.vectors import hex_to_bytes, bytes_to_hex
+from nacl.signing import SigningKey
+from aptos_sdk.account_address import AccountAddress
+from aptos_sdk.ed25519 import PrivateKey as Ed25519PrivateKey
+from aptos_sdk.account import Account
+from behave import given, when, then
 import sys
 import os
 import hashlib
+
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
-
-from behave import given, when, then
-from aptos_sdk.account import Account
-from aptos_sdk.ed25519 import PrivateKey as Ed25519PrivateKey
-from aptos_sdk.account_address import AccountAddress
-from nacl.signing import SigningKey
-
-from support.vectors import hex_to_bytes, bytes_to_hex
 
 
 def _create_ed25519_from_seed(seed_bytes: bytes) -> Ed25519PrivateKey:
@@ -49,6 +48,7 @@ def step_given_new_ed25519_account(context):
 @given("a valid Ed25519 private key (32 bytes)")
 def step_given_valid_ed25519_private_key(context):
     import os as _os
+
     context.world.bytes_value = _os.urandom(32)
 
 
@@ -182,7 +182,9 @@ def step_compare_address_and_auth_key(context):
 @when("both accounts sign the message")
 def step_both_accounts_sign(context):
     context.world.ed25519_signature = context.world.account.sign(context.world.message)
-    context.world.ed25519_signature_2 = context.world.account_2.sign(context.world.message)
+    context.world.ed25519_signature_2 = context.world.account_2.sign(
+        context.world.message
+    )
 
 
 @when("I call address()")
@@ -339,6 +341,7 @@ def step_given_secp256k1_account(context):
 @given("a valid Secp256k1 private key (32 bytes)")
 def step_given_valid_secp256k1_private_key(context):
     import os as _os
+
     context.world.secp256k1_key_bytes = _os.urandom(32)
 
 
@@ -401,7 +404,10 @@ def step_store_accounts_in_collection(context):
     context.world.account_collection = []
     if context.world.account is not None:
         context.world.account_collection.append(context.world.account)
-    if hasattr(context.world, 'secp256k1_account') and context.world.secp256k1_account is not None:
+    if (
+        hasattr(context.world, "secp256k1_account")
+        and context.world.secp256k1_account is not None
+    ):
         context.world.account_collection.append(context.world.secp256k1_account)
 
 
@@ -409,13 +415,21 @@ def step_store_accounts_in_collection(context):
 def step_signature_scheme_secp256k1(context):
     # Python SDK may not expose scheme identifier directly
     # Check that it's a Secp256k1 account by verifying it was created with that method
-    assert context.world.secp256k1_account is not None or context.world.account is not None
+    assert (
+        context.world.secp256k1_account is not None or context.world.account is not None
+    )
 
 
 @then("the Secp256k1 address should be different from Ed25519 address")
 def step_secp256k1_address_different_from_ed25519(context):
-    ed25519_addr = str(context.world.account.address()) if context.world.account else None
-    secp256k1_addr = str(context.world.secp256k1_account.address()) if hasattr(context.world, 'secp256k1_account') else None
+    ed25519_addr = (
+        str(context.world.account.address()) if context.world.account else None
+    )
+    secp256k1_addr = (
+        str(context.world.secp256k1_account.address())
+        if hasattr(context.world, "secp256k1_account")
+        else None
+    )
     if ed25519_addr and secp256k1_addr:
         assert ed25519_addr != secp256k1_addr
 
@@ -484,12 +498,17 @@ def step_aip80_matches(context, expected):
 def step_private_key_not_in_string(context):
     # When converting account to string, private key should not be exposed
     acc_str = str(context.world.account)
-    if hasattr(context.world.account, 'private_key'):
-        pk_hex = context.world.account.private_key.hex() if hasattr(context.world.account.private_key, 'hex') else ""
+    if hasattr(context.world.account, "private_key"):
+        pk_hex = (
+            context.world.account.private_key.hex()
+            if hasattr(context.world.account.private_key, "hex")
+            else ""
+        )
         assert pk_hex not in acc_str
 
 
 # Note: "the signatures should be different" is defined in cryptography_steps.py
+
 
 @when("I sign a message with the Ed25519 account")
 def step_sign_with_ed25519_account(context):
@@ -535,7 +554,7 @@ def step_wrap_in_any_account(context):
 
 @then("the address should match")
 def step_address_should_match(context):
-    if hasattr(context.world, 'any_account') and context.world.any_account:
+    if hasattr(context.world, "any_account") and context.world.any_account:
         addr1 = str(context.world.any_account.address())
         addr2 = str(context.world.account.address())
         assert addr1 == addr2
@@ -545,10 +564,14 @@ def step_address_should_match(context):
 def step_signing_produces_same_signature(context):
     msg = b"test message"
     sig1 = context.world.account.sign(msg)
-    sig2 = context.world.any_account.sign(msg) if hasattr(context.world, 'any_account') else sig1
+    sig2 = (
+        context.world.any_account.sign(msg)
+        if hasattr(context.world, "any_account")
+        else sig1
+    )
     # Compare the raw signature bytes
-    s1 = sig1.signature() if hasattr(sig1, 'signature') else bytes(sig1)
-    s2 = sig2.signature() if hasattr(sig2, 'signature') else bytes(sig2)
+    s1 = sig1.signature() if hasattr(sig1, "signature") else bytes(sig1)
+    s2 = sig2.signature() if hasattr(sig2, "signature") else bytes(sig2)
     assert s1 == s2
 
 
@@ -568,17 +591,22 @@ def step_given_key_type_string(context):
 @given("a private key hex string")
 def step_given_private_key_hex_string(context):
     import os as _os
+
     context.world.hex_string = _os.urandom(32).hex()
 
 
 @when("I create an AnyAccount based on the key type")
 def step_create_any_account_by_type(context):
     try:
-        key_type = getattr(context.world, 'key_type', 'ed25519')
+        key_type = getattr(context.world, "key_type", "ed25519")
         if key_type == "secp256k1":
             context.world.account = Account.generate_secp256k1_ecdsa()
         else:
-            key_bytes = hex_to_bytes(context.world.hex_string) if context.world.hex_string else os.urandom(32)
+            key_bytes = (
+                hex_to_bytes(context.world.hex_string)
+                if context.world.hex_string
+                else os.urandom(32)
+            )
             private_key = _create_ed25519_from_seed(key_bytes)
             context.world.account = Account.load_key(private_key)
         context.world.clear_error()
@@ -596,7 +624,7 @@ def step_should_be_usable_for_signing(context):
 @when("I create an Ed25519 account")
 def step_create_ed25519_account(context):
     try:
-        if hasattr(context.world, 'bytes_value') and context.world.bytes_value:
+        if hasattr(context.world, "bytes_value") and context.world.bytes_value:
             private_key = _create_ed25519_from_seed(context.world.bytes_value)
             context.world.account = Account.load_key(private_key)
         else:

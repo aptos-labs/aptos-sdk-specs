@@ -9,11 +9,10 @@ import static io.cucumber.junit.platform.engine.Constants.*;
 
 /**
  * JUnit 5 test runner for Cucumber BDD tests.
- * 
- * This class configures Cucumber to:
- * - Load feature files from ../../features (relative to project root)
- * - Use step definitions from com.aptos.specs.steps and com.aptos.specs.support
- * - Generate HTML and JSON reports
+ *
+ * This class configures Cucumber to: - Load feature files from ../../features
+ * (relative to project root) - Use step definitions from com.aptos.specs.steps
+ * and com.aptos.specs.support - Generate HTML and JSON reports
  */
 @Suite
 @IncludeEngines("cucumber")
@@ -22,5 +21,5 @@ import static io.cucumber.junit.platform.engine.Constants.*;
 @ConfigurationParameter(key = PLUGIN_PROPERTY_NAME, value = "pretty,html:target/cucumber-reports/cucumber.html,json:target/cucumber-reports/cucumber.json")
 @ConfigurationParameter(key = JUNIT_PLATFORM_NAMING_STRATEGY_PROPERTY_NAME, value = "long")
 public class RunCucumberTest {
-    // This class is just a marker for JUnit Platform to discover Cucumber tests
+	// This class is just a marker for JUnit Platform to discover Cucumber tests
 }

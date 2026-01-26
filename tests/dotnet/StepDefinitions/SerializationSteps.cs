@@ -49,8 +49,8 @@ public class SerializationSteps
     [Given(@"a u16 value (\w+)")]
     public void GivenAU16Value(string value)
     {
-        var numValue = value.StartsWith("0x") 
-            ? Convert.ToUInt16(value, 16) 
+        var numValue = value.StartsWith("0x")
+            ? Convert.ToUInt16(value, 16)
             : ushort.Parse(value);
         _world.TestVectors["u16Value"] = numValue;
     }
@@ -58,8 +58,8 @@ public class SerializationSteps
     [Given(@"a u32 value (\w+)")]
     public void GivenAU32Value(string value)
     {
-        var numValue = value.StartsWith("0x") 
-            ? Convert.ToUInt32(value, 16) 
+        var numValue = value.StartsWith("0x")
+            ? Convert.ToUInt32(value, 16)
             : uint.Parse(value);
         _world.TestVectors["u32Value"] = numValue;
     }
@@ -67,8 +67,8 @@ public class SerializationSteps
     [Given(@"a u64 value (\w+)")]
     public void GivenAU64Value(string value)
     {
-        var numValue = value.StartsWith("0x") 
-            ? Convert.ToUInt64(value, 16) 
+        var numValue = value.StartsWith("0x")
+            ? Convert.ToUInt64(value, 16)
             : ulong.Parse(value);
         _world.TestVectors["u64Value"] = numValue;
     }
@@ -197,7 +197,8 @@ public class SerializationSteps
     [Given(@"a struct with fields:")]
     public void GivenAStructWithFields(Table dataTable)
     {
-        var fields = dataTable.Rows.Select(r => new {
+        var fields = dataTable.Rows.Select(r => new
+        {
             field = r["field"],
             type = r["type"],
             value = r["value"]
@@ -361,12 +362,12 @@ public class SerializationSteps
         try
         {
             var originalValue = (uint)_world.TestVectors["lengthValue"];
-            
+
             // Encode using SDK
             var serializer = new Serializer();
             serializer.U32AsUleb128(originalValue);
             var bytes = serializer.ToBytes();
-            
+
             // Decode manually (SDK may not have Deserializer exposed)
             uint result = 0;
             int shift = 0;
@@ -376,7 +377,7 @@ public class SerializationSteps
                 if ((b & 0x80) == 0) break;
                 shift += 7;
             }
-            
+
             _world.Result = result;
             _world.TestVectors["originalValue"] = originalValue;
             _world.ClearError();
@@ -399,7 +400,7 @@ public class SerializationSteps
         {
             if (_world.Bytes == null || _world.Bytes.Length == 0)
                 throw new InvalidOperationException("No bytes to deserialize");
-            
+
             // BCS boolean: 0x00 = false, 0x01 = true
             if (_world.Bytes[0] == 0x00)
                 _world.Result = false;
@@ -407,7 +408,7 @@ public class SerializationSteps
                 _world.Result = true;
             else
                 throw new InvalidOperationException($"Invalid boolean byte: {_world.Bytes[0]}");
-            
+
             _world.ClearError();
         }
         catch (Exception ex)
@@ -423,7 +424,7 @@ public class SerializationSteps
         {
             if (_world.Bytes == null || _world.Bytes.Length < 8)
                 throw new InvalidOperationException("Not enough bytes for u64 deserialization");
-            
+
             _world.Result = BitConverter.ToUInt64(_world.Bytes, 0);
             _world.ClearError();
         }
@@ -440,7 +441,7 @@ public class SerializationSteps
         {
             if (_world.Bytes == null || _world.Bytes.Length == 0)
                 throw new InvalidOperationException("No bytes to deserialize");
-            
+
             // First byte(s) is ULEB128 length
             var length = _world.Bytes[0]; // Simplified: assuming length < 128
             _world.Result = _world.Bytes.Skip(1).Take(length).ToArray();

@@ -1,0 +1,18 @@
+[flake8]
+# Exclude generated and build directories
+exclude =
+    venv,
+    __pycache__,
+    .eggs,
+    *.egg-info,
+    build,
+    dist,
+    .git,
+    .tox,
+    .mypy_cache
+
+# Max line length (match black's default)
+max-line-length = 88
+
+# Extend ignore to work better with black
+extend-ignore = E203, E501, W503

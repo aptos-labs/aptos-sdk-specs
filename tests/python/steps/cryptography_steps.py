@@ -3,21 +3,24 @@ Step definitions for ed25519.feature
 Tests key generation, signing, and verification.
 """
 
-import sys
-import os
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
-
-from behave import given, when, then
-from aptos_sdk.ed25519 import PrivateKey as Ed25519PrivateKey, PublicKey as Ed25519PublicKey, Signature as Ed25519Signature
-from aptos_sdk.account import Account
-from aptos_sdk.account_address import AccountAddress
-from nacl.signing import SigningKey
-
 from support.vectors import (
     get_ed25519_signing_vectors,
     hex_to_bytes,
     bytes_to_hex,
 )
+from nacl.signing import SigningKey
+from aptos_sdk.account_address import AccountAddress
+from aptos_sdk.account import Account
+from aptos_sdk.ed25519 import (
+    PrivateKey as Ed25519PrivateKey,
+    PublicKey as Ed25519PublicKey,
+    Signature as Ed25519Signature,
+)
+from behave import given, when, then
+import sys
+import os
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 
 # =============================================================================
@@ -36,7 +39,9 @@ def step_given_two_ed25519_keypairs(context):
     context.world.ed25519_private_key = Ed25519PrivateKey.random()
     context.world.ed25519_public_key = context.world.ed25519_private_key.public_key()
     context.world.ed25519_private_key_2 = Ed25519PrivateKey.random()
-    context.world.ed25519_public_key_2 = context.world.ed25519_private_key_2.public_key()
+    context.world.ed25519_public_key_2 = (
+        context.world.ed25519_private_key_2.public_key()
+    )
 
 
 @given("an Ed25519 public key")
@@ -48,6 +53,7 @@ def step_given_ed25519_public_key(context):
 @given("a 32-byte seed")
 def step_given_32_byte_seed(context):
     import os as _os
+
     context.world.bytes_value = _os.urandom(32)
 
 
@@ -82,16 +88,22 @@ def step_given_known_ed25519_keypair(context):
         key_bytes = hex_to_bytes(vector.get("private_key", ""))
         try:
             context.world.ed25519_private_key = _create_ed25519_from_seed(key_bytes)
-            context.world.ed25519_public_key = context.world.ed25519_private_key.public_key()
+            context.world.ed25519_public_key = (
+                context.world.ed25519_private_key.public_key()
+            )
             context.world.test_vectors["current_vector"] = vector
         except Exception:
             # Fallback: just create a random key for testing
             context.world.ed25519_private_key = Ed25519PrivateKey.random()
-            context.world.ed25519_public_key = context.world.ed25519_private_key.public_key()
+            context.world.ed25519_public_key = (
+                context.world.ed25519_private_key.public_key()
+            )
     else:
         # No vectors available, use random key
         context.world.ed25519_private_key = Ed25519PrivateKey.random()
-        context.world.ed25519_public_key = context.world.ed25519_private_key.public_key()
+        context.world.ed25519_public_key = (
+            context.world.ed25519_private_key.public_key()
+        )
 
 
 @given("the message from test vectors")
@@ -128,18 +140,24 @@ def step_given_two_messages(context, msg1, msg2):
 @given("a message signed by the first key")
 def step_given_message_signed_by_first(context):
     context.world.message = b"test message"
-    context.world.ed25519_signature = context.world.ed25519_private_key.sign(context.world.message)
+    context.world.ed25519_signature = context.world.ed25519_private_key.sign(
+        context.world.message
+    )
 
 
 @given('a signature for message "{msg}"')
 def step_given_signature_for_message(context, msg):
     context.world.message = msg.encode("utf-8")
-    context.world.ed25519_signature = context.world.ed25519_private_key.sign(context.world.message)
+    context.world.ed25519_signature = context.world.ed25519_private_key.sign(
+        context.world.message
+    )
 
 
 @given("a signature created by the key pair")
 def step_given_signature_by_keypair(context):
-    context.world.ed25519_signature = context.world.ed25519_private_key.sign(context.world.message)
+    context.world.ed25519_signature = context.world.ed25519_private_key.sign(
+        context.world.message
+    )
 
 
 @given("a signature with invalid bytes")
@@ -177,7 +195,9 @@ def step_generate_two_random_ed25519(context):
     context.world.ed25519_private_key = Ed25519PrivateKey.random()
     context.world.ed25519_public_key = context.world.ed25519_private_key.public_key()
     context.world.ed25519_private_key_2 = Ed25519PrivateKey.random()
-    context.world.ed25519_public_key_2 = context.world.ed25519_private_key_2.public_key()
+    context.world.ed25519_public_key_2 = (
+        context.world.ed25519_private_key_2.public_key()
+    )
 
 
 def _create_ed25519_from_seed(seed_bytes):
@@ -191,8 +211,12 @@ def _create_ed25519_from_seed(seed_bytes):
 @when("I create an Ed25519 key pair from the seed")
 def step_create_ed25519_from_seed(context):
     try:
-        context.world.ed25519_private_key = _create_ed25519_from_seed(context.world.bytes_value)
-        context.world.ed25519_public_key = context.world.ed25519_private_key.public_key()
+        context.world.ed25519_private_key = _create_ed25519_from_seed(
+            context.world.bytes_value
+        )
+        context.world.ed25519_public_key = (
+            context.world.ed25519_private_key.public_key()
+        )
         context.world.clear_error()
     except Exception as e:
         context.world.set_error(e)
@@ -201,8 +225,12 @@ def step_create_ed25519_from_seed(context):
 @when("I create an Ed25519 key pair from the bytes")
 def step_create_ed25519_from_bytes(context):
     try:
-        context.world.ed25519_private_key = _create_ed25519_from_seed(context.world.bytes_value)
-        context.world.ed25519_public_key = context.world.ed25519_private_key.public_key()
+        context.world.ed25519_private_key = _create_ed25519_from_seed(
+            context.world.bytes_value
+        )
+        context.world.ed25519_public_key = (
+            context.world.ed25519_private_key.public_key()
+        )
         context.world.clear_error()
     except Exception as e:
         context.world.set_error(e)
@@ -213,7 +241,9 @@ def step_create_ed25519_from_hex(context):
     try:
         key_bytes = hex_to_bytes(context.world.hex_string)
         context.world.ed25519_private_key = _create_ed25519_from_seed(key_bytes)
-        context.world.ed25519_public_key = context.world.ed25519_private_key.public_key()
+        context.world.ed25519_public_key = (
+            context.world.ed25519_private_key.public_key()
+        )
         context.world.clear_error()
     except Exception as e:
         context.world.set_error(e)
@@ -224,7 +254,9 @@ def step_create_ed25519_keypair(context):
     try:
         key_bytes = hex_to_bytes(context.world.hex_string)
         context.world.ed25519_private_key = _create_ed25519_from_seed(key_bytes)
-        context.world.ed25519_public_key = context.world.ed25519_private_key.public_key()
+        context.world.ed25519_public_key = (
+            context.world.ed25519_private_key.public_key()
+        )
         context.world.clear_error()
     except Exception as e:
         context.world.set_error(e)
@@ -233,8 +265,12 @@ def step_create_ed25519_keypair(context):
 @when("I try to create an Ed25519 key pair")
 def step_try_create_ed25519_keypair(context):
     try:
-        context.world.ed25519_private_key = _create_ed25519_from_seed(context.world.bytes_value)
-        context.world.ed25519_public_key = context.world.ed25519_private_key.public_key()
+        context.world.ed25519_private_key = _create_ed25519_from_seed(
+            context.world.bytes_value
+        )
+        context.world.ed25519_public_key = (
+            context.world.ed25519_private_key.public_key()
+        )
         context.world.clear_error()
     except Exception as e:
         context.world.set_error(e)
@@ -247,25 +283,39 @@ def step_try_create_ed25519_keypair(context):
 
 @when("I sign the message")
 def step_sign_message(context):
-    context.world.ed25519_signature = context.world.ed25519_private_key.sign(context.world.message)
+    context.world.ed25519_signature = context.world.ed25519_private_key.sign(
+        context.world.message
+    )
 
 
 @when("I sign the message twice")
 def step_sign_message_twice(context):
-    context.world.ed25519_signature = context.world.ed25519_private_key.sign(context.world.message)
-    context.world.ed25519_signature_2 = context.world.ed25519_private_key.sign(context.world.message)
+    context.world.ed25519_signature = context.world.ed25519_private_key.sign(
+        context.world.message
+    )
+    context.world.ed25519_signature_2 = context.world.ed25519_private_key.sign(
+        context.world.message
+    )
 
 
 @when("I sign both messages")
 def step_sign_both_messages(context):
-    context.world.ed25519_signature = context.world.ed25519_private_key.sign(context.world.message)
-    context.world.ed25519_signature_2 = context.world.ed25519_private_key.sign(context.world.message_2)
+    context.world.ed25519_signature = context.world.ed25519_private_key.sign(
+        context.world.message
+    )
+    context.world.ed25519_signature_2 = context.world.ed25519_private_key.sign(
+        context.world.message_2
+    )
 
 
 @when("both keys sign the message")
 def step_both_keys_sign(context):
-    context.world.ed25519_signature = context.world.ed25519_private_key.sign(context.world.message)
-    context.world.ed25519_signature_2 = context.world.ed25519_private_key_2.sign(context.world.message)
+    context.world.ed25519_signature = context.world.ed25519_private_key.sign(
+        context.world.message
+    )
+    context.world.ed25519_signature_2 = context.world.ed25519_private_key_2.sign(
+        context.world.message
+    )
 
 
 # =============================================================================
@@ -277,7 +327,7 @@ def step_both_keys_sign(context):
 def step_verify_signature(context):
     try:
         # Check if we have invalid signature bytes to test with
-        if hasattr(context.world, 'invalid_signature_bytes'):
+        if hasattr(context.world, "invalid_signature_bytes"):
             sig = Ed25519Signature(context.world.invalid_signature_bytes)
             result = context.world.ed25519_public_key.verify(context.world.message, sig)
             context.world.result = result
@@ -317,7 +367,7 @@ def step_verify_against_message(context, msg):
 @when("I try to verify the signature")
 def step_try_verify_signature(context):
     try:
-        if hasattr(context.world, 'truncated_signature_bytes'):
+        if hasattr(context.world, "truncated_signature_bytes"):
             sig = Ed25519Signature(context.world.truncated_signature_bytes)
             result = context.world.ed25519_public_key.verify(context.world.message, sig)
             context.world.result = result
@@ -361,11 +411,14 @@ def step_export_private_key_hex(context):
 @when("I derive the authentication key")
 def step_derive_auth_key(context):
     import hashlib
+
     pub_key_bytes = bytes(context.world.ed25519_public_key.key)
     data = pub_key_bytes + bytes([0x00])  # Ed25519 scheme identifier
     hash_result = hashlib.sha3_256(data).digest()
     context.world.auth_key = "0x" + hash_result.hex()
-    context.world.bytes_value = hash_result  # For "result should be 32 bytes" assertions
+    context.world.bytes_value = (
+        hash_result  # For "result should be 32 bytes" assertions
+    )
 
 
 @when("I convert it to an account address")
@@ -412,14 +465,17 @@ def step_public_keys_different(context):
         key1 = bytes(context.world.account.public_key().key)
     else:
         raise AssertionError("No public key found")
-    
-    if hasattr(context.world, 'ed25519_public_key_2') and context.world.ed25519_public_key_2 is not None:
+
+    if (
+        hasattr(context.world, "ed25519_public_key_2")
+        and context.world.ed25519_public_key_2 is not None
+    ):
         key2 = bytes(context.world.ed25519_public_key_2.key)
-    elif hasattr(context.world, 'account_2') and context.world.account_2 is not None:
+    elif hasattr(context.world, "account_2") and context.world.account_2 is not None:
         key2 = bytes(context.world.account_2.public_key().key)
     else:
         raise AssertionError("No second public key found")
-    
+
     assert key1 != key2
 
 
@@ -559,7 +615,10 @@ def step_public_key_matches_vector(context):
 @then("the address should match the expected value from test vectors")
 def step_address_matches_vector(context):
     # Verify auth key can be derived (specific expected value depends on test vectors)
-    assert context.world.auth_key is not None or context.world.ed25519_public_key is not None
+    assert (
+        context.world.auth_key is not None
+        or context.world.ed25519_public_key is not None
+    )
 
 
 @then("the signature should match the expected value from test vectors")

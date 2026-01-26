@@ -1,6 +1,6 @@
 # Makefile for Aptos Java SDK BDD Tests
 
-.PHONY: all test test-required test-preferred test-optional test-core-types test-cryptography test-transactions test-offline dry-run clean compile help
+.PHONY: all test test-required test-preferred test-optional test-core-types test-cryptography test-transactions test-offline dry-run clean compile format lint help
 
 # Default target
 all: test
@@ -61,6 +61,14 @@ report:
 # Install dependencies
 install:
 	mvn dependency:resolve
+
+# Format code (requires google-java-format or spotless plugin)
+format:
+	mvn spotless:apply 2>/dev/null || mvn fmt:format 2>/dev/null || echo "No formatter configured. Add spotless-maven-plugin to pom.xml"
+
+# Lint code (requires checkstyle or spotless plugin)
+lint:
+	mvn checkstyle:check 2>/dev/null || mvn spotless:check 2>/dev/null || echo "No linter configured. Add checkstyle-maven-plugin to pom.xml"
 
 # Show help
 help:

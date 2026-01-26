@@ -2,7 +2,6 @@
 //!
 //! This runs all Gherkin feature files against the SDK using Cucumber.
 
-use aptos_sdk_spec_tests::steps::*;
 use aptos_sdk_spec_tests::support::TestWorld;
 use cucumber::World;
 use std::path::PathBuf;
@@ -23,4 +22,3 @@ async fn main() {
         .run_and_exit(features_dir())
         .await;
 }
-

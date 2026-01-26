@@ -58,46 +58,37 @@ Given("a custom faucet URL {string}", function (this: AptosWorld, url: string) {
   this.testVectors.set("customFaucetUrl", url);
 });
 
-When(
-  "I create a faucet client with the custom URL",
-  function (this: AptosWorld) {
-    const customUrl = this.testVectors.get("customFaucetUrl") as string;
-    const config = new AptosConfig({
-      network: Network.TESTNET,
-      faucet: customUrl,
-    });
-    const client = new Aptos(config);
-    this.testVectors.set("aptosClient", client);
-  },
-);
+When("I create a faucet client with the custom URL", function (this: AptosWorld) {
+  const customUrl = this.testVectors.get("customFaucetUrl") as string;
+  const config = new AptosConfig({
+    network: Network.TESTNET,
+    faucet: customUrl,
+  });
+  const client = new Aptos(config);
+  this.testVectors.set("aptosClient", client);
+});
 
 Then("the client should use that URL", function (this: AptosWorld) {
   const config = this.testVectors.get("aptosClient") as Aptos;
   expect(config).to.not.be.undefined;
 });
 
-When(
-  "I try to create a faucet client for mainnet",
-  function (this: AptosWorld) {
-    const config = new AptosConfig({ network: Network.MAINNET });
-    const client = new Aptos(config);
-    this.testVectors.set("aptosClient", client);
-    this.testVectors.set("mainnetFaucetAttempt", true);
-  },
-);
+When("I try to create a faucet client for mainnet", function (this: AptosWorld) {
+  const config = new AptosConfig({ network: Network.MAINNET });
+  const client = new Aptos(config);
+  this.testVectors.set("aptosClient", client);
+  this.testVectors.set("mainnetFaucetAttempt", true);
+});
 
 Then("it should fail or return None", function (this: AptosWorld) {
   // Mainnet doesn't have a faucet
   expect(this.testVectors.get("mainnetFaucetAttempt")).to.be.true;
 });
 
-Then(
-  "the error should indicate mainnet has no faucet",
-  function (this: AptosWorld) {
-    // SDK may not expose faucet for mainnet or return error
-    expect(true).to.be.true;
-  },
-);
+Then("the error should indicate mainnet has no faucet", function (this: AptosWorld) {
+  // SDK may not expose faucet for mainnet or return error
+  expect(true).to.be.true;
+});
 
 // =============================================================================
 // Funding Accounts
@@ -144,8 +135,7 @@ Then("the request should succeed", function (this: AptosWorld) {
 Then("I should receive transaction hash\\(es\\)", function (this: AptosWorld) {
   const result = this.testVectors.get("fundingResult") as any;
   if (result) {
-    expect(result.hash || result.transaction_hash || result).to.not.be
-      .undefined;
+    expect(result.hash || result.transaction_hash || result).to.not.be.undefined;
   }
 });
 
@@ -243,35 +233,29 @@ Then("the account should have balance", async function (this: AptosWorld) {
   expect(true).to.be.true;
 });
 
-Given(
-  "an existing account with {int} APT",
-  function (this: AptosWorld, apt: number) {
-    const privateKey = Ed25519PrivateKey.generate();
-    const account = Account.fromPrivateKey({ privateKey });
-    this.testVectors.set("existingAccount", account);
-    this.testVectors.set("newAccountAddress", account.accountAddress);
-    this.testVectors.set("initialBalance", apt * 100_000_000);
-  },
-);
+Given("an existing account with {int} APT", function (this: AptosWorld, apt: number) {
+  const privateKey = Ed25519PrivateKey.generate();
+  const account = Account.fromPrivateKey({ privateKey });
+  this.testVectors.set("existingAccount", account);
+  this.testVectors.set("newAccountAddress", account.accountAddress);
+  this.testVectors.set("initialBalance", apt * 100_000_000);
+});
 
-When(
-  "I fund the account with {int} APT more",
-  async function (this: AptosWorld, apt: number) {
-    const client = this.testVectors.get("aptosClient") as Aptos;
-    const address = this.testVectors.get("newAccountAddress") as AccountAddress;
+When("I fund the account with {int} APT more", async function (this: AptosWorld, apt: number) {
+  const client = this.testVectors.get("aptosClient") as Aptos;
+  const address = this.testVectors.get("newAccountAddress") as AccountAddress;
 
-    try {
-      const result = await client.fundAccount({
-        accountAddress: address,
-        amount: apt * 100_000_000,
-      });
-      this.testVectors.set("additionalFunding", apt * 100_000_000);
-      this.testVectors.set("fundingResult", result);
-    } catch (e) {
-      this.error = e as Error;
-    }
-  },
-);
+  try {
+    const result = await client.fundAccount({
+      accountAddress: address,
+      amount: apt * 100_000_000,
+    });
+    this.testVectors.set("additionalFunding", apt * 100_000_000);
+    this.testVectors.set("fundingResult", result);
+  } catch (e) {
+    this.error = e as Error;
+  }
+});
 
 Then("the balance should increase", function (this: AptosWorld) {
   const initial = this.testVectors.get("initialBalance") as number;
@@ -281,27 +265,24 @@ Then("the balance should increase", function (this: AptosWorld) {
   }
 });
 
-When(
-  "I fund the account {int} times",
-  async function (this: AptosWorld, times: number) {
-    const client = this.testVectors.get("aptosClient") as Aptos;
-    const address = this.testVectors.get("newAccountAddress") as AccountAddress;
+When("I fund the account {int} times", async function (this: AptosWorld, times: number) {
+  const client = this.testVectors.get("aptosClient") as Aptos;
+  const address = this.testVectors.get("newAccountAddress") as AccountAddress;
 
-    this.testVectors.set("fundingAttempts", times);
+  this.testVectors.set("fundingAttempts", times);
 
-    for (let i = 0; i < times; i++) {
-      try {
-        await client.fundAccount({
-          accountAddress: address,
-          amount: 100_000_000,
-        });
-      } catch (e) {
-        this.error = e as Error;
-        break;
-      }
+  for (let i = 0; i < times; i++) {
+    try {
+      await client.fundAccount({
+        accountAddress: address,
+        amount: 100_000_000,
+      });
+    } catch (e) {
+      this.error = e as Error;
+      break;
     }
-  },
-);
+  }
+});
 
 Then("all requests should succeed", function (this: AptosWorld) {
   if (!this.error) {
@@ -369,19 +350,13 @@ When("I call fund_and_wait", async function (this: AptosWorld) {
   }
 });
 
-Then(
-  "the method should return after confirmation",
-  function (this: AptosWorld) {
-    expect(true).to.be.true;
-  },
-);
+Then("the method should return after confirmation", function (this: AptosWorld) {
+  expect(true).to.be.true;
+});
 
-Given(
-  "a very short timeout \\({int}ms\\)",
-  function (this: AptosWorld, timeout: number) {
-    this.testVectors.set("fundingTimeout", timeout);
-  },
-);
+Given("a very short timeout \\({int}ms\\)", function (this: AptosWorld, timeout: number) {
+  this.testVectors.set("fundingTimeout", timeout);
+});
 
 When("I try to fund and wait", async function (this: AptosWorld) {
   const client = this.testVectors.get("aptosClient") as Aptos;
@@ -396,9 +371,7 @@ When("I try to fund and wait", async function (this: AptosWorld) {
 
   try {
     await client.fundAccount({
-      accountAddress: this.testVectors.get(
-        "newAccountAddress",
-      ) as AccountAddress,
+      accountAddress: this.testVectors.get("newAccountAddress") as AccountAddress,
       amount: 100_000_000,
     });
   } catch (e) {
@@ -475,15 +448,12 @@ Then("I should receive a new account", function (this: AptosWorld) {
   }
 });
 
-Then(
-  "the account should have {int} octas balance",
-  function (this: AptosWorld, octas: number) {
-    const fundedAmount = this.testVectors.get("fundedAmount") as number;
-    if (fundedAmount) {
-      expect(fundedAmount).to.equal(octas);
-    }
-  },
-);
+Then("the account should have {int} octas balance", function (this: AptosWorld, octas: number) {
+  const fundedAmount = this.testVectors.get("fundedAmount") as number;
+  if (fundedAmount) {
+    expect(fundedAmount).to.equal(octas);
+  }
+});
 
 // Handle underscore-formatted numbers like 100_000_000
 Then(
@@ -638,13 +608,10 @@ When("I inspect the response", function (this: AptosWorld) {
   this.testVectors.set("inspectedResponse", result);
 });
 
-Then(
-  "I should see one or more transaction hashes",
-  function (this: AptosWorld) {
-    const result = this.testVectors.get("inspectedResponse") as any;
-    expect(result.hash || result.transaction_hash).to.not.be.undefined;
-  },
-);
+Then("I should see one or more transaction hashes", function (this: AptosWorld) {
+  const result = this.testVectors.get("inspectedResponse") as any;
+  expect(result.hash || result.transaction_hash).to.not.be.undefined;
+});
 
 Then("each hash should be valid hex", function (this: AptosWorld) {
   const result = this.testVectors.get("inspectedResponse") as any;
@@ -656,15 +623,12 @@ Then("each hash should be valid hex", function (this: AptosWorld) {
 // Integration with Aptos Client
 // =============================================================================
 
-Given(
-  "an Aptos client configured for testnet",
-  async function (this: AptosWorld) {
-    const config = new AptosConfig({ network: Network.TESTNET });
-    const client = new Aptos(config);
-    this.testVectors.set("aptosClient", client);
-    this.testVectors.set("clientNetwork", "testnet");
-  },
-);
+Given("an Aptos client configured for testnet", async function (this: AptosWorld) {
+  const config = new AptosConfig({ network: Network.TESTNET });
+  const client = new Aptos(config);
+  this.testVectors.set("aptosClient", client);
+  this.testVectors.set("clientNetwork", "testnet");
+});
 
 When("I access the faucet client", function (this: AptosWorld) {
   const client = this.testVectors.get("aptosClient") as Aptos;
@@ -681,15 +645,12 @@ Then("configured for testnet faucet", function (this: AptosWorld) {
   expect(network).to.equal("testnet");
 });
 
-Given(
-  "an Aptos client configured for mainnet",
-  async function (this: AptosWorld) {
-    const config = new AptosConfig({ network: Network.MAINNET });
-    const client = new Aptos(config);
-    this.testVectors.set("aptosClient", client);
-    this.testVectors.set("clientNetwork", "mainnet");
-  },
-);
+Given("an Aptos client configured for mainnet", async function (this: AptosWorld) {
+  const config = new AptosConfig({ network: Network.MAINNET });
+  const client = new Aptos(config);
+  this.testVectors.set("aptosClient", client);
+  this.testVectors.set("clientNetwork", "mainnet");
+});
 
 When("I try to access the faucet client", function (this: AptosWorld) {
   const network = this.testVectors.get("clientNetwork") as string;
@@ -712,25 +673,22 @@ Given("an Aptos client for testnet", async function (this: AptosWorld) {
   this.testVectors.set("aptosClient", client);
 });
 
-When(
-  "I call aptos.fund_account\\(address, amount\\)",
-  async function (this: AptosWorld) {
-    const client = this.testVectors.get("aptosClient") as Aptos;
-    const privateKey = Ed25519PrivateKey.generate();
-    const account = Account.fromPrivateKey({ privateKey });
+When("I call aptos.fund_account\\(address, amount\\)", async function (this: AptosWorld) {
+  const client = this.testVectors.get("aptosClient") as Aptos;
+  const privateKey = Ed25519PrivateKey.generate();
+  const account = Account.fromPrivateKey({ privateKey });
 
-    try {
-      const result = await client.fundAccount({
-        accountAddress: account.accountAddress,
-        amount: 100_000_000,
-      });
-      this.testVectors.set("fundingResult", result);
-      this.testVectors.set("fundedAccount", account);
-    } catch (e) {
-      this.error = e as Error;
-    }
-  },
-);
+  try {
+    const result = await client.fundAccount({
+      accountAddress: account.accountAddress,
+      amount: 100_000_000,
+    });
+    this.testVectors.set("fundingResult", result);
+    this.testVectors.set("fundedAccount", account);
+  } catch (e) {
+    this.error = e as Error;
+  }
+});
 
 Then("the account should be funded", function (this: AptosWorld) {
   if (!this.error) {

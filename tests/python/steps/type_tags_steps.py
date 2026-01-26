@@ -6,17 +6,16 @@ Note: The Python SDK's TypeTag doesn't have a from_str parser.
 We implement basic parsing here for testing purposes.
 """
 
+from support.vectors import hex_to_bytes, bytes_to_hex
+from aptos_sdk.bcs import Serializer, Deserializer
+from aptos_sdk.account_address import AccountAddress
+from aptos_sdk.type_tag import TypeTag, StructTag
+from behave import given, when, then, use_step_matcher
 import sys
 import os
 import re
+
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
-
-from behave import given, when, then, use_step_matcher
-from aptos_sdk.type_tag import TypeTag, StructTag
-from aptos_sdk.account_address import AccountAddress
-from aptos_sdk.bcs import Serializer, Deserializer
-
-from support.vectors import hex_to_bytes, bytes_to_hex
 
 
 # =============================================================================
@@ -27,10 +26,10 @@ from support.vectors import hex_to_bytes, bytes_to_hex
 def parse_type_tag(type_string: str) -> TypeTag:
     """Parse a type string into a TypeTag."""
     type_string = type_string.strip()
-    
+
     if not type_string:
         raise ValueError("Empty type string")
-    
+
     # Primitives
     primitives = {
         "bool": TypeTag.BOOL,
@@ -43,10 +42,10 @@ def parse_type_tag(type_string: str) -> TypeTag:
         "address": TypeTag.ACCOUNT_ADDRESS,
         "signer": TypeTag.SIGNER,
     }
-    
+
     if type_string in primitives:
         return TypeTag(primitives[type_string])
-    
+
     # Vector<T>
     if type_string.startswith("vector<"):
         if not type_string.endswith(">"):
@@ -56,13 +55,16 @@ def parse_type_tag(type_string: str) -> TypeTag:
             raise ValueError("Empty vector type")
         inner_tag = parse_type_tag(inner)
         return TypeTag(inner_tag)  # Vector wraps another TypeTag
-    
+
     # Struct: address::module::name<type_args>
-    match = re.match(r'^(0x[0-9a-fA-F]+)::([a-zA-Z_][a-zA-Z0-9_]*)::([a-zA-Z_][a-zA-Z0-9_]*)(.*)$', type_string)
+    match = re.match(
+        r"^(0x[0-9a-fA-F]+)::([a-zA-Z_][a-zA-Z0-9_]*)::([a-zA-Z_][a-zA-Z0-9_]*)(.*)$",
+        type_string,
+    )
     if match:
         addr_str, module, name, rest = match.groups()
         addr = AccountAddress.from_str(addr_str)
-        
+
         type_args = []
         if rest.startswith("<") and rest.endswith(">"):
             # Parse type args
@@ -85,17 +87,17 @@ def parse_type_tag(type_string: str) -> TypeTag:
                         current += c
                 if current.strip():
                     type_args.append(parse_type_tag(current.strip()))
-        
+
         struct_tag = StructTag(addr, module, name, type_args)
         return TypeTag(struct_tag)
-    
+
     raise ValueError(f"Unknown type format: {type_string}")
 
 
 def format_type_tag(tag: TypeTag) -> str:
     """Format a TypeTag as a string."""
     val = tag.value
-    
+
     # Check for primitive types
     if val == TypeTag.BOOL:
         return "bool"
@@ -115,36 +117,44 @@ def format_type_tag(tag: TypeTag) -> str:
         return "address"
     elif val == TypeTag.SIGNER:
         return "signer"
-    
+
     # Check for vector (value is another TypeTag)
     if isinstance(val, TypeTag):
         return f"vector<{format_type_tag(val)}>"
-    
+
     # Check for struct (value is StructTag)
     if isinstance(val, StructTag):
         return str(val)
-    
+
     return str(tag)
 
 
 def get_type_tag_variant(tag: TypeTag):
     """Get the variant type constant of a TypeTag."""
     val = tag.value
-    
+
     # Primitive constants
-    if val in (TypeTag.BOOL, TypeTag.U8, TypeTag.U16, TypeTag.U32, 
-               TypeTag.U64, TypeTag.U128, TypeTag.U256, 
-               TypeTag.ACCOUNT_ADDRESS, TypeTag.SIGNER):
+    if val in (
+        TypeTag.BOOL,
+        TypeTag.U8,
+        TypeTag.U16,
+        TypeTag.U32,
+        TypeTag.U64,
+        TypeTag.U128,
+        TypeTag.U256,
+        TypeTag.ACCOUNT_ADDRESS,
+        TypeTag.SIGNER,
+    ):
         return val
-    
+
     # Vector (value is another TypeTag)
     if isinstance(val, TypeTag):
         return TypeTag.VECTOR
-    
+
     # Struct (value is StructTag)
     if isinstance(val, StructTag):
         return TypeTag.STRUCT
-    
+
     return None
 
 
@@ -220,7 +230,9 @@ def step_given_module_id(context, address, name):
 # =============================================================================
 
 
-@given('address "{address}", module "{module}", name "{name}", and type args [{type_args}]')
+@given(
+    'address "{address}", module "{module}", name "{name}", and type args [{type_args}]'
+)
 def step_given_struct_components(context, address, module, name, type_args):
     context.world.struct_address = address
     context.world.struct_module = module
@@ -276,9 +288,9 @@ def step_parse_and_bcs_serialize(context):
 
 @when("I format it as a string")
 def step_format_as_string(context):
-    if getattr(context.world, 'type_tag', None) is not None:
+    if getattr(context.world, "type_tag", None) is not None:
         context.world.result = format_type_tag(context.world.type_tag)
-    elif getattr(context.world, 'module_address', None) is not None:
+    elif getattr(context.world, "module_address", None) is not None:
         # Format module ID
         addr = context.world.module_address
         if addr.startswith("0x"):
@@ -297,18 +309,17 @@ def step_format_as_string(context):
 def step_create_struct_tag(context):
     try:
         addr = AccountAddress.from_str(context.world.struct_address)
-        
+
         # Parse type args
         type_args = []
         if context.world.struct_type_args == "AptosCoin":
-            aptos_coin = StructTag(AccountAddress.from_str("0x1"), "aptos_coin", "AptosCoin", [])
+            aptos_coin = StructTag(
+                AccountAddress.from_str("0x1"), "aptos_coin", "AptosCoin", []
+            )
             type_args.append(TypeTag(aptos_coin))
-        
+
         context.world.struct_tag = StructTag(
-            addr,
-            context.world.struct_module,
-            context.world.struct_name,
-            type_args
+            addr, context.world.struct_module, context.world.struct_name, type_args
         )
         context.world.clear_error()
     except Exception as e:
@@ -337,7 +348,7 @@ def step_bcs_roundtrip_typetag(context):
         serializer = Serializer()
         context.world.type_tag.serialize(serializer)
         data = serializer.output()
-        
+
         deserializer = Deserializer(data)
         context.world.result = TypeTag.deserialize(deserializer)
         context.world.clear_error()

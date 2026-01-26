@@ -397,4 +397,3 @@ impl MultiSigVectors {
         Ok(vectors)
     }
 }
-

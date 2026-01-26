@@ -7,30 +7,30 @@
 
 ## 1. SDK Information
 
-| Property | Value |
-|----------|-------|
-| **Package** | `aptos-rust-sdk-v2` |
-| **Version Tested** | dev (local path) |
-| **Publisher** | aptos-labs |
-| **Repository** | https://github.com/aptos-labs/aptos-rust-sdk |
-| **Package Registry** | crates.io (when published) |
-| **Test Framework** | cucumber-rs |
+| Property             | Value                                        |
+| -------------------- | -------------------------------------------- |
+| **Package**          | `aptos-rust-sdk-v2`                          |
+| **Version Tested**   | dev (local path)                             |
+| **Publisher**        | aptos-labs                                   |
+| **Repository**       | https://github.com/aptos-labs/aptos-rust-sdk |
+| **Package Registry** | crates.io (when published)                   |
+| **Test Framework**   | cucumber-rs                                  |
 
 ---
 
 ## 2. Coverage Summary
 
-| Priority | Passing | Total | Percentage | Status |
-|----------|---------|-------|------------|--------|
-| Required (P0) | N/A | 370 | N/A | ⚠️ |
-| Preferred (P1) | N/A | 183 | N/A | ⚠️ |
-| Optional (P2) | N/A | 250 | N/A | ⚠️ |
-| **Total** | **N/A** | **803** | **N/A** | ⚠️ |
+| Priority       | Passing | Total   | Percentage | Status |
+| -------------- | ------- | ------- | ---------- | ------ |
+| Required (P0)  | N/A     | 370     | N/A        | ⚠️     |
+| Preferred (P1) | N/A     | 183     | N/A        | ⚠️     |
+| Optional (P2)  | N/A     | 250     | N/A        | ⚠️     |
+| **Total**      | **N/A** | **803** | **N/A**    | ⚠️     |
 
 > **⚠️ Tests Cannot Run**
-> 
-> The SDK depends on a local path `../../../crates/aptos-rust-sdk-v2` which is not available.
-> Update `Cargo.toml` to use a published crate or git dependency.
+>
+> The SDK depends on a local path `../../../crates/aptos-rust-sdk-v2` which is not available. Update
+> `Cargo.toml` to use a published crate or git dependency.
 
 ---
 
@@ -38,44 +38,46 @@
 
 ### Expected Features (Based on SDK Capabilities)
 
-| Feature | Expected Status | Notes |
-|---------|-----------------|-------|
-| address | ✅ Available | Full address support expected |
-| serialization | ✅ Available | BCS serialization expected |
-| type-tags | ✅ Available | TypeTag parsing expected |
-| ed25519 | ✅ Available | Ed25519 support expected |
-| hashing | ✅ Available | SHA3-256 support expected |
-| authentication-key | ✅ Available | Auth key derivation expected |
-| entry-function | ✅ Available | Entry function building expected |
-| raw-transaction | ✅ Available | Transaction building expected |
-| signing | ✅ Available | Transaction signing expected |
+| Feature            | Expected Status | Notes                            |
+| ------------------ | --------------- | -------------------------------- |
+| address            | ✅ Available    | Full address support expected    |
+| serialization      | ✅ Available    | BCS serialization expected       |
+| type-tags          | ✅ Available    | TypeTag parsing expected         |
+| ed25519            | ✅ Available    | Ed25519 support expected         |
+| hashing            | ✅ Available    | SHA3-256 support expected        |
+| authentication-key | ✅ Available    | Auth key derivation expected     |
+| entry-function     | ✅ Available    | Entry function building expected |
+| raw-transaction    | ✅ Available    | Transaction building expected    |
+| signing            | ✅ Available    | Transaction signing expected     |
 
 ### ➖ Likely Not Available
 
-| Feature | Reason | Tracking Issue |
-|---------|--------|----------------|
-| secp256r1 (WebAuthn) | May not be implemented | - |
-| bls12381 | May not be implemented | - |
-| keyless | May not be implemented | - |
-| codegen | May not be implemented | - |
+| Feature              | Reason                 | Tracking Issue |
+| -------------------- | ---------------------- | -------------- |
+| secp256r1 (WebAuthn) | May not be implemented | -              |
+| bls12381             | May not be implemented | -              |
+| keyless              | May not be implemented | -              |
+| codegen              | May not be implemented | -              |
 
 ---
 
 ## 4. Known Issues
 
-| Issue | Impact | Resolution |
-|-------|--------|------------|
-| SDK path not available | Tests cannot run | Update Cargo.toml |
-| Local path dependency | CI/CD cannot run tests | Use git or crates.io dependency |
+| Issue                  | Impact                 | Resolution                      |
+| ---------------------- | ---------------------- | ------------------------------- |
+| SDK path not available | Tests cannot run       | Update Cargo.toml               |
+| Local path dependency  | CI/CD cannot run tests | Use git or crates.io dependency |
 
 ### To Fix
 
 Update `Cargo.toml` dependency from:
+
 ```toml
 aptos-rust-sdk-v2 = { path = "../../../crates/aptos-rust-sdk-v2" }
 ```
 
 To one of:
+
 ```toml
 # Option 1: Git dependency
 aptos-rust-sdk-v2 = { git = "https://github.com/aptos-labs/aptos-rust-sdk" }
@@ -165,17 +167,17 @@ Tests are blocked due to SDK path dependency issue.
 
 Based on step definitions in `src/steps/`, the following features have implementations:
 
-| Feature | Step Definitions | Status |
-|---------|------------------|--------|
-| address | ✅ Present | Needs verification |
-| serialization | ✅ Present | Needs verification |
-| type-tags | ✅ Present | Needs verification |
-| ed25519 | ✅ Present | Needs verification |
-| hashing | ✅ Present | Needs verification |
-| authentication-key | ✅ Present | Needs verification |
-| entry-function | ✅ Present | Needs verification |
-| raw-transaction | ✅ Present | Needs verification |
-| signing | ✅ Present | Needs verification |
+| Feature            | Step Definitions | Status             |
+| ------------------ | ---------------- | ------------------ |
+| address            | ✅ Present       | Needs verification |
+| serialization      | ✅ Present       | Needs verification |
+| type-tags          | ✅ Present       | Needs verification |
+| ed25519            | ✅ Present       | Needs verification |
+| hashing            | ✅ Present       | Needs verification |
+| authentication-key | ✅ Present       | Needs verification |
+| entry-function     | ✅ Present       | Needs verification |
+| raw-transaction    | ✅ Present       | Needs verification |
+| signing            | ✅ Present       | Needs verification |
 
 ### Action Required
 

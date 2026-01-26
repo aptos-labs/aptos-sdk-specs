@@ -5,13 +5,7 @@
  */
 import { Given, When, Then } from "@cucumber/cucumber";
 import { expect } from "chai";
-import {
-  Aptos,
-  AptosConfig,
-  Network,
-  Account,
-  Ed25519PrivateKey,
-} from "@aptos-labs/ts-sdk";
+import { Aptos, AptosConfig, Network, Account, Ed25519PrivateKey } from "@aptos-labs/ts-sdk";
 import type { AptosWorld } from "../support/world.js";
 
 // =============================================================================
@@ -31,31 +25,22 @@ Then("the value should be in octas per gas unit", function (this: AptosWorld) {
   }
 });
 
-Then(
-  "I should receive gas_estimate \\(standard\\)",
-  function (this: AptosWorld) {
-    const estimate = this.testVectors.get("gasEstimate") as any;
-    if (estimate) {
-      expect(estimate.gas_estimate).to.not.be.undefined;
-    }
-  },
-);
+Then("I should receive gas_estimate \\(standard\\)", function (this: AptosWorld) {
+  const estimate = this.testVectors.get("gasEstimate") as any;
+  if (estimate) {
+    expect(estimate.gas_estimate).to.not.be.undefined;
+  }
+});
 
-Then(
-  "optionally prioritized_gas_estimate \\(faster\\)",
-  function (this: AptosWorld) {
-    // Prioritized estimate may or may not be present
-    expect(true).to.be.true;
-  },
-);
+Then("optionally prioritized_gas_estimate \\(faster\\)", function (this: AptosWorld) {
+  // Prioritized estimate may or may not be present
+  expect(true).to.be.true;
+});
 
-Then(
-  "optionally deprioritized_gas_estimate \\(slower\\/cheaper\\)",
-  function (this: AptosWorld) {
-    // Deprioritized estimate may or may not be present
-    expect(true).to.be.true;
-  },
-);
+Then("optionally deprioritized_gas_estimate \\(slower\\/cheaper\\)", function (this: AptosWorld) {
+  // Deprioritized estimate may or may not be present
+  expect(true).to.be.true;
+});
 
 Given("gas price estimates", async function (this: AptosWorld) {
   const client = this.testVectors.get("aptosClient") as Aptos;
@@ -65,9 +50,7 @@ Given("gas price estimates", async function (this: AptosWorld) {
     this.testVectors.set("aptosClient", aptosClient);
   }
 
-  const estimate = await (
-    this.testVectors.get("aptosClient") as Aptos
-  ).getGasPriceEstimation();
+  const estimate = await (this.testVectors.get("aptosClient") as Aptos).getGasPriceEstimation();
   this.testVectors.set("gasEstimate", estimate);
 });
 
@@ -98,13 +81,10 @@ Then("deprioritized should be <= standard", function (this: AptosWorld) {
   }
 });
 
-Then(
-  "all estimates should be greater than {int}",
-  function (this: AptosWorld, minValue: number) {
-    const estimate = this.testVectors.get("gasEstimate") as any;
-    expect(Number(estimate.gas_estimate)).to.be.greaterThan(minValue);
-  },
-);
+Then("all estimates should be greater than {int}", function (this: AptosWorld, minValue: number) {
+  const estimate = this.testVectors.get("gasEstimate") as any;
+  expect(Number(estimate.gas_estimate)).to.be.greaterThan(minValue);
+});
 
 // =============================================================================
 // Transaction Simulation for Gas
@@ -145,9 +125,7 @@ Then("I should receive gas_used", function (this: AptosWorld) {
 
 Then("gas_used represents actual consumption", function (this: AptosWorld) {
   const result = this.testVectors.get("simulationResult") as any;
-  const gasUsed = Array.isArray(result)
-    ? result[0]?.gas_used
-    : result?.gas_used;
+  const gasUsed = Array.isArray(result) ? result[0]?.gas_used : result?.gas_used;
   if (gasUsed) {
     expect(Number(gasUsed)).to.be.greaterThan(0);
   }
@@ -158,22 +136,17 @@ Then("gas_used represents actual consumption", function (this: AptosWorld) {
 
 When("I extract gas_used", function (this: AptosWorld) {
   const result = this.testVectors.get("simulationResult") as any;
-  const gasUsed = Array.isArray(result)
-    ? result[0]?.gas_used
-    : result?.gas_used;
+  const gasUsed = Array.isArray(result) ? result[0]?.gas_used : result?.gas_used;
   this.testVectors.set("extractedGasUsed", Number(gasUsed));
 });
 
-Then(
-  "I can use it to set max_gas_amount with buffer",
-  function (this: AptosWorld) {
-    const gasUsed = this.testVectors.get("extractedGasUsed") as number;
-    const buffer = 1.2; // 20% buffer
-    const maxGasAmount = Math.ceil(gasUsed * buffer);
-    this.testVectors.set("recommendedMaxGas", maxGasAmount);
-    expect(maxGasAmount).to.be.greaterThan(gasUsed);
-  },
-);
+Then("I can use it to set max_gas_amount with buffer", function (this: AptosWorld) {
+  const gasUsed = this.testVectors.get("extractedGasUsed") as number;
+  const buffer = 1.2; // 20% buffer
+  const maxGasAmount = Math.ceil(gasUsed * buffer);
+  this.testVectors.set("recommendedMaxGas", maxGasAmount);
+  expect(maxGasAmount).to.be.greaterThan(gasUsed);
+});
 
 Given("a simulated and executed transaction", function (this: AptosWorld) {
   this.testVectors.set("simulatedGas", 5000);
@@ -245,86 +218,65 @@ Then(
   },
 );
 
-Given(
-  "current gas estimate is {int}",
-  function (this: AptosWorld, estimate: number) {
-    this.testVectors.set("currentGasEstimate", estimate);
-  },
-);
+Given("current gas estimate is {int}", function (this: AptosWorld, estimate: number) {
+  this.testVectors.set("currentGasEstimate", estimate);
+});
 
-When(
-  "I build a transaction with gas_unit_price {int}",
-  function (this: AptosWorld, price: number) {
-    this.testVectors.set("overrideGasPrice", price);
-  },
-);
+When("I build a transaction with gas_unit_price {int}", function (this: AptosWorld, price: number) {
+  this.testVectors.set("overrideGasPrice", price);
+});
 
-Then(
-  "the transaction should use price {int}",
-  function (this: AptosWorld, price: number) {
-    const overridePrice = this.testVectors.get("overrideGasPrice") as number;
-    expect(overridePrice).to.equal(price);
-  },
-);
+Then("the transaction should use price {int}", function (this: AptosWorld, price: number) {
+  const overridePrice = this.testVectors.get("overrideGasPrice") as number;
+  expect(overridePrice).to.equal(price);
+});
 
 Given("a transaction builder", function (this: AptosWorld) {
   this.testVectors.set("builderReady", true);
 });
 
-When(
-  "I set max_gas_amount to {int}",
-  function (this: AptosWorld, maxGas: number) {
-    this.testVectors.set("setMaxGas", maxGas);
-    // Also update TransactionBuilder if active
-    const builder = this.testVectors.get("transactionBuilder") as {
-      maxGasAmount?: bigint;
-    };
-    if (builder) {
-      builder.maxGasAmount = BigInt(maxGas);
-    }
-  },
-);
+When("I set max_gas_amount to {int}", function (this: AptosWorld, maxGas: number) {
+  this.testVectors.set("setMaxGas", maxGas);
+  // Also update TransactionBuilder if active
+  const builder = this.testVectors.get("transactionBuilder") as {
+    maxGasAmount?: bigint;
+  };
+  if (builder) {
+    builder.maxGasAmount = BigInt(maxGas);
+  }
+});
 
-When(
-  "I set gas_unit_price to {int}",
-  function (this: AptosWorld, gasPrice: number) {
-    this.testVectors.set("setGasPrice", gasPrice);
-    // Also update TransactionBuilder if active
-    const builder = this.testVectors.get("transactionBuilder") as {
-      gasUnitPrice?: bigint;
-    };
-    if (builder) {
-      builder.gasUnitPrice = BigInt(gasPrice);
-    }
-  },
-);
+When("I set gas_unit_price to {int}", function (this: AptosWorld, gasPrice: number) {
+  this.testVectors.set("setGasPrice", gasPrice);
+  // Also update TransactionBuilder if active
+  const builder = this.testVectors.get("transactionBuilder") as {
+    gasUnitPrice?: bigint;
+  };
+  if (builder) {
+    builder.gasUnitPrice = BigInt(gasPrice);
+  }
+});
 
 Then("the transaction should have that limit", function (this: AptosWorld) {
   const setMaxGas = this.testVectors.get("setMaxGas") as number;
   expect(setMaxGas).to.be.greaterThan(0);
 });
 
-Given(
-  "two transactions with different gas prices",
-  function (this: AptosWorld) {
-    this.testVectors.set("txn1GasPrice", 100);
-    this.testVectors.set("txn2GasPrice", 200);
-  },
-);
+Given("two transactions with different gas prices", function (this: AptosWorld) {
+  this.testVectors.set("txn1GasPrice", 100);
+  this.testVectors.set("txn2GasPrice", 200);
+});
 
 When("both are submitted", function (this: AptosWorld) {
   this.testVectors.set("bothSubmitted", true);
 });
 
-Then(
-  "higher gas price should be processed first \\(usually\\)",
-  function (this: AptosWorld) {
-    const price1 = this.testVectors.get("txn1GasPrice") as number;
-    const price2 = this.testVectors.get("txn2GasPrice") as number;
-    // Higher gas price generally has priority
-    expect(price2).to.be.greaterThan(price1);
-  },
-);
+Then("higher gas price should be processed first \\(usually\\)", function (this: AptosWorld) {
+  const price1 = this.testVectors.get("txn1GasPrice") as number;
+  const price2 = this.testVectors.get("txn2GasPrice") as number;
+  // Higher gas price generally has priority
+  expect(price2).to.be.greaterThan(price1);
+});
 
 // =============================================================================
 // Gas Calculation
@@ -334,12 +286,9 @@ Given("gas_used = {int} units", function (this: AptosWorld, gasUsed: number) {
   this.testVectors.set("gasUsed", gasUsed);
 });
 
-Given(
-  "gas_unit_price = {int} octas",
-  function (this: AptosWorld, price: number) {
-    this.testVectors.set("gasUnitPrice", price);
-  },
-);
+Given("gas_unit_price = {int} octas", function (this: AptosWorld, price: number) {
+  this.testVectors.set("gasUnitPrice", price);
+});
 
 When("I calculate total cost", function (this: AptosWorld) {
   const gasUsed = this.testVectors.get("gasUsed") as number;
@@ -347,13 +296,10 @@ When("I calculate total cost", function (this: AptosWorld) {
   this.testVectors.set("totalCost", gasUsed * price);
 });
 
-Then(
-  "total should be {int} octas",
-  function (this: AptosWorld, expected: number) {
-    const total = this.testVectors.get("totalCost") as number;
-    expect(total).to.equal(expected);
-  },
-);
+Then("total should be {int} octas", function (this: AptosWorld, expected: number) {
+  const total = this.testVectors.get("totalCost") as number;
+  expect(total).to.equal(expected);
+});
 
 Given("max_gas_amount = {int}", function (this: AptosWorld, maxGas: number) {
   this.testVectors.set("maxGasAmount", maxGas);
@@ -404,23 +350,17 @@ Then("difference is refunded", function (this: AptosWorld) {
 // Insufficient Gas Handling
 // =============================================================================
 
-Given(
-  "a transaction requiring {int} gas",
-  function (this: AptosWorld, requiredGas: number) {
-    this.testVectors.set("requiredGas", requiredGas);
-  },
-);
+Given("a transaction requiring {int} gas", function (this: AptosWorld, requiredGas: number) {
+  this.testVectors.set("requiredGas", requiredGas);
+});
 
-When(
-  "I submit with max_gas_amount = {int}",
-  function (this: AptosWorld, maxGas: number) {
-    const required = this.testVectors.get("requiredGas") as number;
-    if (maxGas < required) {
-      this.error = new Error("Out of gas");
-      this.testVectors.set("outOfGas", true);
-    }
-  },
-);
+When("I submit with max_gas_amount = {int}", function (this: AptosWorld, maxGas: number) {
+  const required = this.testVectors.get("requiredGas") as number;
+  if (maxGas < required) {
+    this.error = new Error("Out of gas");
+    this.testVectors.set("outOfGas", true);
+  }
+});
 
 Then("transaction should fail", function (this: AptosWorld) {
   expect(this.error).to.not.be.undefined;
@@ -430,19 +370,13 @@ Then("error should indicate out of gas", function (this: AptosWorld) {
   expect(this.testVectors.get("outOfGas")).to.be.true;
 });
 
-Given(
-  "an account with {int} octas",
-  function (this: AptosWorld, balance: number) {
-    this.testVectors.set("accountBalance", balance);
-  },
-);
+Given("an account with {int} octas", function (this: AptosWorld, balance: number) {
+  this.testVectors.set("accountBalance", balance);
+});
 
-Given(
-  "a transaction requiring {int} octas gas",
-  function (this: AptosWorld, gasCost: number) {
-    this.testVectors.set("requiredGasCost", gasCost);
-  },
-);
+Given("a transaction requiring {int} octas gas", function (this: AptosWorld, gasCost: number) {
+  this.testVectors.set("requiredGasCost", gasCost);
+});
 
 When("I try to submit", function (this: AptosWorld) {
   const balance = this.testVectors.get("accountBalance") as number;
@@ -462,12 +396,9 @@ Then("error should indicate insufficient balance", function (this: AptosWorld) {
   expect(this.testVectors.get("insufficientBalance")).to.be.true;
 });
 
-Given(
-  "a transaction with very low max_gas_amount",
-  function (this: AptosWorld) {
-    this.testVectors.set("maxGasAmount", 1);
-  },
-);
+Given("a transaction with very low max_gas_amount", function (this: AptosWorld) {
+  this.testVectors.set("maxGasAmount", 1);
+});
 
 Then("simulation should show failure", function (this: AptosWorld) {
   const maxGas = this.testVectors.get("maxGasAmount") as number;
@@ -482,22 +413,16 @@ Then("should indicate gas exhaustion", function (this: AptosWorld) {
 // Dynamic Gas Adjustment
 // =============================================================================
 
-Given(
-  "an Aptos client with auto-gas enabled",
-  async function (this: AptosWorld) {
-    const config = new AptosConfig({ network: Network.TESTNET });
-    const client = new Aptos(config);
-    this.testVectors.set("aptosClient", client);
-    this.testVectors.set("autoGasEnabled", true);
-  },
-);
+Given("an Aptos client with auto-gas enabled", async function (this: AptosWorld) {
+  const config = new AptosConfig({ network: Network.TESTNET });
+  const client = new Aptos(config);
+  this.testVectors.set("aptosClient", client);
+  this.testVectors.set("autoGasEnabled", true);
+});
 
-When(
-  "I submit a transaction without specifying gas",
-  function (this: AptosWorld) {
-    this.testVectors.set("noGasSpecified", true);
-  },
-);
+When("I submit a transaction without specifying gas", function (this: AptosWorld) {
+  this.testVectors.set("noGasSpecified", true);
+});
 
 Then("SDK should simulate first", function (this: AptosWorld) {
   const autoGas = this.testVectors.get("autoGasEnabled") as boolean;
@@ -508,35 +433,26 @@ Then("set appropriate max_gas_amount", function (this: AptosWorld) {
   expect(true).to.be.true;
 });
 
-Given(
-  "simulated gas_used = {int}",
-  function (this: AptosWorld, gasUsed: number) {
-    this.testVectors.set("simulatedGasUsed", gasUsed);
-  },
-);
+Given("simulated gas_used = {int}", function (this: AptosWorld, gasUsed: number) {
+  this.testVectors.set("simulatedGasUsed", gasUsed);
+});
 
-When(
-  "I apply {int}% buffer",
-  function (this: AptosWorld, bufferPercent: number) {
-    const gasUsed = this.testVectors.get("simulatedGasUsed") as number;
-    const buffer = 1 + bufferPercent / 100;
-    this.testVectors.set("bufferedMaxGas", Math.ceil(gasUsed * buffer));
-  },
-);
+When("I apply {int}% buffer", function (this: AptosWorld, bufferPercent: number) {
+  const gasUsed = this.testVectors.get("simulatedGasUsed") as number;
+  const buffer = 1 + bufferPercent / 100;
+  this.testVectors.set("bufferedMaxGas", Math.ceil(gasUsed * buffer));
+});
 
-Then(
-  "max_gas_amount should be {int}",
-  function (this: AptosWorld, expected: number) {
-    // Check if we have a raw transaction (TransactionBuilder context)
-    if (this.rawTransaction) {
-      expect(this.rawTransaction.max_gas_amount).to.equal(BigInt(expected));
-    } else {
-      // Gas estimation buffer context
-      const buffered = this.testVectors.get("bufferedMaxGas") as number;
-      expect(buffered).to.equal(expected);
-    }
-  },
-);
+Then("max_gas_amount should be {int}", function (this: AptosWorld, expected: number) {
+  // Check if we have a raw transaction (TransactionBuilder context)
+  if (this.rawTransaction) {
+    expect(this.rawTransaction.max_gas_amount).to.equal(BigInt(expected));
+  } else {
+    // Gas estimation buffer context
+    const buffered = this.testVectors.get("bufferedMaxGas") as number;
+    expect(buffered).to.equal(expected);
+  }
+});
 
 Given("an Aptos client", async function (this: AptosWorld) {
   const config = new AptosConfig({ network: Network.TESTNET });
@@ -544,12 +460,9 @@ Given("an Aptos client", async function (this: AptosWorld) {
   this.testVectors.set("aptosClient", client);
 });
 
-When(
-  "I build transaction without specifying gas_unit_price",
-  function (this: AptosWorld) {
-    this.testVectors.set("noGasPriceSpecified", true);
-  },
-);
+When("I build transaction without specifying gas_unit_price", function (this: AptosWorld) {
+  this.testVectors.set("noGasPriceSpecified", true);
+});
 
 Then("SDK should fetch current estimate", function (this: AptosWorld) {
   expect(true).to.be.true;
@@ -606,8 +519,7 @@ When("I request gas estimate", function (this: AptosWorld) {
 });
 
 Then("I should receive an appropriate error", function (this: AptosWorld) {
-  expect(this.error ?? this.testVectors.get("networkError")).to.not.be
-    .undefined;
+  expect(this.error ?? this.testVectors.get("networkError")).to.not.be.undefined;
 });
 
 // Note: "gas_unit_price = {int}" step is defined earlier in this file at line 385

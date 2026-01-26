@@ -3,14 +3,13 @@ Step definitions for hashing.feature
 Tests SHA3-256, SHA2-256, and domain-separated hashing.
 """
 
+from support.vectors import hex_to_bytes, bytes_to_hex
+from behave import given, when, then
 import sys
 import os
 import hashlib
+
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
-
-from behave import given, when, then
-
-from support.vectors import hex_to_bytes, bytes_to_hex
 
 
 # =============================================================================
@@ -39,7 +38,7 @@ def step_given_bytes_parts(context, part1, part2, part3):
     context.world.bytes_parts = [
         part1.encode("utf-8"),
         part2.encode("utf-8"),
-        part3.encode("utf-8")
+        part3.encode("utf-8"),
     ]
 
 
@@ -119,7 +118,9 @@ def step_given_two_hashvalues_same(context):
 @when("I compute SHA3-256")
 def step_compute_sha3_256(context):
     context.world.hash_result = hashlib.sha3_256(context.world.bytes_value).digest()
-    context.world.bytes_value = context.world.hash_result  # For "result should be 32 bytes"
+    context.world.bytes_value = (
+        context.world.hash_result
+    )  # For "result should be 32 bytes"
 
 
 @when("I compute SHA3-256 for both")
@@ -154,7 +155,9 @@ def step_compute_sha3_256_of_domain(context):
 @when("I compute SHA2-256")
 def step_compute_sha2_256(context):
     context.world.hash_result = hashlib.sha256(context.world.bytes_value).digest()
-    context.world.bytes_value = context.world.hash_result  # For "result should be 32 bytes"
+    context.world.bytes_value = (
+        context.world.hash_result
+    )  # For "result should be 32 bytes"
 
 
 @when("I compute both SHA2-256 and SHA3-256")
@@ -170,23 +173,35 @@ def step_compute_both_hashes(context):
 
 @when("I compute domain-separated hash")
 def step_compute_domain_separated_hash(context):
-    domain_prefix = hashlib.sha3_256(context.world.domain_string.encode("utf-8")).digest()
+    domain_prefix = hashlib.sha3_256(
+        context.world.domain_string.encode("utf-8")
+    ).digest()
     combined = domain_prefix + context.world.transaction_data
     context.world.hash_result = hashlib.sha3_256(combined).digest()
 
 
 @when("I compute domain-separated hashes")
 def step_compute_domain_separated_hashes(context):
-    domain_prefix_1 = hashlib.sha3_256(context.world.domain_string.encode("utf-8")).digest()
-    domain_prefix_2 = hashlib.sha3_256(context.world.domain_string_2.encode("utf-8")).digest()
-    
-    context.world.hash_result = hashlib.sha3_256(domain_prefix_1 + context.world.bytes_value).digest()
-    context.world.hash_result_2 = hashlib.sha3_256(domain_prefix_2 + context.world.bytes_value).digest()
+    domain_prefix_1 = hashlib.sha3_256(
+        context.world.domain_string.encode("utf-8")
+    ).digest()
+    domain_prefix_2 = hashlib.sha3_256(
+        context.world.domain_string_2.encode("utf-8")
+    ).digest()
+
+    context.world.hash_result = hashlib.sha3_256(
+        domain_prefix_1 + context.world.bytes_value
+    ).digest()
+    context.world.hash_result_2 = hashlib.sha3_256(
+        domain_prefix_2 + context.world.bytes_value
+    ).digest()
 
 
 @when("I compute the domain prefix")
 def step_compute_domain_prefix(context):
-    context.world.hash_result = hashlib.sha3_256(context.world.domain_string.encode("utf-8")).digest()
+    context.world.hash_result = hashlib.sha3_256(
+        context.world.domain_string.encode("utf-8")
+    ).digest()
 
 
 # =============================================================================
@@ -282,7 +297,9 @@ def step_result_equals_sha3_of(context, text):
 
 @then("the result should be SHA3-256(SHA3-256(domain) || data)")
 def step_result_domain_separated_format(context):
-    domain_prefix = hashlib.sha3_256(context.world.domain_string.encode("utf-8")).digest()
+    domain_prefix = hashlib.sha3_256(
+        context.world.domain_string.encode("utf-8")
+    ).digest()
     expected = hashlib.sha3_256(domain_prefix + context.world.transaction_data).digest()
     assert context.world.hash_result == expected
 

@@ -3,25 +3,24 @@ Step definitions for transaction-submission.feature
 Tests transaction submission and status polling.
 """
 
-import sys
-import os
-import asyncio
-import time
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
-
-from behave import given, when, then
-from aptos_sdk.async_client import RestClient
-from aptos_sdk.account import Account
-from aptos_sdk.account_address import AccountAddress
-from aptos_sdk.bcs import Serializer
+from support.vectors import hex_to_bytes, bytes_to_hex
 from aptos_sdk.transactions import (
     RawTransaction,
     SignedTransaction,
     TransactionPayload,
     EntryFunction,
 )
+from aptos_sdk.bcs import Serializer
+from aptos_sdk.account_address import AccountAddress
+from aptos_sdk.account import Account
+from aptos_sdk.async_client import RestClient
+from behave import given, when, then
+import sys
+import os
+import asyncio
+import time
 
-from support.vectors import hex_to_bytes, bytes_to_hex
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 
 # Helper to run async functions synchronously
@@ -61,7 +60,11 @@ def step_given_unfunded_account(context):
 def step_given_signed_transaction_ready(context):
     if context.world.signed_transaction is None:
         # Create a simple transaction
-        from steps.signing_steps import step_given_raw_transaction_to_sign, step_sign_raw_transaction
+        from steps.signing_steps import (
+            step_given_raw_transaction_to_sign,
+            step_sign_raw_transaction,
+        )
+
         step_given_raw_transaction_to_sign(context)
         step_sign_raw_transaction(context)
 
@@ -70,25 +73,20 @@ def step_given_signed_transaction_ready(context):
 def step_given_invalid_signed_transaction(context):
     # Create a transaction with invalid signature
     context.world.account = Account.generate()
-    
+
     sender = context.world.account.address()
-    
+
     encoded_args = []
     serializer = Serializer()
     serializer.struct(AccountAddress.from_str("0x1"))
     encoded_args.append(serializer.output())
-    
+
     serializer = Serializer()
     serializer.u64(1000)
     encoded_args.append(serializer.output())
-    
-    payload = EntryFunction.natural(
-        "0x1::aptos_account",
-        "transfer",
-        [],
-        encoded_args
-    )
-    
+
+    payload = EntryFunction.natural("0x1::aptos_account", "transfer", [], encoded_args)
+
     raw_tx = RawTransaction(
         sender=sender,
         sequence_number=0,
@@ -98,46 +96,39 @@ def step_given_invalid_signed_transaction(context):
         expiration_timestamps_secs=int(time.time()) + 600,
         chain_id=4,
     )
-    
+
     # Sign with wrong message to create invalid signature
     import hashlib
+
     wrong_message = b"wrong_message"
     signature = context.world.account.sign(wrong_message)
-    
+
     from aptos_sdk.authenticator import AccountAuthenticator, Ed25519Authenticator
-    
+
     authenticator = AccountAuthenticator(
-        Ed25519Authenticator(
-            context.world.account.public_key(),
-            signature
-        )
+        Ed25519Authenticator(context.world.account.public_key(), signature)
     )
-    
+
     context.world.signed_transaction = SignedTransaction(raw_tx, authenticator)
 
 
 @given("an expired signed transaction")
 def step_given_expired_transaction(context):
     context.world.account = Account.generate()
-    
+
     sender = context.world.account.address()
-    
+
     encoded_args = []
     serializer = Serializer()
     serializer.struct(AccountAddress.from_str("0x1"))
     encoded_args.append(serializer.output())
-    
+
     serializer = Serializer()
     serializer.u64(1000)
     encoded_args.append(serializer.output())
-    
-    payload = EntryFunction.natural(
-        "0x1::aptos_account",
-        "transfer",
-        [],
-        encoded_args
-    )
-    
+
+    payload = EntryFunction.natural("0x1::aptos_account", "transfer", [], encoded_args)
+
     # Use expired timestamp
     raw_tx = RawTransaction(
         sender=sender,
@@ -148,27 +139,25 @@ def step_given_expired_transaction(context):
         expiration_timestamps_secs=int(time.time()) - 3600,  # 1 hour ago
         chain_id=4,
     )
-    
+
     # Sign properly
     import hashlib
+
     domain = b"APTOS::RawTransaction"
     domain_hash = hashlib.sha3_256(domain).digest()
-    
+
     serializer = Serializer()
     raw_tx.serialize(serializer)
     signing_message = domain_hash + serializer.output()
-    
+
     signature = context.world.account.sign(signing_message)
-    
+
     from aptos_sdk.authenticator import AccountAuthenticator, Ed25519Authenticator
-    
+
     authenticator = AccountAuthenticator(
-        Ed25519Authenticator(
-            context.world.account.public_key(),
-            signature
-        )
+        Ed25519Authenticator(context.world.account.public_key(), signature)
     )
-    
+
     context.world.signed_transaction = SignedTransaction(raw_tx, authenticator)
 
 
@@ -180,6 +169,7 @@ def step_given_expired_transaction(context):
 @when("I submit the signed transaction")
 def step_submit_signed_transaction(context):
     try:
+
         async def _submit():
             client = RestClient(context.world.network_url)
             try:
@@ -187,13 +177,13 @@ def step_submit_signed_transaction(context):
                 serializer = Serializer()
                 context.world.signed_transaction.serialize(serializer)
                 tx_bytes = serializer.output()
-                
+
                 # Submit
                 result = await client.submit_bcs_transaction(tx_bytes)
                 return result
             finally:
                 await client.close()
-        
+
         context.world.result = run_async(_submit())
         context.world.transaction_hash = context.world.result.get("hash")
         context.world.clear_error()
@@ -204,24 +194,25 @@ def step_submit_signed_transaction(context):
 @when("I submit the transaction and wait for completion")
 def step_submit_and_wait(context):
     try:
+
         async def _submit_and_wait():
             client = RestClient(context.world.network_url)
             try:
                 serializer = Serializer()
                 context.world.signed_transaction.serialize(serializer)
                 tx_bytes = serializer.output()
-                
+
                 result = await client.submit_bcs_transaction(tx_bytes)
                 tx_hash = result.get("hash")
-                
+
                 # Wait for transaction
                 await client.wait_for_transaction(tx_hash)
-                
+
                 # Get final status
                 return await client.transaction_by_hash(tx_hash)
             finally:
                 await client.close()
-        
+
         context.world.result = run_async(_submit_and_wait())
         context.world.clear_error()
     except Exception as e:
@@ -246,6 +237,7 @@ def step_submit_expired_transaction(context):
 @when("I wait for the transaction")
 def step_wait_for_transaction(context):
     try:
+
         async def _wait():
             client = RestClient(context.world.network_url)
             try:
@@ -253,7 +245,7 @@ def step_wait_for_transaction(context):
                 return await client.transaction_by_hash(context.world.transaction_hash)
             finally:
                 await client.close()
-        
+
         context.world.result = run_async(_wait())
         context.world.clear_error()
     except Exception as e:
@@ -263,13 +255,14 @@ def step_wait_for_transaction(context):
 @when("I poll for transaction status")
 def step_poll_transaction_status(context):
     try:
+
         async def _poll():
             client = RestClient(context.world.network_url)
             try:
                 return await client.transaction_by_hash(context.world.transaction_hash)
             finally:
                 await client.close()
-        
+
         context.world.result = run_async(_poll())
         context.world.clear_error()
     except Exception as e:
@@ -279,6 +272,7 @@ def step_poll_transaction_status(context):
 @when("I wait for transaction with timeout {timeout:d} seconds")
 def step_wait_with_timeout(context, timeout):
     try:
+
         async def _wait_timeout():
             client = RestClient(context.world.network_url)
             try:
@@ -286,7 +280,9 @@ def step_wait_with_timeout(context, timeout):
                 start = time.time()
                 while time.time() - start < timeout:
                     try:
-                        tx = await client.transaction_by_hash(context.world.transaction_hash)
+                        tx = await client.transaction_by_hash(
+                            context.world.transaction_hash
+                        )
                         if tx.get("type") != "pending_transaction":
                             return tx
                     except Exception:
@@ -295,7 +291,7 @@ def step_wait_with_timeout(context, timeout):
                 raise TimeoutError("Transaction wait timed out")
             finally:
                 await client.close()
-        
+
         context.world.result = run_async(_wait_timeout())
         context.world.clear_error()
     except Exception as e:

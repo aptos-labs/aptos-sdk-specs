@@ -7,27 +7,28 @@
 
 ## 1. SDK Information
 
-| Property | Value |
-|----------|-------|
-| **Package** | `Aptos` |
-| **Version Tested** | 0.0.x-beta |
-| **Publisher** | aptos-labs |
-| **Repository** | https://github.com/aptos-labs/aptos-dotnet-sdk |
-| **Package Registry** | NuGet |
-| **Test Framework** | Reqnroll (SpecFlow successor) + NUnit |
+| Property             | Value                                          |
+| -------------------- | ---------------------------------------------- |
+| **Package**          | `Aptos`                                        |
+| **Version Tested**   | 0.0.x-beta                                     |
+| **Publisher**        | aptos-labs                                     |
+| **Repository**       | https://github.com/aptos-labs/aptos-dotnet-sdk |
+| **Package Registry** | NuGet                                          |
+| **Test Framework**   | Reqnroll (SpecFlow successor) + NUnit          |
 
 ---
 
 ## 2. Coverage Summary
 
-| Priority | Passing | Total | Percentage | Status |
-|----------|---------|-------|------------|--------|
-| Required (P0) | 170 | 370 | 46% | 🟡 |
-| Preferred (P1) | ~10 | 183 | ~5% | ❌ |
-| Optional (P2) | ~5 | 250 | ~2% | ❌ |
-| **Total** | **~185** | **803** | **~23%** | 🟡 |
+| Priority       | Passing  | Total   | Percentage | Status |
+| -------------- | -------- | ------- | ---------- | ------ |
+| Required (P0)  | 170      | 370     | 46%        | 🟡     |
+| Preferred (P1) | ~10      | 183     | ~5%        | ❌     |
+| Optional (P2)  | ~5       | 250     | ~2%        | ❌     |
+| **Total**      | **~185** | **803** | **~23%**   | 🟡     |
 
 > **Notes:**
+>
 > - 200 required tests failed (most due to missing step definitions)
 > - Beta SDK - API may change
 
@@ -37,42 +38,42 @@
 
 ### ✅ Fully Available Features
 
-| Feature | Notes |
-|---------|-------|
-| address | Full address parsing and formatting |
-| ed25519 | Complete Ed25519 support via BouncyCastle |
-| hashing | SHA3-256 support |
-| serialization | BCS serialization available |
+| Feature       | Notes                                     |
+| ------------- | ----------------------------------------- |
+| address       | Full address parsing and formatting       |
+| ed25519       | Complete Ed25519 support via BouncyCastle |
+| hashing       | SHA3-256 support                          |
+| serialization | BCS serialization available               |
 
 ### 🟡 Partially Available
 
-| Feature | Reason | Impact |
-|---------|--------|--------|
-| authentication-key | SDK supports, tests partial | Partial coverage |
-| entry-function | SDK supports, tests in progress | Partial coverage |
-| raw-transaction | SDK supports, tests in progress | Partial coverage |
-| signing | SDK supports, tests in progress | Partial coverage |
-| fullnode-api | SDK supports, tests partial | Partial coverage |
+| Feature            | Reason                          | Impact           |
+| ------------------ | ------------------------------- | ---------------- |
+| authentication-key | SDK supports, tests partial     | Partial coverage |
+| entry-function     | SDK supports, tests in progress | Partial coverage |
+| raw-transaction    | SDK supports, tests in progress | Partial coverage |
+| signing            | SDK supports, tests in progress | Partial coverage |
+| fullnode-api       | SDK supports, tests partial     | Partial coverage |
 
 ### ➖ Not Available in SDK
 
-| Feature | Reason | Tracking Issue |
-|---------|--------|----------------|
-| secp256k1 | Not yet implemented | - |
-| secp256r1 | Not yet implemented | - |
-| bls12381 | Not yet implemented | - |
-| mnemonic-derivation | Not yet implemented | - |
-| keyless | Not yet implemented | - |
-| codegen | Not yet implemented | - |
+| Feature             | Reason              | Tracking Issue |
+| ------------------- | ------------------- | -------------- |
+| secp256k1           | Not yet implemented | -              |
+| secp256r1           | Not yet implemented | -              |
+| bls12381            | Not yet implemented | -              |
+| mnemonic-derivation | Not yet implemented | -              |
+| keyless             | Not yet implemented | -              |
+| codegen             | Not yet implemented | -              |
 
 ---
 
 ## 4. Known Issues
 
-| Scenario | Issue | Workaround |
-|----------|-------|------------|
-| General | Beta SDK API may change | Pin to specific version |
-| Step definitions | Many undefined | Implementation in progress |
+| Scenario         | Issue                   | Workaround                 |
+| ---------------- | ----------------------- | -------------------------- |
+| General          | Beta SDK API may change | Pin to specific version    |
+| Step definitions | Many undefined          | Implementation in progress |
 
 ---
 
@@ -80,27 +81,27 @@
 
 ### Required (P0) - High Priority
 
-| Feature | Scenarios | Notes |
-|---------|-----------|-------|
-| type-tags | Many | Step definitions needed |
-| secp256k1 | All | Feature not in SDK |
-| authentication-key | Partial | More steps needed |
-| mnemonic-derivation | All | Feature not in SDK |
-| single-key | Many | Step definitions needed |
-| entry-function | Partial | More steps needed |
-| raw-transaction | Partial | More steps needed |
-| signing | Partial | More steps needed |
-| transaction-submission | Many | Step definitions needed |
-| error-handling | Most | Step definitions needed |
+| Feature                | Scenarios | Notes                   |
+| ---------------------- | --------- | ----------------------- |
+| type-tags              | Many      | Step definitions needed |
+| secp256k1              | All       | Feature not in SDK      |
+| authentication-key     | Partial   | More steps needed       |
+| mnemonic-derivation    | All       | Feature not in SDK      |
+| single-key             | Many      | Step definitions needed |
+| entry-function         | Partial   | More steps needed       |
+| raw-transaction        | Partial   | More steps needed       |
+| signing                | Partial   | More steps needed       |
+| transaction-submission | Many      | Step definitions needed |
+| error-handling         | Most      | Step definitions needed |
 
 ### Preferred (P1) - Medium Priority
 
-| Feature | Scenarios | Notes |
-|---------|-----------|-------|
-| faucet | All 23 | Tests not written |
-| gas-estimation | All 26 | Tests not written |
-| view-functions | All 28 | Tests not written |
-| retry | All 31 | Tests not written |
+| Feature        | Scenarios | Notes             |
+| -------------- | --------- | ----------------- |
+| faucet         | All 23    | Tests not written |
+| gas-estimation | All 26    | Tests not written |
+| view-functions | All 28    | Tests not written |
+| retry          | All 31    | Tests not written |
 
 ### Optional (P2) - Low Priority
 
@@ -172,14 +173,14 @@ public void GivenAHexString(string hexString)
 
 ### By Feature Category
 
-| Category | Passed | Failed | Total |
-|----------|--------|--------|-------|
-| 01-core-types | 45 | 19 | 64 |
-| 02-cryptography | 40 | 80 | 120 |
-| 03-account-management | 20 | 42 | 62 |
-| 04-transaction-building | 30 | 56 | 86 |
-| 05-api-clients | 20 | 120 | 140 |
-| 06-advanced | 15 | 261 | 276 |
+| Category                | Passed | Failed | Total |
+| ----------------------- | ------ | ------ | ----- |
+| 01-core-types           | 45     | 19     | 64    |
+| 02-cryptography         | 40     | 80     | 120   |
+| 03-account-management   | 20     | 42     | 62    |
+| 04-transaction-building | 30     | 56     | 86    |
+| 05-api-clients          | 20     | 120    | 140   |
+| 06-advanced             | 15     | 261    | 276   |
 
 ### Test Run Summary
 
@@ -193,5 +194,5 @@ Duration: ~1s
 
 ### Beta SDK Notes
 
-This SDK is in beta. The API may change significantly between versions.
-Check the repository for the latest documentation and breaking changes.
+This SDK is in beta. The API may change significantly between versions. Check the repository for the
+latest documentation and breaking changes.

@@ -87,7 +87,7 @@ fn given_two_messages(world: &mut TestWorld, msg1: String, msg2: String) {
 #[given("a signature created by the key pair")]
 fn given_signature_from_key_pair(world: &mut TestWorld) {
     let message = world.message.as_ref().expect("No message");
-    
+
     if let Some(private_key) = world.ed25519_private_key.as_ref() {
         world.ed25519_signature = Some(private_key.sign(message));
     } else if let Some(private_key) = world.secp256k1_private_key.as_ref() {
@@ -101,7 +101,7 @@ fn given_signature_from_key_pair(world: &mut TestWorld) {
 fn given_message_signed_by_first_key(world: &mut TestWorld) {
     world.message = Some(b"test message".to_vec());
     let message = world.message.as_ref().unwrap();
-    
+
     if let Some(private_key) = world.ed25519_private_key.as_ref() {
         world.ed25519_signature = Some(private_key.sign(message));
     } else if let Some(private_key) = world.secp256k1_private_key.as_ref() {
@@ -124,14 +124,14 @@ fn given_signature_for_message(world: &mut TestWorld, msg: String) {
 fn given_invalid_signature(world: &mut TestWorld) {
     // Create an all-zeros signature (invalid for any key type)
     let invalid_bytes = [0u8; 64];
-    
+
     // Set invalid signature for the appropriate key type
     if world.ed25519_public_key.is_some() {
         if let Ok(sig) = Ed25519Signature::from_bytes(&invalid_bytes) {
             world.ed25519_signature = Some(sig);
         }
     }
-    
+
     if world.secp256k1_public_key.is_some() {
         // Secp256k1 signatures are also 64 bytes
         if let Ok(sig) = Secp256k1Signature::from_bytes(&invalid_bytes) {
@@ -145,7 +145,7 @@ fn given_invalid_signature(world: &mut TestWorld) {
             world.secp256k1_signature = Some(sig);
         }
     }
-    
+
     if world.secp256r1_public_key.is_some() {
         // Secp256r1 signatures are also 64 bytes
         if let Ok(sig) = Secp256r1Signature::from_bytes(&invalid_bytes) {
@@ -323,7 +323,7 @@ fn when_both_keys_sign(world: &mut TestWorld) {
 #[when("I verify the signature")]
 fn when_verify_signature(world: &mut TestWorld) {
     let message = world.message.as_ref().expect("No message");
-    
+
     if let (Some(public_key), Some(signature)) = (
         world.ed25519_public_key.as_ref(),
         world.ed25519_signature.as_ref(),
@@ -357,7 +357,7 @@ fn when_verify_signature(world: &mut TestWorld) {
 #[when("I verify with the second key's public key")]
 fn when_verify_with_second_key(world: &mut TestWorld) {
     let message = world.message.as_ref().expect("No message");
-    
+
     if let (Some(public_key2), Some(signature)) = (
         world.ed25519_public_key2.as_ref(),
         world.ed25519_signature.as_ref(),
@@ -390,9 +390,10 @@ fn when_verify_with_second_key(world: &mut TestWorld) {
 
 #[when(expr = "I verify the signature against message {string}")]
 fn when_verify_against_message(world: &mut TestWorld, msg: String) {
-    if let (Some(public_key), Some(signature)) =
-        (world.ed25519_public_key.as_ref(), world.ed25519_signature.as_ref())
-    {
+    if let (Some(public_key), Some(signature)) = (
+        world.ed25519_public_key.as_ref(),
+        world.ed25519_signature.as_ref(),
+    ) {
         match public_key.verify(msg.as_bytes(), signature) {
             Ok(()) => world.bool_result = Some(true),
             Err(e) => {
@@ -498,8 +499,10 @@ fn then_public_key_length(world: &mut TestWorld, length: usize) {
 #[then("the key pair should be valid")]
 fn then_key_pair_valid(world: &mut TestWorld) {
     let has_ed25519 = world.ed25519_private_key.is_some() && world.ed25519_public_key.is_some();
-    let has_secp256k1 = world.secp256k1_private_key.is_some() && world.secp256k1_public_key.is_some();
-    let has_secp256r1 = world.secp256r1_private_key.is_some() && world.secp256r1_public_key.is_some();
+    let has_secp256k1 =
+        world.secp256k1_private_key.is_some() && world.secp256k1_public_key.is_some();
+    let has_secp256r1 =
+        world.secp256r1_private_key.is_some() && world.secp256r1_public_key.is_some();
     assert!(
         has_ed25519 || has_secp256k1 || has_secp256r1,
         "No valid key pair found"
@@ -508,18 +511,20 @@ fn then_key_pair_valid(world: &mut TestWorld) {
 
 #[then("the private keys should be different")]
 fn then_private_keys_different(world: &mut TestWorld) {
-    if let (Some(pk1), Some(pk2)) =
-        (world.ed25519_private_key.as_ref(), world.ed25519_private_key2.as_ref())
-    {
+    if let (Some(pk1), Some(pk2)) = (
+        world.ed25519_private_key.as_ref(),
+        world.ed25519_private_key2.as_ref(),
+    ) {
         assert_ne!(pk1.to_bytes(), pk2.to_bytes());
     }
 }
 
 #[then("the public keys should be different")]
 fn then_public_keys_different(world: &mut TestWorld) {
-    if let (Some(pk1), Some(pk2)) =
-        (world.ed25519_public_key.as_ref(), world.ed25519_public_key2.as_ref())
-    {
+    if let (Some(pk1), Some(pk2)) = (
+        world.ed25519_public_key.as_ref(),
+        world.ed25519_public_key2.as_ref(),
+    ) {
         assert_ne!(pk1.to_bytes(), pk2.to_bytes());
     }
 }
@@ -569,18 +574,20 @@ fn then_signature_valid(world: &mut TestWorld) {
 
 #[then("both signatures should be identical")]
 fn then_signatures_identical(world: &mut TestWorld) {
-    if let (Some(sig1), Some(sig2)) =
-        (world.ed25519_signature.as_ref(), world.ed25519_signature2.as_ref())
-    {
+    if let (Some(sig1), Some(sig2)) = (
+        world.ed25519_signature.as_ref(),
+        world.ed25519_signature2.as_ref(),
+    ) {
         assert_eq!(sig1.to_bytes(), sig2.to_bytes());
     }
 }
 
 #[then("the signatures should be different")]
 fn then_signatures_different(world: &mut TestWorld) {
-    if let (Some(sig1), Some(sig2)) =
-        (world.ed25519_signature.as_ref(), world.ed25519_signature2.as_ref())
-    {
+    if let (Some(sig1), Some(sig2)) = (
+        world.ed25519_signature.as_ref(),
+        world.ed25519_signature2.as_ref(),
+    ) {
         assert_ne!(sig1.to_bytes(), sig2.to_bytes());
     }
 }
@@ -651,9 +658,10 @@ fn then_hex_length_or(world: &mut TestWorld, len1: usize, len2: usize) {
 
 #[then(expr = "it should equal SHA3-256(public_key || 0x00)")]
 fn then_equals_sha3_with_scheme(world: &mut TestWorld) {
-    if let (Some(ref auth_key), Some(public_key)) =
-        (world.auth_key_bytes.as_ref(), world.ed25519_public_key.as_ref())
-    {
+    if let (Some(ref auth_key), Some(public_key)) = (
+        world.auth_key_bytes.as_ref(),
+        world.ed25519_public_key.as_ref(),
+    ) {
         let mut data = public_key.to_bytes().to_vec();
         data.push(ED25519_SCHEME);
         let expected = sha3_256(&data);
@@ -710,9 +718,10 @@ fn then_private_key_zeroized(_world: &mut TestWorld) {
 
 #[then("the private key bytes should not appear in the output")]
 fn then_private_key_not_in_debug(world: &mut TestWorld) {
-    if let (Some(ref output), Some(private_key)) =
-        (world.string_value.as_ref(), world.ed25519_private_key.as_ref())
-    {
+    if let (Some(ref output), Some(private_key)) = (
+        world.string_value.as_ref(),
+        world.ed25519_private_key.as_ref(),
+    ) {
         let private_key_hex = hex::encode(private_key.to_bytes());
         assert!(
             !output.contains(&private_key_hex),
@@ -738,4 +747,3 @@ fn then_hash_32_bytes(world: &mut TestWorld) {
         assert_eq!(hash.to_bytes().len(), 32);
     }
 }
-

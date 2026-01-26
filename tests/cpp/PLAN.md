@@ -11,8 +11,9 @@ Rust implementations.
 
 ## Context
 
-The Aptos C++ SDK (built by Var Meta) is available at https://github.com/VAR-META-Tech/Aptos-Cpp-SDK.
-The SDK has been cloned into the `sdk/` directory and integrated with conditional compilation.
+The Aptos C++ SDK (built by Var Meta) is available at
+https://github.com/VAR-META-Tech/Aptos-Cpp-SDK. The SDK has been cloned into the `sdk/` directory
+and integrated with conditional compilation.
 
 ## Architecture
 
@@ -97,6 +98,7 @@ The Var Meta C++ SDK is available at: **https://github.com/VAR-META-Tech/Aptos-C
 ### SDK Dependencies
 
 The SDK requires several third-party libraries:
+
 - [bip3x](https://github.com/edwardstock/bip3x) - BIP-39/32 implementation
 - [toolbox](https://github.com/edwardstock/toolbox)
 - [cryptopp](https://github.com/weidai11/cryptopp) - Cryptography
@@ -105,18 +107,21 @@ The SDK requires several third-party libraries:
 ### Current Integration Setup
 
 The SDK is cloned into `sdk/` and built with Conan. The CMakeLists.txt automatically:
+
 1. Detects if SDK is built (`sdk/build/build/Release/libAptos.dylib`)
 2. Sets `APTOS_SDK_AVAILABLE=1` compile definition
 3. Adds SDK include paths (`Src/`, `ThirdParty/bip3x/include`, toolbox)
 4. Links against `libAptos.dylib`
 
 The `support/world.hpp` uses conditional compilation:
-- `APTOS_SDK_AVAILABLE=1` → Uses actual SDK types (Aptos::Accounts::*, etc.)
+
+- `APTOS_SDK_AVAILABLE=1` → Uses actual SDK types (Aptos::Accounts::\*, etc.)
 - Not defined → Uses placeholder types (allows scaffold to compile without SDK)
 
 ### Integration Steps
 
 1. Clone and build the SDK:
+
    ```bash
    git clone https://github.com/VAR-META-Tech/Aptos-Cpp-SDK.git
    cd Aptos-Cpp-SDK
@@ -126,6 +131,7 @@ The `support/world.hpp` uses conditional compilation:
    ```
 
 2. Set the SDK path in `CMakeLists.txt`:
+
    ```cmake
    set(APTOS_CPP_SDK_PATH "/path/to/Aptos-Cpp-SDK")
    ```
@@ -138,13 +144,18 @@ The `support/world.hpp` uses conditional compilation:
 
 ### Known Issues / Behaviors
 
-1. **AIP-40 Short Addresses**: The SDK's `ToString()` returns short format for special addresses (e.g., "0x1" instead of full 64-char). This is correct per AIP-40 but differs from some test expectations.
+1. **AIP-40 Short Addresses**: The SDK's `ToString()` returns short format for special addresses
+   (e.g., "0x1" instead of full 64-char). This is correct per AIP-40 but differs from some test
+   expectations.
 
-2. **Step Coverage**: Many feature file scenarios use steps that aren't yet defined. Use `--dry-run` to identify missing steps.
+2. **Step Coverage**: Many feature file scenarios use steps that aren't yet defined. Use `--dry-run`
+   to identify missing steps.
 
-3. **SDK Build Dependency**: The SDK must be built before tests can compile. Run the SDK build commands first.
+3. **SDK Build Dependency**: The SDK must be built before tests can compile. Run the SDK build
+   commands first.
 
-4. **Conditional Compilation**: Step definitions use `#ifdef APTOS_SDK_AVAILABLE` to support both SDK and placeholder modes.
+4. **Conditional Compilation**: Step definitions use `#ifdef APTOS_SDK_AVAILABLE` to support both
+   SDK and placeholder modes.
 
 ### Actual SDK Types
 
@@ -191,6 +202,7 @@ namespace Aptos::BCS {
 ### BDD Framework: CWT-Cucumber
 
 Selected for:
+
 - Modern C++20 support
 - No mandatory external dependencies
 - Full Gherkin syntax support
@@ -199,6 +211,7 @@ Selected for:
 ### Test World Pattern
 
 Following the Rust implementation pattern with:
+
 - Single global TestWorld struct
 - Optional fields for all state
 - Reset between scenarios
@@ -238,7 +251,7 @@ make test-transactions
 
 1. **CMakeLists.txt** - Add SDK find_package or FetchContent
 2. **support/world.hpp** - Replace placeholder types with SDK types
-3. **steps/*.cpp** - Implement TODO sections with SDK calls
+3. **steps/\*.cpp** - Implement TODO sections with SDK calls
 4. **FEATURE_COVERAGE.md** - Mark scenarios as implemented
 
 ## References

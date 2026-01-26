@@ -1,11 +1,15 @@
 # Aptos SDK Behavioral Specifications
 
-This directory contains language-agnostic behavioral specifications for Aptos SDK implementations.
+[![CI](https://github.com/aptos-labs/aptos-sdk-specs/actions/workflows/ci.yml/badge.svg)](https://github.com/aptos-labs/aptos-sdk-specs/actions/workflows/ci.yml)
+[![Nightly Tests](https://github.com/aptos-labs/aptos-sdk-specs/actions/workflows/nightly.yml/badge.svg)](https://github.com/aptos-labs/aptos-sdk-specs/actions/workflows/nightly.yml)
+
+This repository contains language-agnostic behavioral specifications for Aptos SDK implementations.
 These specifications ensure consistent behavior across all official and community SDKs.
 
 ## SDK Coverage
 
-See **[FEATURE_COVERAGE.md](FEATURE_COVERAGE.md)** for detailed test coverage across all SDKs, including:
+See **[FEATURE_COVERAGE.md](FEATURE_COVERAGE.md)** for detailed test coverage across all SDKs,
+including:
 
 - SDK versions and publishers
 - Feature-level compatibility matrix
@@ -213,13 +217,54 @@ These specifications are derived from analyzing:
 | Go         | [aptos-labs/aptos-go-sdk](https://github.com/aptos-labs/aptos-go-sdk)         | Go         |
 | .NET       | [aptos-labs/aptos-dotnet-sdk](https://github.com/aptos-labs/aptos-dotnet-sdk) | C#         |
 
+## Running Tests Locally
+
+### Quick Start
+
+```bash
+# Format all code
+make format
+
+# Lint all code
+make lint
+
+# Run tests for a specific SDK
+cd tests/typescript && bun test
+cd tests/go && make test
+cd tests/rust && cargo test --test specs
+cd tests/python && make test
+```
+
+### By Priority Level
+
+Each SDK supports running tests by priority:
+
+```bash
+# Required tests only (must pass)
+make test-required
+
+# Preferred tests (should pass)
+make test-preferred
+
+# Optional tests (nice to have)
+make test-optional
+```
+
+### CI Workflows
+
+- **CI** (`ci.yml`): Runs on every PR - format check + required/preferred tests
+- **Nightly** (`nightly.yml`): Runs daily at 2 AM UTC - full test suite
+
+You can manually trigger nightly tests from the Actions tab.
+
 ## Contributing
 
 1. Fork the repository
 2. Create a feature branch
 3. Add/modify specifications following existing patterns
 4. Ensure all test vectors are valid
-5. Submit a pull request
+5. Run `make format` before committing
+6. Submit a pull request
 
 ## License
 

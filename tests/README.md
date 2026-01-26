@@ -177,16 +177,16 @@ import com.aptos.japtos.AccountAddress;
 
 public class AddressSteps {
     private final World world;
-    
+
     public AddressSteps(World world) {
         this.world = world;
     }
-    
+
     @Given("a hex string {string}")
     public void givenHexString(String hex) {
         world.setHexString(hex);
     }
-    
+
     @When("I parse it as an AccountAddress")
     public void whenParseAddress() {
         try {
@@ -195,7 +195,7 @@ public class AddressSteps {
             world.setError(e);
         }
     }
-    
+
     @Then("the parsing should succeed")
     public void thenParsingShouldSucceed() {
         assertThat(world.getError()).isNull();

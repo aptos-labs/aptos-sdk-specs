@@ -43,12 +43,7 @@ function createEntryFunction(
 ): EntryFunction {
   const moduleId = new ModuleId(moduleAddress, new Identifier(moduleName));
   const wrappedArgs = args.map((a) => new EntryFunctionBytes(a));
-  return new EntryFunction(
-    moduleId,
-    new Identifier(functionName),
-    typeArgs,
-    wrappedArgs,
-  );
+  return new EntryFunction(moduleId, new Identifier(functionName), typeArgs, wrappedArgs);
 }
 
 // Helper to create a standard APT transfer payload
@@ -89,32 +84,27 @@ Given("a secondary signer account", function (this: AptosWorld) {
   const account = Account.fromPrivateKey({ privateKey });
   this.testVectors.set("secondaryAccount", account);
 
-  const secondaries =
-    (this.testVectors.get("secondaryAccounts") as Account[]) ?? [];
+  const secondaries = (this.testVectors.get("secondaryAccounts") as Account[]) ?? [];
   secondaries.push(account);
   this.testVectors.set("secondaryAccounts", secondaries);
 });
 
-Given(
-  "{int} secondary signer accounts",
-  function (this: AptosWorld, count: number) {
-    const secondaries: Account[] = [];
+Given("{int} secondary signer accounts", function (this: AptosWorld, count: number) {
+  const secondaries: Account[] = [];
 
-    for (let i = 0; i < count; i++) {
-      const privateKey = Ed25519PrivateKey.generate();
-      const account = Account.fromPrivateKey({ privateKey });
-      secondaries.push(account);
-    }
+  for (let i = 0; i < count; i++) {
+    const privateKey = Ed25519PrivateKey.generate();
+    const account = Account.fromPrivateKey({ privateKey });
+    secondaries.push(account);
+  }
 
-    this.testVectors.set("secondaryAccounts", secondaries);
-  },
-);
+  this.testVectors.set("secondaryAccounts", secondaries);
+});
 
 When("I create a multi-agent transaction", function (this: AptosWorld) {
   const sender = this.testVectors.get("senderAccount") as Account;
   const rawTxn = this.testVectors.get("rawTransaction") as RawTransaction;
-  const secondaries =
-    (this.testVectors.get("secondaryAccounts") as Account[]) ?? [];
+  const secondaries = (this.testVectors.get("secondaryAccounts") as Account[]) ?? [];
 
   const secondaryAddresses = secondaries.map((acc) => acc.accountAddress);
 
@@ -124,22 +114,15 @@ When("I create a multi-agent transaction", function (this: AptosWorld) {
   this.result = multiAgentTxn;
 });
 
-Then(
-  "the transaction should include both signers",
-  function (this: AptosWorld) {
-    const multiAgentTxn = this.testVectors.get(
-      "multiAgentTransaction",
-    ) as MultiAgentTransaction;
-    expect(multiAgentTxn.secondarySignerAddresses.length).to.equal(1);
-  },
-);
+Then("the transaction should include both signers", function (this: AptosWorld) {
+  const multiAgentTxn = this.testVectors.get("multiAgentTransaction") as MultiAgentTransaction;
+  expect(multiAgentTxn.secondarySignerAddresses.length).to.equal(1);
+});
 
 Then(
   "the transaction should include all {int} signers",
   function (this: AptosWorld, count: number) {
-    const multiAgentTxn = this.testVectors.get(
-      "multiAgentTransaction",
-    ) as MultiAgentTransaction;
+    const multiAgentTxn = this.testVectors.get("multiAgentTransaction") as MultiAgentTransaction;
     // count includes sender + secondaries
     expect(multiAgentTxn.secondarySignerAddresses.length).to.equal(count - 1);
   },
@@ -147,24 +130,16 @@ Then(
 
 Given("secondary signer addresses [A, B, C]", function (this: AptosWorld) {
   const addresses = [
-    AccountAddress.from(
-      "0x1111111111111111111111111111111111111111111111111111111111111111",
-    ),
-    AccountAddress.from(
-      "0x2222222222222222222222222222222222222222222222222222222222222222",
-    ),
-    AccountAddress.from(
-      "0x3333333333333333333333333333333333333333333333333333333333333333",
-    ),
+    AccountAddress.from("0x1111111111111111111111111111111111111111111111111111111111111111"),
+    AccountAddress.from("0x2222222222222222222222222222222222222222222222222222222222222222"),
+    AccountAddress.from("0x3333333333333333333333333333333333333333333333333333333333333333"),
   ];
   this.testVectors.set("secondaryAddresses", addresses);
 });
 
 When("I build a multi-agent transaction", function (this: AptosWorld) {
   const rawTxn = this.testVectors.get("rawTransaction") as RawTransaction;
-  const secondaryAddresses = this.testVectors.get(
-    "secondaryAddresses",
-  ) as AccountAddress[];
+  const secondaryAddresses = this.testVectors.get("secondaryAddresses") as AccountAddress[];
 
   const multiAgentTxn = new MultiAgentTransaction(rawTxn, secondaryAddresses);
 
@@ -172,26 +147,15 @@ When("I build a multi-agent transaction", function (this: AptosWorld) {
   this.result = multiAgentTxn;
 });
 
-Then(
-  "the secondary_signer_addresses should be [A, B, C] in order",
-  function (this: AptosWorld) {
-    const multiAgentTxn = this.testVectors.get(
-      "multiAgentTransaction",
-    ) as MultiAgentTransaction;
-    const expected = this.testVectors.get(
-      "secondaryAddresses",
-    ) as AccountAddress[];
+Then("the secondary_signer_addresses should be [A, B, C] in order", function (this: AptosWorld) {
+  const multiAgentTxn = this.testVectors.get("multiAgentTransaction") as MultiAgentTransaction;
+  const expected = this.testVectors.get("secondaryAddresses") as AccountAddress[];
 
-    expect(multiAgentTxn.secondarySignerAddresses.length).to.equal(
-      expected.length,
-    );
-    for (let i = 0; i < expected.length; i++) {
-      expect(multiAgentTxn.secondarySignerAddresses[i].toString()).to.equal(
-        expected[i].toString(),
-      );
-    }
-  },
-);
+  expect(multiAgentTxn.secondarySignerAddresses.length).to.equal(expected.length);
+  for (let i = 0; i < expected.length; i++) {
+    expect(multiAgentTxn.secondarySignerAddresses[i].toString()).to.equal(expected[i].toString());
+  }
+});
 
 // =============================================================================
 // Multi-Agent Signing Message
@@ -224,52 +188,38 @@ When("I generate single-signer signing message", function (this: AptosWorld) {
   this.testVectors.set("singleSignerMessage", message);
 });
 
-When(
-  "I generate multi-agent signing message with secondary signers",
-  function (this: AptosWorld) {
-    const rawTxn = this.testVectors.get("rawTransaction") as RawTransaction;
-    const secondaryAddresses = [
-      AccountAddress.from(
-        "0x2222222222222222222222222222222222222222222222222222222222222222",
-      ),
-    ];
+When("I generate multi-agent signing message with secondary signers", function (this: AptosWorld) {
+  const rawTxn = this.testVectors.get("rawTransaction") as RawTransaction;
+  const secondaryAddresses = [
+    AccountAddress.from("0x2222222222222222222222222222222222222222222222222222222222222222"),
+  ];
 
-    const message = generateSigningMessageForTransaction({
-      rawTransaction: rawTxn,
-      secondarySignerAddresses: secondaryAddresses,
-    });
+  const message = generateSigningMessageForTransaction({
+    rawTransaction: rawTxn,
+    secondarySignerAddresses: secondaryAddresses,
+  });
 
-    this.testVectors.set("multiAgentMessage", message);
-  },
-);
+  this.testVectors.set("multiAgentMessage", message);
+});
 
-Then(
-  "the single and multi-agent messages should be different",
-  function (this: AptosWorld) {
-    const single = this.testVectors.get("singleSignerMessage") as Uint8Array;
-    const multi = this.testVectors.get("multiAgentMessage") as Uint8Array;
+Then("the single and multi-agent messages should be different", function (this: AptosWorld) {
+  const single = this.testVectors.get("singleSignerMessage") as Uint8Array;
+  const multi = this.testVectors.get("multiAgentMessage") as Uint8Array;
 
-    expect(bytesToHex(single)).to.not.equal(bytesToHex(multi));
-  },
-);
+  expect(bytesToHex(single)).to.not.equal(bytesToHex(multi));
+});
 
 Given("secondary signer addresses", function (this: AptosWorld) {
   const addresses = [
-    AccountAddress.from(
-      "0x2222222222222222222222222222222222222222222222222222222222222222",
-    ),
-    AccountAddress.from(
-      "0x3333333333333333333333333333333333333333333333333333333333333333",
-    ),
+    AccountAddress.from("0x2222222222222222222222222222222222222222222222222222222222222222"),
+    AccountAddress.from("0x3333333333333333333333333333333333333333333333333333333333333333"),
   ];
   this.testVectors.set("secondaryAddresses", addresses);
 });
 
 When("I generate the multi-agent signing message", function (this: AptosWorld) {
   const rawTxn = this.testVectors.get("rawTransaction") as RawTransaction;
-  const secondaryAddresses = this.testVectors.get(
-    "secondaryAddresses",
-  ) as AccountAddress[];
+  const secondaryAddresses = this.testVectors.get("secondaryAddresses") as AccountAddress[];
 
   const message = generateSigningMessageForTransaction({
     rawTransaction: rawTxn,
@@ -286,18 +236,15 @@ Then("it should include the raw transaction", function (this: AptosWorld) {
   expect(this.bytes!.length).to.be.greaterThan(32); // At least domain prefix
 });
 
-Then(
-  "it should include the secondary signer addresses",
-  function (this: AptosWorld) {
-    // This is verified implicitly - the message is different from single signer
-    const rawTxn = this.testVectors.get("rawTransaction") as RawTransaction;
-    const singleMessage = generateSigningMessageForTransaction({
-      rawTransaction: rawTxn,
-    });
+Then("it should include the secondary signer addresses", function (this: AptosWorld) {
+  // This is verified implicitly - the message is different from single signer
+  const rawTxn = this.testVectors.get("rawTransaction") as RawTransaction;
+  const singleMessage = generateSigningMessageForTransaction({
+    rawTransaction: rawTxn,
+  });
 
-    expect(bytesToHex(this.bytes!)).to.not.equal(bytesToHex(singleMessage));
-  },
-);
+  expect(bytesToHex(this.bytes!)).to.not.equal(bytesToHex(singleMessage));
+});
 
 Given("a multi-agent transaction", function (this: AptosWorld) {
   const sender = AccountAddress.from("0x1");
@@ -314,9 +261,7 @@ Given("a multi-agent transaction", function (this: AptosWorld) {
   );
 
   const secondaryAddresses = [
-    AccountAddress.from(
-      "0x2222222222222222222222222222222222222222222222222222222222222222",
-    ),
+    AccountAddress.from("0x2222222222222222222222222222222222222222222222222222222222222222"),
   ];
 
   const multiAgentTxn = new MultiAgentTransaction(rawTxn, secondaryAddresses);
@@ -399,17 +344,14 @@ When("each party generates their signing message", function (this: AptosWorld) {
   this.testVectors.set("secondary2Message", secondary2Message);
 });
 
-Then(
-  "all {int} messages should be identical",
-  function (this: AptosWorld, count: number) {
-    const senderMsg = this.testVectors.get("senderMessage") as Uint8Array;
-    const sec1Msg = this.testVectors.get("secondary1Message") as Uint8Array;
-    const sec2Msg = this.testVectors.get("secondary2Message") as Uint8Array;
+Then("all {int} messages should be identical", function (this: AptosWorld, count: number) {
+  const senderMsg = this.testVectors.get("senderMessage") as Uint8Array;
+  const sec1Msg = this.testVectors.get("secondary1Message") as Uint8Array;
+  const sec2Msg = this.testVectors.get("secondary2Message") as Uint8Array;
 
-    expect(bytesToHex(senderMsg)).to.equal(bytesToHex(sec1Msg));
-    expect(bytesToHex(senderMsg)).to.equal(bytesToHex(sec2Msg));
-  },
-);
+  expect(bytesToHex(senderMsg)).to.equal(bytesToHex(sec1Msg));
+  expect(bytesToHex(senderMsg)).to.equal(bytesToHex(sec2Msg));
+});
 
 // =============================================================================
 // Multi-Agent Signing
@@ -423,56 +365,47 @@ Given("sender account", function (this: AptosWorld) {
 
 // Note: '{int} secondary signer accounts' is defined earlier in this file
 
-When(
-  "I sign the multi-agent transaction with all parties",
-  function (this: AptosWorld) {
-    const sender = this.testVectors.get("senderAccount") as Account;
-    const rawTxn = this.testVectors.get("rawTransaction") as RawTransaction;
-    const secondaries = this.testVectors.get("secondaryAccounts") as Account[];
+When("I sign the multi-agent transaction with all parties", function (this: AptosWorld) {
+  const sender = this.testVectors.get("senderAccount") as Account;
+  const rawTxn = this.testVectors.get("rawTransaction") as RawTransaction;
+  const secondaries = this.testVectors.get("secondaryAccounts") as Account[];
 
-    const secondaryAddresses = secondaries.map((s) => s.accountAddress);
+  const secondaryAddresses = secondaries.map((s) => s.accountAddress);
 
-    // Generate signing message
-    const signingMessage = generateSigningMessageForTransaction({
-      rawTransaction: rawTxn,
-      secondarySignerAddresses: secondaryAddresses,
-    });
+  // Generate signing message
+  const signingMessage = generateSigningMessageForTransaction({
+    rawTransaction: rawTxn,
+    secondarySignerAddresses: secondaryAddresses,
+  });
 
-    // Sign with sender
-    const senderSignature = sender.sign(signingMessage);
-    const senderAuth = new AccountAuthenticatorSingleKey(
-      sender.publicKey,
-      senderSignature,
-    );
+  // Sign with sender
+  const senderSignature = sender.sign(signingMessage);
+  const senderAuth = new AccountAuthenticatorSingleKey(sender.publicKey, senderSignature);
 
-    // Sign with secondaries
-    const secondaryAuths = secondaries.map((secondary) => {
-      const sig = secondary.sign(signingMessage);
-      return new AccountAuthenticatorSingleKey(secondary.publicKey, sig);
-    });
+  // Sign with secondaries
+  const secondaryAuths = secondaries.map((secondary) => {
+    const sig = secondary.sign(signingMessage);
+    return new AccountAuthenticatorSingleKey(secondary.publicKey, sig);
+  });
 
-    // Create multi-agent authenticator
-    const multiAgentAuth = new TransactionAuthenticatorMultiAgent(
-      senderAuth,
-      secondaryAddresses,
-      secondaryAuths,
-    );
+  // Create multi-agent authenticator
+  const multiAgentAuth = new TransactionAuthenticatorMultiAgent(
+    senderAuth,
+    secondaryAddresses,
+    secondaryAuths,
+  );
 
-    const signedTxn = new SignedTransaction(rawTxn, multiAgentAuth);
+  const signedTxn = new SignedTransaction(rawTxn, multiAgentAuth);
 
-    this.testVectors.set("signedTransaction", signedTxn);
-    this.testVectors.set("multiAgentAuthenticator", multiAgentAuth);
-    this.result = signedTxn;
-  },
-);
+  this.testVectors.set("signedTransaction", signedTxn);
+  this.testVectors.set("multiAgentAuthenticator", multiAgentAuth);
+  this.result = signedTxn;
+});
 
-Then(
-  "the authenticator should be MultiAgent variant",
-  function (this: AptosWorld) {
-    const signedTxn = this.result as SignedTransaction;
-    expect(signedTxn.authenticator.isMultiAgent()).to.be.true;
-  },
-);
+Then("the authenticator should be MultiAgent variant", function (this: AptosWorld) {
+  const signedTxn = this.result as SignedTransaction;
+  expect(signedTxn.authenticator.isMultiAgent()).to.be.true;
+});
 
 Given("a signed multi-agent transaction", function (this: AptosWorld) {
   const senderPrivate = Ed25519PrivateKey.generate();
@@ -510,11 +443,9 @@ Given("a signed multi-agent transaction", function (this: AptosWorld) {
     secondary1.sign(signingMessage),
   );
 
-  const multiAgentAuth = new TransactionAuthenticatorMultiAgent(
-    senderAuth,
-    secondaryAddresses,
-    [secondaryAuth],
-  );
+  const multiAgentAuth = new TransactionAuthenticatorMultiAgent(senderAuth, secondaryAddresses, [
+    secondaryAuth,
+  ]);
 
   const signedTxn = new SignedTransaction(rawTxn, multiAgentAuth);
 
@@ -534,14 +465,11 @@ Then("it should contain sender authenticator", function (this: AptosWorld) {
   expect(auth.sender).to.not.be.undefined;
 });
 
-Then(
-  "it should contain secondary_signer_addresses",
-  function (this: AptosWorld) {
-    const auth = this.result as TransactionAuthenticatorMultiAgent;
-    expect(auth.secondary_signer_addresses).to.not.be.undefined;
-    expect(Array.isArray(auth.secondary_signer_addresses)).to.be.true;
-  },
-);
+Then("it should contain secondary_signer_addresses", function (this: AptosWorld) {
+  const auth = this.result as TransactionAuthenticatorMultiAgent;
+  expect(auth.secondary_signer_addresses).to.not.be.undefined;
+  expect(Array.isArray(auth.secondary_signer_addresses)).to.be.true;
+});
 
 Then("it should contain secondary_signers list", function (this: AptosWorld) {
   const auth = this.result as TransactionAuthenticatorMultiAgent;
@@ -564,8 +492,7 @@ Given("a Secp256k1 secondary signer", function (this: AptosWorld) {
   const privateKey = Secp256k1PrivateKey.generate();
   const account = Account.fromPrivateKey({ privateKey });
 
-  const secondaries =
-    (this.testVectors.get("secondaryAccounts") as Account[]) ?? [];
+  const secondaries = (this.testVectors.get("secondaryAccounts") as Account[]) ?? [];
   secondaries.push(account);
   this.testVectors.set("secondaryAccounts", secondaries);
   this.testVectors.set("secondaryType", "Secp256k1");
@@ -574,8 +501,7 @@ Given("a Secp256k1 secondary signer", function (this: AptosWorld) {
 When("I sign the multi-agent transaction", function (this: AptosWorld) {
   const sender = this.testVectors.get("senderAccount") as Account;
   const rawTxn = this.testVectors.get("rawTransaction") as RawTransaction;
-  const secondaries =
-    (this.testVectors.get("secondaryAccounts") as Account[]) ?? [];
+  const secondaries = (this.testVectors.get("secondaryAccounts") as Account[]) ?? [];
 
   const secondaryAddresses = secondaries.map((s) => s.accountAddress);
 
@@ -590,10 +516,7 @@ When("I sign the multi-agent transaction", function (this: AptosWorld) {
   );
 
   const secondaryAuths = secondaries.map((secondary) => {
-    return new AccountAuthenticatorSingleKey(
-      secondary.publicKey,
-      secondary.sign(signingMessage),
-    );
+    return new AccountAuthenticatorSingleKey(secondary.publicKey, secondary.sign(signingMessage));
   });
 
   const multiAgentAuth = new TransactionAuthenticatorMultiAgent(
@@ -622,15 +545,12 @@ Then("sender authenticator should be Ed25519", function (this: AptosWorld) {
   expect(auth.sender).to.not.be.undefined;
 });
 
-Then(
-  "secondary authenticator should be Secp256k1",
-  function (this: AptosWorld) {
-    const auth = this.testVectors.get(
-      "multiAgentAuthenticator",
-    ) as TransactionAuthenticatorMultiAgent;
-    expect(auth.secondary_signers.length).to.be.greaterThan(0);
-  },
-);
+Then("secondary authenticator should be Secp256k1", function (this: AptosWorld) {
+  const auth = this.testVectors.get(
+    "multiAgentAuthenticator",
+  ) as TransactionAuthenticatorMultiAgent;
+  expect(auth.secondary_signers.length).to.be.greaterThan(0);
+});
 
 // =============================================================================
 // Partial Signing Workflow
@@ -659,8 +579,7 @@ Given("a RawTransaction for multi-agent", function (this: AptosWorld) {
 When("sender signs their portion", function (this: AptosWorld) {
   const sender = this.testVectors.get("senderAccount") as Account;
   const rawTxn = this.testVectors.get("rawTransaction") as RawTransaction;
-  const secondaryAddresses =
-    (this.testVectors.get("secondaryAddresses") as AccountAddress[]) ?? [];
+  const secondaryAddresses = (this.testVectors.get("secondaryAddresses") as AccountAddress[]) ?? [];
 
   const signingMessage = generateSigningMessageForTransaction({
     rawTransaction: rawTxn,
@@ -675,40 +594,31 @@ When("sender signs their portion", function (this: AptosWorld) {
   this.testVectors.set("senderAuthenticator", senderAuth);
 });
 
-When(
-  "secondary signer {int} signs their portion",
-  function (this: AptosWorld, index: number) {
-    const secondaries = this.testVectors.get("secondaryAccounts") as Account[];
-    const rawTxn = this.testVectors.get("rawTransaction") as RawTransaction;
-    const secondaryAddresses = secondaries.map((s) => s.accountAddress);
+When("secondary signer {int} signs their portion", function (this: AptosWorld, index: number) {
+  const secondaries = this.testVectors.get("secondaryAccounts") as Account[];
+  const rawTxn = this.testVectors.get("rawTransaction") as RawTransaction;
+  const secondaryAddresses = secondaries.map((s) => s.accountAddress);
 
-    const signingMessage = generateSigningMessageForTransaction({
-      rawTransaction: rawTxn,
-      secondarySignerAddresses: secondaryAddresses,
-    });
+  const signingMessage = generateSigningMessageForTransaction({
+    rawTransaction: rawTxn,
+    secondarySignerAddresses: secondaryAddresses,
+  });
 
-    const secondary = secondaries[index - 1]; // 1-indexed in feature
-    const auth = new AccountAuthenticatorSingleKey(
-      secondary.publicKey,
-      secondary.sign(signingMessage),
-    );
+  const secondary = secondaries[index - 1]; // 1-indexed in feature
+  const auth = new AccountAuthenticatorSingleKey(
+    secondary.publicKey,
+    secondary.sign(signingMessage),
+  );
 
-    const collectedAuths =
-      (this.testVectors.get(
-        "collectedSecondaryAuths",
-      ) as AccountAuthenticator[]) ?? [];
-    collectedAuths[index - 1] = auth;
-    this.testVectors.set("collectedSecondaryAuths", collectedAuths);
-  },
-);
+  const collectedAuths =
+    (this.testVectors.get("collectedSecondaryAuths") as AccountAuthenticator[]) ?? [];
+  collectedAuths[index - 1] = auth;
+  this.testVectors.set("collectedSecondaryAuths", collectedAuths);
+});
 
 When("I combine all signatures", function (this: AptosWorld) {
-  const senderAuth = this.testVectors.get(
-    "senderAuthenticator",
-  ) as AccountAuthenticator;
-  const secondaryAuths = this.testVectors.get(
-    "collectedSecondaryAuths",
-  ) as AccountAuthenticator[];
+  const senderAuth = this.testVectors.get("senderAuthenticator") as AccountAuthenticator;
+  const secondaryAuths = this.testVectors.get("collectedSecondaryAuths") as AccountAuthenticator[];
   const secondaries = this.testVectors.get("secondaryAccounts") as Account[];
   const rawTxn = this.testVectors.get("rawTransaction") as RawTransaction;
 
@@ -724,15 +634,12 @@ When("I combine all signatures", function (this: AptosWorld) {
   this.result = multiAgentAuth;
 });
 
-Then(
-  "I should have a complete multi-agent authenticator",
-  function (this: AptosWorld) {
-    const auth = this.result as TransactionAuthenticatorMultiAgent;
-    expect(auth).to.not.be.undefined;
-    expect(auth.sender).to.not.be.undefined;
-    expect(auth.secondary_signers.length).to.be.greaterThan(0);
-  },
-);
+Then("I should have a complete multi-agent authenticator", function (this: AptosWorld) {
+  const auth = this.result as TransactionAuthenticatorMultiAgent;
+  expect(auth).to.not.be.undefined;
+  expect(auth.sender).to.not.be.undefined;
+  expect(auth.secondary_signers.length).to.be.greaterThan(0);
+});
 
 // =============================================================================
 // BCS Serialization
@@ -748,10 +655,7 @@ Given("a multi-agent authenticator", function (this: AptosWorld) {
 
   const message = new Uint8Array([1, 2, 3, 4]);
 
-  const senderAuth = new AccountAuthenticatorSingleKey(
-    sender.publicKey,
-    sender.sign(message),
-  );
+  const senderAuth = new AccountAuthenticatorSingleKey(sender.publicKey, sender.sign(message));
 
   const secondaryAuth = new AccountAuthenticatorSingleKey(
     secondary.publicKey,
@@ -780,21 +684,15 @@ Then("sender authenticator should be serialized", function (this: AptosWorld) {
   expect(this.bytes!.length).to.be.greaterThan(1);
 });
 
-Then(
-  "secondary addresses should be serialized as vector",
-  function (this: AptosWorld) {
-    // Verified by successful serialization
-    expect(this.bytes!.length).to.be.greaterThan(50);
-  },
-);
+Then("secondary addresses should be serialized as vector", function (this: AptosWorld) {
+  // Verified by successful serialization
+  expect(this.bytes!.length).to.be.greaterThan(50);
+});
 
-Then(
-  "secondary signers should be serialized as vector",
-  function (this: AptosWorld) {
-    // Verified by successful serialization
-    expect(this.bytes!.length).to.be.greaterThan(100);
-  },
-);
+Then("secondary signers should be serialized as vector", function (this: AptosWorld) {
+  // Verified by successful serialization
+  expect(this.bytes!.length).to.be.greaterThan(100);
+});
 
 Given("the same multi-agent transaction", function (this: AptosWorld) {
   // Reuse the existing multi-agent transaction setup
@@ -843,9 +741,7 @@ Given("the same multi-agent transaction", function (this: AptosWorld) {
 });
 
 Then("both serializations should be identical", function (this: AptosWorld) {
-  const signedTxn = this.testVectors.get(
-    "signedTransaction",
-  ) as SignedTransaction;
+  const signedTxn = this.testVectors.get("signedTransaction") as SignedTransaction;
 
   const bytes1 = signedTxn.bcsToBytes();
   const bytes2 = signedTxn.bcsToBytes();
@@ -857,76 +753,69 @@ Then("both serializations should be identical", function (this: AptosWorld) {
 // Test Vectors
 // =============================================================================
 
-Given(
-  "a RawTransaction and secondary addresses from test vectors",
-  function (this: AptosWorld) {
-    const sender = AccountAddress.from("0x1");
-    const secondaryAddresses = [
-      AccountAddress.from(
-        "0x2222222222222222222222222222222222222222222222222222222222222222",
-      ),
-    ];
+Given("a RawTransaction and secondary addresses from test vectors", function (this: AptosWorld) {
+  const sender = AccountAddress.from("0x1");
+  const secondaryAddresses = [
+    AccountAddress.from("0x2222222222222222222222222222222222222222222222222222222222222222"),
+  ];
 
-    const payload = createTransferPayload(AccountAddress.from("0x3"), BigInt(1000));
+  const payload = createTransferPayload(AccountAddress.from("0x3"), BigInt(1000));
 
-    const rawTxn = new RawTransaction(
-      sender,
-      BigInt(0),
-      payload,
-      BigInt(100000),
-      BigInt(100),
-      BigInt(1700000000),
-      new ChainId(1),
-    );
+  const rawTxn = new RawTransaction(
+    sender,
+    BigInt(0),
+    payload,
+    BigInt(100000),
+    BigInt(100),
+    BigInt(1700000000),
+    new ChainId(1),
+  );
 
-    this.testVectors.set("rawTransaction", rawTxn);
-    this.testVectors.set("secondaryAddresses", secondaryAddresses);
-  },
-);
+  this.testVectors.set("rawTransaction", rawTxn);
+  this.testVectors.set("secondaryAddresses", secondaryAddresses);
+});
 
-Then(
-  "the multi-agent message should match test vectors",
-  function (this: AptosWorld) {
-    // Since we use deterministic inputs, verify the message structure
-    expect(this.bytes).to.not.be.undefined;
-    expect(this.bytes!.length).to.be.greaterThan(32); // At least domain prefix
-  },
-);
+Then("the multi-agent message should match test vectors", function (this: AptosWorld) {
+  // Since we use deterministic inputs, verify the message structure
+  expect(this.bytes).to.not.be.undefined;
+  expect(this.bytes!.length).to.be.greaterThan(32); // At least domain prefix
+});
 
-Given(
-  "a multi-agent transaction from test vectors",
-  function (this: AptosWorld) {
-    // Use deterministic values
-    const sender = AccountAddress.from("0x1");
-    const secondaryAddresses = [
-      AccountAddress.from(
-        "0x2222222222222222222222222222222222222222222222222222222222222222",
-      ),
-    ];
+Given("a multi-agent transaction from test vectors", function (this: AptosWorld) {
+  // Use deterministic values
+  const sender = AccountAddress.from("0x1");
+  const secondaryAddresses = [
+    AccountAddress.from("0x2222222222222222222222222222222222222222222222222222222222222222"),
+  ];
 
-    const payload = createTransferPayload(AccountAddress.from("0x3"), BigInt(1000));
+  const payload = createTransferPayload(AccountAddress.from("0x3"), BigInt(1000));
 
-    const rawTxn = new RawTransaction(
-      sender,
-      BigInt(0),
-      payload,
-      BigInt(100000),
-      BigInt(100),
-      BigInt(1700000000),
-      new ChainId(1),
-    );
+  const rawTxn = new RawTransaction(
+    sender,
+    BigInt(0),
+    payload,
+    BigInt(100000),
+    BigInt(100),
+    BigInt(1700000000),
+    new ChainId(1),
+  );
 
-    const multiAgentTxn = new MultiAgentTransaction(rawTxn, secondaryAddresses);
+  const multiAgentTxn = new MultiAgentTransaction(rawTxn, secondaryAddresses);
 
-    this.testVectors.set("multiAgentTransaction", multiAgentTxn);
-  },
-);
+  this.testVectors.set("multiAgentTransaction", multiAgentTxn);
+});
 
 When("I serialize it", function (this: AptosWorld) {
   // Try multiple sources in order of specificity
-  const multiAgentTxn = this.testVectors.get("multiAgentTransaction") as MultiAgentTransaction | undefined;
-  const feePayerTxn = this.testVectors.get("feePayerTransaction") as FeePayerRawTransaction | undefined;
-  const signedTxn = this.signedTransaction ?? this.testVectors.get("signedTransaction") as SignedTransaction | undefined;
+  const multiAgentTxn = this.testVectors.get("multiAgentTransaction") as
+    | MultiAgentTransaction
+    | undefined;
+  const feePayerTxn = this.testVectors.get("feePayerTransaction") as
+    | FeePayerRawTransaction
+    | undefined;
+  const signedTxn =
+    this.signedTransaction ??
+    (this.testVectors.get("signedTransaction") as SignedTransaction | undefined);
 
   if (multiAgentTxn) {
     this.bytes = multiAgentTxn.bcsToBytes();
@@ -941,14 +830,11 @@ When("I serialize it", function (this: AptosWorld) {
   }
 });
 
-Then(
-  "the bytes should match expected value from test vectors",
-  function (this: AptosWorld) {
-    // Verify structure is correct
-    expect(this.bytes).to.not.be.undefined;
-    expect(this.bytes!.length).to.be.greaterThan(100);
-  },
-);
+Then("the bytes should match expected value from test vectors", function (this: AptosWorld) {
+  // Verify structure is correct
+  expect(this.bytes).to.not.be.undefined;
+  expect(this.bytes!.length).to.be.greaterThan(100);
+});
 
 // =============================================================================
 // Signature Collection Order Steps
@@ -957,7 +843,7 @@ Then(
 When("secondary signer 2 signs first", function (this: AptosWorld) {
   const secondaries = this.testVectors.get("secondaryAccounts") as Account[];
   const rawTxn = this.testVectors.get("rawTransaction") as RawTransaction;
-  const secondaryAddresses = secondaries.map(s => s.accountAddress);
+  const secondaryAddresses = secondaries.map((s) => s.accountAddress);
 
   const signingMessage = generateSigningMessageForTransaction({
     rawTransaction: rawTxn,
@@ -1005,8 +891,8 @@ When("I combine in correct order", function (this: AptosWorld) {
   const secondary2Auth = this.testVectors.get("secondary2Auth") as AccountAuthenticator;
   const secondaries = this.testVectors.get("secondaryAccounts") as Account[];
 
-  const secondaryAddresses = secondaries.map(s => s.accountAddress);
-  const secondaryAuths = [secondary1Auth, secondary2Auth].filter(a => a !== undefined);
+  const secondaryAddresses = secondaries.map((s) => s.accountAddress);
+  const secondaryAuths = [secondary1Auth, secondary2Auth].filter((a) => a !== undefined);
 
   const multiAgentAuth = new TransactionAuthenticatorMultiAgent(
     senderAuth,
@@ -1059,7 +945,7 @@ Given("a multi-agent transaction with 2 secondary signers", function (this: Apto
 When("only 1 secondary signer signs", function (this: AptosWorld) {
   const secondaries = this.testVectors.get("secondaryAccounts") as Account[];
   const rawTxn = this.testVectors.get("rawTransaction") as RawTransaction;
-  const secondaryAddresses = secondaries.map(s => s.accountAddress);
+  const secondaryAddresses = secondaries.map((s) => s.accountAddress);
 
   const signingMessage = generateSigningMessageForTransaction({
     rawTransaction: rawTxn,
@@ -1081,8 +967,12 @@ When("I try to submit the multi-agent transaction", function (this: AptosWorld) 
   const secondaryAuths = this.testVectors.get("secondaryAuths") as AccountAuthenticator[];
 
   if (secondaryAuths.length < secondaries.length) {
-    this.error = new Error("Incomplete signature collection: expected " +
-      secondaries.length + " secondary signatures, got " + secondaryAuths.length);
+    this.error = new Error(
+      "Incomplete signature collection: expected " +
+        secondaries.length +
+        " secondary signatures, got " +
+        secondaryAuths.length,
+    );
   }
 });
 
@@ -1123,8 +1013,13 @@ When("I try to create the authenticator", function (this: AptosWorld) {
   const auths = this.testVectors.get("secondaryAuths") as AccountAuthenticator[];
 
   if (addresses && auths && addresses.length !== auths.length) {
-    this.error = new Error("Mismatched secondary signer count: " +
-      addresses.length + " addresses but " + auths.length + " signatures");
+    this.error = new Error(
+      "Mismatched secondary signer count: " +
+        addresses.length +
+        " addresses but " +
+        auths.length +
+        " signatures",
+    );
   }
 });
 

@@ -17,13 +17,10 @@ Given("bytes for string {string}", function (this: AptosWorld, str: string) {
   this.bytes = new TextEncoder().encode(str);
 });
 
-Given(
-  "bytes for {string} and {string}",
-  function (this: AptosWorld, str1: string, str2: string) {
-    this.testVectors.set("input1", new TextEncoder().encode(str1));
-    this.testVectors.set("input2", new TextEncoder().encode(str2));
-  },
-);
+Given("bytes for {string} and {string}", function (this: AptosWorld, str1: string, str2: string) {
+  this.testVectors.set("input1", new TextEncoder().encode(str1));
+  this.testVectors.set("input2", new TextEncoder().encode(str2));
+});
 
 Given(
   /^bytes \["([^"]+)", "([^"]+)", "([^"]+)"\]$/,
@@ -42,32 +39,23 @@ Given(
   },
 );
 
-Given(
-  "the domain string {string}",
-  function (this: AptosWorld, domain: string) {
-    this.testVectors.set("domain", domain);
-  },
-);
+Given("the domain string {string}", function (this: AptosWorld, domain: string) {
+  this.testVectors.set("domain", domain);
+});
 
 Given("transaction data bytes", function (this: AptosWorld) {
   // Generate some sample transaction data
-  this.testVectors.set(
-    "transactionData",
-    new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8]),
-  );
+  this.testVectors.set("transactionData", new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8]));
 });
 
 Given("the same data bytes", function (this: AptosWorld) {
   this.bytes = new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8]);
 });
 
-Given(
-  "domains {string} and {string}",
-  function (this: AptosWorld, d1: string, d2: string) {
-    this.testVectors.set("domain1", d1);
-    this.testVectors.set("domain2", d2);
-  },
-);
+Given("domains {string} and {string}", function (this: AptosWorld, d1: string, d2: string) {
+  this.testVectors.set("domain1", d1);
+  this.testVectors.set("domain2", d2);
+});
 
 Given("a 64-character hex string", function (this: AptosWorld) {
   this.hexString = "0x" + "a".repeat(64);
@@ -132,12 +120,9 @@ When("I compute SHA3-256 twice", function (this: AptosWorld) {
   this.testVectors.set("hash2", hash2);
 });
 
-When(
-  "I compute SHA3-256 of all parts concatenated",
-  function (this: AptosWorld) {
-    this.result = sha3_256(this.bytes!);
-  },
-);
+When("I compute SHA3-256 of all parts concatenated", function (this: AptosWorld) {
+  this.result = sha3_256(this.bytes!);
+});
 
 When("I compute SHA3-256 of the domain", function (this: AptosWorld) {
   const domain = this.testVectors.get("domain") as string;
@@ -217,9 +202,7 @@ When("I create a HashValue from the bytes", function (this: AptosWorld) {
 
 When("I create a HashValue from hex", function (this: AptosWorld) {
   try {
-    const hex = this.hexString!.startsWith("0x")
-      ? this.hexString!.slice(2)
-      : this.hexString!;
+    const hex = this.hexString!.startsWith("0x") ? this.hexString!.slice(2) : this.hexString!;
     const bytes = new Uint8Array(hex.length / 2);
     for (let i = 0; i < bytes.length; i++) {
       bytes[i] = parseInt(hex.slice(i * 2, i * 2 + 2), 16);
@@ -266,14 +249,11 @@ When(
 // Then Steps - Hash Validation
 // =============================================================================
 
-Then(
-  "the hex should be {string}",
-  function (this: AptosWorld, expected: string) {
-    const result = this.result as Uint8Array;
-    const actual = bytesToHex(result).replace(/^0x/, "").toLowerCase();
-    expect(actual).to.equal(expected.toLowerCase());
-  },
-);
+Then("the hex should be {string}", function (this: AptosWorld, expected: string) {
+  const result = this.result as Uint8Array;
+  const actual = bytesToHex(result).replace(/^0x/, "").toLowerCase();
+  expect(actual).to.equal(expected.toLowerCase());
+});
 
 Then("the hashes should be different", function (this: AptosWorld) {
   const hash1 = this.testVectors.get("hash1") as Uint8Array;
@@ -303,14 +283,11 @@ Then("both results should be identical", function (this: AptosWorld) {
   expect(bytesToHex(val1)).to.equal(bytesToHex(val2));
 });
 
-Then(
-  "the result should equal SHA3-256 of {string}",
-  function (this: AptosWorld, str: string) {
-    const expected = sha3_256(new TextEncoder().encode(str));
-    const actual = this.result as Uint8Array;
-    expect(bytesToHex(actual)).to.equal(bytesToHex(expected));
-  },
-);
+Then("the result should equal SHA3-256 of {string}", function (this: AptosWorld, str: string) {
+  const expected = sha3_256(new TextEncoder().encode(str));
+  const actual = this.result as Uint8Array;
+  expect(bytesToHex(actual)).to.equal(bytesToHex(expected));
+});
 
 Then(
   /^the result should be SHA3-256\(SHA3-256\(domain\) \|\| data\)$/,
@@ -339,16 +316,11 @@ Then("the results should be different", function (this: AptosWorld) {
   expect(bytesToHex(val1)).to.not.equal(bytesToHex(val2));
 });
 
-Then(
-  "the result should be SHA3-256 of the domain string bytes",
-  function (this: AptosWorld) {
-    const domain = this.testVectors.get("domain") as string;
-    const expected = sha3_256(new TextEncoder().encode(domain));
-    expect(bytesToHex(this.result as Uint8Array)).to.equal(
-      bytesToHex(expected),
-    );
-  },
-);
+Then("the result should be SHA3-256 of the domain string bytes", function (this: AptosWorld) {
+  const domain = this.testVectors.get("domain") as string;
+  const expected = sha3_256(new TextEncoder().encode(domain));
+  expect(bytesToHex(this.result as Uint8Array)).to.equal(bytesToHex(expected));
+});
 
 Then(
   "the first {int} bytes should be {string}",
@@ -359,9 +331,7 @@ Then(
 );
 
 Then("the hash value should contain those bytes", function (this: AptosWorld) {
-  expect(bytesToHex(this.result as Uint8Array)).to.equal(
-    bytesToHex(this.bytes!),
-  );
+  expect(bytesToHex(this.result as Uint8Array)).to.equal(bytesToHex(this.bytes!));
 });
 
 Then("all 32 bytes should be zero", function (this: AptosWorld) {
@@ -371,12 +341,9 @@ Then("all 32 bytes should be zero", function (this: AptosWorld) {
   }
 });
 
-Then(
-  "the hex length should be {int} characters",
-  function (this: AptosWorld, count: number) {
-    expect(this.hexString!.length).to.equal(count);
-  },
-);
+Then("the hex length should be {int} characters", function (this: AptosWorld, count: number) {
+  expect(this.hexString!.length).to.equal(count);
+});
 
 // Removed duplicate - use version from address.steps.ts
 Then("the two hashes should be equal", function (this: AptosWorld) {
@@ -389,19 +356,14 @@ Then(
   "the result should equal a HashValue created from the expected hash",
   function (this: AptosWorld) {
     const expected = this.testVectors.get("expectedHash") as Uint8Array;
-    expect(bytesToHex(this.result as Uint8Array)).to.equal(
-      bytesToHex(expected),
-    );
+    expect(bytesToHex(this.result as Uint8Array)).to.equal(bytesToHex(expected));
   },
 );
 
-Then(
-  "it should fail with an invalid length error",
-  function (this: AptosWorld) {
-    expect(this.error).to.not.be.undefined;
-    expect(this.error!.message).to.include("length");
-  },
-);
+Then("it should fail with an invalid length error", function (this: AptosWorld) {
+  expect(this.error).to.not.be.undefined;
+  expect(this.error!.message).to.include("length");
+});
 
 Then("the operation should complete successfully", function (this: AptosWorld) {
   expect(this.error).to.be.undefined;

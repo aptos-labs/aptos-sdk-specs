@@ -3,7 +3,7 @@
 
 .PHONY: all build test test-required test-preferred test-optional \
         test-core-types test-cryptography test-accounts test-transactions \
-        test-api-clients test-advanced clean setup link-features help
+        test-api-clients test-advanced clean setup link-features format lint help
 
 # Default target
 all: test
@@ -76,6 +76,14 @@ clean:
 	rm -rf .build
 	rm -rf Tests/AptosSpecsTests/Features
 	rm -rf Tests/AptosSpecsTests/TestVectors
+
+# Format code (requires swift-format: brew install swift-format)
+format:
+	swift-format -i -r Sources/ Tests/ 2>/dev/null || echo "Install swift-format: brew install swift-format"
+
+# Lint code (requires swiftlint: brew install swiftlint)
+lint:
+	swiftlint 2>/dev/null || echo "Install swiftlint: brew install swiftlint"
 
 # Show help
 help:

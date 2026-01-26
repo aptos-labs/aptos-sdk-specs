@@ -342,7 +342,7 @@ public class TransactionSteps
             {
                 _world.Account = Ed25519Account.Generate();
             }
-            
+
             // Create a dummy message to sign
             var message = new byte[32];
             Random.Shared.NextBytes(message);
@@ -365,7 +365,7 @@ public class TransactionSteps
             {
                 _world.Secp256k1PrivateKey = Secp256k1PrivateKey.Generate();
             }
-            
+
             var message = new byte[32];
             Random.Shared.NextBytes(message);
             _world.Secp256k1Signature = (Secp256k1Signature)_world.Secp256k1PrivateKey.Sign(message);
@@ -418,8 +418,8 @@ public class TransactionSteps
     [Then("the sender should be {string}")]
     public void ThenTheSenderShouldBe(string expected)
     {
-        var actual = _world.TestVectors.TryGetValue("senderAddress", out var addr) 
-            ? ((AccountAddress)addr).ToString() 
+        var actual = _world.TestVectors.TryGetValue("senderAddress", out var addr)
+            ? ((AccountAddress)addr).ToString()
             : null;
         actual.Should().NotBeNull();
         actual!.ToLowerInvariant().Should().Contain(expected.ToLowerInvariant().Replace("0x", ""));

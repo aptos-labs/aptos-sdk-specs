@@ -299,9 +299,9 @@ public class ViewFunctionSteps
     public void GivenAViewFunctionReturningAStruct()
     {
         _world.TestVectors["expectedReturnType"] = "struct";
-        _world.TestVectors["viewResult"] = new List<object> 
-        { 
-            new Dictionary<string, object> { { "value", 100UL } } 
+        _world.TestVectors["viewResult"] = new List<object>
+        {
+            new Dictionary<string, object> { { "value", 100UL } }
         };
     }
 

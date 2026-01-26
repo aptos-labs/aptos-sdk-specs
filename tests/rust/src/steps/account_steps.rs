@@ -57,7 +57,9 @@ fn given_derivation_path(world: &mut TestWorld, path: String) {
         .last()
         .and_then(|s| s.trim_end_matches('\'').parse::<u32>().ok())
         .unwrap_or(0);
-    world.named_values.insert("derivation_index".to_string(), index.to_string());
+    world
+        .named_values
+        .insert("derivation_index".to_string(), index.to_string());
 }
 
 // =============================================================================
@@ -116,8 +118,7 @@ fn when_get_public_key(world: &mut TestWorld) {
 
 #[when("I sign a message with the account")]
 fn when_sign_with_account(world: &mut TestWorld) {
-    if let (Some(account), Some(message)) =
-        (world.ed25519_account.as_ref(), world.message.as_ref())
+    if let (Some(account), Some(message)) = (world.ed25519_account.as_ref(), world.message.as_ref())
     {
         match account.sign(message) {
             Ok(signature_bytes) => world.bytes = Some(signature_bytes),
@@ -159,26 +160,27 @@ fn then_account_public_key_32_bytes(world: &mut TestWorld) {
 
 #[then("the two accounts should have different addresses")]
 fn then_accounts_different_addresses(world: &mut TestWorld) {
-    if let (Some(acc1), Some(acc2)) =
-        (world.ed25519_account.as_ref(), world.ed25519_account2.as_ref())
-    {
+    if let (Some(acc1), Some(acc2)) = (
+        world.ed25519_account.as_ref(),
+        world.ed25519_account2.as_ref(),
+    ) {
         assert_ne!(acc1.address(), acc2.address());
     }
 }
 
 #[then("the two accounts should have different public keys")]
 fn then_accounts_different_public_keys(world: &mut TestWorld) {
-    if let (Some(acc1), Some(acc2)) =
-        (world.ed25519_account.as_ref(), world.ed25519_account2.as_ref())
-    {
+    if let (Some(acc1), Some(acc2)) = (
+        world.ed25519_account.as_ref(),
+        world.ed25519_account2.as_ref(),
+    ) {
         assert_ne!(acc1.public_key_bytes(), acc2.public_key_bytes());
     }
 }
 
 #[then("recreating from the same private key should produce the same account")]
 fn then_same_private_key_same_account(world: &mut TestWorld) {
-    if let (Some(ref hex), Some(acc1)) =
-        (world.hex_string.as_ref(), world.ed25519_account.as_ref())
+    if let (Some(ref hex), Some(acc1)) = (world.hex_string.as_ref(), world.ed25519_account.as_ref())
     {
         let acc2 = Ed25519Account::from_private_key_hex(hex).unwrap();
         assert_eq!(acc1.address(), acc2.address());
@@ -245,4 +247,3 @@ fn then_invalid_mnemonic_error(world: &mut TestWorld) {
 fn then_invalid_derivation_path_error(world: &mut TestWorld) {
     assert!(world.has_error(), "Expected invalid derivation path error");
 }
-
