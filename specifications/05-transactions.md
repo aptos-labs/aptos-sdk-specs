@@ -37,12 +37,13 @@ Final
 
 ### 1.1 Purpose
 
-Transactions are the fundamental unit of state change on Aptos. This specification defines how
-SDKs construct, sign, and serialize transactions for submission to the network.
+Transactions are the fundamental unit of state change on Aptos. This specification defines how SDKs
+construct, sign, and serialize transactions for submission to the network.
 
 ### 1.2 Scope
 
 This specification covers:
+
 - Raw transaction structure and fields
 - Transaction payload types
 - Entry function construction
@@ -52,14 +53,14 @@ This specification covers:
 
 ### 1.3 Definitions
 
-| Term                | Definition                                              |
-| ------------------- | ------------------------------------------------------- |
-| RawTransaction      | Unsigned transaction with all fields                    |
-| SignedTransaction   | RawTransaction with authenticator (signature)           |
-| Payload             | The operation to execute (entry function, script, etc.) |
-| Authenticator       | Proof of authorization (signature + public key)         |
-| Sequence Number     | Nonce preventing replay attacks                         |
-| Gas                 | Computational resource unit                             |
+| Term              | Definition                                              |
+| ----------------- | ------------------------------------------------------- |
+| RawTransaction    | Unsigned transaction with all fields                    |
+| SignedTransaction | RawTransaction with authenticator (signature)           |
+| Payload           | The operation to execute (entry function, script, etc.) |
+| Authenticator     | Proof of authorization (signature + public key)         |
+| Sequence Number   | Nonce preventing replay attacks                         |
+| Gas               | Computational resource unit                             |
 
 ---
 
@@ -74,19 +75,20 @@ perform, who is performing it, and the transaction parameters.
 
 ### 2.2 Fields [P0]
 
-| Field                     | Type               | Description                           |
-| ------------------------- | ------------------ | ------------------------------------- |
-| sender                    | AccountAddress     | Transaction sender's address          |
-| sequence_number           | u64                | Sender's current sequence number      |
-| payload                   | TransactionPayload | The operation to execute              |
-| max_gas_amount            | u64                | Maximum gas units to consume          |
-| gas_unit_price            | u64                | Gas price in octas (1 APT = 10^8 octas)|
-| expiration_timestamp_secs | u64                | Unix timestamp after which tx expires |
-| chain_id                  | ChainId            | Network chain identifier              |
+| Field                     | Type               | Description                             |
+| ------------------------- | ------------------ | --------------------------------------- |
+| sender                    | AccountAddress     | Transaction sender's address            |
+| sequence_number           | u64                | Sender's current sequence number        |
+| payload                   | TransactionPayload | The operation to execute                |
+| max_gas_amount            | u64                | Maximum gas units to consume            |
+| gas_unit_price            | u64                | Gas price in octas (1 APT = 10^8 octas) |
+| expiration_timestamp_secs | u64                | Unix timestamp after which tx expires   |
+| chain_id                  | ChainId            | Network chain identifier                |
 
 ### 2.3 Construction [P0]
 
 **Signature:**
+
 ```
 RawTransaction::new(
     sender: AccountAddress,
@@ -101,17 +103,17 @@ RawTransaction::new(
 
 ### 2.4 Methods [P0]
 
-| Method                          | Return Type        | Description                |
-| ------------------------------- | ------------------ | -------------------------- |
-| `sender()`                      | AccountAddress     | Get sender address         |
-| `sequence_number()`             | u64                | Get sequence number        |
-| `payload()`                     | &TransactionPayload| Get payload reference      |
-| `max_gas_amount()`              | u64                | Get max gas                 |
-| `gas_unit_price()`              | u64                | Get gas price              |
-| `expiration_timestamp_secs()`   | u64                | Get expiration timestamp   |
-| `chain_id()`                    | ChainId            | Get chain ID               |
-| `signing_message()`             | bytes              | Get bytes to sign          |
-| `sign(account)`                 | SignedTransaction  | Sign with account          |
+| Method                        | Return Type         | Description              |
+| ----------------------------- | ------------------- | ------------------------ |
+| `sender()`                    | AccountAddress      | Get sender address       |
+| `sequence_number()`           | u64                 | Get sequence number      |
+| `payload()`                   | &TransactionPayload | Get payload reference    |
+| `max_gas_amount()`            | u64                 | Get max gas              |
+| `gas_unit_price()`            | u64                 | Get gas price            |
+| `expiration_timestamp_secs()` | u64                 | Get expiration timestamp |
+| `chain_id()`                  | ChainId             | Get chain ID             |
+| `signing_message()`           | bytes               | Get bytes to sign        |
+| `sign(account)`               | SignedTransaction   | Sign with account        |
 
 ### 2.5 BCS Serialization [P0]
 
@@ -174,16 +176,17 @@ An `EntryFunction` represents a call to a Move entry function on-chain.
 
 ### 4.2 Fields [P0]
 
-| Field     | Type           | Description                        |
-| --------- | -------------- | ---------------------------------- |
-| module    | MoveModuleId   | Module containing the function     |
-| function  | string         | Function name (identifier)         |
-| type_args | Vec<TypeTag>   | Generic type arguments             |
-| args      | Vec<bytes>     | BCS-encoded function arguments     |
+| Field     | Type         | Description                    |
+| --------- | ------------ | ------------------------------ |
+| module    | MoveModuleId | Module containing the function |
+| function  | string       | Function name (identifier)     |
+| type_args | Vec<TypeTag> | Generic type arguments         |
+| args      | Vec<bytes>   | BCS-encoded function arguments |
 
 ### 4.3 Construction [P0]
 
 **Signature:**
+
 ```
 EntryFunction::new(
     module: MoveModuleId,
@@ -197,24 +200,22 @@ EntryFunction::new(
 
 #### 4.4.1 APT Transfer
 
-**Module:** `0x1::aptos_account`
-**Function:** `transfer`
-**Type Args:** None
-**Args:** `[recipient: address, amount: u64]`
+**Module:** `0x1::aptos_account` **Function:** `transfer` **Type Args:** None **Args:**
+`[recipient: address, amount: u64]`
 
 **Convenience Constructor:**
+
 ```
 EntryFunction::apt_transfer(to: AccountAddress, amount: u64) -> EntryFunction
 ```
 
 #### 4.4.2 Coin Transfer
 
-**Module:** `0x1::coin`
-**Function:** `transfer`
-**Type Args:** `[CoinType]`
-**Args:** `[recipient: address, amount: u64]`
+**Module:** `0x1::coin` **Function:** `transfer` **Type Args:** `[CoinType]` **Args:**
+`[recipient: address, amount: u64]`
 
 **Convenience Constructor:**
+
 ```
 EntryFunction::coin_transfer(
     coin_type: TypeTag,
@@ -227,20 +228,20 @@ EntryFunction::coin_transfer(
 
 Function arguments **MUST** be individually BCS-encoded:
 
-| Move Type     | BCS Encoding                        |
-| ------------- | ----------------------------------- |
-| `address`     | 32 bytes (AccountAddress)           |
-| `u8`          | 1 byte                              |
-| `u16`         | 2 bytes, little-endian              |
-| `u32`         | 4 bytes, little-endian              |
-| `u64`         | 8 bytes, little-endian              |
-| `u128`        | 16 bytes, little-endian             |
-| `u256`        | 32 bytes, little-endian             |
-| `bool`        | 1 byte (0x00 or 0x01)               |
-| `vector<u8>`  | ULEB128 length + raw bytes          |
-| `String`      | ULEB128 length + UTF-8 bytes        |
-| `vector<T>`   | ULEB128 length + each element       |
-| `Option<T>`   | 0x00 (None) or 0x01 + BCS(value)    |
+| Move Type    | BCS Encoding                     |
+| ------------ | -------------------------------- |
+| `address`    | 32 bytes (AccountAddress)        |
+| `u8`         | 1 byte                           |
+| `u16`        | 2 bytes, little-endian           |
+| `u32`        | 4 bytes, little-endian           |
+| `u64`        | 8 bytes, little-endian           |
+| `u128`       | 16 bytes, little-endian          |
+| `u256`       | 32 bytes, little-endian          |
+| `bool`       | 1 byte (0x00 or 0x01)            |
+| `vector<u8>` | ULEB128 length + raw bytes       |
+| `String`     | ULEB128 length + UTF-8 bytes     |
+| `vector<T>`  | ULEB128 length + each element    |
+| `Option<T>`  | 0x00 (None) or 0x01 + BCS(value) |
 
 ### 4.6 BCS Serialization [P0]
 
@@ -265,16 +266,19 @@ Transaction signing creates a cryptographic proof that the sender authorized the
 ### 5.2 Single Signer Signing Message [P0]
 
 **Formula:**
+
 ```
 signing_message = prefix || BCS(raw_transaction)
 ```
 
 **Prefix Computation:**
+
 ```
 prefix = SHA3-256("APTOS::RawTransaction")
 ```
 
 The prefix is a fixed 32-byte value:
+
 ```
 prefix_hex = "0xb5e97db07fa0bd0e5598aa3643a9bc6f6693bddc1a9fec9e674a461eaa00b193"
 ```
@@ -291,16 +295,19 @@ prefix_hex = "0xb5e97db07fa0bd0e5598aa3643a9bc6f6693bddc1a9fec9e674a461eaa00b193
 For transactions with multiple signers:
 
 **Formula:**
+
 ```
 signing_message = prefix || BCS(RawTransactionWithData::MultiAgent)
 ```
 
 **Prefix:**
+
 ```
 prefix = SHA3-256("APTOS::RawTransactionWithData")
 ```
 
 **RawTransactionWithData::MultiAgent:**
+
 ```
 {
     raw_txn: RawTransaction,
@@ -313,11 +320,13 @@ prefix = SHA3-256("APTOS::RawTransactionWithData")
 For sponsored transactions:
 
 **Formula:**
+
 ```
 signing_message = prefix || BCS(RawTransactionWithData::FeePayer)
 ```
 
 **RawTransactionWithData::FeePayer:**
+
 ```
 {
     raw_txn: RawTransaction,
@@ -346,6 +355,7 @@ A `SignedTransaction` is a `RawTransaction` combined with an authenticator, read
 ### 6.3 Construction [P0]
 
 **Signature:**
+
 ```
 SignedTransaction::new(
     raw_txn: RawTransaction,
@@ -355,21 +365,23 @@ SignedTransaction::new(
 
 ### 6.4 Methods [P0]
 
-| Method              | Return Type                 | Description                   |
-| ------------------- | --------------------------- | ----------------------------- |
-| `raw_transaction()` | &RawTransaction             | Get raw transaction reference |
-| `authenticator()`   | &TransactionAuthenticator   | Get authenticator reference   |
-| `to_bytes()`        | bytes                       | Serialize to BCS bytes        |
-| `hash()`            | HashValue                   | Compute transaction hash      |
+| Method              | Return Type               | Description                   |
+| ------------------- | ------------------------- | ----------------------------- |
+| `raw_transaction()` | &RawTransaction           | Get raw transaction reference |
+| `authenticator()`   | &TransactionAuthenticator | Get authenticator reference   |
+| `to_bytes()`        | bytes                     | Serialize to BCS bytes        |
+| `hash()`            | HashValue                 | Compute transaction hash      |
 
 ### 6.5 Transaction Hash [P0]
 
 **Formula:**
+
 ```
 hash = SHA3-256(prefix || BCS(SignedTransaction))
 ```
 
 **Prefix:**
+
 ```
 prefix = SHA3-256("APTOS::Transaction")
 ```
@@ -411,6 +423,7 @@ TransactionAuthenticator :=
 | signature  | Ed25519Signature | 64 bytes |
 
 **BCS Serialization:**
+
 ```
 BCS(Ed25519Authenticator) :=
     BCS(public_key) ||  // 32 bytes
@@ -421,9 +434,9 @@ BCS(Ed25519Authenticator) :=
 
 Used with `AnyPublicKey` for flexible key type support.
 
-| Field | Type                 |
-| ----- | -------------------- |
-| sender| AccountAuthenticator |
+| Field  | Type                 |
+| ------ | -------------------- |
+| sender | AccountAuthenticator |
 
 ### 7.5 AccountAuthenticator [P0]
 
@@ -465,26 +478,26 @@ The `TransactionBuilder` provides a fluent API for constructing transactions.
 
 ### 8.2 Default Values [P1]
 
-| Field              | Default Value              |
-| ------------------ | -------------------------- |
-| max_gas_amount     | 200,000                    |
-| gas_unit_price     | 100                        |
-| expiration         | current_time + 600 seconds |
+| Field          | Default Value              |
+| -------------- | -------------------------- |
+| max_gas_amount | 200,000                    |
+| gas_unit_price | 100                        |
+| expiration     | current_time + 600 seconds |
 
 ### 8.3 Builder Methods [P1]
 
-| Method                          | Description                    |
-| ------------------------------- | ------------------------------ |
-| `new()`                         | Create builder with defaults   |
-| `sender(address)`               | Set sender address             |
-| `sequence_number(seq)`          | Set sequence number            |
-| `payload(payload)`              | Set transaction payload        |
-| `max_gas_amount(amount)`        | Set maximum gas                |
-| `gas_unit_price(price)`         | Set gas price                  |
-| `expiration_timestamp_secs(ts)` | Set absolute expiration        |
-| `expiration_from_now(secs)`     | Set relative expiration        |
-| `chain_id(id)`                  | Set chain ID                   |
-| `build()`                       | Build RawTransaction           |
+| Method                          | Description                  |
+| ------------------------------- | ---------------------------- |
+| `new()`                         | Create builder with defaults |
+| `sender(address)`               | Set sender address           |
+| `sequence_number(seq)`          | Set sequence number          |
+| `payload(payload)`              | Set transaction payload      |
+| `max_gas_amount(amount)`        | Set maximum gas              |
+| `gas_unit_price(price)`         | Set gas price                |
+| `expiration_timestamp_secs(ts)` | Set absolute expiration      |
+| `expiration_from_now(secs)`     | Set relative expiration      |
+| `chain_id(id)`                  | Set chain ID                 |
+| `build()`                       | Build RawTransaction         |
 
 ### 8.4 Example Usage
 
@@ -504,12 +517,12 @@ let raw_txn = TransactionBuilder::new()
 
 `build()` **MUST** fail if required fields are missing:
 
-| Missing Field    | Error                    |
-| ---------------- | ------------------------ |
-| sender           | MissingSender            |
-| sequence_number  | MissingSequenceNumber    |
-| payload          | MissingPayload           |
-| chain_id         | MissingChainId           |
+| Missing Field   | Error                 |
+| --------------- | --------------------- |
+| sender          | MissingSender         |
+| sequence_number | MissingSequenceNumber |
+| payload         | MissingPayload        |
+| chain_id        | MissingChainId        |
 
 ---
 

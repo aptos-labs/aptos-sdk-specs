@@ -15,21 +15,21 @@ setup:
 deps:
 	$(PIP) install -r requirements.txt
 
-# Run all tests
+# Run all tests (behave.ini defines feature paths, steps found in ./steps/)
 test:
-	$(PYTHON) -m behave $(FEATURES) --no-capture
+	$(PYTHON) -m behave --no-capture
 
 # Run only required tests
 test-required:
-	$(PYTHON) -m behave $(FEATURES) --tags=@required --no-capture
+	$(PYTHON) -m behave --tags=@required --no-capture
 
 # Run only preferred tests
 test-preferred:
-	$(PYTHON) -m behave $(FEATURES) --tags=@preferred --no-capture
+	$(PYTHON) -m behave --tags=@preferred --no-capture
 
 # Run only optional tests
 test-optional:
-	$(PYTHON) -m behave $(FEATURES) --tags=@optional --no-capture
+	$(PYTHON) -m behave --tags=@optional --no-capture
 
 # Run tests by feature category
 test-core-types:
@@ -52,11 +52,11 @@ test-advanced:
 
 # Run with verbose output
 test-verbose:
-	$(PYTHON) -m behave $(FEATURES) --no-capture -v
+	$(PYTHON) -m behave --no-capture -v
 
 # Generate step definition snippets for unimplemented steps
 snippets:
-	$(PYTHON) -m behave $(FEATURES) --dry-run --snippets
+	$(PYTHON) -m behave --dry-run --snippets
 
 # Clean up
 clean:

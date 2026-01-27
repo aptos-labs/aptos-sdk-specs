@@ -42,6 +42,7 @@ building, signing, and API interaction.
 ### 1.2 Scope
 
 This specification covers:
+
 - Account address representation and formatting
 - Chain/network identification
 - Move type representation (TypeTag, StructTag)
@@ -50,14 +51,14 @@ This specification covers:
 
 ### 1.3 Definitions
 
-| Term            | Definition                                             |
-| --------------- | ------------------------------------------------------ |
-| Account Address | 32-byte unique identifier for an account on Aptos      |
-| Chain ID        | 8-bit identifier for an Aptos network                  |
-| TypeTag         | Representation of a Move type for generic arguments    |
-| StructTag       | Fully qualified Move struct type                       |
-| Short Form      | Address format with leading zeros removed              |
-| Full Form       | Address format as complete 64-character hex string     |
+| Term            | Definition                                          |
+| --------------- | --------------------------------------------------- |
+| Account Address | 32-byte unique identifier for an account on Aptos   |
+| Chain ID        | 8-bit identifier for an Aptos network               |
+| TypeTag         | Representation of a Move type for generic arguments |
+| StructTag       | Fully qualified Move struct type                    |
+| Short Form      | Address format with leading zeros removed           |
+| Full Form       | Address format as complete 64-character hex string  |
 
 ---
 
@@ -83,6 +84,7 @@ The address is stored as a big-endian byte array where byte 0 is the most signif
 Implementations **MUST** provide a method to parse addresses from hex strings.
 
 **Signature:**
+
 ```
 from_hex(input: string) -> Result<AccountAddress, ParseError>
 ```
@@ -99,22 +101,23 @@ from_hex(input: string) -> Result<AccountAddress, ParseError>
 
 **Examples:**
 
-| Input                              | Result                                                             |
-| ---------------------------------- | ------------------------------------------------------------------ |
-| `"0x1"`                            | Success: `[0,0,...,0,1]`                                           |
-| `"1"`                              | Success: `[0,0,...,0,1]`                                           |
-| `"0x0000...0001"` (64 chars)       | Success: `[0,0,...,0,1]`                                           |
-| `"0xABCDEF"`                       | Success: `[0,0,...,0xAB,0xCD,0xEF]`                                 |
-| `""`                               | Error: InvalidAddress                                              |
-| `"0x"`                             | Error: InvalidAddress                                              |
-| `"0xGHIJKL"`                       | Error: InvalidHex                                                  |
-| `"0x00000...00001"` (65 hex chars) | Error: InvalidLength                                               |
+| Input                              | Result                              |
+| ---------------------------------- | ----------------------------------- |
+| `"0x1"`                            | Success: `[0,0,...,0,1]`            |
+| `"1"`                              | Success: `[0,0,...,0,1]`            |
+| `"0x0000...0001"` (64 chars)       | Success: `[0,0,...,0,1]`            |
+| `"0xABCDEF"`                       | Success: `[0,0,...,0xAB,0xCD,0xEF]` |
+| `""`                               | Error: InvalidAddress               |
+| `"0x"`                             | Error: InvalidAddress               |
+| `"0xGHIJKL"`                       | Error: InvalidHex                   |
+| `"0x00000...00001"` (65 hex chars) | Error: InvalidLength                |
 
 #### 2.3.2 From Bytes [P0]
 
 Implementations **MUST** provide a method to create an address from raw bytes.
 
 **Signature:**
+
 ```
 from_bytes(bytes: [u8; 32]) -> AccountAddress
 ```
@@ -126,18 +129,19 @@ variant for variable-length input that returns an error if length is not 32.
 
 Implementations **MUST** provide the following address constants:
 
-| Constant | Value | Bytes                        | Purpose                    |
-| -------- | ----- | ---------------------------- | -------------------------- |
-| `ZERO`   | 0x0   | `[0; 32]`                    | All-zeros address          |
-| `ONE`    | 0x1   | `[0,0,...,0,1]`              | Framework address          |
-| `THREE`  | 0x3   | `[0,0,...,0,3]`              | Token module address       |
-| `FOUR`   | 0x4   | `[0,0,...,0,4]`              | Objects module address     |
+| Constant | Value | Bytes           | Purpose                |
+| -------- | ----- | --------------- | ---------------------- |
+| `ZERO`   | 0x0   | `[0; 32]`       | All-zeros address      |
+| `ONE`    | 0x1   | `[0,0,...,0,1]` | Framework address      |
+| `THREE`  | 0x3   | `[0,0,...,0,3]` | Token module address   |
+| `FOUR`   | 0x4   | `[0,0,...,0,4]` | Objects module address |
 
 ### 2.5 Formatting
 
 #### 2.5.1 Full Hex Format [P0]
 
 **Signature:**
+
 ```
 to_hex() -> string
 ```
@@ -150,6 +154,7 @@ to_hex() -> string
 4. All 32 bytes **MUST** be represented, including leading zeros
 
 **Example:**
+
 ```
 Address bytes: [0,0,...,0,1]
 to_hex(): "0x0000000000000000000000000000000000000000000000000000000000000001"
@@ -158,6 +163,7 @@ to_hex(): "0x0000000000000000000000000000000000000000000000000000000000000001"
 #### 2.5.2 Short String Format [P0]
 
 **Signature:**
+
 ```
 to_short_string() -> string
 ```
@@ -171,12 +177,12 @@ to_short_string() -> string
 
 **Examples:**
 
-| Bytes                              | Short String |
-| ---------------------------------- | ------------ |
-| `[0,0,...,0,0]`                    | `"0x0"`      |
-| `[0,0,...,0,1]`                    | `"0x1"`      |
-| `[0,0,...,0,0x10]`                 | `"0x10"`     |
-| `[0x12,0x34,...,0xef]` (all 32)    | `"0x1234...ef"` (full 64 chars) |
+| Bytes                           | Short String                    |
+| ------------------------------- | ------------------------------- |
+| `[0,0,...,0,0]`                 | `"0x0"`                         |
+| `[0,0,...,0,1]`                 | `"0x1"`                         |
+| `[0,0,...,0,0x10]`              | `"0x10"`                        |
+| `[0x12,0x34,...,0xef]` (all 32) | `"0x1234...ef"` (full 64 chars) |
 
 ### 2.6 Comparison [P0]
 
@@ -232,21 +238,22 @@ ChainId := u8
 
 ### 3.3 Standard Constants [P0]
 
-| Constant  | Value | Description                    |
-| --------- | ----- | ------------------------------ |
-| `MAINNET` | 1     | Aptos mainnet                  |
-| `TESTNET` | 2     | Aptos testnet                  |
+| Constant  | Value | Description   |
+| --------- | ----- | ------------- |
+| `MAINNET` | 1     | Aptos mainnet |
+| `TESTNET` | 2     | Aptos testnet |
 
 ### 3.4 Additional Constants [P1]
 
-| Constant  | Value | Description                    |
-| --------- | ----- | ------------------------------ |
-| `DEVNET`  | varies| Aptos devnet (value may change)|
-| `LOCAL`   | 4     | Local development network      |
+| Constant | Value  | Description                     |
+| -------- | ------ | ------------------------------- |
+| `DEVNET` | varies | Aptos devnet (value may change) |
+| `LOCAL`  | 4      | Local development network       |
 
 ### 3.5 Construction [P0]
 
 **Signature:**
+
 ```
 new(value: u8) -> ChainId
 ```
@@ -254,6 +261,7 @@ new(value: u8) -> ChainId
 ### 3.6 Methods [P0]
 
 **Signature:**
+
 ```
 id() -> u8  // Get the numeric chain ID value
 ```
@@ -276,7 +284,7 @@ view functions.
 ### 4.2 Variants [P0]
 
 ```
-TypeTag := 
+TypeTag :=
   | Bool
   | U8
   | U16
@@ -295,26 +303,27 @@ TypeTag :=
 Implementations **MUST** parse TypeTag from string representation.
 
 **Signature:**
+
 ```
 from_string(input: string) -> Result<TypeTag, ParseError>
 ```
 
 **Parsing Rules:**
 
-| Input Format                      | TypeTag Variant        |
-| --------------------------------- | ---------------------- |
-| `"bool"`                          | `Bool`                 |
-| `"u8"`                            | `U8`                   |
-| `"u16"`                           | `U16`                  |
-| `"u32"`                           | `U32`                  |
-| `"u64"`                           | `U64`                  |
-| `"u128"`                          | `U128`                 |
-| `"u256"`                          | `U256`                 |
-| `"address"`                       | `Address`              |
-| `"signer"`                        | `Signer`               |
-| `"vector<T>"`                     | `Vector(parse(T))`     |
-| `"addr::module::Name"`            | `Struct(StructTag)`    |
-| `"addr::module::Name<T1, T2>"`    | `Struct(StructTag)`    |
+| Input Format                   | TypeTag Variant     |
+| ------------------------------ | ------------------- |
+| `"bool"`                       | `Bool`              |
+| `"u8"`                         | `U8`                |
+| `"u16"`                        | `U16`               |
+| `"u32"`                        | `U32`               |
+| `"u64"`                        | `U64`               |
+| `"u128"`                       | `U128`              |
+| `"u256"`                       | `U256`              |
+| `"address"`                    | `Address`           |
+| `"signer"`                     | `Signer`            |
+| `"vector<T>"`                  | `Vector(parse(T))`  |
+| `"addr::module::Name"`         | `Struct(StructTag)` |
+| `"addr::module::Name<T1, T2>"` | `Struct(StructTag)` |
 
 **Additional Parsing Requirements:**
 
@@ -326,6 +335,7 @@ from_string(input: string) -> Result<TypeTag, ParseError>
 ### 4.4 Formatting [P0]
 
 **Signature:**
+
 ```
 to_string() -> string
 ```
@@ -379,6 +389,7 @@ StructTag := {
 ### 5.3 Construction [P0]
 
 **Signature:**
+
 ```
 new(
   address: AccountAddress,
@@ -391,11 +402,13 @@ new(
 ### 5.4 Parsing [P0]
 
 **Signature:**
+
 ```
 from_string(input: string) -> Result<StructTag, ParseError>
 ```
 
 **Format:**
+
 ```
 address::module::Name
 address::module::Name<TypeArg1, TypeArg2>
@@ -403,19 +416,21 @@ address::module::Name<TypeArg1, TypeArg2>
 
 **Examples:**
 
-| Input                                              | Parsed StructTag                              |
-| -------------------------------------------------- | --------------------------------------------- |
-| `"0x1::aptos_coin::AptosCoin"`                     | `{0x1, "aptos_coin", "AptosCoin", []}`        |
-| `"0x1::coin::CoinStore<0x1::aptos_coin::AptosCoin>"` | `{0x1, "coin", "CoinStore", [AptosCoin]}`   |
+| Input                                                | Parsed StructTag                          |
+| ---------------------------------------------------- | ----------------------------------------- |
+| `"0x1::aptos_coin::AptosCoin"`                       | `{0x1, "aptos_coin", "AptosCoin", []}`    |
+| `"0x1::coin::CoinStore<0x1::aptos_coin::AptosCoin>"` | `{0x1, "coin", "CoinStore", [AptosCoin]}` |
 
 ### 5.5 Formatting [P0]
 
 **Signature:**
+
 ```
 to_string() -> string
 ```
 
 **Format:**
+
 - Without type args: `{address}::{module}::{name}`
 - With type args: `{address}::{module}::{name}<{type_args joined by ", "}>`
 
@@ -451,6 +466,7 @@ MoveModuleId := {
 ### 6.3 Construction [P0]
 
 **Signatures:**
+
 ```
 new(address: AccountAddress, name: string) -> MoveModuleId
 from_string(input: string) -> Result<MoveModuleId, ParseError>
@@ -482,24 +498,25 @@ BCS(MoveModuleId) :=
 
 ### 7.2 Construction [P0]
 
-| Method                 | Description                           |
-| ---------------------- | ------------------------------------- |
-| `from_u64(value)`      | Create from u64 value                 |
-| `from_u128(value)`     | Create from u128 value                |
-| `from_bytes_le(bytes)` | Create from 32 little-endian bytes    |
-| `from_bytes_be(bytes)` | Create from 32 big-endian bytes       |
+| Method                 | Description                        |
+| ---------------------- | ---------------------------------- |
+| `from_u64(value)`      | Create from u64 value              |
+| `from_u128(value)`     | Create from u128 value             |
+| `from_bytes_le(bytes)` | Create from 32 little-endian bytes |
+| `from_bytes_be(bytes)` | Create from 32 big-endian bytes    |
 
 ### 7.3 Constants [P0]
 
-| Constant | Value                                   |
-| -------- | --------------------------------------- |
-| `ZERO`   | 0                                       |
-| `ONE`    | 1                                       |
-| `MAX`    | 2^256 - 1                               |
+| Constant | Value     |
+| -------- | --------- |
+| `ZERO`   | 0         |
+| `ONE`    | 1         |
+| `MAX`    | 2^256 - 1 |
 
 ### 7.4 String Parsing [P1]
 
 **Signature:**
+
 ```
 from_string(input: string) -> Result<U256, ParseError>
 ```

@@ -43,6 +43,7 @@ communication, request serialization, response parsing, and error handling.
 ### 1.2 Scope
 
 This specification covers:
+
 - Network configuration and endpoints
 - Fullnode REST API operations
 - Transaction submission and waiting
@@ -52,13 +53,13 @@ This specification covers:
 
 ### 1.3 Definitions
 
-| Term            | Definition                                              |
-| --------------- | ------------------------------------------------------- |
-| Fullnode        | Aptos node serving the REST API                         |
-| Faucet          | Service that funds accounts on test networks            |
-| Indexer         | Service providing GraphQL queries for indexed data      |
-| Ledger Version  | Monotonically increasing transaction counter            |
-| Octa            | Smallest unit of APT (1 APT = 10^8 octas)               |
+| Term           | Definition                                         |
+| -------------- | -------------------------------------------------- |
+| Fullnode       | Aptos node serving the REST API                    |
+| Faucet         | Service that funds accounts on test networks       |
+| Indexer        | Service providing GraphQL queries for indexed data |
+| Ledger Version | Monotonically increasing transaction counter       |
+| Octa           | Smallest unit of APT (1 APT = 10^8 octas)          |
 
 ---
 
@@ -81,24 +82,24 @@ Network configuration specifies the endpoints and parameters for connecting to A
 
 ### 2.3 Indexer URLs [P2]
 
-| Network  | Indexer URL                                      |
-| -------- | ------------------------------------------------ |
-| Mainnet  | https://indexer.mainnet.aptoslabs.com/v1/graphql |
-| Testnet  | https://indexer.testnet.aptoslabs.com/v1/graphql |
-| Devnet   | https://indexer.devnet.aptoslabs.com/v1/graphql  |
+| Network | Indexer URL                                      |
+| ------- | ------------------------------------------------ |
+| Mainnet | https://indexer.mainnet.aptoslabs.com/v1/graphql |
+| Testnet | https://indexer.testnet.aptoslabs.com/v1/graphql |
+| Devnet  | https://indexer.devnet.aptoslabs.com/v1/graphql  |
 
 ### 2.4 Configuration Methods [P0]
 
-| Method                   | Priority | Description                 |
-| ------------------------ | -------- | --------------------------- |
-| `mainnet()`              | P0       | Pre-configured mainnet      |
-| `testnet()`              | P0       | Pre-configured testnet      |
-| `devnet()`               | P1       | Pre-configured devnet       |
-| `localnet()`             | P1       | Pre-configured localnet     |
-| `custom(fullnode_url)`   | P0       | Custom fullnode URL         |
-| `with_faucet(url)`       | P1       | Add faucet URL              |
-| `with_indexer(url)`      | P2       | Add indexer URL             |
-| `with_timeout(duration)` | P1       | Set request timeout         |
+| Method                   | Priority | Description             |
+| ------------------------ | -------- | ----------------------- |
+| `mainnet()`              | P0       | Pre-configured mainnet  |
+| `testnet()`              | P0       | Pre-configured testnet  |
+| `devnet()`               | P1       | Pre-configured devnet   |
+| `localnet()`             | P1       | Pre-configured localnet |
+| `custom(fullnode_url)`   | P0       | Custom fullnode URL     |
+| `with_faucet(url)`       | P1       | Add faucet URL          |
+| `with_indexer(url)`      | P2       | Add indexer URL         |
+| `with_timeout(duration)` | P1       | Set request timeout     |
 
 ### 2.5 Default Timeout [P1]
 
@@ -122,17 +123,18 @@ The Fullnode REST API provides access to blockchain state and transaction submis
 
 **Response Fields:**
 
-| Field                 | Type   | Description                    |
-| --------------------- | ------ | ------------------------------ |
-| chain_id              | u8     | Network chain identifier       |
-| epoch                 | u64    | Current epoch number           |
-| ledger_version        | u64    | Latest committed version       |
-| oldest_ledger_version | u64    | Oldest available version       |
-| ledger_timestamp      | u64    | Timestamp in microseconds      |
-| block_height          | u64    | Current block height           |
-| oldest_block_height   | u64    | Oldest available block height  |
+| Field                 | Type | Description                   |
+| --------------------- | ---- | ----------------------------- |
+| chain_id              | u8   | Network chain identifier      |
+| epoch                 | u64  | Current epoch number          |
+| ledger_version        | u64  | Latest committed version      |
+| oldest_ledger_version | u64  | Oldest available version      |
+| ledger_timestamp      | u64  | Timestamp in microseconds     |
+| block_height          | u64  | Current block height          |
+| oldest_block_height   | u64  | Oldest available block height |
 
 **SDK Method:**
+
 ```
 get_ledger_info() -> Result<LedgerInfo, Error>
 ```
@@ -145,12 +147,13 @@ get_ledger_info() -> Result<LedgerInfo, Error>
 
 **Response Fields:**
 
-| Field              | Type   | Description                    |
-| ------------------ | ------ | ------------------------------ |
-| sequence_number    | u64    | Account's sequence number      |
-| authentication_key | string | Current authentication key     |
+| Field              | Type   | Description                |
+| ------------------ | ------ | -------------------------- |
+| sequence_number    | u64    | Account's sequence number  |
+| authentication_key | string | Current authentication key |
 
 **SDK Method:**
+
 ```
 get_account(address: AccountAddress) -> Result<AccountInfo, Error>
 ```
@@ -160,6 +163,7 @@ get_account(address: AccountAddress) -> Result<AccountInfo, Error>
 **Endpoint:** `GET /v1/accounts/{address}/resources`
 
 **SDK Method:**
+
 ```
 get_account_resources(address: AccountAddress) -> Result<Vec<Resource>, Error>
 ```
@@ -169,6 +173,7 @@ get_account_resources(address: AccountAddress) -> Result<Vec<Resource>, Error>
 **Endpoint:** `GET /v1/accounts/{address}/resource/{resource_type}`
 
 **SDK Method:**
+
 ```
 get_account_resource(
     address: AccountAddress,
@@ -177,6 +182,7 @@ get_account_resource(
 ```
 
 **Example:**
+
 ```
 get_account_resource(
     address,
@@ -191,6 +197,7 @@ get_account_resource(
 **Endpoint:** `GET /v1/accounts/{address}/modules`
 
 **SDK Method:**
+
 ```
 get_account_modules(address: AccountAddress) -> Result<Vec<Module>, Error>
 ```
@@ -200,6 +207,7 @@ get_account_modules(address: AccountAddress) -> Result<Vec<Module>, Error>
 **Endpoint:** `GET /v1/accounts/{address}/module/{module_name}`
 
 **SDK Method:**
+
 ```
 get_account_module(
     address: AccountAddress,
@@ -214,6 +222,7 @@ get_account_module(
 **Endpoint:** `GET /v1/transactions/by_hash/{txn_hash}`
 
 **SDK Method:**
+
 ```
 get_transaction_by_hash(hash: string) -> Result<Transaction, Error>
 ```
@@ -223,6 +232,7 @@ get_transaction_by_hash(hash: string) -> Result<Transaction, Error>
 **Endpoint:** `GET /v1/transactions/by_version/{version}`
 
 **SDK Method:**
+
 ```
 get_transaction_by_version(version: u64) -> Result<Transaction, Error>
 ```
@@ -233,12 +243,13 @@ get_transaction_by_version(version: u64) -> Result<Transaction, Error>
 
 **Query Parameters:**
 
-| Parameter | Type   | Description                    |
-| --------- | ------ | ------------------------------ |
-| start     | u64    | Starting sequence number       |
-| limit     | u64    | Maximum transactions to return |
+| Parameter | Type | Description                    |
+| --------- | ---- | ------------------------------ |
+| start     | u64  | Starting sequence number       |
+| limit     | u64  | Maximum transactions to return |
 
 **SDK Method:**
+
 ```
 get_account_transactions(
     address: AccountAddress,
@@ -253,13 +264,14 @@ get_account_transactions(
 
 **Response Fields:**
 
-| Field                 | Type | Description                    |
-| --------------------- | ---- | ------------------------------ |
-| gas_estimate          | u64  | Estimated gas price            |
-| deprioritized_gas_estimate | u64 | Lower priority estimate    |
-| prioritized_gas_estimate   | u64 | Higher priority estimate   |
+| Field                      | Type | Description              |
+| -------------------------- | ---- | ------------------------ |
+| gas_estimate               | u64  | Estimated gas price      |
+| deprioritized_gas_estimate | u64  | Lower priority estimate  |
+| prioritized_gas_estimate   | u64  | Higher priority estimate |
 
 **SDK Method:**
+
 ```
 estimate_gas_price() -> Result<GasEstimate, Error>
 ```
@@ -271,6 +283,7 @@ estimate_gas_price() -> Result<GasEstimate, Error>
 **Endpoint:** `GET /v1/blocks/by_height/{height}`
 
 **SDK Method:**
+
 ```
 get_block_by_height(height: u64, with_transactions: bool) -> Result<Block, Error>
 ```
@@ -280,6 +293,7 @@ get_block_by_height(height: u64, with_transactions: bool) -> Result<Block, Error
 **Endpoint:** `GET /v1/blocks/by_version/{version}`
 
 **SDK Method:**
+
 ```
 get_block_by_version(version: u64, with_transactions: bool) -> Result<Block, Error>
 ```
@@ -289,6 +303,7 @@ get_block_by_version(version: u64, with_transactions: bool) -> Result<Block, Err
 **Endpoint:** `GET /v1/accounts/{address}/events/{event_handle}/{field_name}`
 
 **SDK Method:**
+
 ```
 get_events(
     address: AccountAddress,
@@ -337,6 +352,7 @@ Transaction submission sends signed transactions to the network for execution.
 ```
 
 **SDK Method:**
+
 ```
 submit_transaction(signed_txn: SignedTransaction) -> Result<PendingTransaction, Error>
 ```
@@ -353,6 +369,7 @@ submit_transaction(signed_txn: SignedTransaction) -> Result<PendingTransaction, 
    - Ledger version exceeds transaction expiration
 
 **SDK Method:**
+
 ```
 wait_for_transaction(
     hash: string,
@@ -367,6 +384,7 @@ wait_for_transaction(
 Convenience method combining submission and waiting.
 
 **SDK Method:**
+
 ```
 submit_and_wait(
     signed_txn: SignedTransaction
@@ -386,12 +404,14 @@ submit_and_wait(
 **Body:** BCS-serialized SignedTransaction (signature validity not checked)
 
 **Response:** Simulated execution result including:
+
 - Gas used
 - VM status
 - State changes
 - Events
 
 **SDK Method:**
+
 ```
 simulate_transaction(
     raw_txn: RawTransaction,
@@ -438,6 +458,7 @@ View functions execute read-only Move functions without transaction submission.
 Return values are JSON-encoded Move values.
 
 **SDK Method:**
+
 ```
 view(
     function: string,
@@ -450,11 +471,10 @@ view(
 
 #### 5.3.1 Get Balance
 
-**Function:** `0x1::coin::balance`
-**Type Args:** `[CoinType]`
-**Args:** `[address]`
+**Function:** `0x1::coin::balance` **Type Args:** `[CoinType]` **Args:** `[address]`
 
 **SDK Method:**
+
 ```
 get_balance(
     address: AccountAddress,
@@ -482,16 +502,17 @@ The Faucet provides test tokens on testnet and devnet.
 
 **Query Parameters:**
 
-| Parameter | Type   | Required | Description                    |
-| --------- | ------ | -------- | ------------------------------ |
-| address   | string | Yes      | Account address to fund        |
-| amount    | u64    | No       | Amount in octas (default varies)|
+| Parameter | Type   | Required | Description                      |
+| --------- | ------ | -------- | -------------------------------- |
+| address   | string | Yes      | Account address to fund          |
+| amount    | u64    | No       | Amount in octas (default varies) |
 
 **Response:**
 
 Array of transaction hashes for funding transactions.
 
 **SDK Method:**
+
 ```
 fund_account(
     address: AccountAddress,
@@ -504,6 +525,7 @@ fund_account(
 Convenience method to create a new account and fund it.
 
 **SDK Method:**
+
 ```
 create_and_fund_account(
     amount: Option<u64>
@@ -548,6 +570,7 @@ The Indexer provides GraphQL access to indexed blockchain data.
 ```
 
 **SDK Method:**
+
 ```
 query(
     query: string,
@@ -561,9 +584,7 @@ query(
 
 ```graphql
 query GetAccountTokens($address: String!) {
-  current_token_ownerships(
-    where: { owner_address: { _eq: $address } }
-  ) {
+  current_token_ownerships(where: { owner_address: { _eq: $address } }) {
     token_data_id
     name
     collection_name
@@ -591,9 +612,7 @@ query GetAccountTransactions($address: String!, $limit: Int!) {
 
 ```graphql
 query GetFungibleAssetBalances($address: String!) {
-  current_fungible_asset_balances(
-    where: { owner_address: { _eq: $address } }
-  ) {
+  current_fungible_asset_balances(where: { owner_address: { _eq: $address } }) {
     asset_type
     amount
   }
@@ -637,14 +656,14 @@ All API responses **SHOULD** be wrapped with ledger state information.
 
 ### 8.4 Error Categories [P0]
 
-| HTTP Status | Category       | Description                    |
-| ----------- | -------------- | ------------------------------ |
-| 400         | BadRequest     | Invalid request format         |
-| 404         | NotFound       | Resource not found             |
-| 429         | RateLimited    | Too many requests              |
-| 500         | InternalError  | Server error                   |
-| N/A         | Network        | Connection failed              |
-| N/A         | Timeout        | Request timed out              |
+| HTTP Status | Category      | Description            |
+| ----------- | ------------- | ---------------------- |
+| 400         | BadRequest    | Invalid request format |
+| 404         | NotFound      | Resource not found     |
+| 429         | RateLimited   | Too many requests      |
+| 500         | InternalError | Server error           |
+| N/A         | Network       | Connection failed      |
+| N/A         | Timeout       | Request timed out      |
 
 ---
 
@@ -684,6 +703,7 @@ delay = min(initial_delay * (backoff_factor ^ attempt), max_delay)
 ```
 
 With optional jitter:
+
 ```
 delay = delay * random(0.5, 1.5)
 ```
@@ -694,28 +714,28 @@ delay = delay * random(0.5, 1.5)
 
 ### 10.1 Connection Tests
 
-| Scenario                    | Expected Behavior                |
-| --------------------------- | -------------------------------- |
-| Connect to mainnet          | Successfully retrieve ledger info|
-| Connect to invalid URL      | Return connection error          |
-| Request with timeout        | Return timeout error after delay |
+| Scenario               | Expected Behavior                 |
+| ---------------------- | --------------------------------- |
+| Connect to mainnet     | Successfully retrieve ledger info |
+| Connect to invalid URL | Return connection error           |
+| Request with timeout   | Return timeout error after delay  |
 
 ### 10.2 Account Tests
 
-| Scenario                    | Expected Behavior                |
-| --------------------------- | -------------------------------- |
-| Get existing account        | Return account info              |
-| Get non-existent account    | Return 404 NotFound              |
-| Get account resources       | Return resource list             |
+| Scenario                 | Expected Behavior    |
+| ------------------------ | -------------------- |
+| Get existing account     | Return account info  |
+| Get non-existent account | Return 404 NotFound  |
+| Get account resources    | Return resource list |
 
 ### 10.3 Transaction Tests
 
-| Scenario                    | Expected Behavior                |
-| --------------------------- | -------------------------------- |
-| Submit valid transaction    | Return pending transaction hash  |
-| Submit invalid transaction  | Return error with details        |
-| Wait for confirmed txn      | Return committed transaction     |
-| Wait with timeout           | Return timeout error             |
+| Scenario                   | Expected Behavior               |
+| -------------------------- | ------------------------------- |
+| Submit valid transaction   | Return pending transaction hash |
+| Submit invalid transaction | Return error with details       |
+| Wait for confirmed txn     | Return committed transaction    |
+| Wait with timeout          | Return timeout error            |
 
 ---
 

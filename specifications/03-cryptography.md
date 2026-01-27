@@ -43,6 +43,7 @@ behavior across all SDK implementations.
 ### 1.2 Scope
 
 This specification covers:
+
 - Ed25519 signature scheme (required)
 - Secp256k1 ECDSA signature scheme (preferred)
 - Secp256r1/P-256 for WebAuthn compatibility (optional)
@@ -53,13 +54,13 @@ This specification covers:
 
 ### 1.3 Definitions
 
-| Term              | Definition                                              |
-| ----------------- | ------------------------------------------------------- |
-| Private Key       | Secret key used for signing                             |
-| Public Key        | Derived from private key, used for verification         |
-| Signature         | Cryptographic proof of private key possession           |
-| Authentication Key| Hash of public key with scheme identifier               |
-| CSPRNG            | Cryptographically Secure Pseudo-Random Number Generator |
+| Term               | Definition                                              |
+| ------------------ | ------------------------------------------------------- |
+| Private Key        | Secret key used for signing                             |
+| Public Key         | Derived from private key, used for verification         |
+| Signature          | Cryptographic proof of private key possession           |
+| Authentication Key | Hash of public key with scheme identifier               |
+| CSPRNG             | Cryptographically Secure Pseudo-Random Number Generator |
 
 ---
 
@@ -74,18 +75,19 @@ Signature Algorithm with Curve25519.
 
 ### 2.2 Key Sizes
 
-| Component              | Size     | Description                         |
-| ---------------------- | -------- | ----------------------------------- |
-| Private Key (Seed)     | 32 bytes | Random seed                         |
-| Private Key (Extended) | 64 bytes | Seed concatenated with public key   |
-| Public Key             | 32 bytes | Compressed Edwards point            |
-| Signature              | 64 bytes | (R, s) pair                         |
+| Component              | Size     | Description                       |
+| ---------------------- | -------- | --------------------------------- |
+| Private Key (Seed)     | 32 bytes | Random seed                       |
+| Private Key (Extended) | 64 bytes | Seed concatenated with public key |
+| Public Key             | 32 bytes | Compressed Edwards point          |
+| Signature              | 64 bytes | (R, s) pair                       |
 
 ### 2.3 Key Generation [P0]
 
 #### 2.3.1 Random Generation
 
 **Signature:**
+
 ```
 generate() -> (PrivateKey, PublicKey)
 ```
@@ -99,6 +101,7 @@ generate() -> (PrivateKey, PublicKey)
 #### 2.3.2 From Seed
 
 **Signature:**
+
 ```
 from_seed(seed: [u8; 32]) -> (PrivateKey, PublicKey)
 ```
@@ -112,6 +115,7 @@ from_seed(seed: [u8; 32]) -> (PrivateKey, PublicKey)
 #### 2.3.3 From Bytes
 
 **Signature:**
+
 ```
 from_bytes(bytes: [u8; 64]) -> (PrivateKey, PublicKey)
 ```
@@ -125,6 +129,7 @@ from_bytes(bytes: [u8; 64]) -> (PrivateKey, PublicKey)
 #### 2.3.4 From Hex
 
 **Signature:**
+
 ```
 from_hex(hex: string) -> Result<(PrivateKey, PublicKey), Error>
 ```
@@ -139,6 +144,7 @@ from_hex(hex: string) -> Result<(PrivateKey, PublicKey), Error>
 #### 2.4.1 Sign Message
 
 **Signature:**
+
 ```
 sign(private_key: PrivateKey, message: bytes) -> Signature
 ```
@@ -152,11 +158,13 @@ sign(private_key: PrivateKey, message: bytes) -> Signature
 #### 2.4.2 Sign with Domain Separator
 
 **Signature:**
+
 ```
 sign_with_domain(private_key: PrivateKey, domain: string, message: bytes) -> Signature
 ```
 
 **Domain-Separated Message:**
+
 ```
 signed_message = SHA3-256(SHA3-256(domain) || message)
 ```
@@ -164,6 +172,7 @@ signed_message = SHA3-256(SHA3-256(domain) || message)
 ### 2.5 Verification [P0]
 
 **Signature:**
+
 ```
 verify(public_key: PublicKey, message: bytes, signature: Signature) -> bool
 ```
@@ -177,11 +186,11 @@ verify(public_key: PublicKey, message: bytes, signature: Signature) -> bool
 
 ### 2.6 Key Export [P0]
 
-| Method                | Output Size | Description                    |
-| --------------------- | ----------- | ------------------------------ |
-| `public_key_bytes()`  | 32 bytes    | Raw public key bytes           |
-| `private_key_bytes()` | 32 or 64 bytes | Seed or extended key        |
-| `to_hex()`            | 66 or 130 chars | Hex with 0x prefix         |
+| Method                | Output Size     | Description          |
+| --------------------- | --------------- | -------------------- |
+| `public_key_bytes()`  | 32 bytes        | Raw public key bytes |
+| `private_key_bytes()` | 32 or 64 bytes  | Seed or extended key |
+| `to_hex()`            | 66 or 130 chars | Hex with 0x prefix   |
 
 ### 2.7 Scheme Identifier [P0]
 
@@ -201,16 +210,17 @@ Secp256k1 ECDSA provides compatibility with Ethereum-style wallets and hardware 
 
 ### 3.2 Key Sizes
 
-| Component                 | Size     | Description                    |
-| ------------------------- | -------- | ------------------------------ |
-| Private Key               | 32 bytes | Scalar value                   |
-| Public Key (Compressed)   | 33 bytes | 0x02/0x03 prefix + x-coordinate|
-| Public Key (Uncompressed) | 65 bytes | 0x04 prefix + x + y            |
-| Signature                 | 64 bytes | (r, s) values                  |
+| Component                 | Size     | Description                     |
+| ------------------------- | -------- | ------------------------------- |
+| Private Key               | 32 bytes | Scalar value                    |
+| Public Key (Compressed)   | 33 bytes | 0x02/0x03 prefix + x-coordinate |
+| Public Key (Uncompressed) | 65 bytes | 0x04 prefix + x + y             |
+| Signature                 | 64 bytes | (r, s) values                   |
 
 ### 3.3 Key Generation [P1]
 
 **Signatures:**
+
 ```
 generate() -> (PrivateKey, PublicKey)
 from_bytes(bytes: [u8; 32]) -> Result<(PrivateKey, PublicKey), Error>
@@ -225,18 +235,21 @@ from_hex(hex: string) -> Result<(PrivateKey, PublicKey), Error>
 ### 3.4 Public Key Formats [P1]
 
 **Signatures:**
+
 ```
 to_compressed() -> [u8; 33]
 to_uncompressed() -> [u8; 65]
 ```
 
 **Compressed Format:**
+
 ```
 0x02 || x  (if y is even)
 0x03 || x  (if y is odd)
 ```
 
 **Uncompressed Format:**
+
 ```
 0x04 || x || y
 ```
@@ -244,6 +257,7 @@ to_uncompressed() -> [u8; 65]
 ### 3.5 Signing [P1]
 
 **Signature:**
+
 ```
 sign(private_key: PrivateKey, message_hash: [u8; 32]) -> Signature
 ```
@@ -257,6 +271,7 @@ sign(private_key: PrivateKey, message_hash: [u8; 32]) -> Signature
 ### 3.6 Verification [P1]
 
 **Signature:**
+
 ```
 verify(public_key: PublicKey, message_hash: [u8; 32], signature: Signature) -> bool
 ```
@@ -316,15 +331,16 @@ verification.
 
 ### 5.2 Key Sizes
 
-| Component   | Size     | Description                    |
-| ----------- | -------- | ------------------------------ |
-| Private Key | 32 bytes | Scalar value                   |
-| Public Key  | 48 bytes | G1 point (compressed)          |
-| Signature   | 96 bytes | G2 point (compressed)          |
+| Component   | Size     | Description           |
+| ----------- | -------- | --------------------- |
+| Private Key | 32 bytes | Scalar value          |
+| Public Key  | 48 bytes | G1 point (compressed) |
+| Signature   | 96 bytes | G2 point (compressed) |
 
 ### 5.3 Key Generation [P2]
 
 **Signature:**
+
 ```
 generate() -> (PrivateKey, PublicKey)
 from_bytes(bytes: [u8; 32]) -> Result<(PrivateKey, PublicKey), Error>
@@ -333,6 +349,7 @@ from_bytes(bytes: [u8; 32]) -> Result<(PrivateKey, PublicKey), Error>
 ### 5.4 Signing [P2]
 
 **Signature:**
+
 ```
 sign(private_key: PrivateKey, message: bytes) -> Signature
 ```
@@ -340,6 +357,7 @@ sign(private_key: PrivateKey, message: bytes) -> Signature
 ### 5.5 Verification [P2]
 
 **Signature:**
+
 ```
 verify(public_key: PublicKey, message: bytes, signature: Signature) -> bool
 ```
@@ -347,6 +365,7 @@ verify(public_key: PublicKey, message: bytes, signature: Signature) -> bool
 ### 5.6 Aggregation [P2]
 
 **Signatures:**
+
 ```
 aggregate_signatures(signatures: Vec<Signature>) -> Signature
 aggregate_public_keys(public_keys: Vec<PublicKey>) -> PublicKey
@@ -360,6 +379,7 @@ aggregate_public_keys(public_keys: Vec<PublicKey>) -> PublicKey
 ### 5.7 Proof of Possession [P2]
 
 **Signature:**
+
 ```
 proof_of_possession(private_key: PrivateKey) -> Signature
 verify_proof_of_possession(public_key: PublicKey, proof: Signature) -> bool
@@ -374,6 +394,7 @@ Used to prevent rogue key attacks in multi-signature schemes.
 ### 6.1 SHA3-256 [P0]
 
 **Signature:**
+
 ```
 sha3_256(data: bytes) -> [u8; 32]
 ```
@@ -387,6 +408,7 @@ sha3_256(data: bytes) -> [u8; 32]
 ### 6.2 SHA2-256 [P0]
 
 **Signature:**
+
 ```
 sha256(data: bytes) -> [u8; 32]
 ```
@@ -401,20 +423,22 @@ sha256(data: bytes) -> [u8; 32]
 Aptos uses domain separation to prevent cross-protocol signature attacks.
 
 **Formula:**
+
 ```
 hash = SHA3-256(SHA3-256(domain_string) || data)
 ```
 
 **Common Domains:**
 
-| Domain                            | Usage                              |
-| --------------------------------- | ---------------------------------- |
-| `APTOS::RawTransaction`           | Single-signer transaction signing  |
-| `APTOS::RawTransactionWithData`   | Multi-agent/fee payer transactions |
+| Domain                          | Usage                              |
+| ------------------------------- | ---------------------------------- |
+| `APTOS::RawTransaction`         | Single-signer transaction signing  |
+| `APTOS::RawTransactionWithData` | Multi-agent/fee payer transactions |
 
 ### 6.4 Hashing Multiple Parts [P1]
 
 **Signature:**
+
 ```
 sha3_256_of_parts(parts: Vec<bytes>) -> [u8; 32]
 ```
@@ -449,11 +473,13 @@ authentication_key = SHA3-256(public_key_bytes || scheme_identifier)
 ### 7.4 Ed25519 Authentication Key [P0]
 
 **Signature:**
+
 ```
 auth_key_from_ed25519(public_key: Ed25519PublicKey) -> AuthenticationKey
 ```
 
 **Formula:**
+
 ```
 auth_key = SHA3-256(public_key || 0x00)
 ```
@@ -463,11 +489,13 @@ Where `public_key` is the 32-byte Ed25519 public key.
 ### 7.5 Secp256k1 Authentication Key [P1]
 
 **Signature:**
+
 ```
 auth_key_from_secp256k1(public_key: Secp256k1PublicKey) -> AuthenticationKey
 ```
 
 **Formula:**
+
 ```
 auth_key = SHA3-256(uncompressed_public_key || 0x01)
 ```
@@ -488,11 +516,11 @@ The 32-byte authentication key **IS** the account address.
 
 **Methods:**
 
-| Method              | Description                    |
-| ------------------- | ------------------------------ |
-| `from_bytes(bytes)` | Create from 32-byte array      |
-| `account_address()` | Convert to AccountAddress      |
-| `as_bytes()`        | Get raw 32-byte array          |
+| Method              | Description               |
+| ------------------- | ------------------------- |
+| `from_bytes(bytes)` | Create from 32-byte array |
+| `account_address()` | Convert to AccountAddress |
+| `as_bytes()`        | Get raw 32-byte array     |
 
 ---
 
@@ -503,6 +531,7 @@ The 32-byte authentication key **IS** the account address.
 #### 8.1.1 Generation
 
 **Signature:**
+
 ```
 generate_mnemonic(word_count: u8) -> Mnemonic
 ```
@@ -526,6 +555,7 @@ generate_mnemonic(word_count: u8) -> Mnemonic
 #### 8.1.2 Parsing
 
 **Signature:**
+
 ```
 from_phrase(phrase: string) -> Result<Mnemonic, Error>
 ```
@@ -539,11 +569,13 @@ from_phrase(phrase: string) -> Result<Mnemonic, Error>
 #### 8.1.3 Seed Derivation
 
 **Signature:**
+
 ```
 to_seed(mnemonic: Mnemonic, passphrase: string) -> [u8; 64]
 ```
 
 **Formula:**
+
 ```
 seed = PBKDF2(
   password = mnemonic_phrase,
@@ -564,13 +596,13 @@ m / 44' / 637' / account' / change' / address_index'
 
 **Components:**
 
-| Level | Value | Description                    |
-| ----- | ----- | ------------------------------ |
-| 44'   | Fixed | BIP-44 purpose                 |
-| 637'  | Fixed | Aptos coin type (registered)   |
-| account' | Variable | Account index (default 0) |
-| change'  | 0     | Always 0 for Aptos            |
-| address_index' | Variable | Address index (default 0) |
+| Level          | Value    | Description                  |
+| -------------- | -------- | ---------------------------- |
+| 44'            | Fixed    | BIP-44 purpose               |
+| 637'           | Fixed    | Aptos coin type (registered) |
+| account'       | Variable | Account index (default 0)    |
+| change'        | 0        | Always 0 for Aptos           |
+| address_index' | Variable | Address index (default 0)    |
 
 **Default Path:** `m/44'/637'/0'/0'/0'`
 
@@ -585,6 +617,7 @@ Account 2: m/44'/637'/0'/0'/2'
 #### 8.2.3 Ed25519 Derivation [P1]
 
 **Signature:**
+
 ```
 derive_ed25519(seed: [u8; 64], path: string) -> Ed25519PrivateKey
 ```
@@ -597,6 +630,7 @@ derive_ed25519(seed: [u8; 64], path: string) -> Ed25519PrivateKey
 #### 8.2.4 Secp256k1 Derivation [P1]
 
 **Signature:**
+
 ```
 derive_secp256k1(seed: [u8; 64], path: string) -> Secp256k1PrivateKey
 ```
@@ -705,7 +739,8 @@ Test vectors in `test-vectors/mnemonics.json`:
 
 ### 11.2 External Standards
 
-- [RFC 8032](https://datatracker.ietf.org/doc/html/rfc8032) - Edwards-Curve Digital Signature Algorithm (EdDSA)
+- [RFC 8032](https://datatracker.ietf.org/doc/html/rfc8032) - Edwards-Curve Digital Signature
+  Algorithm (EdDSA)
 - [RFC 6979](https://datatracker.ietf.org/doc/html/rfc6979) - Deterministic ECDSA
 - [BIP-39](https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki) - Mnemonic code
 - [BIP-44](https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki) - HD Wallets

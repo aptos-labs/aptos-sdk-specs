@@ -22,3 +22,6 @@ mnemonic>=0.21
 
 # BIP-32 HD derivation
 bip32utils>=0.3.0
+
+# Linting
+flake8>=6.0.0

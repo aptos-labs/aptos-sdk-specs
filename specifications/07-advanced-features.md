@@ -41,6 +41,7 @@ shared custody, sponsored transactions, and OAuth-based authentication.
 ### 1.2 Scope
 
 This specification covers:
+
 - Multi-Ed25519 threshold accounts
 - MultiKey mixed-type accounts
 - Multi-agent transactions with multiple signers
@@ -49,14 +50,14 @@ This specification covers:
 
 ### 1.3 Definitions
 
-| Term            | Definition                                              |
-| --------------- | ------------------------------------------------------- |
-| Multi-sig       | Account requiring M-of-N signatures                     |
-| Multi-agent     | Transaction with multiple independent signers           |
-| Fee Payer       | Third party paying transaction gas fees                 |
-| Keyless         | Account authenticated via OIDC (OAuth) providers        |
-| Threshold       | Minimum signatures required for authorization           |
-| Ephemeral Key   | Short-lived key used in keyless authentication          |
+| Term          | Definition                                       |
+| ------------- | ------------------------------------------------ |
+| Multi-sig     | Account requiring M-of-N signatures              |
+| Multi-agent   | Transaction with multiple independent signers    |
+| Fee Payer     | Third party paying transaction gas fees          |
+| Keyless       | Account authenticated via OIDC (OAuth) providers |
+| Threshold     | Minimum signatures required for authorization    |
+| Ephemeral Key | Short-lived key used in keyless authentication   |
 
 ---
 
@@ -72,15 +73,16 @@ Multi-signature accounts require a threshold of signatures from a set of authori
 
 #### 2.2.1 Key Components
 
-| Component   | Description                              |
-| ----------- | ---------------------------------------- |
-| public_keys | Vec of N Ed25519 public keys             |
-| threshold   | M signatures required (1 <= M <= N)      |
-| signatures  | Vec of (index, signature) pairs          |
+| Component   | Description                         |
+| ----------- | ----------------------------------- |
+| public_keys | Vec of N Ed25519 public keys        |
+| threshold   | M signatures required (1 <= M <= N) |
+| signatures  | Vec of (index, signature) pairs     |
 
 #### 2.2.2 Construction [P2]
 
 **Signatures:**
+
 ```
 MultiEd25519PublicKey::new(
     keys: Vec<Ed25519PublicKey>,
@@ -102,6 +104,7 @@ MultiEd25519Account::new(
 #### 2.2.3 Authentication Key Derivation [P2]
 
 **Formula:**
+
 ```
 auth_key = SHA3-256(
     pk1 || pk2 || ... || pkN ||
@@ -111,6 +114,7 @@ auth_key = SHA3-256(
 ```
 
 Where:
+
 - `pk1...pkN` are the 32-byte Ed25519 public keys
 - `threshold` is a single byte
 - `0x01` is the MultiEd25519 scheme identifier
@@ -118,6 +122,7 @@ Where:
 #### 2.2.4 Signature Collection [P2]
 
 **Methods:**
+
 ```
 can_sign() -> bool                    // Check if enough keys for threshold
 add_signature(index: u8, sig) -> ()   // Add partial signature
@@ -127,6 +132,7 @@ collect_signatures() -> MultiEd25519Signature
 #### 2.2.5 BCS Serialization [P2]
 
 **Public Key:**
+
 ```
 BCS(MultiEd25519PublicKey) :=
     BCS(public_keys: Vec<[u8; 32]>) ||
@@ -134,6 +140,7 @@ BCS(MultiEd25519PublicKey) :=
 ```
 
 **Signature:**
+
 ```
 BCS(MultiEd25519Signature) :=
     BCS(signatures: Vec<[u8; 64]>) ||
@@ -152,14 +159,15 @@ MultiKey allows mixing different key types (Ed25519, Secp256k1, etc.) with optio
 
 #### 2.3.2 Key Components
 
-| Component           | Description                              |
-| ------------------- | ---------------------------------------- |
-| public_keys         | Vec of AnyPublicKey (mixed types)        |
-| signatures_required | Total signature weight required          |
+| Component           | Description                       |
+| ------------------- | --------------------------------- |
+| public_keys         | Vec of AnyPublicKey (mixed types) |
+| signatures_required | Total signature weight required   |
 
 #### 2.3.3 Authentication Key Derivation [P2]
 
 **Formula:**
+
 ```
 auth_key = SHA3-256(
     ULEB128(N) ||           // Number of keys
@@ -192,16 +200,19 @@ transaction.
 ### 3.3 Signing Message [P2]
 
 **Formula:**
+
 ```
 signing_message = prefix || BCS(RawTransactionWithData::MultiAgent)
 ```
 
 **Prefix:**
+
 ```
 prefix = SHA3-256("APTOS::RawTransactionWithData")
 ```
 
 **RawTransactionWithData::MultiAgent:**
+
 ```
 {
     raw_txn: RawTransaction,
@@ -220,6 +231,7 @@ prefix = SHA3-256("APTOS::RawTransactionWithData")
 ### 3.5 Construction [P2]
 
 **Methods:**
+
 ```
 // Add secondary signer to transaction
 add_secondary_signer(address: AccountAddress) -> ()
@@ -282,16 +294,19 @@ Fee payer (sponsored) transactions allow a third party to pay gas fees on behalf
 ### 4.3 Signing Message [P2]
 
 **Formula:**
+
 ```
 signing_message = prefix || BCS(RawTransactionWithData::FeePayer)
 ```
 
 **Prefix:**
+
 ```
 prefix = SHA3-256("APTOS::RawTransactionWithData")
 ```
 
 **RawTransactionWithData::FeePayer:**
+
 ```
 {
     raw_txn: RawTransaction,
@@ -313,6 +328,7 @@ prefix = SHA3-256("APTOS::RawTransactionWithData")
 ### 4.5 Construction [P2]
 
 **Methods:**
+
 ```
 // Sign as sender (not paying gas)
 sign_as_sender_for_fee_payer(
@@ -369,23 +385,24 @@ keys.
 
 ### 5.2 Supported Providers
 
-| Provider | Issuer URL                      |
-| -------- | ------------------------------- |
-| Google   | https://accounts.google.com     |
-| Apple    | https://appleid.apple.com       |
+| Provider | Issuer URL                  |
+| -------- | --------------------------- |
+| Google   | https://accounts.google.com |
+| Apple    | https://appleid.apple.com   |
 
 ### 5.3 Components
 
-| Component        | Description                              |
-| ---------------- | ---------------------------------------- |
-| EphemeralKeyPair | Short-lived Ed25519 key for signing      |
-| JWT              | OIDC identity token from provider        |
-| Pepper           | Privacy-preserving random value          |
-| ZK Proof         | Zero-knowledge proof of identity         |
+| Component        | Description                         |
+| ---------------- | ----------------------------------- |
+| EphemeralKeyPair | Short-lived Ed25519 key for signing |
+| JWT              | OIDC identity token from provider   |
+| Pepper           | Privacy-preserving random value     |
+| ZK Proof         | Zero-knowledge proof of identity    |
 
 ### 5.4 Authentication Key Derivation [P2]
 
 **Formula:**
+
 ```
 auth_key = SHA3-256(
     SHA3-256(iss) ||
@@ -397,6 +414,7 @@ auth_key = SHA3-256(
 ```
 
 Where:
+
 - `iss` is the OIDC issuer URL
 - `aud` is the application's client ID
 - `uid_key` is the claim name (e.g., "sub" or "email")
@@ -408,19 +426,21 @@ Where:
 
 **Properties:**
 
-| Property    | Type             | Description              |
-| ----------- | ---------------- | ------------------------ |
-| private_key | Ed25519PrivateKey| Signing key              |
-| public_key  | Ed25519PublicKey | Verification key         |
-| expiry_time | u64              | Unix timestamp of expiry |
-| nonce       | string           | Used in OIDC flow        |
+| Property    | Type              | Description              |
+| ----------- | ----------------- | ------------------------ |
+| private_key | Ed25519PrivateKey | Signing key              |
+| public_key  | Ed25519PublicKey  | Verification key         |
+| expiry_time | u64               | Unix timestamp of expiry |
+| nonce       | string            | Used in OIDC flow        |
 
 **Construction:**
+
 ```
 EphemeralKeyPair::generate(expiry_secs: u64) -> EphemeralKeyPair
 ```
 
 **Nonce Derivation:**
+
 ```
 nonce = Hash(public_key || expiry_time || blinding_factor)
 ```
@@ -436,6 +456,7 @@ nonce = Hash(public_key || expiry_time || blinding_factor)
 7. Create KeylessAccount from components
 
 **Construction:**
+
 ```
 KeylessAccount::from_jwt(
     jwt: string,
@@ -454,6 +475,7 @@ Provides privacy-preserving pepper derivation.
 **Purpose:** Prevents address linkability across applications.
 
 **SDK Method:**
+
 ```
 fetch_pepper(jwt: string, ephemeral_public_key: bytes) -> Result<[u8; 31], Error>
 ```
@@ -465,6 +487,7 @@ Generates zero-knowledge proofs.
 **Purpose:** Proves identity without revealing JWT contents on-chain.
 
 **SDK Method:**
+
 ```
 fetch_proof(
     jwt: string,
@@ -484,12 +507,12 @@ fetch_proof(
 
 **KeylessAuthenticator:**
 
-| Field            | Type                  |
-| ---------------- | --------------------- |
-| ephemeral_pubkey | Ed25519PublicKey      |
-| ephemeral_sig    | Ed25519Signature      |
-| expiry_time      | u64                   |
-| proof            | ZkProof               |
+| Field            | Type             |
+| ---------------- | ---------------- |
+| ephemeral_pubkey | Ed25519PublicKey |
+| ephemeral_sig    | Ed25519Signature |
+| expiry_time      | u64              |
+| proof            | ZkProof          |
 
 ### 5.9 Proof Refresh [P2]
 
@@ -506,6 +529,7 @@ is_valid() -> bool  // Check if ephemeral key and proof are valid
 ```
 
 Returns false if:
+
 - Ephemeral key has expired
 - ZK proof has expired
 - JWT has expired
@@ -525,6 +549,7 @@ Transaction simulation executes a transaction without committing, returning expe
 **Endpoint:** `POST /v1/transactions/simulate`
 
 **SDK Method:**
+
 ```
 simulate(
     raw_txn: RawTransaction,
@@ -534,13 +559,13 @@ simulate(
 
 ### 6.3 Simulation Result [P1]
 
-| Field         | Type          | Description                    |
-| ------------- | ------------- | ------------------------------ |
-| success       | bool          | Whether execution succeeded    |
-| vm_status     | string        | VM status code/message         |
-| gas_used      | u64           | Gas consumed                   |
-| changes       | Vec<Change>   | State changes that would occur |
-| events        | Vec<Event>    | Events that would be emitted   |
+| Field     | Type        | Description                    |
+| --------- | ----------- | ------------------------------ |
+| success   | bool        | Whether execution succeeded    |
+| vm_status | string      | VM status code/message         |
+| gas_used  | u64         | Gas consumed                   |
+| changes   | Vec<Change> | State changes that would occur |
+| events    | Vec<Event>  | Events that would be emitted   |
 
 ### 6.4 Use Cases [P1]
 
@@ -564,6 +589,7 @@ Code generation creates type-safe SDK bindings from Move module ABIs.
 **Endpoint:** `GET /v1/accounts/{address}/module/{module_name}`
 
 Returns module bytecode and ABI including:
+
 - Struct definitions
 - Function signatures
 - Type parameters
@@ -571,6 +597,7 @@ Returns module bytecode and ABI including:
 ### 7.3 Generated Types [P2]
 
 For each Move struct, generate:
+
 - Type definition with fields
 - BCS serialization/deserialization
 - Constructor methods
@@ -578,11 +605,13 @@ For each Move struct, generate:
 ### 7.4 Generated Functions [P2]
 
 For each entry function, generate:
+
 - Type-safe wrapper function
 - Argument encoding
 - Transaction payload construction
 
 **Example Generated Code:**
+
 ```
 // For 0x1::coin::transfer<CoinType>(to: address, amount: u64)
 fn transfer<CoinType>(
