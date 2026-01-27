@@ -1,7 +1,7 @@
 # Rust SDK Test Status
 
-> **Last Updated:** 2026-01-22  
-> **Last Verified:** Not verified (SDK path not available locally)
+> **Last Updated:** 2026-01-27  
+> **Last Verified:** 2026-01-27 via `make test-required`
 
 ---
 
@@ -22,15 +22,16 @@
 
 | Priority       | Passing | Total   | Percentage | Status |
 | -------------- | ------- | ------- | ---------- | ------ |
-| Required (P0)  | N/A     | 370     | N/A        | ⚠️     |
-| Preferred (P1) | N/A     | 183     | N/A        | ⚠️     |
-| Optional (P2)  | N/A     | 250     | N/A        | ⚠️     |
-| **Total**      | **N/A** | **803** | **N/A**    | ⚠️     |
+| Required (P0)  | 591     | 826     | 72%        | 🟡     |
+| Preferred (P1) | included| -       | -          | -      |
+| Optional (P2)  | included| -       | -          | -      |
+| **Total**      | **591** | **826** | **72%**    | 🟡     |
 
-> **⚠️ Tests Cannot Run**
+> **Notes:**
 >
-> The SDK depends on a local path `../../../crates/aptos-rust-sdk-v2` which is not available. Update
-> `Cargo.toml` to use a published crate or git dependency.
+> - 591 scenarios passed, 235 skipped
+> - 2330 steps passed, 235 skipped
+> - Tests require local SDK path at `../../../crates/aptos-rust-sdk-v2`
 
 ---
 
@@ -157,30 +158,34 @@ fn given_hex_string(world: &mut TestWorld, hex_string: String) {
 
 ## 9. Test Results Matrix
 
-> Last run: N/A (tests cannot run)
+> Last run: 2026-01-27
 
-### Blocked
+### Full Test Suite Summary
 
-Tests are blocked due to SDK path dependency issue.
+```
+826 scenarios (591 passed, 235 skipped)
+2565 steps (2330 passed, 235 skipped)
+```
 
-### Expected Results (Once Fixed)
+### By Feature Category
 
-Based on step definitions in `src/steps/`, the following features have implementations:
+| Feature            | Status | Notes                           |
+| ------------------ | ------ | ------------------------------- |
+| address            | ✅     | Full address support            |
+| serialization      | ✅     | BCS serialization working       |
+| type-tags          | ✅     | TypeTag parsing working         |
+| ed25519            | ✅     | Ed25519 cryptography working    |
+| hashing            | ✅     | SHA3-256 support                |
+| authentication-key | ✅     | Auth key derivation             |
+| entry-function     | ✅     | Entry function building         |
+| raw-transaction    | ✅     | Transaction building            |
+| signing            | ✅     | Transaction signing             |
+| fullnode-api       | 🟡     | Some tests skipped              |
+| error-handling     | 🟡     | Some scenarios skipped          |
 
-| Feature            | Step Definitions | Status             |
-| ------------------ | ---------------- | ------------------ |
-| address            | ✅ Present       | Needs verification |
-| serialization      | ✅ Present       | Needs verification |
-| type-tags          | ✅ Present       | Needs verification |
-| ed25519            | ✅ Present       | Needs verification |
-| hashing            | ✅ Present       | Needs verification |
-| authentication-key | ✅ Present       | Needs verification |
-| entry-function     | ✅ Present       | Needs verification |
-| raw-transaction    | ✅ Present       | Needs verification |
-| signing            | ✅ Present       | Needs verification |
+### Skipped Tests
 
-### Action Required
-
-1. Update `Cargo.toml` with valid SDK dependency
-2. Run `cargo test --test specs`
-3. Update this file with actual test results
+235 scenarios are skipped, primarily:
+- Network-dependent tests requiring live testnet/devnet
+- Advanced features not yet implemented in SDK
+- Error handling edge cases

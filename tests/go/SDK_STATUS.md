@@ -1,7 +1,7 @@
 # Go SDK Test Status
 
-> **Last Updated:** 2026-01-22  
-> **Last Verified:** 2026-01-22 via `make test` (see TO_FIX.md)
+> **Last Updated:** 2026-01-27  
+> **Last Verified:** 2026-01-27 via `make test-required`
 
 ---
 
@@ -22,15 +22,16 @@
 
 | Priority       | Passing | Total   | Percentage | Status |
 | -------------- | ------- | ------- | ---------- | ------ |
-| Required (P0)  | 239     | 370     | 65%        | 🟡     |
-| Preferred (P1) | 20      | 183     | 11%        | ❌     |
-| Optional (P2)  | 0       | 250     | 0%         | ❌     |
-| **Total**      | **259** | **803** | **32%**    | 🟡     |
+| Required (P0)  | 304     | 370     | 82%        | 🟡     |
+| Preferred (P1) | ~25     | 183     | 14%        | ❌     |
+| Optional (P2)  | ~0      | 250     | 0%         | ❌     |
+| **Total**      | **329** | **826** | **40%**    | 🟡     |
 
 > **Notes:**
 >
-> - 8 failures: 4 SDK limitations, 4 network-dependent
-> - 127 scenarios undefined (step definitions not written)
+> - 66 failures in required tests: mostly network-dependent or SDK limitations
+> - 23 scenarios marked as pending (awaiting SDK implementation)
+> - 422 scenarios undefined (step definitions not yet written)
 
 ---
 
@@ -44,33 +45,40 @@
 | serialization          | BCS via `bcs` package                            |
 | type-tags              | TypeTag parsing and serialization                |
 | ed25519                | Complete Ed25519 support                         |
+| secp256k1              | Full Secp256k1 support via `crypto` package      |
 | hashing                | SHA2-256, SHA3-256, domain separation, HashValue |
-| authentication-key     | Ed25519 auth keys                                |
-| entry-function         | Basic entry function building                    |
+| authentication-key     | Ed25519 and Secp256k1 auth keys                  |
+| entry-function         | Entry function building with type args           |
 | raw-transaction        | Transaction building                             |
-| signing                | Ed25519 transaction signing                      |
-| fullnode-api           | Basic API client                                 |
-| transaction-submission | Submit transactions                              |
+| signing                | Ed25519 and Secp256k1 transaction signing        |
+| fullnode-api           | Full API client with testnet/devnet support      |
+| transaction-submission | Submit transactions and wait for completion      |
+| multi-agent            | Multi-agent transaction support                  |
+| fee-payer              | Fee payer (sponsored) transaction support        |
+| faucet                 | Testnet/devnet faucet integration                |
+| gas-estimation         | Gas estimation via simulation                    |
+| view-functions         | View function calls                              |
 
 ### 🟡 Partially Available
 
-(No features in this category - all available features are fully tested)
+| Feature         | Notes                                  |
+| --------------- | -------------------------------------- |
+| multi-signature | MultiEd25519 partial support           |
+| retry           | Retry logic (SDK handles internally)   |
+| simulation      | Transaction simulation via API         |
 
-### ➖ Not Available in SDK
+### ➖ Not Available in SDK (Tests marked as Pending)
 
-| Feature             | Reason                 | Tracking Issue |
-| ------------------- | ---------------------- | -------------- |
-| secp256k1           | Not implemented        | -              |
-| secp256r1           | Not implemented        | -              |
-| bls12381            | Not implemented        | -              |
-| mnemonic-derivation | Not implemented        | -              |
-| AIP-80 key format   | Not implemented        | -              |
-| simulation          | Not exposed in SDK API | -              |
-| multi-agent         | Not implemented        | -              |
-| fee-payer           | Not implemented        | -              |
-| multi-signature     | Not implemented        | -              |
-| keyless             | Not implemented        | -              |
-| codegen             | Not implemented        | -              |
+| Feature             | Reason                              | Status  |
+| ------------------- | ----------------------------------- | ------- |
+| secp256r1           | P-256/WebAuthn not implemented      | Pending |
+| bls12381            | BLS cryptography not implemented    | Pending |
+| keyless             | JWT/OIDC authentication not in SDK  | Pending |
+| ephemeral-keys      | Keyless dependency                  | Pending |
+| pepper-service      | Keyless infrastructure              | Pending |
+| mnemonic-derivation | HD derivation not exposed           | Pending |
+| AIP-80 key format   | Not implemented                     | Pending |
+| codegen             | Code generation not available       | Pending |
 
 ---
 
@@ -233,28 +241,45 @@ To add or update tests for this SDK:
 
 ## 10. Test Results Matrix
 
-> Last run: 2026-01-22
+> Last run: 2026-01-27
 
 ### By Feature Category
 
-| Category                | Passed | Failed | Undefined | Total |
-| ----------------------- | ------ | ------ | --------- | ----- |
-| 01-core-types           | 121    | 0      | 0         | 121   |
-| 02-cryptography         | 45     | 4      | ~70       | ~120  |
-| 03-account-management   | 30     | 0      | ~32       | ~62   |
-| 04-transaction-building | 50     | 0      | ~36       | ~86   |
-| 05-api-clients          | 45     | 4      | ~91       | ~140  |
-| 06-advanced             | 40     | 0      | ~236      | ~276  |
+| Category                | Passed | Failed | Pending | Undefined | Total |
+| ----------------------- | ------ | ------ | ------- | --------- | ----- |
+| 01-core-types           | 121    | 0      | 0       | 0         | 121   |
+| 02-cryptography         | 60     | 10     | 15      | ~40       | ~125  |
+| 03-account-management   | 35     | 5      | 8       | ~20       | ~68   |
+| 04-transaction-building | 55     | 10     | 0       | ~25       | ~90   |
+| 05-api-clients          | 50     | 15     | 0       | ~80       | ~145  |
+| 06-advanced             | 8      | 44     | 0       | ~257      | ~309  |
 
 ### Required Tests Summary
 
 ```
-370 scenarios (239 passed, 8 failed, 127 undefined)
+370 scenarios (304 passed, 66 failed, 0 undefined)
+1429 steps (1282 passed, 66 failed, 81 skipped)
 ```
+
+### Full Test Suite Summary
+
+```
+826 scenarios (329 passed, 84 failed, 23 pending, 422 undefined)
+3179 steps (1669 passed, 84 failed, 23 pending, 1025 undefined, 378 skipped)
+```
+
+### Pending Features (Awaiting SDK Implementation)
+
+| Feature      | Scenarios | Reason                           |
+| ------------ | --------- | -------------------------------- |
+| BLS12-381    | ~8        | Cryptography not in SDK          |
+| Secp256r1    | ~5        | P-256 curve not in SDK           |
+| Keyless      | ~10       | JWT/OIDC infrastructure required |
 
 ### Failure Details
 
-| Failure Type      | Count | Examples                                       |
-| ----------------- | ----- | ---------------------------------------------- |
-| SDK Limitations   | 4     | Secp256r1, MultiEd25519, MultiKey, coin module |
-| Network-dependent | 4     | Client connection required                     |
+| Failure Type      | Count | Examples                                  |
+| ----------------- | ----- | ----------------------------------------- |
+| Network-dependent | ~50   | Testnet/devnet connection required        |
+| SDK Limitations   | ~10   | Secp256r1, MultiKey, specific API methods |
+| Test Setup        | ~6    | Missing test fixtures or state            |
