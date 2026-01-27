@@ -73,6 +73,9 @@ func InitializeScenario(ctx *godog.ScenarioContext) {
 	// View function steps
 	initViewFunctionSteps(ctx, world)
 
+	// Miscellaneous steps
+	initMiscSteps(ctx, world)
+
 	// Performance steps
 	initPerformanceSteps(ctx, world)
 
