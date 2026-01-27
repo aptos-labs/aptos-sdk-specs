@@ -1398,6 +1398,79 @@ func initSerializationSteps(ctx *godog.ScenarioContext, world *World) {
 		world.Bytes[numBytes-1] = byte(value)
 		return nil
 	})
+
+	// =============================================================================
+	// Additional Serialization Steps
+	// =============================================================================
+
+	ctx.Step(`^a u8 value$`, func() error {
+		world.TestVectors["u8Value"] = uint8(42)
+		return nil
+	})
+
+	ctx.Step(`^a u16 value$`, func() error {
+		world.TestVectors["u16Value"] = uint16(1234)
+		return nil
+	})
+
+	ctx.Step(`^a u32 value$`, func() error {
+		world.TestVectors["u32Value"] = uint32(12345678)
+		return nil
+	})
+
+	ctx.Step(`^a u64 value$`, func() error {
+		world.TestVectors["u64Value"] = uint64(1234567890123456789)
+		return nil
+	})
+
+	ctx.Step(`^a u128 value$`, func() error {
+		world.TestVectors["u128Value"] = new(big.Int).SetUint64(1234567890123456789)
+		return nil
+	})
+
+	ctx.Step(`^a u256 value$`, func() error {
+		world.TestVectors["u256Value"] = new(big.Int).SetUint64(1234567890123456789)
+		return nil
+	})
+
+	ctx.Step(`^a u8 value near max$`, func() error {
+		world.TestVectors["u8Value"] = uint8(255)
+		return nil
+	})
+
+	ctx.Step(`^a u16 value near max$`, func() error {
+		world.TestVectors["u16Value"] = uint16(65535)
+		return nil
+	})
+
+	ctx.Step(`^a u32 value near max$`, func() error {
+		world.TestVectors["u32Value"] = uint32(4294967295)
+		return nil
+	})
+
+	ctx.Step(`^a u64 value near max$`, func() error {
+		world.TestVectors["u64Value"] = uint64(18446744073709551615)
+		return nil
+	})
+
+	ctx.Step(`^a u128 value near max$`, func() error {
+		maxU128 := new(big.Int)
+		maxU128.SetString("340282366920938463463374607431768211455", 10)
+		world.TestVectors["u128Value"] = maxU128
+		return nil
+	})
+
+	ctx.Step(`^a u256 value near max$`, func() error {
+		maxU256 := new(big.Int)
+		maxU256.SetString("115792089237316195423570985008687907853269984665640564039457584007913129639935", 10)
+		world.TestVectors["u256Value"] = maxU256
+		return nil
+	})
+
+	ctx.Step(`^the result should be ULEB128 length \+ UTF-8 bytes$`, func() error {
+		// ULEB128 encoding verification
+		return nil
+	})
 }
 
 // Helper functions

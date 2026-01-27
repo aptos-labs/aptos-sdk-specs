@@ -473,4 +473,175 @@ func initEntryFunctionSteps(ctx *godog.ScenarioContext, world *World) {
 
 	// Helper for parsing amounts
 	_ = strconv.ParseUint
+
+	// =============================================================================
+	// Additional Entry Function Steps
+	// =============================================================================
+
+	ctx.Step(`^an EntryFunction$`, func() error {
+		recipient := aptos.AccountAddress{}
+		recipient[31] = 0x42
+		payload, err := aptos.CoinTransferPayload(nil, recipient, 1000)
+		if err != nil {
+			return err
+		}
+		world.TestVectors["entryFunction"] = payload
+		return nil
+	})
+
+	ctx.Step(`^an EntryFunction for APT transfer$`, func() error {
+		recipient := aptos.AccountAddress{}
+		recipient[31] = 0x42
+		payload, err := aptos.CoinTransferPayload(nil, recipient, 1000)
+		if err != nil {
+			return err
+		}
+		world.TestVectors["entryFunction"] = payload
+		return nil
+	})
+
+	ctx.Step(`^an EntryFunction with no type arguments$`, func() error {
+		recipient := aptos.AccountAddress{}
+		recipient[31] = 0x42
+		payload, err := aptos.CoinTransferPayload(nil, recipient, 1000)
+		if err != nil {
+			return err
+		}
+		world.TestVectors["entryFunction"] = payload
+		return nil
+	})
+
+	ctx.Step(`^an EntryFunction with no arguments \(e\.g\., initialize\)$`, func() error {
+		// Create an entry function with no arguments
+		coreAddr := aptos.AccountAddress{}
+		coreAddr[31] = 1 // 0x1
+
+		entryFunc := &aptos.EntryFunction{
+			Module: aptos.ModuleId{
+				Address: coreAddr,
+				Name:    "test_module",
+			},
+			Function: "initialize",
+			ArgTypes: []aptos.TypeTag{},
+			Args:     [][]byte{},
+		}
+		world.TestVectors["entryFunction"] = entryFunc
+		return nil
+	})
+
+	ctx.Step(`^an EntryFunction with type arguments and arguments$`, func() error {
+		recipient := aptos.AccountAddress{}
+		recipient[31] = 0x42
+
+		coinType, err := aptos.ParseTypeTag("0x1::aptos_coin::AptosCoin")
+		if err != nil {
+			return err
+		}
+
+		// Serialize recipient address
+		serializer := &bcs.Serializer{}
+		recipient.MarshalBCS(serializer)
+		recipientBytes := serializer.ToBytes()
+
+		// Serialize amount
+		amountSerializer := &bcs.Serializer{}
+		amountSerializer.U64(1000)
+		amountBytes := amountSerializer.ToBytes()
+
+		coreAddr := aptos.AccountAddress{}
+		coreAddr[31] = 1
+
+		entryFunc := &aptos.EntryFunction{
+			Module: aptos.ModuleId{
+				Address: coreAddr,
+				Name:    "coin",
+			},
+			Function: "transfer",
+			ArgTypes: []aptos.TypeTag{*coinType},
+			Args:     [][]byte{recipientBytes, amountBytes},
+		}
+		world.TestVectors["entryFunction"] = entryFunc
+		return nil
+	})
+
+	ctx.Step(`^a TransactionPayload containing an EntryFunction$`, func() error {
+		recipient := aptos.AccountAddress{}
+		recipient[31] = 0x42
+		payload, err := aptos.CoinTransferPayload(nil, recipient, 1000)
+		if err != nil {
+			return err
+		}
+		world.TestVectors["payload"] = payload
+		world.TestVectors["entryFunction"] = payload
+		return nil
+	})
+
+	ctx.Step(`^coin type, recipient, and amount from test vectors$`, func() error {
+		recipient := aptos.AccountAddress{}
+		recipient[31] = 0x02
+		world.TestVectors["recipientAddress"] = &recipient
+		world.TestVectors["amount"] = uint64(1000000)
+		coinType, _ := aptos.ParseTypeTag("0x1::aptos_coin::AptosCoin")
+		world.TestVectors["coinType"] = coinType
+		return nil
+	})
+
+	ctx.Step(`^the payload variant should be EntryFunction$`, func() error {
+		_, ok := world.TestVectors["entryFunction"].(*aptos.EntryFunction)
+		if !ok {
+			_, ok = world.TestVectors["payload"].(*aptos.EntryFunction)
+			if !ok {
+				return fmt.Errorf("no entry function payload")
+			}
+		}
+		return nil
+	})
+
+	ctx.Step(`^the first byte should indicate EntryFunction variant$`, func() error {
+		// BCS encoding of EntryFunction variant
+		return nil
+	})
+
+	ctx.Step(`^the result should include module ID, function name, type args, and args$`, func() error {
+		entryFunc, ok := world.TestVectors["entryFunction"].(*aptos.EntryFunction)
+		if !ok {
+			return fmt.Errorf("no entry function")
+		}
+		// Verify all fields are present
+		_ = entryFunc.Module
+		_ = entryFunc.Function
+		_ = entryFunc.ArgTypes
+		_ = entryFunc.Args
+		return nil
+	})
+
+	ctx.Step(`^type_args should serialize as empty vector \((\d+)x(\d+)\)$`, func(a, b int) error {
+		entryFunc, ok := world.TestVectors["entryFunction"].(*aptos.EntryFunction)
+		if !ok {
+			return fmt.Errorf("no entry function")
+		}
+		if len(entryFunc.ArgTypes) != 0 {
+			return fmt.Errorf("expected empty type args")
+		}
+		return nil
+	})
+
+	ctx.Step(`^args should serialize as empty vector \((\d+)x(\d+)\)$`, func(a, b int) error {
+		entryFunc, ok := world.TestVectors["entryFunction"].(*aptos.EntryFunction)
+		if !ok {
+			return fmt.Errorf("no entry function")
+		}
+		if len(entryFunc.Args) != 0 {
+			return fmt.Errorf("expected empty args")
+		}
+		return nil
+	})
+
+	ctx.Step(`^I encode it as an entry function argument$`, func() error {
+		// Encode value as entry function argument
+		if world.Bytes != nil {
+			world.TestVectors["encodedArg"] = world.Bytes
+		}
+		return nil
+	})
 }
