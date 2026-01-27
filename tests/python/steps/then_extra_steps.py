@@ -358,11 +358,7 @@ def step_estimates_positive(context):
 def step_all_sigs_required(context):
     pass
 
-
-@then("all messages should be identical")
-def step_all_msgs_identical(context):
-    pass
-
+# Note: "all messages should be identical" is defined in fee_payer_steps.py
 
 @then("all transfers should occur atomically")
 def step_transfers_atomic(context):
@@ -378,12 +374,5 @@ def step_both_same_address(context):
 def step_both_addresses_identical(context):
     pass
 
-
-@then("all 3 messages should be identical")
-def step_3_msgs_identical(context):
-    pass
-
-
-@then("all 3 signatures should be required")
-def step_3_sigs_required(context):
-    pass
+# Note: "all 3 messages should be identical" and "all 3 signatures should be required"
+# are defined in multi_agent_steps.py
