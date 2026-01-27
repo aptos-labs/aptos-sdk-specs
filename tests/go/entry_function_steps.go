@@ -75,6 +75,15 @@ func initEntryFunctionSteps(ctx *godog.ScenarioContext, world *World) {
 		return nil
 	})
 
+	ctx.Step(`^the same recipient and amount$`, func() error {
+		// Set up a common recipient and amount for comparing transfers
+		recipient := aptos.AccountAddress{}
+		recipient[31] = 0x42
+		world.TestVectors["recipientAddress"] = &recipient
+		world.TestVectors["amount"] = uint64(1000000)
+		return nil
+	})
+
 	ctx.Step(`^coin type "([^"]*)"$`, func(coinType string) error {
 		tag, err := aptos.ParseTypeTag(coinType)
 		if err != nil {
@@ -448,16 +457,50 @@ func initEntryFunctionSteps(ctx *godog.ScenarioContext, world *World) {
 		return nil
 	})
 
-	ctx.Step(`^coin transfer should use coin module$`, func() error {
-		// Note: Go SDK actually uses aptos_account module, not coin
-		// This step documents the expected behavior vs actual behavior
-		ef, ok := world.TestVectors["entryFunction"].(*aptos.EntryFunction)
-		if !ok {
-			return fmt.Errorf("no entry function set")
+	ctx.Step(`^the payloads should be different in structure$`, func() error {
+		aptPayload, ok1 := world.TestVectors["aptTransferPayload"].(*aptos.EntryFunction)
+		coinPayload, ok2 := world.TestVectors["coinTransferPayload"].(*aptos.EntryFunction)
+		if !ok1 || !ok2 {
+			return fmt.Errorf("both payloads must be set")
 		}
-		// The Go SDK uses aptos_account, so we check for that
-		if ef.Module.Name != "coin" && ef.Module.Name != "aptos_account" {
-			return fmt.Errorf("expected coin or aptos_account module, got %s", ef.Module.Name)
+		// In Go SDK, both use aptos_account module but different functions
+		// APT uses "transfer", coin uses "transfer_coins"
+		if aptPayload.Function == coinPayload.Function {
+			return fmt.Errorf("expected different functions: APT=%s, coin=%s",
+				aptPayload.Function, coinPayload.Function)
+		}
+		return nil
+	})
+
+	ctx.Step(`^APT transfer should use aptos_account module$`, func() error {
+		ef, ok := world.TestVectors["aptTransferPayload"].(*aptos.EntryFunction)
+		if !ok {
+			return fmt.Errorf("no APT transfer payload set")
+		}
+		if ef.Module.Name != "aptos_account" {
+			return fmt.Errorf("expected aptos_account module, got %s", ef.Module.Name)
+		}
+		// APT transfer uses "transfer" function (no type args)
+		if ef.Function != "transfer" {
+			return fmt.Errorf("expected transfer function, got %s", ef.Function)
+		}
+		return nil
+	})
+
+	ctx.Step(`^coin transfer should use coin module$`, func() error {
+		// Note: Go SDK uses aptos_account module with "transfer_coins" function
+		// instead of coin::transfer. This is the SDK's design decision.
+		ef, ok := world.TestVectors["coinTransferPayload"].(*aptos.EntryFunction)
+		if !ok {
+			return fmt.Errorf("no coin transfer payload set")
+		}
+		// Go SDK uses aptos_account::transfer_coins, not coin::transfer
+		if ef.Module.Name != "aptos_account" {
+			return fmt.Errorf("expected aptos_account module, got %s", ef.Module.Name)
+		}
+		// Should use transfer_coins function with type args
+		if ef.Function != "transfer_coins" {
+			return fmt.Errorf("expected transfer_coins function, got %s", ef.Function)
 		}
 		return nil
 	})

@@ -260,16 +260,56 @@ func initTransactionSteps(ctx *godog.ScenarioContext, world *World) {
 		return nil
 	})
 
-	ctx.Step(`^I create a coin transfer for AptosCoin$`, func() error {
-		recipient := aptos.AccountAddress{}
-		recipient[31] = 0x42
+	ctx.Step(`^I create an APT transfer$`, func() error {
+		// Use recipient from context if available
+		var recipient aptos.AccountAddress
+		if addr, ok := world.TestVectors["recipientAddress"].(*aptos.AccountAddress); ok {
+			recipient = *addr
+		} else {
+			recipient = aptos.AccountAddress{}
+			recipient[31] = 0x42
+		}
+		amount := uint64(1000000)
+		if amt, ok := world.TestVectors["amount"].(uint64); ok {
+			amount = amt
+		}
 
-		payload, err := aptos.CoinTransferPayload(nil, recipient, 1000000)
+		// APT transfer uses aptos_account::transfer (coinType = nil)
+		payload, err := aptos.CoinTransferPayload(nil, recipient, amount)
+		if err != nil {
+			return err
+		}
+
+		world.TestVectors["aptTransferPayload"] = payload
+		world.TestVectors["entryFunction"] = payload
+		return nil
+	})
+
+	ctx.Step(`^I create a coin transfer for AptosCoin$`, func() error {
+		// Use recipient from context if available
+		var recipient aptos.AccountAddress
+		if addr, ok := world.TestVectors["recipientAddress"].(*aptos.AccountAddress); ok {
+			recipient = *addr
+		} else {
+			recipient = aptos.AccountAddress{}
+			recipient[31] = 0x42
+		}
+		amount := uint64(1000000)
+		if amt, ok := world.TestVectors["amount"].(uint64); ok {
+			amount = amt
+		}
+
+		// Use explicit AptosCoin type to get transfer_coins function
+		coinType := aptos.AptosCoinTypeTag
+		payload, err := aptos.CoinTransferPayload(&coinType, recipient, amount)
 		if err != nil {
 			return err
 		}
 
 		world.TestVectors["payload"] = payload
+		// Also save as entryFunction for validation steps
+		world.TestVectors["entryFunction"] = payload
+		world.TestVectors["coinTransferPayload"] = payload
 		return nil
 	})
 

@@ -1116,6 +1116,20 @@ func initSerializationSteps(ctx *godog.ScenarioContext, world *World) {
 			world.Bytes = serializer.ToBytes()
 			return nil
 		}
+		// Check if we have a u128 value
+		if val, ok := world.TestVectors["u128Value"].(*big.Int); ok {
+			serializer := &bcs.Serializer{}
+			serializer.U128(*val)
+			world.Bytes = serializer.ToBytes()
+			return nil
+		}
+		// Check if we have a u256 value
+		if val, ok := world.TestVectors["u256Value"].(*big.Int); ok {
+			serializer := &bcs.Serializer{}
+			serializer.U256(*val)
+			world.Bytes = serializer.ToBytes()
+			return nil
+		}
 		// Check if we have a u64 value
 		if val, ok := world.TestVectors["u64Value"].(uint64); ok {
 			serializer := &bcs.Serializer{}
