@@ -111,17 +111,16 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: aptos-sdk-specs/tests/rust
+        working-directory: tests/rust
     steps:
       - uses: actions/checkout@v4
-        with:
-          path: aptos-sdk-specs
 
       - name: Checkout aptos-rust-sdk
         uses: actions/checkout@v4
         with:
           repository: aptos-labs/aptos-rust-sdk
-          path: aptos-rust-sdk
+          # Place SDK in sibling directory (one level up from this repo)
+          path: ../aptos-rust-sdk
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
@@ -136,8 +135,8 @@ jobs:
             ~/.cargo/registry/index/
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
-            aptos-sdk-specs/tests/rust/target/
-          key: ${{ runner.os }}-cargo-${{ hashFiles('aptos-sdk-specs/tests/rust/Cargo.lock') }}
+            tests/rust/target/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('tests/rust/Cargo.lock') }}
 
       - name: Lint
         run: cargo clippy --test specs -- -D warnings
