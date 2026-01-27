@@ -111,9 +111,17 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: tests/rust
+        working-directory: aptos-sdk-specs/tests/rust
     steps:
       - uses: actions/checkout@v4
+        with:
+          path: aptos-sdk-specs
+
+      - name: Checkout aptos-rust-sdk
+        uses: actions/checkout@v4
+        with:
+          repository: aptos-labs/aptos-rust-sdk
+          path: aptos-rust-sdk
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
@@ -128,8 +136,8 @@ jobs:
             ~/.cargo/registry/index/
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
-            tests/rust/target/
-          key: ${{ runner.os }}-cargo-${{ hashFiles('tests/rust/Cargo.lock') }}
+            aptos-sdk-specs/tests/rust/target/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('aptos-sdk-specs/tests/rust/Cargo.lock') }}
 
       - name: Lint
         run: cargo clippy --test specs -- -D warnings
@@ -167,6 +175,13 @@ jobs:
       - name: Lint
         run: python -m flake8 steps/ support/ || true
         continue-on-error: true
+
+      - name: Setup steps symlink
+        run: |
+          # Create symlink so behave can find steps from the features directory
+          # Target is relative to where the symlink is placed (features/)
+          ln -sf ../tests/python/steps ../../features/steps
+          ln -sf ../tests/python/environment.py ../../features/environment.py
 
       - name: Run required tests
         run: make test-required
