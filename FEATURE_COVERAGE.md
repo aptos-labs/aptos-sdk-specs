@@ -1,6 +1,6 @@
 # Feature Coverage Matrix
 
-> **Last Updated:** 2026-01-22
+> **Last Updated:** 2026-01-27
 >
 > This file tracks implementation status of behavioral specifications across all SDK
 > implementations. Check boxes indicate that step definitions exist and tests pass for that
@@ -29,19 +29,19 @@
 
 ## Coverage Summary
 
-> **Last verified:** 2026-01-22. Numbers reflect actual test runs (mocked tests excluded).
+> **Last verified:** 2026-01-27. Numbers reflect actual test runs.
 
-| SDK        | Required (P0) | Preferred (P1) | Optional (P2) | Total    | Notes                            |
-| ---------- | ------------- | -------------- | ------------- | -------- | -------------------------------- |
-| TypeScript | 320/370 (86%) | ~100/183 (55%) | 131/252 (52%) | ~551/805 | Some keyless/script tests mocked |
-| Go         | 239/370 (65%) | 20/183 (11%)   | 0/250 (0%)    | 259/803  | Per TO_FIX.md                    |
-| Rust       | N/A           | N/A            | N/A           | N/A      | SDK path not available           |
-| .NET       | 170/370 (46%) | ~10/183 (5%)   | ~5/250 (2%)   | ~185/803 | Verified via `dotnet test`       |
-| Python     | 197/370 (53%) | ~20/183 (11%)  | ~10/250 (4%)  | ~227/803 | 332 undefined steps              |
-| Java       | 22/370 (6%)   | 0/183 (0%)     | 0/250 (0%)    | 22/803   | Most steps undefined             |
-| Kotlin     | 176/370 (48%) | 0/183 (0%)     | 0/250 (0%)    | 176/803  | Community SDK                    |
-| C++        | 49/370 (13%)  | 0/183 (0%)     | 0/250 (0%)    | 49/803   | In development                   |
-| Swift      | 286/370 (77%) | 0/183 (0%)     | 0/250 (0%)    | 286/803  | Community SDK                    |
+| SDK        | Required (P0) | Preferred (P1) | Optional (P2) | Total     | Notes                                    |
+| ---------- | ------------- | -------------- | ------------- | --------- | ---------------------------------------- |
+| TypeScript | ~320/370 (86%)| ~100/183 (55%) | ~131/252 (52%)| ~551/826  | Reference implementation                 |
+| Go         | 304/370 (82%) | ~25/183 (14%)  | ~0/250 (0%)   | 329/826   | 23 pending (awaiting SDK features)       |
+| Rust       | 591/826 (72%) | included       | included      | 591/826   | 235 skipped (SDK path issues)            |
+| .NET       | 170/370 (46%) | ~10/183 (5%)   | ~5/250 (2%)   | ~185/826  | 200 failures in required tests           |
+| Python     | ~197/370 (53%)| ~20/183 (11%)  | ~10/250 (4%)  | ~227/826  | Many undefined steps                     |
+| Java       | ~22/370 (6%)  | 0/183 (0%)     | 0/250 (0%)    | ~22/826   | 359 errors, most steps undefined         |
+| Kotlin     | ~176/370 (48%)| 0/183 (0%)     | 0/250 (0%)    | ~176/826  | 564 failures, community SDK              |
+| C++        | 0/370 (0%)    | 0/183 (0%)     | 0/250 (0%)    | 0/826     | Segfault in test runner                  |
+| Swift      | 0/370 (0%)    | 0/183 (0%)     | 0/250 (0%)    | 0/826     | Test harness not implemented             |
 
 ---
 

@@ -1,7 +1,7 @@
 # .NET SDK Test Status
 
-> **Last Updated:** 2026-01-22  
-> **Last Verified:** 2026-01-22 via `dotnet test`
+> **Last Updated:** 2026-01-27  
+> **Last Verified:** 2026-01-27 via `dotnet test`
 
 ---
 
@@ -25,12 +25,13 @@
 | Required (P0)  | 170      | 370     | 46%        | 🟡     |
 | Preferred (P1) | ~10      | 183     | ~5%        | ❌     |
 | Optional (P2)  | ~5       | 250     | ~2%        | ❌     |
-| **Total**      | **~185** | **803** | **~23%**   | 🟡     |
+| **Total**      | **~185** | **826** | **~22%**   | 🟡     |
 
 > **Notes:**
 >
 > - 200 required tests failed (most due to missing step definitions)
 > - Beta SDK - API may change
+> - Total test duration: ~8 seconds
 
 ---
 

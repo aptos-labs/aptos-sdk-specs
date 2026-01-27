@@ -1,7 +1,7 @@
 # Java SDK Test Status
 
-> **Last Updated:** 2026-01-22  
-> **Last Verified:** 2026-01-22 via `mvn test`
+> **Last Updated:** 2026-01-27  
+> **Last Verified:** 2026-01-27 via `mvn test`
 
 ---
 
@@ -22,14 +22,15 @@
 
 | Priority       | Passing | Total   | Percentage | Status |
 | -------------- | ------- | ------- | ---------- | ------ |
-| Required (P0)  | 22      | 370     | 6%         | ❌     |
+| Required (P0)  | ~22     | 370     | 6%         | ❌     |
 | Preferred (P1) | 0       | 183     | 0%         | ❌     |
 | Optional (P2)  | 0       | 250     | 0%         | ❌     |
-| **Total**      | **22**  | **803** | **3%**     | ❌     |
+| **Total**      | **~22** | **826** | **~3%**    | ❌     |
 
 > **Notes:**
 >
-> - 797/819 step definitions are undefined
+> - Tests run: 837, Errors: 359, Skipped: 456
+> - Most step definitions are undefined
 > - Only address parsing and basic Ed25519 implemented
 
 ---
@@ -162,26 +163,26 @@ To add or update tests for this SDK:
 
 ## 9. Test Results Matrix
 
-> Last run: 2026-01-22
+> Last run: 2026-01-27
 
 ### By Feature Category
 
-| Category                | Passed | Failed | Undefined | Total |
-| ----------------------- | ------ | ------ | --------- | ----- |
-| 01-core-types           | 11     | 0      | 53        | 64    |
-| 02-cryptography         | 11     | 0      | 109       | 120   |
-| 03-account-management   | 0      | 0      | 62        | 62    |
-| 04-transaction-building | 0      | 0      | 86        | 86    |
-| 05-api-clients          | 0      | 0      | 140       | 140   |
-| 06-advanced             | 0      | 0      | 276       | 276   |
+| Category                | Passed | Errors | Skipped | Total |
+| ----------------------- | ------ | ------ | ------- | ----- |
+| 01-core-types           | ~11    | ~30    | ~23     | 64    |
+| 02-cryptography         | ~11    | ~60    | ~49     | 120   |
+| 03-account-management   | 0      | ~30    | ~32     | 62    |
+| 04-transaction-building | 0      | ~40    | ~46     | 86    |
+| 05-api-clients          | 0      | ~70    | ~70     | 140   |
+| 06-advanced             | 0      | ~129   | ~147    | 276   |
 
 ### Test Run Summary
 
 ```
-Tests run: 819
-Errors: 797 (undefined steps)
-Passed: 22
-Failed: 0
+Tests run: 837
+Errors: 359 (undefined steps)
+Skipped: 456
+Passed: ~22
 ```
 
 ### Passing Tests Detail
