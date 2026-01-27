@@ -64,6 +64,15 @@ func InitializeScenario(ctx *godog.ScenarioContext) {
 	// Error handling steps
 	initErrorSteps(ctx, world)
 
+	// Faucet steps
+	initFaucetSteps(ctx, world)
+
+	// Multi-agent and fee payer steps
+	initMultiAgentSteps(ctx, world)
+
+	// View function steps
+	initViewFunctionSteps(ctx, world)
+
 	// Performance steps
 	initPerformanceSteps(ctx, world)
 

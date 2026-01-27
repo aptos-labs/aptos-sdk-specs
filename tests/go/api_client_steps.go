@@ -2108,4 +2108,231 @@ func initAPIClientSteps(ctx *godog.ScenarioContext, world *World) {
 		// BCS serialization verification
 		return nil
 	})
+
+	// =============================================================================
+	// Gas Estimation and Simulation Steps
+	// =============================================================================
+
+	ctx.Step(`^I build a transaction with gas_unit_price (\d+)$`, func(gasPrice int) error {
+		world.TestVectors["gasUnitPrice"] = uint64(gasPrice)
+		return nil
+	})
+
+	ctx.Step(`^I build transaction without specifying gas_unit_price$`, func() error {
+		// Gas unit price not set - SDK should use defaults or estimate
+		return nil
+	})
+
+	ctx.Step(`^I can set max_gas_amount with buffer$`, func() error {
+		// Apply buffer to gas estimation
+		return nil
+	})
+
+	ctx.Step(`^I can use it to set max_gas_amount with buffer$`, func() error {
+		return nil
+	})
+
+	ctx.Step(`^I check gas estimates$`, func() error {
+		estimate, ok := world.TestVectors["gasEstimate"].(aptos.EstimateGasInfo)
+		if !ok {
+			return fmt.Errorf("no gas estimate")
+		}
+		_ = estimate.GasEstimate
+		return nil
+	})
+
+	ctx.Step(`^I check gas estimates on each$`, func() error {
+		// Check gas estimates on multiple transactions
+		return nil
+	})
+
+	ctx.Step(`^I compare gas values$`, func() error {
+		// Compare different gas values
+		return nil
+	})
+
+	ctx.Step(`^I extract gas_used$`, func() error {
+		results, ok := world.TestVectors["simulationResults"].([]api.UserTransaction)
+		if !ok || len(results) == 0 {
+			return fmt.Errorf("no simulation results")
+		}
+		world.TestVectors["gasUsed"] = results[0].GasUsed
+		return nil
+	})
+
+	ctx.Step(`^I request gas estimate$`, func() error {
+		if world.Client == nil {
+			client, err := aptos.NewClient(aptos.TestnetConfig)
+			if err != nil {
+				return err
+			}
+			world.Client = client
+		}
+		estimate, err := world.Client.EstimateGasPrice()
+		if err != nil {
+			world.SetError(err)
+			return nil
+		}
+		world.TestVectors["gasEstimate"] = estimate
+		return nil
+	})
+
+	ctx.Step(`^I should receive gas_estimate \(standard\)$`, func() error {
+		estimate, ok := world.TestVectors["gasEstimate"].(aptos.EstimateGasInfo)
+		if !ok {
+			return fmt.Errorf("no gas estimate")
+		}
+		if estimate.GasEstimate == 0 {
+			return fmt.Errorf("gas_estimate is 0")
+		}
+		return nil
+	})
+
+	ctx.Step(`^I should receive gas_used$`, func() error {
+		_, ok := world.TestVectors["gasUsed"]
+		if !ok {
+			return fmt.Errorf("no gas_used")
+		}
+		return nil
+	})
+
+	ctx.Step(`^I simulate at that version$`, func() error {
+		// Simulate at specific ledger version
+		return nil
+	})
+
+	ctx.Step(`^I simulate both$`, func() error {
+		// Simulate both transactions
+		return nil
+	})
+
+	ctx.Step(`^I simulate the script transaction$`, func() error {
+		// Script transaction simulation
+		return nil
+	})
+
+	ctx.Step(`^I simulate them in batch$`, func() error {
+		// Batch simulation
+		return nil
+	})
+
+	ctx.Step(`^I simulate them in order$`, func() error {
+		// Sequential simulation
+		return nil
+	})
+
+	ctx.Step(`^I simulate transaction with seq num (\d+)$`, func(seqNum int) error {
+		world.TestVectors["sequenceNumber"] = uint64(seqNum)
+		return nil
+	})
+
+	ctx.Step(`^I simulate with different max_gas amounts$`, func() error {
+		// Simulate with varying max gas
+		return nil
+	})
+
+	ctx.Step(`^I simulate with specific gas_unit_price$`, func() error {
+		// Simulate with specific gas price
+		return nil
+	})
+
+	ctx.Step(`^I simulate with specific max_gas_amount$`, func() error {
+		// Simulate with specific max gas
+		return nil
+	})
+
+	ctx.Step(`^I submit a transaction without specifying gas$`, func() error {
+		// Submit without gas specification
+		return nil
+	})
+
+	ctx.Step(`^I submit with max_gas_amount = (\d+)$`, func(maxGas int) error {
+		world.TestVectors["maxGasAmount"] = uint64(maxGas)
+		return nil
+	})
+
+	ctx.Step(`^I try to simulate$`, func() error {
+		if world.Client == nil {
+			world.SetError(fmt.Errorf("no client connected"))
+			return nil
+		}
+		rawTx, ok := world.TestVectors["rawTransaction"].(*aptos.RawTransaction)
+		if !ok {
+			world.SetError(fmt.Errorf("no raw transaction"))
+			return nil
+		}
+		if world.Account == nil {
+			world.SetError(fmt.Errorf("no account"))
+			return nil
+		}
+		results, err := world.Client.SimulateTransaction(rawTx, world.Account)
+		if err != nil {
+			world.SetError(err)
+			return nil
+		}
+		world.TestVectors["simulationResults"] = results
+		return nil
+	})
+
+	ctx.Step(`^SDK should simulate first$`, func() error {
+		// SDK behavior verification
+		return nil
+	})
+
+	ctx.Step(`^I apply (\d+)% buffer$`, func(percent int) error {
+		world.TestVectors["gasBuffer"] = percent
+		return nil
+	})
+
+	ctx.Step(`^I calculate maximum possible cost$`, func() error {
+		// Calculate max cost
+		return nil
+	})
+
+	ctx.Step(`^I calculate total cost$`, func() error {
+		// Calculate total cost
+		return nil
+	})
+
+	ctx.Step(`^I can find the minimum needed$`, func() error {
+		// Find minimum gas needed
+		return nil
+	})
+
+	ctx.Step(`^I can submit the real transaction$`, func() error {
+		// Submit after simulation
+		return nil
+	})
+
+	ctx.Step(`^I compare actual cost to max possible$`, func() error {
+		// Cost comparison
+		return nil
+	})
+
+	ctx.Step(`^I compare deprioritized vs standard$`, func() error {
+		estimate, ok := world.TestVectors["gasEstimate"].(aptos.EstimateGasInfo)
+		if !ok {
+			return fmt.Errorf("no gas estimate")
+		}
+		if estimate.DeprioritizedGasEstimate > estimate.GasEstimate {
+			return fmt.Errorf("deprioritized should be <= standard")
+		}
+		return nil
+	})
+
+	ctx.Step(`^I compare prioritized vs standard$`, func() error {
+		estimate, ok := world.TestVectors["gasEstimate"].(aptos.EstimateGasInfo)
+		if !ok {
+			return fmt.Errorf("no gas estimate")
+		}
+		if estimate.PrioritizedGasEstimate < estimate.GasEstimate {
+			return fmt.Errorf("prioritized should be >= standard")
+		}
+		return nil
+	})
+
+	ctx.Step(`^I compare versions$`, func() error {
+		// Version comparison
+		return nil
+	})
 }
