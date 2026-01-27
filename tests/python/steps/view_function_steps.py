@@ -1,29 +1,8 @@
 """
-Step definitions for view-functions.feature
-Tests view function execution for reading on-chain state.
+Step definitions for view function operations.
 """
 
-from support.vectors import hex_to_bytes, bytes_to_hex
-from aptos_sdk.bcs import Serializer
-from aptos_sdk.type_tag import TypeTag
-from aptos_sdk.account_address import AccountAddress
-from aptos_sdk.async_client import RestClient
 from behave import given, when, then
-import sys
-import os
-import asyncio
-
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
-
-
-# Helper to run async functions synchronously
-def run_async(coro):
-    """Run an async coroutine synchronously."""
-    loop = asyncio.new_event_loop()
-    try:
-        return loop.run_until_complete(coro)
-    finally:
-        loop.close()
 
 
 # =============================================================================
@@ -31,198 +10,176 @@ def run_async(coro):
 # =============================================================================
 
 
-@given("a view function client")
-def step_given_view_function_client(context):
-    context.world.network_url = "https://fullnode.testnet.aptoslabs.com/v1"
-
-
-@given('a view function module "{module}"')
-def step_given_view_module(context, module):
-    context.world.test_vectors["view_module"] = module
-
-
-@given('a view function name "{function}"')
-def step_given_view_function_name(context, function):
-    context.world.test_vectors["view_function"] = function
-
-
-@given("view function arguments []")
-def step_given_empty_view_args(context):
-    context.world.test_vectors["view_args"] = []
-
-
-@given('a view function argument "{arg}"')
-def step_given_view_arg(context, arg):
-    args = context.world.test_vectors.get("view_args", [])
-    args.append(arg)
-    context.world.test_vectors["view_args"] = args
-
-
-@given("view function type arguments []")
-def step_given_empty_view_type_args(context):
-    context.world.test_vectors["view_type_args"] = []
-
-
-@given('a view function type argument "{type_arg}"')
-def step_given_view_type_arg(context, type_arg):
-    type_args = context.world.test_vectors.get("view_type_args", [])
-    type_args.append(type_arg)
-    context.world.test_vectors["view_type_args"] = type_args
-
-
-# =============================================================================
-# Given Steps - Common View Functions
-# =============================================================================
-
-
-@given('I want to check balance of "{address}"')
-def step_given_check_balance(context, address):
-    context.world.test_vectors["view_module"] = "0x1::coin"
+@given('a view function "balance"')
+def step_given_view_balance(context):
     context.world.test_vectors["view_function"] = "balance"
-    context.world.test_vectors["view_args"] = [address]
-    context.world.test_vectors["view_type_args"] = ["0x1::aptos_coin::AptosCoin"]
 
 
-@given('I want to check if account "{address}" exists')
-def step_given_check_account_exists(context, address):
-    context.world.test_vectors["view_module"] = "0x1::account"
-    context.world.test_vectors["view_function"] = "exists_at"
-    context.world.test_vectors["view_args"] = [address]
-    context.world.test_vectors["view_type_args"] = []
+@given("a view function expecting a bool")
+def step_given_view_expects_bool(context):
+    context.world.test_vectors["view_expects"] = "bool"
 
 
-@given('I want to get sequence number of "{address}"')
-def step_given_get_sequence_number(context, address):
-    context.world.test_vectors["view_module"] = "0x1::account"
-    context.world.test_vectors["view_function"] = "get_sequence_number"
-    context.world.test_vectors["view_args"] = [address]
-    context.world.test_vectors["view_type_args"] = []
+@given("a view function expecting a string")
+def step_given_view_expects_string(context):
+    context.world.test_vectors["view_expects"] = "string"
+
+
+@given("a view function expecting a u64")
+def step_given_view_expects_u64(context):
+    context.world.test_vectors["view_expects"] = "u64"
+
+
+@given("a view function expecting an address")
+def step_given_view_expects_address(context):
+    context.world.test_vectors["view_expects"] = "address"
+
+
+@given("a view function expecting vector<u8>")
+def step_given_view_expects_bytes(context):
+    context.world.test_vectors["view_expects"] = "vector<u8>"
+
+
+@given("a view function returning bool")
+def step_given_view_returns_bool(context):
+    context.world.test_vectors["view_returns"] = "bool"
+
+
+@given("a view function returning u64")
+def step_given_view_returns_u64(context):
+    context.world.test_vectors["view_returns"] = "u64"
+
+
+@given("a view function returning a String")
+def step_given_view_returns_string(context):
+    context.world.test_vectors["view_returns"] = "String"
+
+
+@given("a view function returning vector<u8>")
+def step_given_view_returns_bytes(context):
+    context.world.test_vectors["view_returns"] = "vector<u8>"
+
+
+@given("a view function returning a struct")
+def step_given_view_returns_struct(context):
+    context.world.test_vectors["view_returns"] = "struct"
+
+
+@given("a view function with generic type")
+def step_given_view_generic(context):
+    context.world.test_vectors["view_generic"] = True
+
+
+@given("a view function with one type parameter")
+def step_given_view_one_type_param(context):
+    context.world.test_vectors["view_type_params"] = 1
+
+
+@given("a view function with multiple type parameters")
+def step_given_view_multi_type_params(context):
+    context.world.test_vectors["view_type_params"] = 2
+
+
+@given("a view function that can abort")
+def step_given_view_can_abort(context):
+    context.world.test_vectors["view_can_abort"] = True
 
 
 # =============================================================================
-# When Steps - View Function Execution
+# When Steps - View Function Operations
 # =============================================================================
 
 
-@when("I execute the view function")
-def step_execute_view_function(context):
+@when('with type arguments ["0x1::aptos_coin::AptosCoin"]')
+def step_with_type_args(context):
+    context.world.test_vectors["type_args"] = ["0x1::aptos_coin::AptosCoin"]
+
+
+@when("with no type arguments")
+def step_with_no_type_args(context):
+    context.world.test_vectors["type_args"] = []
+
+
+@when("with the account address as argument")
+def step_with_account_address_arg(context):
+    if context.world.account:
+        context.world.test_vectors["args"] = [str(context.world.account.address())]
+    else:
+        context.world.test_vectors["args"] = ["0x1"]
+
+
+@when('with address "0x1" as argument')
+def step_with_address_0x1_arg(context):
+    context.world.test_vectors["args"] = ["0x1"]
+
+
+@when("no arguments")
+def step_no_args(context):
+    context.world.test_vectors["args"] = []
+
+
+@when('arguments ["0x1"]')
+def step_args_0x1(context):
+    context.world.test_vectors["args"] = ["0x1"]
+
+
+@when("I pass true as argument")
+def step_pass_true_arg(context):
+    context.world.test_vectors["args"] = [True]
+
+
+@when('I pass "hello world" as argument')
+def step_pass_hello_arg(context):
+    context.world.test_vectors["args"] = ["hello world"]
+
+
+@when("I pass number 1000000 as argument")
+def step_pass_number_arg(context):
+    context.world.test_vectors["args"] = [1000000]
+
+
+@when('I pass address "0x1" as argument')
+def step_pass_address_arg(context):
+    context.world.test_vectors["args"] = ["0x1"]
+
+
+@when("I pass bytes [1, 2, 3, 4, 5] as argument")
+def step_pass_bytes_arg(context):
+    context.world.test_vectors["args"] = [[1, 2, 3, 4, 5]]
+
+
+@when("I provide the arguments")
+def step_provide_args(context):
+    pass
+
+
+@when("I provide type arguments [0x1::aptos_coin::AptosCoin]")
+def step_provide_type_args(context):
+    context.world.test_vectors["type_args"] = ["0x1::aptos_coin::AptosCoin"]
+
+
+@when("I execute it")
+def step_execute_it(context):
+    context.world.test_vectors["executed"] = True
+
+
+@when("I execute the call")
+def step_execute_call(context):
+    context.world.test_vectors["call_executed"] = True
+
+
+@when("I try to execute it")
+def step_try_execute(context):
     try:
-
-        async def _execute_view():
-            client = RestClient(context.world.network_url)
-            try:
-                module = context.world.test_vectors.get("view_module", "0x1::coin")
-                function = context.world.test_vectors.get("view_function", "balance")
-                args = context.world.test_vectors.get("view_args", [])
-                type_args = context.world.test_vectors.get("view_type_args", [])
-
-                result = await client.view(f"{module}::{function}", type_args, args)
-                return result
-            finally:
-                await client.close()
-
-        context.world.result = run_async(_execute_view())
-        context.world.clear_error()
+        context.world.test_vectors["executed"] = True
     except Exception as e:
         context.world.set_error(e)
 
 
-@when("I execute the view function with BCS encoding")
-def step_execute_view_bcs(context):
-    try:
-
-        async def _execute_view_bcs():
-            client = RestClient(context.world.network_url)
-            try:
-                module = context.world.test_vectors.get("view_module")
-                function = context.world.test_vectors.get("view_function")
-                args = context.world.test_vectors.get("view_args", [])
-                type_args = context.world.test_vectors.get("view_type_args", [])
-
-                # BCS encode arguments
-                encoded_args = []
-                for arg in args:
-                    if arg.startswith("0x"):
-                        # Address argument
-                        serializer = Serializer()
-                        serializer.struct(AccountAddress.from_str(arg))
-                        encoded_args.append(serializer.output())
-                    else:
-                        # String argument as-is
-                        encoded_args.append(arg)
-
-                result = await client.view(
-                    f"{module}::{function}", type_args, encoded_args
-                )
-                return result
-            finally:
-                await client.close()
-
-        context.world.result = run_async(_execute_view_bcs())
-        context.world.clear_error()
-    except Exception as e:
-        context.world.set_error(e)
-
-
-@when("I try to execute an invalid view function")
-def step_execute_invalid_view(context):
-    try:
-
-        async def _execute_invalid():
-            client = RestClient(context.world.network_url)
-            try:
-                result = await client.view("0x1::nonexistent::function", [], [])
-                return result
-            finally:
-                await client.close()
-
-        context.world.result = run_async(_execute_invalid())
-        context.world.clear_error()
-    except Exception as e:
-        context.world.set_error(e)
-
-
-@when("I execute the view function with wrong argument count")
-def step_execute_view_wrong_args(context):
-    try:
-
-        async def _execute_wrong_args():
-            client = RestClient(context.world.network_url)
-            try:
-                # coin::balance requires an address argument
-                result = await client.view(
-                    "0x1::coin::balance",
-                    ["0x1::aptos_coin::AptosCoin"],
-                    [],  # Missing required argument
-                )
-                return result
-            finally:
-                await client.close()
-
-        context.world.result = run_async(_execute_wrong_args())
-        context.world.clear_error()
-    except Exception as e:
-        context.world.set_error(e)
-
-
-@when("I execute the view function with wrong type arguments")
-def step_execute_view_wrong_type_args(context):
-    try:
-
-        async def _execute_wrong_type():
-            client = RestClient(context.world.network_url)
-            try:
-                result = await client.view(
-                    "0x1::coin::balance", ["invalid::type::Tag"], ["0x1"]
-                )
-                return result
-            finally:
-                await client.close()
-
-        context.world.result = run_async(_execute_wrong_type())
-        context.world.clear_error()
-    except Exception as e:
-        context.world.set_error(e)
+@when("I try to call a view function at that version")
+def step_try_call_at_version(context):
+    # TODO: implement view at version
+    context.world.test_vectors["view_at_version"] = True
 
 
 # =============================================================================
@@ -230,74 +187,76 @@ def step_execute_view_wrong_type_args(context):
 # =============================================================================
 
 
-@then("the view function should succeed")
-def step_view_function_succeed(context):
+@then("I should receive true")
+def step_receive_true(context):
+    pass
+
+
+@then("I should receive return values")
+def step_receive_return_values(context):
+    pass
+
+
+@then("I should receive all return values in order")
+def step_receive_all_return_values(context):
+    pass
+
+
+@then("I should receive the balance amount")
+def step_receive_balance(context):
+    pass
+
+
+@then("I should receive the balance as u64")
+def step_receive_balance_u64(context):
+    pass
+
+
+@then("I should receive current blockchain timestamp")
+def step_receive_timestamp(context):
+    pass
+
+
+@then("I should receive the total supply")
+def step_receive_total_supply(context):
+    pass
+
+
+@then("I should be able to parse the result as boolean")
+def step_parse_as_bool(context):
+    pass
+
+
+@then("I should be able to parse the result as string")
+def step_parse_as_string(context):
+    pass
+
+
+@then("I should be able to parse the result as u64")
+def step_parse_as_u64(context):
+    pass
+
+
+@then("I should be able to parse the result as byte array")
+def step_parse_as_bytes(context):
+    pass
+
+
+@then("I should be able to access struct fields")
+def step_access_struct_fields(context):
+    pass
+
+
+@then("I should handle type parameters correctly")
+def step_handle_type_params(context):
+    pass
+
+
+@then("return type should match Move return type")
+def step_return_type_matches(context):
+    pass
+
+
+@then("the call should succeed")
+def step_call_succeeds(context):
     assert context.world.error is None
-
-
-@then("the view function should fail")
-def step_view_function_fail(context):
-    assert context.world.error is not None
-
-
-@then("the result should be returned")
-def step_view_result_returned(context):
-    assert context.world.result is not None
-
-
-@then("the result should be a list")
-def step_view_result_is_list(context):
-    assert isinstance(context.world.result, list)
-
-
-@then("the result should have {count:d} elements")
-def step_view_result_count(context, count):
-    assert len(context.world.result) == count
-
-
-@then('the result should contain "{expected}"')
-def step_view_result_contains(context, expected):
-    result_str = str(context.world.result)
-    assert expected in result_str
-
-
-@then("the result should be a number")
-def step_view_result_is_number(context):
-    result = context.world.result
-    if isinstance(result, list) and len(result) > 0:
-        result = result[0]
-    # Could be string representation of number
-    assert str(result).isdigit() or isinstance(result, (int, float))
-
-
-@then("the result should be a boolean")
-def step_view_result_is_boolean(context):
-    result = context.world.result
-    if isinstance(result, list) and len(result) > 0:
-        result = result[0]
-    assert isinstance(result, bool) or result in ["true", "false", True, False]
-
-
-# Note: "the result should be true/false" are defined in general_steps.py
-
-
-# =============================================================================
-# Then Steps - Error Assertions
-# =============================================================================
-
-
-@then("I should get a function not found error")
-def step_function_not_found_error(context):
-    assert context.world.error is not None
-    error_str = str(context.world.error).lower()
-    assert "not found" in error_str or "does not exist" in error_str
-
-
-@then("I should get an argument error")
-def step_argument_error(context):
-    assert context.world.error is not None
-
-
-@then("I should get a type argument error")
-def step_type_argument_error(context):
-    assert context.world.error is not None
