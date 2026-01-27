@@ -136,6 +136,9 @@ func InitializeScenario(ctx *godog.ScenarioContext) {
 	// Fee payer steps
 	initFeePayerSteps(ctx, world)
 
+	// Final steps
+	initFinalSteps(ctx, world)
+
 	// Performance steps
 	initPerformanceSteps(ctx, world)
 
