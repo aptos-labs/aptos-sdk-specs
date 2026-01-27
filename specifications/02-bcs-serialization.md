@@ -47,6 +47,7 @@ for:
 ### 1.2 Scope
 
 This specification covers:
+
 - Encoding rules for all primitive types
 - Encoding rules for composite types (vectors, options, structs)
 - ULEB128 variable-length integer encoding
@@ -54,13 +55,13 @@ This specification covers:
 
 ### 1.3 Definitions
 
-| Term       | Definition                                              |
-| ---------- | ------------------------------------------------------- |
-| BCS        | Binary Canonical Serialization                          |
-| ULEB128    | Unsigned Little-Endian Base 128 variable-length encoding|
-| Canonical  | Exactly one valid encoding exists for any value         |
-| Big-endian | Most significant byte first                             |
-| Little-endian | Least significant byte first                         |
+| Term          | Definition                                               |
+| ------------- | -------------------------------------------------------- |
+| BCS           | Binary Canonical Serialization                           |
+| ULEB128       | Unsigned Little-Endian Base 128 variable-length encoding |
+| Canonical     | Exactly one valid encoding exists for any value          |
+| Big-endian    | Most significant byte first                              |
+| Little-endian | Least significant byte first                             |
 
 ---
 
@@ -134,11 +135,11 @@ BCS(u16) := byte[0..2]  // 2 bytes, little-endian
 
 **Examples:**
 
-| Value  | BCS Bytes |
-| ------ | --------- |
-| 0      | `00 00`   |
-| 256    | `00 01`   |
-| 65535  | `ff ff`   |
+| Value | BCS Bytes |
+| ----- | --------- |
+| 0     | `00 00`   |
+| 256   | `00 01`   |
+| 65535 | `ff ff`   |
 
 #### 3.2.3 u32
 
@@ -216,11 +217,11 @@ BCS(bytes) := ULEB128(length) || raw_bytes
 
 **Examples:**
 
-| Value          | BCS Bytes           |
-| -------------- | ------------------- |
-| `[]` (empty)   | `00`                |
-| `[0x01]`       | `01 01`             |
-| `[0x01, 0x02]` | `02 01 02`          |
+| Value          | BCS Bytes  |
+| -------------- | ---------- |
+| `[]` (empty)   | `00`       |
+| `[0x01]`       | `01 01`    |
+| `[0x01, 0x02]` | `02 01 02` |
 
 ### 4.2 String [P0]
 
@@ -254,12 +255,12 @@ BCS(Option<T>) :=
 
 **Examples:**
 
-| Value          | BCS Bytes     |
-| -------------- | ------------- |
-| `None`         | `00`          |
-| `Some(0u8)`    | `01 00`       |
-| `Some(255u8)`  | `01 ff`       |
-| `Some("hi")`   | `01 02 68 69` |
+| Value         | BCS Bytes     |
+| ------------- | ------------- |
+| `None`        | `00`          |
+| `Some(0u8)`   | `01 00`       |
+| `Some(255u8)` | `01 ff`       |
+| `Some("hi")`  | `01 02 68 69` |
 
 ### 4.4 Vector [P0]
 
@@ -269,11 +270,11 @@ BCS(Vec<T>) := ULEB128(length) || BCS(element_0) || BCS(element_1) || ... || BCS
 
 **Examples:**
 
-| Value                | BCS Bytes           |
-| -------------------- | ------------------- |
-| `[]` (empty Vec<u8>) | `00`                |
-| `[1u8, 2u8, 3u8]`    | `03 01 02 03`       |
-| `[true, false]`      | `02 01 00`          |
+| Value                | BCS Bytes     |
+| -------------------- | ------------- |
+| `[]` (empty Vec<u8>) | `00`          |
+| `[1u8, 2u8, 3u8]`    | `03 01 02 03` |
+| `[true, false]`      | `02 01 00`    |
 
 ### 4.5 Fixed-Size Arrays [P0]
 
@@ -285,9 +286,9 @@ BCS([T; N]) := BCS(element_0) || BCS(element_1) || ... || BCS(element_N-1)
 
 **Example:**
 
-| Value                | BCS Bytes     |
-| -------------------- | ------------- |
-| `[1u8, 2u8, 3u8]`    | `01 02 03`    |
+| Value             | BCS Bytes  |
+| ----------------- | ---------- |
+| `[1u8, 2u8, 3u8]` | `01 02 03` |
 
 **Note:** This differs from `Vec<T>` which includes a length prefix.
 
@@ -336,11 +337,11 @@ enum MyEnum {
 }
 ```
 
-| Value                        | BCS Bytes                       |
-| ---------------------------- | ------------------------------- |
-| `MyEnum::Unit`               | `00`                            |
-| `MyEnum::Single(256)`        | `01 00 01 00 00 00 00 00 00`    |
-| `MyEnum::Multiple { a: 1, b: 2 }` | `02 01 02 00`              |
+| Value                             | BCS Bytes                    |
+| --------------------------------- | ---------------------------- |
+| `MyEnum::Unit`                    | `00`                         |
+| `MyEnum::Single(256)`             | `01 00 01 00 00 00 00 00 00` |
+| `MyEnum::Multiple { a: 1, b: 2 }` | `02 01 02 00`                |
 
 ---
 
@@ -381,16 +382,16 @@ function decode_uleb128(bytes: &[u8]) -> (u64, bytes_consumed):
 
 ### 5.4 Examples
 
-| Value     | ULEB128 Bytes   |
-| --------- | --------------- |
-| 0         | `00`            |
-| 1         | `01`            |
-| 127       | `7f`            |
-| 128       | `80 01`         |
-| 255       | `ff 01`         |
-| 256       | `80 02`         |
-| 16383     | `ff 7f`         |
-| 16384     | `80 80 01`      |
+| Value | ULEB128 Bytes |
+| ----- | ------------- |
+| 0     | `00`          |
+| 1     | `01`          |
+| 127   | `7f`          |
+| 128   | `80 01`       |
+| 255   | `ff 01`       |
+| 256   | `80 02`       |
+| 16383 | `ff 7f`       |
+| 16384 | `80 80 01`    |
 
 ### 5.5 Maximum Value [P0]
 
@@ -520,19 +521,20 @@ Implementations **MUST** provide methods to serialize:
 
 ### 7.2 Convenience Methods [P1]
 
-| Method                     | Description                    |
-| -------------------------- | ------------------------------ |
-| `serialize_i8(i8)`         | Serialize signed 8-bit int     |
-| `serialize_i16(i16)`       | Serialize signed 16-bit int    |
-| `serialize_i32(i32)`       | Serialize signed 32-bit int    |
-| `serialize_i64(i64)`       | Serialize signed 64-bit int    |
-| `serialize_i128(i128)`     | Serialize signed 128-bit int   |
-| `serialize_i256(i256)`     | Serialize signed 256-bit int   |
-| `serialize_fixed_bytes(b)` | Serialize fixed-size bytes     |
+| Method                     | Description                  |
+| -------------------------- | ---------------------------- |
+| `serialize_i8(i8)`         | Serialize signed 8-bit int   |
+| `serialize_i16(i16)`       | Serialize signed 16-bit int  |
+| `serialize_i32(i32)`       | Serialize signed 32-bit int  |
+| `serialize_i64(i64)`       | Serialize signed 64-bit int  |
+| `serialize_i128(i128)`     | Serialize signed 128-bit int |
+| `serialize_i256(i256)`     | Serialize signed 256-bit int |
+| `serialize_fixed_bytes(b)` | Serialize fixed-size bytes   |
 
 ### 7.3 Helper Function [P0]
 
 **to_bytes:**
+
 ```
 to_bytes<T: Serializable>(value: T) -> bytes
 ```
@@ -547,35 +549,36 @@ Convenience function to serialize any BCS-serializable value to bytes.
 
 Implementations **MUST** provide methods to deserialize:
 
-| Method                    | Description                     |
-| ------------------------- | ------------------------------- |
-| `deserialize_bool()`      | Deserialize boolean             |
-| `deserialize_u8()`        | Deserialize unsigned 8-bit int  |
-| `deserialize_u16()`       | Deserialize unsigned 16-bit int |
-| `deserialize_u32()`       | Deserialize unsigned 32-bit int |
-| `deserialize_u64()`       | Deserialize unsigned 64-bit int |
-| `deserialize_u128()`      | Deserialize unsigned 128-bit int|
-| `deserialize_u256()`      | Deserialize unsigned 256-bit int|
-| `deserialize_bytes()`     | Deserialize byte sequence       |
-| `deserialize_str()`       | Deserialize UTF-8 string        |
-| `deserialize_option<T>()` | Deserialize optional value      |
-| `deserialize_vec<T>()`    | Deserialize vector              |
+| Method                    | Description                      |
+| ------------------------- | -------------------------------- |
+| `deserialize_bool()`      | Deserialize boolean              |
+| `deserialize_u8()`        | Deserialize unsigned 8-bit int   |
+| `deserialize_u16()`       | Deserialize unsigned 16-bit int  |
+| `deserialize_u32()`       | Deserialize unsigned 32-bit int  |
+| `deserialize_u64()`       | Deserialize unsigned 64-bit int  |
+| `deserialize_u128()`      | Deserialize unsigned 128-bit int |
+| `deserialize_u256()`      | Deserialize unsigned 256-bit int |
+| `deserialize_bytes()`     | Deserialize byte sequence        |
+| `deserialize_str()`       | Deserialize UTF-8 string         |
+| `deserialize_option<T>()` | Deserialize optional value       |
+| `deserialize_vec<T>()`    | Deserialize vector               |
 
 ### 8.2 Convenience Methods [P1]
 
-| Method                     | Description                      |
-| -------------------------- | -------------------------------- |
-| `deserialize_i8()`         | Deserialize signed 8-bit int     |
-| `deserialize_i16()`        | Deserialize signed 16-bit int    |
-| `deserialize_i32()`        | Deserialize signed 32-bit int    |
-| `deserialize_i64()`        | Deserialize signed 64-bit int    |
-| `deserialize_i128()`       | Deserialize signed 128-bit int   |
-| `deserialize_i256()`       | Deserialize signed 256-bit int   |
-| `deserialize_fixed_bytes()`| Deserialize fixed-size bytes     |
+| Method                      | Description                    |
+| --------------------------- | ------------------------------ |
+| `deserialize_i8()`          | Deserialize signed 8-bit int   |
+| `deserialize_i16()`         | Deserialize signed 16-bit int  |
+| `deserialize_i32()`         | Deserialize signed 32-bit int  |
+| `deserialize_i64()`         | Deserialize signed 64-bit int  |
+| `deserialize_i128()`        | Deserialize signed 128-bit int |
+| `deserialize_i256()`        | Deserialize signed 256-bit int |
+| `deserialize_fixed_bytes()` | Deserialize fixed-size bytes   |
 
 ### 8.3 Helper Function [P0]
 
 **from_bytes:**
+
 ```
 from_bytes<T: Deserializable>(bytes: &[u8]) -> Result<T, DeserializationError>
 ```

@@ -43,6 +43,7 @@ developers to work with accounts without dealing with low-level cryptographic de
 ### 1.2 Scope
 
 This specification covers:
+
 - Common account interface
 - Single-key account types (Ed25519, Secp256k1)
 - Authentication key derivation
@@ -51,13 +52,13 @@ This specification covers:
 
 ### 1.3 Definitions
 
-| Term              | Definition                                              |
-| ----------------- | ------------------------------------------------------- |
-| Account           | An entity on Aptos identified by an address             |
-| Single-Key Account| Account authenticated by a single private key           |
-| Authentication Key| 32-byte hash derived from public key                    |
-| Account Address   | 32-byte identifier, initially equal to auth key         |
-| Signature Scheme  | Algorithm used for signing (Ed25519, Secp256k1, etc.)   |
+| Term               | Definition                                            |
+| ------------------ | ----------------------------------------------------- |
+| Account            | An entity on Aptos identified by an address           |
+| Single-Key Account | Account authenticated by a single private key         |
+| Authentication Key | 32-byte hash derived from public key                  |
+| Account Address    | 32-byte identifier, initially equal to auth key       |
+| Signature Scheme   | Algorithm used for signing (Ed25519, Secp256k1, etc.) |
 
 ---
 
@@ -71,13 +72,13 @@ All account types **MUST** implement a common interface enabling polymorphic usa
 
 ### 2.2 Required Methods [P0]
 
-| Method                 | Return Type        | Description                         |
-| ---------------------- | ------------------ | ----------------------------------- |
-| `address()`            | AccountAddress     | Get the account's address           |
-| `public_key_bytes()`   | bytes              | Get public key as raw bytes         |
-| `signature_scheme()`   | SignatureScheme    | Get the signature scheme identifier |
-| `sign(message)`        | Signature          | Sign arbitrary bytes                |
-| `authentication_key()` | AuthenticationKey  | Get the authentication key          |
+| Method                 | Return Type       | Description                         |
+| ---------------------- | ----------------- | ----------------------------------- |
+| `address()`            | AccountAddress    | Get the account's address           |
+| `public_key_bytes()`   | bytes             | Get public key as raw bytes         |
+| `signature_scheme()`   | SignatureScheme   | Get the signature scheme identifier |
+| `sign(message)`        | Signature         | Sign arbitrary bytes                |
+| `authentication_key()` | AuthenticationKey | Get the authentication key          |
 
 ### 2.3 Signature Scheme Identifiers [P0]
 
@@ -92,11 +93,11 @@ All account types **MUST** implement a common interface enabling polymorphic usa
 
 ### 2.4 Optional Methods [P1]
 
-| Method                   | Return Type     | Description                      |
-| ------------------------ | --------------- | -------------------------------- |
-| `sign_transaction(txn)`  | SignedTxn       | Sign a RawTransaction            |
-| `public_key()`           | PublicKey       | Get typed public key reference   |
-| `verify(msg, sig)`       | bool            | Verify a signature               |
+| Method                  | Return Type | Description                    |
+| ----------------------- | ----------- | ------------------------------ |
+| `sign_transaction(txn)` | SignedTxn   | Sign a RawTransaction          |
+| `public_key()`          | PublicKey   | Get typed public key reference |
+| `verify(msg, sig)`      | bool        | Verify a signature             |
 
 ---
 
@@ -121,6 +122,7 @@ All account types **MUST** implement a common interface enabling polymorphic usa
 #### 3.3.1 Random Generation
 
 **Signature:**
+
 ```
 generate() -> Ed25519Account
 ```
@@ -133,6 +135,7 @@ generate() -> Ed25519Account
 #### 3.3.2 From Private Key
 
 **Signature:**
+
 ```
 from_private_key(key: Ed25519PrivateKey) -> Ed25519Account
 ```
@@ -146,6 +149,7 @@ from_private_key(key: Ed25519PrivateKey) -> Ed25519Account
 #### 3.3.3 From Hex String
 
 **Signature:**
+
 ```
 from_private_key_hex(hex: string) -> Result<Ed25519Account, Error>
 ```
@@ -158,6 +162,7 @@ from_private_key_hex(hex: string) -> Result<Ed25519Account, Error>
 #### 3.3.4 From Bytes
 
 **Signature:**
+
 ```
 from_private_key_bytes(bytes: bytes) -> Result<Ed25519Account, Error>
 ```
@@ -172,6 +177,7 @@ from_private_key_bytes(bytes: bytes) -> Result<Ed25519Account, Error>
 #### 3.4.1 From Mnemonic (Default Path)
 
 **Signature:**
+
 ```
 from_mnemonic(mnemonic: Mnemonic) -> Result<Ed25519Account, Error>
 ```
@@ -181,6 +187,7 @@ from_mnemonic(mnemonic: Mnemonic) -> Result<Ed25519Account, Error>
 #### 3.4.2 From Mnemonic with Custom Path
 
 **Signature:**
+
 ```
 from_mnemonic_with_path(mnemonic: Mnemonic, path: string) -> Result<Ed25519Account, Error>
 ```
@@ -204,6 +211,7 @@ address = authentication_key  // For new accounts
 ```
 
 Where:
+
 - `public_key` is the 32-byte Ed25519 public key
 - `0x00` is the Ed25519 scheme identifier
 - The result is a 32-byte address
@@ -231,6 +239,7 @@ Where:
 #### 4.3.1 Random Generation
 
 **Signature:**
+
 ```
 generate() -> Secp256k1Account
 ```
@@ -238,6 +247,7 @@ generate() -> Secp256k1Account
 #### 4.3.2 From Private Key
 
 **Signature:**
+
 ```
 from_private_key(key: Secp256k1PrivateKey) -> Secp256k1Account
 from_private_key_hex(hex: string) -> Result<Secp256k1Account, Error>
@@ -246,6 +256,7 @@ from_private_key_hex(hex: string) -> Result<Secp256k1Account, Error>
 #### 4.3.3 From Mnemonic
 
 **Signature:**
+
 ```
 from_mnemonic(mnemonic: Mnemonic) -> Result<Secp256k1Account, Error>
 ```
@@ -262,6 +273,7 @@ address = authentication_key
 ```
 
 Where:
+
 - `uncompressed_public_key` is the 65-byte uncompressed public key
 - `0x01` is the Secp256k1 scheme identifier
 
@@ -286,11 +298,13 @@ AuthenticationKey := [u8; 32]
 #### 5.3.1 From Ed25519 Public Key
 
 **Signature:**
+
 ```
 from_ed25519(public_key: Ed25519PublicKey) -> AuthenticationKey
 ```
 
 **Formula:**
+
 ```
 auth_key = SHA3-256(public_key_bytes || 0x00)
 ```
@@ -298,11 +312,13 @@ auth_key = SHA3-256(public_key_bytes || 0x00)
 #### 5.3.2 From Secp256k1 Public Key
 
 **Signature:**
+
 ```
 from_secp256k1(public_key: Secp256k1PublicKey) -> AuthenticationKey
 ```
 
 **Formula:**
+
 ```
 auth_key = SHA3-256(uncompressed_public_key || 0x01)
 ```
@@ -310,11 +326,13 @@ auth_key = SHA3-256(uncompressed_public_key || 0x01)
 #### 5.3.3 From Any Public Key
 
 **Signature:**
+
 ```
 from_public_key(public_key_bytes: bytes, scheme: u8) -> AuthenticationKey
 ```
 
 **Formula:**
+
 ```
 auth_key = SHA3-256(public_key_bytes || scheme)
 ```
@@ -322,17 +340,18 @@ auth_key = SHA3-256(public_key_bytes || scheme)
 #### 5.3.4 From Raw Bytes
 
 **Signature:**
+
 ```
 from_bytes(bytes: [u8; 32]) -> AuthenticationKey
 ```
 
 ### 5.4 Methods [P0]
 
-| Method              | Return Type    | Description                    |
-| ------------------- | -------------- | ------------------------------ |
-| `account_address()` | AccountAddress | Convert to account address     |
-| `as_bytes()`        | [u8; 32]       | Get raw 32-byte array          |
-| `to_hex()`          | string         | Get hex string with 0x prefix  |
+| Method              | Return Type    | Description                   |
+| ------------------- | -------------- | ----------------------------- |
+| `account_address()` | AccountAddress | Convert to account address    |
+| `as_bytes()`        | [u8; 32]       | Get raw 32-byte array         |
+| `to_hex()`          | string         | Get hex string with 0x prefix |
 
 ### 5.5 Account Address Relationship [P0]
 
@@ -361,6 +380,7 @@ generation.
 #### 6.2.1 Generation
 
 **Signature:**
+
 ```
 Mnemonic::generate(word_count: u8) -> Mnemonic
 ```
@@ -370,6 +390,7 @@ Mnemonic::generate(word_count: u8) -> Mnemonic
 #### 6.2.2 Parsing
 
 **Signature:**
+
 ```
 Mnemonic::from_phrase(phrase: string) -> Result<Mnemonic, Error>
 ```
@@ -384,17 +405,18 @@ Mnemonic::from_phrase(phrase: string) -> Result<Mnemonic, Error>
 #### 6.2.3 Validation
 
 **Signature:**
+
 ```
 Mnemonic::validate(phrase: string) -> bool
 ```
 
 #### 6.2.4 Methods
 
-| Method            | Return Type | Description                    |
-| ----------------- | ----------- | ------------------------------ |
-| `phrase()`        | string      | Get the mnemonic phrase        |
-| `word_count()`    | u8          | Get number of words            |
-| `to_seed(pass)`   | [u8; 64]    | Derive seed with passphrase    |
+| Method          | Return Type | Description                 |
+| --------------- | ----------- | --------------------------- |
+| `phrase()`      | string      | Get the mnemonic phrase     |
+| `word_count()`  | u8          | Get number of words         |
+| `to_seed(pass)` | [u8; 64]    | Derive seed with passphrase |
 
 ### 6.3 Derivation Path
 
@@ -409,6 +431,7 @@ m / 44' / 637' / account' / change' / address_index'
 #### 6.3.2 Path Parsing
 
 **Signature:**
+
 ```
 DerivationPath::from_string(path: string) -> Result<DerivationPath, Error>
 ```
@@ -458,17 +481,18 @@ compile time.
 
 ### 7.2 Variants
 
-| Variant      | Wraps              | Priority |
-| ------------ | ------------------ | -------- |
-| Ed25519      | Ed25519Account     | P0       |
-| Secp256k1    | Secp256k1Account   | P1       |
-| Secp256r1    | Secp256r1Account   | P2       |
-| MultiEd25519 | MultiEd25519Account| P2       |
-| MultiKey     | MultiKeyAccount    | P2       |
+| Variant      | Wraps               | Priority |
+| ------------ | ------------------- | -------- |
+| Ed25519      | Ed25519Account      | P0       |
+| Secp256k1    | Secp256k1Account    | P1       |
+| Secp256r1    | Secp256r1Account    | P2       |
+| MultiEd25519 | MultiEd25519Account | P2       |
+| MultiKey     | MultiKeyAccount     | P2       |
 
 ### 7.3 Construction [P1]
 
 **Signatures:**
+
 ```
 AnyAccount::ed25519(account: Ed25519Account) -> AnyAccount
 AnyAccount::secp256k1(account: Secp256k1Account) -> AnyAccount
@@ -478,13 +502,13 @@ AnyAccount::secp256k1(account: Secp256k1Account) -> AnyAccount
 
 `AnyAccount` **MUST** implement the standard account interface:
 
-| Method                 | Description                    |
-| ---------------------- | ------------------------------ |
-| `address()`            | Get account address            |
-| `public_key_bytes()`   | Get public key bytes           |
-| `signature_scheme()`   | Get signature scheme           |
-| `sign(message)`        | Sign arbitrary bytes           |
-| `authentication_key()` | Get authentication key         |
+| Method                 | Description            |
+| ---------------------- | ---------------------- |
+| `address()`            | Get account address    |
+| `public_key_bytes()`   | Get public key bytes   |
+| `signature_scheme()`   | Get signature scheme   |
+| `sign(message)`        | Sign arbitrary bytes   |
+| `authentication_key()` | Get authentication key |
 
 ### 7.5 Usage Pattern
 
@@ -510,6 +534,7 @@ let signature = account.sign(message);
 Implementations **MUST** provide methods to export private keys with appropriate warnings.
 
 **Signatures:**
+
 ```
 private_key_bytes() -> bytes
 private_key_hex() -> string
@@ -524,6 +549,7 @@ private_key_hex() -> string
 ### 8.2 Public Key Export [P0]
 
 **Signatures:**
+
 ```
 public_key_bytes() -> bytes
 public_key_hex() -> string
@@ -534,6 +560,7 @@ public_key_hex() -> string
 Implementations **SHOULD** support JSON serialization for configuration storage.
 
 **Format:**
+
 ```json
 {
   "type": "ed25519",

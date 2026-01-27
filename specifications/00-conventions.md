@@ -23,18 +23,18 @@ This specification uses requirement level keywords as defined in
 
 ### 1.1 Keyword Definitions
 
-| Keyword              | Meaning                                                                 |
-| -------------------- | ----------------------------------------------------------------------- |
-| **MUST**             | Absolute requirement. Implementations that do not comply are non-conformant. |
-| **MUST NOT**         | Absolute prohibition. Implementations that violate this are non-conformant. |
-| **REQUIRED**         | Synonym for MUST.                                                       |
-| **SHALL**            | Synonym for MUST.                                                       |
-| **SHALL NOT**        | Synonym for MUST NOT.                                                   |
-| **SHOULD**           | Recommended. Valid reasons may exist to ignore, but implications must be understood. |
-| **SHOULD NOT**       | Not recommended. Valid reasons may exist to do this, but implications must be understood. |
-| **RECOMMENDED**      | Synonym for SHOULD.                                                     |
-| **MAY**              | Truly optional. Implementations may or may not include this feature.    |
-| **OPTIONAL**         | Synonym for MAY.                                                        |
+| Keyword         | Meaning                                                                                   |
+| --------------- | ----------------------------------------------------------------------------------------- |
+| **MUST**        | Absolute requirement. Implementations that do not comply are non-conformant.              |
+| **MUST NOT**    | Absolute prohibition. Implementations that violate this are non-conformant.               |
+| **REQUIRED**    | Synonym for MUST.                                                                         |
+| **SHALL**       | Synonym for MUST.                                                                         |
+| **SHALL NOT**   | Synonym for MUST NOT.                                                                     |
+| **SHOULD**      | Recommended. Valid reasons may exist to ignore, but implications must be understood.      |
+| **SHOULD NOT**  | Not recommended. Valid reasons may exist to do this, but implications must be understood. |
+| **RECOMMENDED** | Synonym for SHOULD.                                                                       |
+| **MAY**         | Truly optional. Implementations may or may not include this feature.                      |
+| **OPTIONAL**    | Synonym for MAY.                                                                          |
 
 ### 1.2 Keyword Formatting
 
@@ -49,11 +49,11 @@ Each requirement is associated with a priority level indicating its importance f
 
 ### 2.1 Priority Levels
 
-| Level | Tag         | RFC Keyword | Description                                    |
-| ----- | ----------- | ----------- | ---------------------------------------------- |
-| P0    | `@required` | MUST        | Essential for basic SDK functionality          |
-| P1    | `@preferred`| SHOULD      | Expected in production-quality SDKs            |
-| P2    | `@optional` | MAY         | Extended features for comprehensive SDKs       |
+| Level | Tag          | RFC Keyword | Description                              |
+| ----- | ------------ | ----------- | ---------------------------------------- |
+| P0    | `@required`  | MUST        | Essential for basic SDK functionality    |
+| P1    | `@preferred` | SHOULD      | Expected in production-quality SDKs      |
+| P2    | `@optional`  | MAY         | Extended features for comprehensive SDKs |
 
 ### 2.2 Compliance Tiers
 
@@ -98,49 +98,49 @@ make test
 
 ### 3.1 Primitive Types
 
-| Notation   | Description                        | Size       |
-| ---------- | ---------------------------------- | ---------- |
-| `bool`     | Boolean value                      | 1 byte     |
-| `u8`       | Unsigned 8-bit integer             | 1 byte     |
-| `u16`      | Unsigned 16-bit integer            | 2 bytes    |
-| `u32`      | Unsigned 32-bit integer            | 4 bytes    |
-| `u64`      | Unsigned 64-bit integer            | 8 bytes    |
-| `u128`     | Unsigned 128-bit integer           | 16 bytes   |
-| `u256`     | Unsigned 256-bit integer           | 32 bytes   |
-| `i8`       | Signed 8-bit integer               | 1 byte     |
-| `i16`      | Signed 16-bit integer              | 2 bytes    |
-| `i32`      | Signed 32-bit integer              | 4 bytes    |
-| `i64`      | Signed 64-bit integer              | 8 bytes    |
-| `i128`     | Signed 128-bit integer             | 16 bytes   |
-| `i256`     | Signed 256-bit integer             | 32 bytes   |
-| `bytes`    | Variable-length byte sequence      | Variable   |
-| `string`   | UTF-8 encoded string               | Variable   |
+| Notation | Description                   | Size     |
+| -------- | ----------------------------- | -------- |
+| `bool`   | Boolean value                 | 1 byte   |
+| `u8`     | Unsigned 8-bit integer        | 1 byte   |
+| `u16`    | Unsigned 16-bit integer       | 2 bytes  |
+| `u32`    | Unsigned 32-bit integer       | 4 bytes  |
+| `u64`    | Unsigned 64-bit integer       | 8 bytes  |
+| `u128`   | Unsigned 128-bit integer      | 16 bytes |
+| `u256`   | Unsigned 256-bit integer      | 32 bytes |
+| `i8`     | Signed 8-bit integer          | 1 byte   |
+| `i16`    | Signed 16-bit integer         | 2 bytes  |
+| `i32`    | Signed 32-bit integer         | 4 bytes  |
+| `i64`    | Signed 64-bit integer         | 8 bytes  |
+| `i128`   | Signed 128-bit integer        | 16 bytes |
+| `i256`   | Signed 256-bit integer        | 32 bytes |
+| `bytes`  | Variable-length byte sequence | Variable |
+| `string` | UTF-8 encoded string          | Variable |
 
 ### 3.2 Composite Types
 
-| Notation       | Description                              |
-| -------------- | ---------------------------------------- |
-| `Vec<T>`       | Variable-length sequence of type T       |
-| `Option<T>`    | Optional value (None or Some(T))         |
-| `[T; N]`       | Fixed-size array of N elements of type T |
-| `(T1, T2)`     | Tuple of types T1 and T2                 |
-| `Enum { A, B }`| Enumeration with variants A and B        |
+| Notation        | Description                              |
+| --------------- | ---------------------------------------- |
+| `Vec<T>`        | Variable-length sequence of type T       |
+| `Option<T>`     | Optional value (None or Some(T))         |
+| `[T; N]`        | Fixed-size array of N elements of type T |
+| `(T1, T2)`      | Tuple of types T1 and T2                 |
+| `Enum { A, B }` | Enumeration with variants A and B        |
 
 ### 3.3 Domain Types
 
 Domain-specific types are defined in their respective specification documents:
 
-| Type                     | Defined In          |
-| ------------------------ | ------------------- |
-| `AccountAddress`         | 01-core-types.md    |
-| `TypeTag`                | 01-core-types.md    |
-| `ChainId`                | 01-core-types.md    |
-| `Ed25519PrivateKey`      | 03-cryptography.md  |
-| `Ed25519PublicKey`       | 03-cryptography.md  |
-| `Ed25519Signature`       | 03-cryptography.md  |
-| `AuthenticationKey`      | 04-accounts.md      |
-| `RawTransaction`         | 05-transactions.md  |
-| `SignedTransaction`      | 05-transactions.md  |
+| Type                | Defined In         |
+| ------------------- | ------------------ |
+| `AccountAddress`    | 01-core-types.md   |
+| `TypeTag`           | 01-core-types.md   |
+| `ChainId`           | 01-core-types.md   |
+| `Ed25519PrivateKey` | 03-cryptography.md |
+| `Ed25519PublicKey`  | 03-cryptography.md |
+| `Ed25519Signature`  | 03-cryptography.md |
+| `AuthenticationKey` | 04-accounts.md     |
+| `RawTransaction`    | 05-transactions.md |
+| `SignedTransaction` | 05-transactions.md |
 
 ---
 
@@ -160,15 +160,15 @@ maintaining semantic equivalence:
 
 ### 4.2 Method Categories
 
-| Prefix/Suffix | Meaning                                      |
-| ------------- | -------------------------------------------- |
-| `from_*`      | Constructor from another representation      |
-| `to_*`        | Convert to another representation            |
-| `as_*`        | View as another type (no allocation)         |
-| `into_*`      | Convert consuming self                       |
-| `is_*`        | Boolean predicate                            |
-| `try_*`       | May fail, returns Result/Option              |
-| `*_unchecked` | Skips validation (use with caution)          |
+| Prefix/Suffix | Meaning                                 |
+| ------------- | --------------------------------------- |
+| `from_*`      | Constructor from another representation |
+| `to_*`        | Convert to another representation       |
+| `as_*`        | View as another type (no allocation)    |
+| `into_*`      | Convert consuming self                  |
+| `is_*`        | Boolean predicate                       |
+| `try_*`       | May fail, returns Result/Option         |
+| `*_unchecked` | Skips validation (use with caution)     |
 
 ---
 
@@ -193,13 +193,13 @@ JSON is used for API communication and human-readable representations.
 
 ### 5.3 Hex Encoding
 
-| Context           | Format                           | Example                    |
-| ----------------- | -------------------------------- | -------------------------- |
-| API responses     | Full 64-char with 0x prefix      | `0x000...001`              |
-| User input        | Short form accepted              | `0x1`                      |
-| Display (short)   | Minimal with 0x prefix           | `0x1`                      |
-| Display (full)    | Full 64-char with 0x prefix      | `0x000...001`              |
-| Raw bytes (no 0x) | Hex without prefix               | `000...001`                |
+| Context           | Format                      | Example       |
+| ----------------- | --------------------------- | ------------- |
+| API responses     | Full 64-char with 0x prefix | `0x000...001` |
+| User input        | Short form accepted         | `0x1`         |
+| Display (short)   | Minimal with 0x prefix      | `0x1`         |
+| Display (full)    | Full 64-char with 0x prefix | `0x000...001` |
+| Raw bytes (no 0x) | Hex without prefix          | `000...001`   |
 
 ---
 
@@ -209,16 +209,16 @@ JSON is used for API communication and human-readable representations.
 
 Errors **MUST** be categorized to enable programmatic handling:
 
-| Category        | Description                              |
-| --------------- | ---------------------------------------- |
-| `Parse`         | Input parsing/validation failed          |
-| `Crypto`        | Cryptographic operation failed           |
-| `Serialization` | BCS/JSON encoding/decoding failed        |
-| `Network`       | Network communication failed             |
-| `Api`           | API returned an error response           |
-| `Timeout`       | Operation timed out                      |
-| `NotFound`      | Requested resource not found             |
-| `InvalidState`  | Operation invalid in current state       |
+| Category        | Description                        |
+| --------------- | ---------------------------------- |
+| `Parse`         | Input parsing/validation failed    |
+| `Crypto`        | Cryptographic operation failed     |
+| `Serialization` | BCS/JSON encoding/decoding failed  |
+| `Network`       | Network communication failed       |
+| `Api`           | API returned an error response     |
+| `Timeout`       | Operation timed out                |
+| `NotFound`      | Requested resource not found       |
+| `InvalidState`  | Operation invalid in current state |
 
 ### 6.2 Error Information
 
@@ -245,15 +245,15 @@ cross-SDK compatibility for deterministic operations.
 
 Test vectors are located in the `test-vectors/` directory:
 
-| File               | Contents                           |
-| ------------------ | ---------------------------------- |
-| `addresses.json`   | Address parsing and formatting     |
-| `bcs.json`         | BCS serialization                  |
-| `mnemonics.json`   | BIP-39/BIP-44 key derivation       |
-| `signatures.json`  | Cryptographic signatures           |
-| `transactions.json`| Transaction serialization          |
-| `type-tags.json`   | TypeTag parsing                    |
-| `multi-sig.json`   | Multi-signature operations         |
+| File                | Contents                       |
+| ------------------- | ------------------------------ |
+| `addresses.json`    | Address parsing and formatting |
+| `bcs.json`          | BCS serialization              |
+| `mnemonics.json`    | BIP-39/BIP-44 key derivation   |
+| `signatures.json`   | Cryptographic signatures       |
+| `transactions.json` | Transaction serialization      |
+| `type-tags.json`    | TypeTag parsing                |
+| `multi-sig.json`    | Multi-signature operations     |
 
 ### 7.3 Vector Format
 
@@ -286,11 +286,11 @@ Specifications use semantic versioning: `MAJOR.MINOR.PATCH`
 
 ### 8.2 Document Status
 
-| Status   | Meaning                                          |
-| -------- | ------------------------------------------------ |
-| Draft    | Work in progress, subject to significant change  |
-| Review   | Ready for review, may have minor changes         |
-| Final    | Stable, changes require new version              |
+| Status | Meaning                                         |
+| ------ | ----------------------------------------------- |
+| Draft  | Work in progress, subject to significant change |
+| Review | Ready for review, may have minor changes        |
+| Final  | Stable, changes require new version             |
 
 ---
 

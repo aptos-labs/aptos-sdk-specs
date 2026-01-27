@@ -38,19 +38,19 @@
 
 ### ✅ Fully Available Features
 
-| Feature                | Notes                                              |
-| ---------------------- | -------------------------------------------------- |
-| address                | Full address parsing and formatting                |
-| serialization          | BCS via `bcs` package                              |
-| type-tags              | TypeTag parsing and serialization                  |
-| ed25519                | Complete Ed25519 support                           |
-| hashing                | SHA2-256, SHA3-256, domain separation, HashValue   |
-| authentication-key     | Ed25519 auth keys                                  |
-| entry-function         | Basic entry function building                      |
-| raw-transaction        | Transaction building                               |
-| signing                | Ed25519 transaction signing                        |
-| fullnode-api           | Basic API client                                   |
-| transaction-submission | Submit transactions                                |
+| Feature                | Notes                                            |
+| ---------------------- | ------------------------------------------------ |
+| address                | Full address parsing and formatting              |
+| serialization          | BCS via `bcs` package                            |
+| type-tags              | TypeTag parsing and serialization                |
+| ed25519                | Complete Ed25519 support                         |
+| hashing                | SHA2-256, SHA3-256, domain separation, HashValue |
+| authentication-key     | Ed25519 auth keys                                |
+| entry-function         | Basic entry function building                    |
+| raw-transaction        | Transaction building                             |
+| signing                | Ed25519 transaction signing                      |
+| fullnode-api           | Basic API client                                 |
+| transaction-submission | Submit transactions                              |
 
 ### 🟡 Partially Available
 
