@@ -40,6 +40,11 @@ type World struct {
 	Account2 *aptos.Account
 	Accounts []*aptos.Account
 
+	// Multi-agent/Fee payer
+	SecondarySigners   []*aptos.Account
+	SecondaryAddresses []aptos.AccountAddress
+	FeePayer           *aptos.Account
+
 	// General storage
 	Result    interface{}
 	Error     error
@@ -84,6 +89,9 @@ func (w *World) Reset() {
 	w.Account = nil
 	w.Account2 = nil
 	w.Accounts = make([]*aptos.Account, 0)
+	w.SecondarySigners = make([]*aptos.Account, 0)
+	w.SecondaryAddresses = make([]aptos.AccountAddress, 0)
+	w.FeePayer = nil
 	w.Result = nil
 	w.Error = nil
 	w.Bytes = nil
