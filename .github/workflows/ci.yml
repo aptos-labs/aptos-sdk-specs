@@ -119,8 +119,16 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: aptos-labs/aptos-rust-sdk
-          # Place SDK in sibling directory (one level up from this repo)
-          path: ../aptos-rust-sdk
+          path: aptos-rust-sdk-checkout
+
+      - name: Link SDK to expected location
+        run: |
+          # Cargo.toml expects aptos-rust-sdk at ../../../aptos-rust-sdk relative to tests/rust
+          # That resolves to the parent of this repo. Create symlink at that level.
+          # From workspace root, go up one level and create the symlink there
+          ln -sf $GITHUB_WORKSPACE/aptos-rust-sdk-checkout $GITHUB_WORKSPACE/../aptos-rust-sdk
+          ls -la $GITHUB_WORKSPACE/../
+        working-directory: ${{ github.workspace }}
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
