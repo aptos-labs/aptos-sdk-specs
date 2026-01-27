@@ -94,6 +94,21 @@ func InitializeScenario(ctx *godog.ScenarioContext) {
 	// Mnemonic/derivation steps
 	initMnemonicSteps(ctx, world)
 
+	// Script steps
+	initScriptSteps(ctx, world)
+
+	// ABI steps
+	initABISteps(ctx, world)
+
+	// Encoding steps
+	initEncodingSteps(ctx, world)
+
+	// Query steps (mostly pending - requires indexer)
+	initQuerySteps(ctx, world)
+
+	// Codegen steps (all pending - SDK doesn't have codegen)
+	initCodegenSteps(ctx, world)
+
 	// Performance steps
 	initPerformanceSteps(ctx, world)
 
