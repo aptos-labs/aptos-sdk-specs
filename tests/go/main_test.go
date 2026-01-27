@@ -115,6 +115,12 @@ func InitializeScenario(ctx *godog.ScenarioContext) {
 	// Action steps
 	initActionSteps(ctx, world)
 
+	// Given steps
+	initGivenSteps(ctx, world)
+
+	// Try steps
+	initTrySteps(ctx, world)
+
 	// Performance steps
 	initPerformanceSteps(ctx, world)
 
