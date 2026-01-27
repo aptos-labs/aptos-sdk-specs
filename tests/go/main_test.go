@@ -127,6 +127,12 @@ func InitializeScenario(ctx *godog.ScenarioContext) {
 	// Assertion steps
 	initAssertionSteps(ctx, world)
 
+	// Client steps
+	initClientSteps(ctx, world)
+
+	// More steps
+	initMoreSteps(ctx, world)
+
 	// Performance steps
 	initPerformanceSteps(ctx, world)
 
