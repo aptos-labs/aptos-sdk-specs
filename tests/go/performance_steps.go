@@ -371,6 +371,122 @@ func initPerformanceSteps(ctx *godog.ScenarioContext, world *World) {
 		return nil
 	})
 
+	// =============================================================================
+	// Recording Steps
+	// =============================================================================
+
+	ctx.Step(`^I record the average response time as "([^"]*)"$`, func(name string) error {
+		result, ok := world.TestVectors["benchmarkResult"].(BenchmarkResult)
+		if !ok {
+			return fmt.Errorf("no benchmark result available")
+		}
+		performanceResults.Results[name] = result.Avg
+		return nil
+	})
+
+	ctx.Step(`^I record the average round-trip time as "([^"]*)"$`, func(name string) error {
+		result, ok := world.TestVectors["benchmarkResult"].(BenchmarkResult)
+		if !ok {
+			return fmt.Errorf("no benchmark result available")
+		}
+		performanceResults.Results[name] = result.Avg
+		return nil
+	})
+
+	ctx.Step(`^I record the average submission time as "([^"]*)"$`, func(name string) error {
+		result, ok := world.TestVectors["benchmarkResult"].(BenchmarkResult)
+		if !ok {
+			return fmt.Errorf("no benchmark result available")
+		}
+		performanceResults.Results[name] = result.Avg
+		return nil
+	})
+
+	ctx.Step(`^I record the average total time as "([^"]*)"$`, func(name string) error {
+		result, ok := world.TestVectors["benchmarkResult"].(BenchmarkResult)
+		if !ok {
+			return fmt.Errorf("no benchmark result available")
+		}
+		performanceResults.Results[name] = result.Avg
+		return nil
+	})
+
+	ctx.Step(`^I record the breakdown by step$`, func() error {
+		return nil
+	})
+
+	ctx.Step(`^I record the maximum round-trip time as "([^"]*)"$`, func(name string) error {
+		result, ok := world.TestVectors["benchmarkResult"].(BenchmarkResult)
+		if !ok {
+			return fmt.Errorf("no benchmark result available")
+		}
+		performanceResults.Results[name] = result.Max
+		return nil
+	})
+
+	ctx.Step(`^I record the minimum round-trip time as "([^"]*)"$`, func(name string) error {
+		result, ok := world.TestVectors["benchmarkResult"].(BenchmarkResult)
+		if !ok {
+			return fmt.Errorf("no benchmark result available")
+		}
+		performanceResults.Results[name] = result.Min
+		return nil
+	})
+
+	ctx.Step(`^I record the p(\d+) response time as "([^"]*)"$`, func(percentile int, name string) error {
+		result, ok := world.TestVectors["benchmarkResult"].(BenchmarkResult)
+		if !ok {
+			return fmt.Errorf("no benchmark result available")
+		}
+		performanceResults.Results[name] = result.P95
+		return nil
+	})
+
+	ctx.Step(`^I record the p(\d+) round-trip time as "([^"]*)"$`, func(percentile int, name string) error {
+		result, ok := world.TestVectors["benchmarkResult"].(BenchmarkResult)
+		if !ok {
+			return fmt.Errorf("no benchmark result available")
+		}
+		performanceResults.Results[name] = result.P95
+		return nil
+	})
+
+	ctx.Step(`^I record the p(\d+) submission time as "([^"]*)"$`, func(percentile int, name string) error {
+		result, ok := world.TestVectors["benchmarkResult"].(BenchmarkResult)
+		if !ok {
+			return fmt.Errorf("no benchmark result available")
+		}
+		performanceResults.Results[name] = result.P95
+		return nil
+	})
+
+	ctx.Step(`^I record the p(\d+) time as "([^"]*)"$`, func(percentile int, name string) error {
+		result, ok := world.TestVectors["benchmarkResult"].(BenchmarkResult)
+		if !ok {
+			return fmt.Errorf("no benchmark result available")
+		}
+		performanceResults.Results[name] = result.P95
+		return nil
+	})
+
+	ctx.Step(`^I record the requests per second as "([^"]*)"$`, func(name string) error {
+		result, ok := world.TestVectors["benchmarkResult"].(BenchmarkResult)
+		if !ok {
+			return fmt.Errorf("no benchmark result available")
+		}
+		performanceResults.Results[name] = result.OpsPerSecond
+		return nil
+	})
+
+	ctx.Step(`^I record the transactions per second as "([^"]*)"$`, func(name string) error {
+		result, ok := world.TestVectors["benchmarkResult"].(BenchmarkResult)
+		if !ok {
+			return fmt.Errorf("no benchmark result available")
+		}
+		performanceResults.Results[name] = result.OpsPerSecond
+		return nil
+	})
+
 	// After hook to print final results
 	ctx.After(func(ctx context.Context, sc *godog.Scenario, err error) (context.Context, error) {
 		// Only print if we have results

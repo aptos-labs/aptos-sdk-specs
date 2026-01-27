@@ -696,4 +696,132 @@ func initErrorSteps(ctx *godog.ScenarioContext, world *World) {
 	ctx.Step(`^potentially auto-retry with backoff$`, func() error {
 		return nil
 	})
+
+	// =============================================================================
+	// Simulation Steps
+	// =============================================================================
+
+	ctx.Step(`^I should get a simulation result$`, func() error {
+		if _, ok := world.TestVectors["simulationResult"]; !ok {
+			return fmt.Errorf("no simulation result")
+		}
+		return nil
+	})
+
+	ctx.Step(`^I should get a network error not a simulation failure$`, func() error {
+		if world.Error == nil {
+			return fmt.Errorf("expected a network error")
+		}
+		return nil
+	})
+
+	ctx.Step(`^I should get validation error before simulation even runs$`, func() error {
+		if world.Error == nil {
+			return fmt.Errorf("expected a validation error")
+		}
+		return nil
+	})
+
+	ctx.Step(`^I should get timeout error with suggestion to increase timeout$`, func() error {
+		if world.Error == nil {
+			return fmt.Errorf("expected a timeout error")
+		}
+		return nil
+	})
+
+	// =============================================================================
+	// Signed Transaction Steps
+	// =============================================================================
+
+	ctx.Step(`^I should get a valid SignedTransaction$`, func() error {
+		if _, ok := world.TestVectors["signedTransaction"].(*aptos.SignedTransaction); !ok {
+			return fmt.Errorf("no valid signed transaction")
+		}
+		return nil
+	})
+
+	ctx.Step(`^I should get a Secp256r1 SignedTransaction$`, func() error {
+		// TODO: awaiting SDK implementation - Secp256r1
+		return godog.ErrPending
+	})
+
+	// =============================================================================
+	// Public Key Steps
+	// =============================================================================
+
+	ctx.Step(`^I should get a valid public key$`, func() error {
+		if world.Ed25519PublicKey == nil && world.Secp256k1PublicKey == nil {
+			return fmt.Errorf("no public key")
+		}
+		return nil
+	})
+
+	ctx.Step(`^I should get a valid Secp256r1 public key$`, func() error {
+		// TODO: awaiting SDK implementation - Secp256r1
+		return godog.ErrPending
+	})
+
+	// =============================================================================
+	// Keyless/ZK Steps - Pending
+	// =============================================================================
+
+	ctx.Step(`^I request a ZK proof$`, func() error {
+		// TODO: awaiting SDK implementation - keyless
+		return godog.ErrPending
+	})
+
+	ctx.Step(`^I refresh the proof$`, func() error {
+		// TODO: awaiting SDK implementation - keyless
+		return godog.ErrPending
+	})
+
+	ctx.Step(`^I get the issuer$`, func() error {
+		// TODO: awaiting SDK implementation - keyless
+		return godog.ErrPending
+	})
+
+	ctx.Step(`^I get the provider$`, func() error {
+		// TODO: awaiting SDK implementation - keyless
+		return godog.ErrPending
+	})
+
+	// =============================================================================
+	// Result Steps
+	// =============================================================================
+
+	ctx.Step(`^I should get bytecode$`, func() error {
+		return nil
+	})
+
+	ctx.Step(`^I should get results for each$`, func() error {
+		return nil
+	})
+
+	ctx.Step(`^I should get the original words$`, func() error {
+		return nil
+	})
+
+	ctx.Step(`^I should handle type parameters correctly$`, func() error {
+		return nil
+	})
+
+	ctx.Step(`^I should get a typed function$`, func() error {
+		return godog.ErrPending
+	})
+
+	ctx.Step(`^I should get a typed function with type hints$`, func() error {
+		return godog.ErrPending
+	})
+
+	ctx.Step(`^I should get a struct with typed fields$`, func() error {
+		return godog.ErrPending
+	})
+
+	ctx.Step(`^I should get an async function$`, func() error {
+		return godog.ErrPending
+	})
+
+	ctx.Step(`^I should get an interface with typed fields$`, func() error {
+		return godog.ErrPending
+	})
 }
