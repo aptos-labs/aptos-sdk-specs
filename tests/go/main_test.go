@@ -109,6 +109,12 @@ func InitializeScenario(ctx *godog.ScenarioContext) {
 	// Codegen steps (all pending - SDK doesn't have codegen)
 	initCodegenSteps(ctx, world)
 
+	// Validation steps
+	initValidationSteps(ctx, world)
+
+	// Action steps
+	initActionSteps(ctx, world)
+
 	// Performance steps
 	initPerformanceSteps(ctx, world)
 
