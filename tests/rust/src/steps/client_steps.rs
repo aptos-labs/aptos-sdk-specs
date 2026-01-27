@@ -1783,12 +1783,7 @@ fn when_build_tx_gas_200(world: &mut TestWorld) {
         .insert("tx_gas_price".to_string(), "200".to_string());
 }
 
-#[when("I set max_gas_amount to 500000")]
-fn when_set_max_gas_500000(world: &mut TestWorld) {
-    world
-        .named_values
-        .insert("max_gas_amount".to_string(), "500000".to_string());
-}
+// Note: "I set max_gas_amount to 500000" is in transaction_steps.rs via "I set max_gas_amount to {int}"
 
 #[when("both are submitted")]
 fn when_both_submitted(world: &mut TestWorld) {

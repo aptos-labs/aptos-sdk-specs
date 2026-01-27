@@ -11,7 +11,7 @@ use aptos_rust_sdk_v2::crypto::{
     Secp256r1PrivateKey, Secp256r1PublicKey, Secp256r1Signature,
 };
 use aptos_rust_sdk_v2::transaction::{
-    EntryFunction, PartiallySigned, RawTransaction, SignedTransaction, TransactionPayload,
+    EntryFunction, PartiallySigned, RawTransaction, Script, ScriptArgument, SignedTransaction, TransactionPayload,
 };
 use aptos_rust_sdk_v2::transaction::types::{FeePayerRawTransaction, MultiAgentRawTransaction};
 use aptos_rust_sdk_v2::transaction::authenticator::TransactionAuthenticator;
@@ -270,6 +270,10 @@ pub struct TestWorld {
     /// Transaction chain ID.
     pub tx_chain_id: Option<ChainId>,
 
+    /// Transaction builder.
+    #[world(skip)]
+    pub tx_builder: Option<aptos_rust_sdk_v2::transaction::TransactionBuilder>,
+
     /// Signing message bytes.
     pub signing_message: Option<Vec<u8>>,
 
@@ -311,6 +315,27 @@ pub struct TestWorld {
 
     /// Input bytes (for encoding tests).
     pub input_bytes: Option<Vec<u8>>,
+
+    // ==========================================================================
+    // Script Payload State
+    // ==========================================================================
+    /// Script bytecode.
+    pub script_bytecode: Option<Vec<u8>>,
+
+    /// Script type arguments.
+    pub script_type_args: Option<Vec<TypeTag>>,
+
+    /// Script arguments.
+    pub script_args: Option<Vec<ScriptArgument>>,
+
+    /// Script payload.
+    pub script: Option<Script>,
+
+    /// Script argument type (for encoding tests).
+    pub script_arg_type: Option<String>,
+
+    /// Script argument being encoded.
+    pub script_argument: Option<ScriptArgument>,
 
     // ==========================================================================
     // Multi-Agent Transaction State

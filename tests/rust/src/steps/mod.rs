@@ -14,6 +14,7 @@ pub mod mnemonic_steps;
 pub mod multi_agent_steps;
 pub mod multi_sig_steps;
 pub mod network_steps;
+pub mod script_steps;
 pub mod secp_steps;
 pub mod serialization_steps;
 pub mod transaction_steps;

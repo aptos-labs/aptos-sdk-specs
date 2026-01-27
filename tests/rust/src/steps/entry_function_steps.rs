@@ -495,7 +495,9 @@ fn given_recipient_amount_from_test_vectors(world: &mut TestWorld) {
 
 #[then(regex = r"^the bytes should match the expected value from test vectors$")]
 fn then_bytes_match_test_vectors(world: &mut TestWorld) {
-    let bytes = world.bytes.as_ref().expect("No serialized bytes");
+    let bytes = world.bytes.as_ref()
+        .or(world.serialized_bytes.as_ref())
+        .expect("No serialized bytes");
     // Just verify it's non-empty and reasonable
     assert!(!bytes.is_empty(), "Serialized bytes should not be empty");
 }
