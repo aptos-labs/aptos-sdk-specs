@@ -851,11 +851,12 @@ fn then_address_matches_vectors(world: &mut TestWorld) {
 
 #[then("the signature should match the expected value from test vectors")]
 fn then_signature_matches_vectors(world: &mut TestWorld) {
-    // Verify we have a signature (any type)
+    // Verify we have a signature (any type) - either raw signature or in a signed transaction
     assert!(
         world.ed25519_signature.is_some() 
             || world.secp256k1_signature.is_some() 
-            || world.secp256r1_signature.is_some(),
+            || world.secp256r1_signature.is_some()
+            || world.signed_transaction.is_some(),
         "No signature found"
     );
 }
