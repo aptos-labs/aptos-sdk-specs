@@ -289,7 +289,8 @@ func initMultiSigSteps(ctx *godog.ScenarioContext, world *World) {
 	})
 
 	ctx.Step(`^it should contain the multi signature$`, func() error {
-		return nil
+		// TODO: implement multi-sig validation
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^it should equal SHA3-256\(pk1 \|\| pk2 \|\| pk3 \|\| threshold \|\| (\d+)x(\d+)\)$`, func(a, b int) error {
@@ -327,11 +328,13 @@ func initMultiSigSteps(ctx *godog.ScenarioContext, world *World) {
 	})
 
 	ctx.Step(`^the multi-sig account should be valid$`, func() error {
-		return nil
+		// TODO: implement multi-sig account validation
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^the multi-sig signature should be valid$`, func() error {
-		return nil
+		// TODO: implement multi-sig signature validation
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^threshold should be (\d+)$`, func(t int) error {

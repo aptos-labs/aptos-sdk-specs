@@ -199,30 +199,76 @@ func initViewFunctionSteps(ctx *godog.ScenarioContext, world *World) {
 	// =============================================================================
 
 	ctx.Step(`^I should identify view functions$`, func() error {
-		return nil
+		// TODO: implement view function identification
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^I should receive the view function result$`, func() error {
+		// Check that we have a result
+		if _, ok := world.TestVectors["viewResult"]; !ok {
+			return fmt.Errorf("no view function result")
+		}
 		return nil
 	})
 
 	ctx.Step(`^the result should be a boolean$`, func() error {
+		result, ok := world.TestVectors["viewResult"]
+		if !ok {
+			return fmt.Errorf("no view result")
+		}
+		if _, isBool := result.(bool); !isBool {
+			// Also check string representation
+			if str, isStr := result.(string); isStr {
+				if str != "true" && str != "false" {
+					return fmt.Errorf("result is not a boolean: %v", result)
+				}
+				return nil
+			}
+			return fmt.Errorf("result is not a boolean: %v", result)
+		}
 		return nil
 	})
 
 	ctx.Step(`^the result should be a u64$`, func() error {
+		result, ok := world.TestVectors["viewResult"]
+		if !ok {
+			return fmt.Errorf("no view result")
+		}
+		// View results come as strings typically
+		if _, isStr := result.(string); !isStr {
+			if _, isU64 := result.(uint64); !isU64 {
+				return fmt.Errorf("result is not u64: %v", result)
+			}
+		}
 		return nil
 	})
 
 	ctx.Step(`^the result should be an array$`, func() error {
+		result, ok := world.TestVectors["viewResult"]
+		if !ok {
+			return fmt.Errorf("no view result")
+		}
+		if _, isSlice := result.([]interface{}); !isSlice {
+			return fmt.Errorf("result is not an array: %v", result)
+		}
 		return nil
 	})
 
 	ctx.Step(`^the function should return its result$`, func() error {
+		if _, ok := world.TestVectors["viewResult"]; !ok {
+			return fmt.Errorf("no view function result")
+		}
 		return nil
 	})
 
 	ctx.Step(`^I should receive multiple return values$`, func() error {
+		result, ok := world.TestVectors["viewResult"].([]interface{})
+		if !ok {
+			return fmt.Errorf("expected multiple return values")
+		}
+		if len(result) < 2 {
+			return fmt.Errorf("expected multiple return values, got %d", len(result))
+		}
 		return nil
 	})
 }

@@ -308,11 +308,13 @@ func initErrorSteps(ctx *godog.ScenarioContext, world *World) {
 	})
 
 	ctx.Step(`^I parse the status$`, func() error {
-		return nil
+		// TODO: implement status parsing validation
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^I check gas info$`, func() error {
-		return nil
+		// TODO: implement gas info checking
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^I want to recover$`, func() error {
@@ -326,7 +328,8 @@ func initErrorSteps(ctx *godog.ScenarioContext, world *World) {
 	})
 
 	ctx.Step(`^I inspect the result$`, func() error {
-		return nil
+		// TODO: implement result inspection
+		return godog.ErrPending
 	})
 
 	// =============================================================================
@@ -334,8 +337,8 @@ func initErrorSteps(ctx *godog.ScenarioContext, world *World) {
 	// =============================================================================
 
 	ctx.Step(`^I should be able to extract the error code$`, func() error {
-		// Verify error has extractable code
-		return nil
+		// TODO: implement error code extraction validation
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^I should be able to identify it as a network error$`, func() error {
@@ -347,21 +350,23 @@ func initErrorSteps(ctx *godog.ScenarioContext, world *World) {
 	})
 
 	ctx.Step(`^I should extract the abort code$`, func() error {
-		// Abort code extraction
-		return nil
+		// TODO: implement abort code extraction
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^I should get a clear timeout error$`, func() error {
-		// Timeout error verification
-		return nil
+		// TODO: implement timeout error validation
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^I should get the detailed failure reason$`, func() error {
-		return nil
+		// TODO: implement failure reason extraction
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^I should have access to the request ID for debugging$`, func() error {
-		return nil
+		// TODO: implement request ID access
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^I should identify it as balance error$`, func() error {
@@ -381,11 +386,13 @@ func initErrorSteps(ctx *godog.ScenarioContext, world *World) {
 	})
 
 	ctx.Step(`^I should know the expected sequence number$`, func() error {
-		return nil
+		// TODO: implement sequence number extraction
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^I should know which operation failed$`, func() error {
-		return nil
+		// TODO: implement operation failure identification
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^I should receive a (\d+) Bad Request error$`, func(statusCode int) error {
@@ -452,23 +459,28 @@ func initErrorSteps(ctx *godog.ScenarioContext, world *World) {
 	})
 
 	ctx.Step(`^I should see the HTTP status code$`, func() error {
-		return nil
+		// TODO: implement HTTP status code extraction
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^I should see the VM error$`, func() error {
-		return nil
+		// TODO: implement VM error extraction
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^I should see the VM error details$`, func() error {
-		return nil
+		// TODO: implement VM error details extraction
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^I should see the VM status code$`, func() error {
-		return nil
+		// TODO: implement VM status code extraction
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^I should see which input was invalid$`, func() error {
-		return nil
+		// TODO: implement invalid input identification
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^it should be retryable$`, func() error {
@@ -480,7 +492,8 @@ func initErrorSteps(ctx *godog.ScenarioContext, world *World) {
 	})
 
 	ctx.Step(`^it should indicate permanent failure$`, func() error {
-		return nil
+		// TODO: implement permanent failure check
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^it should indicate success$`, func() error {
@@ -491,87 +504,108 @@ func initErrorSteps(ctx *godog.ScenarioContext, world *World) {
 	})
 
 	ctx.Step(`^it's not found after timeout$`, func() error {
-		return nil
+		// TODO: implement not-found-after-timeout validation
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^network errors should be retryable$`, func() error {
-		return nil
+		// TODO: implement retryable error classification
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^rate limit errors should be retryable \(with backoff\)$`, func() error {
-		return nil
+		// TODO: implement rate limit retryable classification
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^validation errors should NOT be retryable$`, func() error {
-		return nil
+		// TODO: implement non-retryable error classification
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^the error should contain the error_code$`, func() error {
-		return nil
+		// TODO: implement error code presence check
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^the error should contain the HTTP status$`, func() error {
-		return nil
+		// TODO: implement HTTP status presence check
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^the error should contain the message$`, func() error {
-		return nil
+		// TODO: implement error message presence check
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^the error should indicate insufficient balance$`, func() error {
-		return nil
+		// TODO: implement insufficient balance error check
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^the error should indicate rate limiting$`, func() error {
-		return nil
+		// TODO: implement rate limiting error check
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^the error message from the API$`, func() error {
-		return nil
+		// TODO: implement API error message extraction
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^the message should explain what went wrong$`, func() error {
-		return nil
+		// TODO: implement error message clarity validation
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^the abort code from that module$`, func() error {
-		return nil
+		// TODO: implement module abort code extraction
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^the abort code if applicable$`, func() error {
-		return nil
+		// TODO: implement optional abort code extraction
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^the module that aborted \(if available\)$`, func() error {
-		return nil
+		// TODO: implement module identification
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^know that increasing max_gas_amount may help$`, func() error {
-		return nil
+		// TODO: implement gas suggestion validation
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^know which account lacks funds$`, func() error {
-		return nil
+		// TODO: implement account identification in errors
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^retrying won't help$`, func() error {
-		return nil
+		// TODO: implement permanent failure indication
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^SDK should help estimate proper gas$`, func() error {
-		return nil
+		// TODO: implement gas estimation suggestion check
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^SDK should help refresh sequence number$`, func() error {
-		return nil
+		// TODO: implement sequence number refresh suggestion
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^SDK should provide human-readable descriptions$`, func() error {
-		return nil
+		// TODO: implement human-readable description check
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^SDK should suggest waiting$`, func() error {
-		return nil
+		// TODO: implement wait suggestion check
+		return godog.ErrPending
 	})
 
 	// =============================================================================
@@ -634,67 +668,83 @@ func initErrorSteps(ctx *godog.ScenarioContext, world *World) {
 	})
 
 	ctx.Step(`^have specific error types \(AptosApiError, etc\.\)$`, func() error {
-		return nil
+		// TODO: implement error type hierarchy validation
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^inherit from a base AptosError class$`, func() error {
-		return nil
+		// TODO: implement error inheritance validation
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^be catchable by type$`, func() error {
-		return nil
+		// TODO: implement type-catchable error validation
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^have context about the input$`, func() error {
-		return nil
+		// TODO: implement input context validation
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^higher-level context should be added$`, func() error {
-		return nil
+		// TODO: implement error context wrapping
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^original error should be accessible$`, func() error {
-		return nil
+		// TODO: implement error unwrapping validation
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^it propagates up$`, func() error {
-		return nil
+		// TODO: implement error propagation validation
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^sensitive data \(keys\) should NOT be included$`, func() error {
-		return nil
+		// TODO: implement sensitive data exclusion check
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^it should not contain internal implementation details$`, func() error {
-		return nil
+		// TODO: implement implementation detail exclusion
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^should use terminology from Aptos documentation$`, func() error {
-		return nil
+		// TODO: implement terminology consistency check
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^all relevant details should be included$`, func() error {
-		return nil
+		// TODO: implement error detail completeness check
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^ideally suggest how to fix it$`, func() error {
-		return nil
+		// TODO: implement fix suggestion validation
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^why it was invalid$`, func() error {
-		return nil
+		// TODO: implement invalidity reason check
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^I receive these in errors$`, func() error {
-		return nil
+		// TODO: implement error field presence check
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^common abort codes like:$`, func() error {
-		return nil
+		// TODO: implement abort code documentation
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^potentially auto-retry with backoff$`, func() error {
-		return nil
+		// TODO: implement auto-retry validation
+		return godog.ErrPending
 	})
 
 	// =============================================================================
@@ -790,19 +840,23 @@ func initErrorSteps(ctx *godog.ScenarioContext, world *World) {
 	// =============================================================================
 
 	ctx.Step(`^I should get bytecode$`, func() error {
-		return nil
+		// TODO: implement bytecode validation
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^I should get results for each$`, func() error {
-		return nil
+		// TODO: implement batch result validation
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^I should get the original words$`, func() error {
-		return nil
+		// TODO: awaiting SDK implementation - mnemonic not supported
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^I should handle type parameters correctly$`, func() error {
-		return nil
+		// TODO: implement type parameter handling validation
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^I should get a typed function$`, func() error {

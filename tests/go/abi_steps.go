@@ -70,51 +70,63 @@ func initABISteps(ctx *godog.ScenarioContext, world *World) {
 	// =============================================================================
 
 	ctx.Step(`^I should extract function names$`, func() error {
-		return nil
+		// TODO: awaiting SDK implementation - ABI not supported
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^I should extract struct names$`, func() error {
-		return nil
+		// TODO: awaiting SDK implementation - ABI not supported
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^the ABI should contain function definitions$`, func() error {
-		return nil
+		// TODO: awaiting SDK implementation - ABI not supported
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^the ABI should contain struct definitions$`, func() error {
-		return nil
+		// TODO: awaiting SDK implementation - ABI not supported
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^I should see the function signature$`, func() error {
-		return nil
+		// TODO: awaiting SDK implementation - ABI not supported
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^I should see the parameter types$`, func() error {
-		return nil
+		// TODO: awaiting SDK implementation - ABI not supported
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^I should see the return type$`, func() error {
-		return nil
+		// TODO: awaiting SDK implementation - ABI not supported
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^I should see the visibility$`, func() error {
-		return nil
+		// TODO: awaiting SDK implementation - ABI not supported
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^I should see if it\'s a view function$`, func() error {
-		return nil
+		// TODO: awaiting SDK implementation - ABI not supported
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^I should see the struct fields$`, func() error {
-		return nil
+		// TODO: awaiting SDK implementation - ABI not supported
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^I should see the field types$`, func() error {
-		return nil
+		// TODO: awaiting SDK implementation - ABI not supported
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^I should see any generic parameters$`, func() error {
-		return nil
+		// TODO: awaiting SDK implementation - ABI not supported
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^all modules should have ABIs$`, func() error {

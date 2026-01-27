@@ -160,27 +160,33 @@ func initEncodingSteps(ctx *godog.ScenarioContext, world *World) {
 	// =============================================================================
 
 	ctx.Step(`^I should be able to parse the result as boolean$`, func() error {
-		return nil
+		// TODO: implement view function result parsing for boolean
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^I should be able to parse the result as byte array$`, func() error {
-		return nil
+		// TODO: implement view function result parsing for bytes
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^I should be able to parse the result as string$`, func() error {
-		return nil
+		// TODO: implement view function result parsing for string
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^I should be able to parse the result as u64$`, func() error {
-		return nil
+		// TODO: implement view function result parsing for u64
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^I should be able to parse the result as u128$`, func() error {
-		return nil
+		// TODO: implement view function result parsing for u128
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^I should be able to parse the result as u256$`, func() error {
-		return nil
+		// TODO: implement view function result parsing for u256
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^I should get (\d+) bytes$`, func(count int) error {
@@ -195,7 +201,8 @@ func initEncodingSteps(ctx *godog.ScenarioContext, world *World) {
 	// =============================================================================
 
 	ctx.Step(`^I should be able to access struct fields$`, func() error {
-		return nil
+		// TODO: implement struct field access validation
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^I inspect it$`, func() error {
