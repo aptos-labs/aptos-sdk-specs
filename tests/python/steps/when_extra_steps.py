@@ -61,19 +61,8 @@ def step_sponsor_signs_first(context):
     context.world.test_vectors["sponsor_signed_first"] = True
 
 
-@when("I generate single-signer signing message")
-def step_generate_single_signer_msg(context):
-    context.world.test_vectors["signing_message_generated"] = True
-
-
-@when("I generate multi-agent signing message")
-def step_generate_multi_agent_msg(context):
-    context.world.test_vectors["multi_agent_msg_generated"] = True
-
-
-@when("I generate fee payer signing message")
-def step_generate_fee_payer_msg(context):
-    context.world.test_vectors["fee_payer_msg_generated"] = True
+# Note: "I generate single-signer signing message", "I generate multi-agent signing message",
+# and "I generate fee payer signing message" are defined in multi_agent_steps.py
 
 
 @when("all signers sign")
