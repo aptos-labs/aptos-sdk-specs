@@ -82,4 +82,43 @@ func initBLSSteps(ctx *godog.ScenarioContext, world *World) {
 		// TODO: awaiting SDK implementation
 		return godog.ErrPending
 	})
+
+	// =============================================================================
+	// Secp256r1 Steps - All Pending (not supported in Go SDK)
+	// =============================================================================
+
+	ctx.Step(`^I generate a random Secp256r1 key pair$`, func() error {
+		// TODO: awaiting SDK implementation - Secp256r1/P-256 not in Go SDK
+		return godog.ErrPending
+	})
+
+	ctx.Step(`^I get the Secp256r1 uncompressed public key$`, func() error {
+		// TODO: awaiting SDK implementation - Secp256r1/P-256 not in Go SDK
+		return godog.ErrPending
+	})
+
+	ctx.Step(`^I parse it as Secp256r1 public key$`, func() error {
+		// TODO: awaiting SDK implementation - Secp256r1/P-256 not in Go SDK
+		return godog.ErrPending
+	})
+
+	ctx.Step(`^a Secp256r1 account$`, func() error {
+		// TODO: awaiting SDK implementation - Secp256r1/P-256 not in Go SDK
+		return godog.ErrPending
+	})
+
+	ctx.Step(`^a Secp256r1 key pair$`, func() error {
+		// TODO: awaiting SDK implementation - Secp256r1/P-256 not in Go SDK
+		return godog.ErrPending
+	})
+
+	ctx.Step(`^a Secp256r1 public key$`, func() error {
+		// TODO: awaiting SDK implementation - Secp256r1/P-256 not in Go SDK
+		return godog.ErrPending
+	})
+
+	ctx.Step(`^a Secp256r1 signature$`, func() error {
+		// TODO: awaiting SDK implementation - Secp256r1/P-256 not in Go SDK
+		return godog.ErrPending
+	})
 }

@@ -1213,4 +1213,24 @@ func initSigningSteps(ctx *godog.ScenarioContext, world *World) {
 		}
 		return nil
 	})
+
+	// =============================================================================
+	// Signing Message Steps
+	// =============================================================================
+
+	ctx.Step(`^I generate single-signer signing message$`, func() error {
+		rawTx, ok := world.TestVectors["rawTransaction"].(*aptos.RawTransaction)
+		if !ok {
+			return fmt.Errorf("no raw transaction set")
+		}
+		// Get the signing message (bytes to sign)
+		signingMessage, err := rawTx.SigningMessage()
+		if err != nil {
+			world.SetError(err)
+			return nil
+		}
+		world.TestVectors["signingMessage"] = signingMessage
+		world.Bytes = signingMessage
+		return nil
+	})
 }
