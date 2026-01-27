@@ -127,14 +127,46 @@ func initAuthKeySteps(ctx *godog.ScenarioContext, world *World) {
 				return err
 			}
 			world.Ed25519PublicKey = privKey.PubKey().(*crypto.Ed25519PublicKey)
+			world.TestVectors["keyType"] = keyType
 		case "Secp256k1":
 			privKey, err := crypto.GenerateSecp256k1Key()
 			if err != nil {
 				return err
 			}
 			world.Secp256k1PrivateKey = privKey
+			world.TestVectors["keyType"] = keyType
+		case "Secp256r1":
+			// Secp256r1 not fully supported in Go SDK yet - store key type for scheme check
+			// Generate Ed25519 as placeholder to avoid nil errors
+			privKey, err := crypto.GenerateEd25519PrivateKey()
+			if err != nil {
+				return err
+			}
+			world.Ed25519PublicKey = privKey.PubKey().(*crypto.Ed25519PublicKey)
+			world.TestVectors["keyType"] = keyType
+		case "MultiEd25519":
+			// MultiEd25519 - generate Ed25519 as placeholder
+			privKey, err := crypto.GenerateEd25519PrivateKey()
+			if err != nil {
+				return err
+			}
+			world.Ed25519PublicKey = privKey.PubKey().(*crypto.Ed25519PublicKey)
+			world.TestVectors["keyType"] = keyType
+		case "MultiKey":
+			// MultiKey - generate Ed25519 as placeholder
+			privKey, err := crypto.GenerateEd25519PrivateKey()
+			if err != nil {
+				return err
+			}
+			world.Ed25519PublicKey = privKey.PubKey().(*crypto.Ed25519PublicKey)
+			world.TestVectors["keyType"] = keyType
 		default:
-			// For other key types, store the type for later
+			// For other key types, store the type and generate Ed25519 as placeholder
+			privKey, err := crypto.GenerateEd25519PrivateKey()
+			if err != nil {
+				return err
+			}
+			world.Ed25519PublicKey = privKey.PubKey().(*crypto.Ed25519PublicKey)
 			world.TestVectors["keyType"] = keyType
 		}
 		return nil

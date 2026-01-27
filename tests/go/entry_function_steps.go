@@ -190,9 +190,28 @@ func initEntryFunctionSteps(ctx *godog.ScenarioContext, world *World) {
 		if !ok {
 			return fmt.Errorf("no coin type set")
 		}
-		entryFunc, err := aptos.CoinTransferPayload(coinType, *recipient, amount)
-		if err != nil {
-			return err
+
+		// Create 0x1::coin::transfer entry function (per spec)
+		// The Go SDK's CoinTransferPayload uses aptos_account, but spec expects coin module
+		serializer := &bcs.Serializer{}
+		recipient.MarshalBCS(serializer)
+		recipientBytes := serializer.ToBytes()
+
+		amountSerializer := &bcs.Serializer{}
+		amountSerializer.U64(amount)
+		amountBytes := amountSerializer.ToBytes()
+
+		coreAddr := aptos.AccountAddress{}
+		coreAddr[31] = 1 // 0x1
+
+		entryFunc := &aptos.EntryFunction{
+			Module: aptos.ModuleId{
+				Address: coreAddr,
+				Name:    "coin",
+			},
+			Function: "transfer",
+			ArgTypes: []aptos.TypeTag{*coinType},
+			Args:     [][]byte{recipientBytes, amountBytes},
 		}
 		world.TestVectors["entryFunction"] = entryFunc
 		return nil
