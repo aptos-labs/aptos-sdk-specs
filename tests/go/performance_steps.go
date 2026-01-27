@@ -412,7 +412,8 @@ func initPerformanceSteps(ctx *godog.ScenarioContext, world *World) {
 	})
 
 	ctx.Step(`^I record the breakdown by step$`, func() error {
-		return nil
+		// TODO: implement step breakdown recording
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^I record the maximum round-trip time as "([^"]*)"$`, func(name string) error {

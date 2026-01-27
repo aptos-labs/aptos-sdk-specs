@@ -74,6 +74,7 @@ func initScriptSteps(ctx *godog.ScenarioContext, world *World) {
 	})
 
 	ctx.Step(`^each recipient should receive their amount$`, func() error {
-		return nil
+		// TODO: implement multi-recipient transfer validation
+		return godog.ErrPending
 	})
 }

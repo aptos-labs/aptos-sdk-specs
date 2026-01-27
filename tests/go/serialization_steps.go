@@ -1191,7 +1191,8 @@ func initSerializationSteps(ctx *godog.ScenarioContext, world *World) {
 	})
 
 	ctx.Step(`^the remaining bytes should contain the authenticator data$`, func() error {
-		return nil
+		// TODO: implement authenticator data validation
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^the total length should be 40 bytes \(32 \+ 8\)$`, func() error {

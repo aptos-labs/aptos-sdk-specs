@@ -2129,7 +2129,8 @@ func initAPIClientSteps(ctx *godog.ScenarioContext, world *World) {
 	})
 
 	ctx.Step(`^I can use it to set max_gas_amount with buffer$`, func() error {
-		return nil
+		// TODO: implement gas estimation with buffer validation
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^I check gas estimates$`, func() error {

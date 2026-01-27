@@ -321,11 +321,13 @@ func initMultiAgentSteps(ctx *godog.ScenarioContext, world *World) {
 	})
 
 	ctx.Step(`^I create a fee payer transaction$`, func() error {
-		return nil // Same as build
+		// TODO: implement fee payer transaction creation
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^I create a multi-agent transaction$`, func() error {
-		return nil // Same as build
+		// TODO: implement multi-agent transaction creation
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^I generate fee payer signing message with sponsor$`, func() error {
@@ -480,14 +482,17 @@ func initMultiAgentSteps(ctx *godog.ScenarioContext, world *World) {
 	})
 
 	ctx.Step(`^the signing message should include all signers$`, func() error {
-		return nil
+		// TODO: implement signing message validation for multi-agent
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^the signing message should include the fee payer$`, func() error {
-		return nil
+		// TODO: implement signing message validation for fee payer
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^all signatures should be valid$`, func() error {
-		return nil
+		// TODO: implement multi-signature validation
+		return godog.ErrPending
 	})
 }

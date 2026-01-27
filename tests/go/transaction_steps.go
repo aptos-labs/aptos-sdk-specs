@@ -1133,11 +1133,13 @@ func initTransactionSteps(ctx *godog.ScenarioContext, world *World) {
 	})
 
 	ctx.Step(`^payload should follow$`, func() error {
-		return nil
+		// TODO: implement BCS serialization order validation
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^max_gas_amount, gas_unit_price, expiration, chain_id should be in order$`, func() error {
-		return nil
+		// TODO: implement BCS field order validation
+		return godog.ErrPending
 	})
 
 	// =============================================================================
@@ -1436,31 +1438,38 @@ func initTransactionSteps(ctx *godog.ScenarioContext, world *World) {
 	})
 
 	ctx.Step(`^I can use this to set max_gas_amount$`, func() error {
-		return nil
+		// TODO: implement gas estimation usage validation
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^I can retry the submission$`, func() error {
-		return nil
+		// TODO: implement submission retry validation
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^rebuild the transaction$`, func() error {
-		return nil
+		// TODO: implement transaction rebuild validation
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^rebuild with higher limit$`, func() error {
-		return nil
+		// TODO: implement rebuild with higher gas validation
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^be able to fix before actual submission$`, func() error {
-		return nil
+		// TODO: implement pre-submission fix validation
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^be able to retry with correct number$`, func() error {
-		return nil
+		// TODO: implement retry with correct sequence validation
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^be able to set appropriate max_gas_amount$`, func() error {
-		return nil
+		// TODO: implement gas amount setting validation
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^the same recipient and amount$`, func() error {
@@ -1482,8 +1491,8 @@ func initTransactionSteps(ctx *godog.ScenarioContext, world *World) {
 	})
 
 	ctx.Step(`^the payloads should be different in structure$`, func() error {
-		// APT transfer uses aptos_account, coin transfer uses coin module
-		return nil
+		// TODO: implement payload structure comparison
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^the transaction will fail on-chain$`, func() error {
@@ -1492,11 +1501,13 @@ func initTransactionSteps(ctx *godog.ScenarioContext, world *World) {
 	})
 
 	ctx.Step(`^simulation should still work$`, func() error {
-		return nil
+		// TODO: implement simulation validation
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^show what would happen if signature were valid$`, func() error {
-		return nil
+		// TODO: implement simulation result validation
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^submitted$`, func() error {
@@ -1510,18 +1521,22 @@ func initTransactionSteps(ctx *godog.ScenarioContext, world *World) {
 	})
 
 	ctx.Step(`^waiting for a transaction$`, func() error {
-		return nil
+		// TODO: implement wait validation
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^waiting for a transaction that fails$`, func() error {
-		return nil
+		// TODO: implement failed wait validation
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^processed in order$`, func() error {
-		return nil
+		// TODO: implement sequence processing validation
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^all should be accepted$`, func() error {
-		return nil
+		// TODO: implement batch acceptance validation
+		return godog.ErrPending
 	})
 }

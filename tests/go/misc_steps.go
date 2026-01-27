@@ -343,11 +343,13 @@ func initMiscSteps(ctx *godog.ScenarioContext, world *World) {
 	// =============================================================================
 
 	ctx.Step(`^I can compare with fullnode ledger version$`, func() error {
-		return nil
+		// TODO: awaiting SDK implementation - indexer support
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^I can determine indexer lag$`, func() error {
-		return nil
+		// TODO: awaiting SDK implementation - indexer support
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^API is unavailable$`, func() error {
