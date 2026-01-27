@@ -258,4 +258,261 @@ func initGivenSteps(ctx *godog.ScenarioContext, world *World) {
 		// TODO: awaiting SDK implementation - codegen
 		return godog.ErrPending
 	})
+
+	// =============================================================================
+	// Message Steps
+	// =============================================================================
+
+	ctx.Step(`^a message to sign$`, func() error {
+		world.Message = []byte("test message to sign")
+		return nil
+	})
+
+	ctx.Step(`^a message$`, func() error {
+		world.Message = []byte("test message")
+		return nil
+	})
+
+	// =============================================================================
+	// Mnemonic Steps - All Pending
+	// =============================================================================
+
+	ctx.Step(`^a mnemonic phrase with (\d+) words$`, func(wordCount int) error {
+		// TODO: awaiting SDK implementation - mnemonic
+		return godog.ErrPending
+	})
+
+	ctx.Step(`^a mnemonic phrase with valid words but wrong checksum$`, func() error {
+		// TODO: awaiting SDK implementation - mnemonic
+		return godog.ErrPending
+	})
+
+	ctx.Step(`^a mnemonic phrase$`, func() error {
+		// TODO: awaiting SDK implementation - mnemonic
+		return godog.ErrPending
+	})
+
+	// =============================================================================
+	// Module/ABI Steps
+	// =============================================================================
+
+	ctx.Step(`^a module address and name "([^"]*)"$`, func(name string) error {
+		world.TestVectors["moduleName"] = name
+		return nil
+	})
+
+	ctx.Step(`^a module with public \(non-entry\) functions$`, func() error {
+		// TODO: awaiting SDK implementation - ABI
+		return godog.ErrPending
+	})
+
+	ctx.Step(`^a non-existent module address$`, func() error {
+		addr := aptos.AccountAddress{}
+		addr[31] = 0xFF
+		world.TestVectors["moduleAddress"] = &addr
+		return nil
+	})
+
+	// =============================================================================
+	// Multi-Agent Steps
+	// =============================================================================
+
+	ctx.Step(`^a multi-agent authenticator$`, func() error {
+		world.TestVectors["multiAgentAuthenticator"] = true
+		return nil
+	})
+
+	ctx.Step(`^a multi-agent transaction from test vectors$`, func() error {
+		// Set up from test vectors
+		world.TestVectors["multiAgentTransaction"] = true
+		return nil
+	})
+
+	ctx.Step(`^a multi-agent transaction$`, func() error {
+		world.TestVectors["multiAgentTransaction"] = true
+		return nil
+	})
+
+	// =============================================================================
+	// Request/Network Steps
+	// =============================================================================
+
+	ctx.Step(`^a network error during estimation$`, func() error {
+		world.TestVectors["networkError"] = true
+		return nil
+	})
+
+	ctx.Step(`^a request that always fails$`, func() error {
+		world.TestVectors["alwaysFails"] = true
+		return nil
+	})
+
+	ctx.Step(`^a request that fails after retries$`, func() error {
+		world.TestVectors["failsAfterRetries"] = true
+		return nil
+	})
+
+	ctx.Step(`^a request that fails to connect$`, func() error {
+		world.TestVectors["failsToConnect"] = true
+		return nil
+	})
+
+	ctx.Step(`^a request that fails twice then succeeds$`, func() error {
+		world.TestVectors["failsTwiceThenSucceeds"] = true
+		return nil
+	})
+
+	ctx.Step(`^a request that returns HTTP (\d+)$`, func(statusCode int) error {
+		world.TestVectors["httpStatus"] = statusCode
+		return nil
+	})
+
+	ctx.Step(`^a request that times out$`, func() error {
+		world.TestVectors["timesOut"] = true
+		return nil
+	})
+
+	// =============================================================================
+	// Script Argument Steps
+	// =============================================================================
+
+	ctx.Step(`^a script argument of type address$`, func() error {
+		world.TestVectors["scriptArgType"] = "address"
+		return nil
+	})
+
+	ctx.Step(`^a script argument of type bool$`, func() error {
+		world.TestVectors["scriptArgType"] = "bool"
+		return nil
+	})
+
+	ctx.Step(`^a script argument of type string$`, func() error {
+		world.TestVectors["scriptArgType"] = "string"
+		return nil
+	})
+
+	ctx.Step(`^a script argument of type u64$`, func() error {
+		world.TestVectors["scriptArgType"] = "u64"
+		return nil
+	})
+
+	ctx.Step(`^a script argument of type vector<u8>$`, func() error {
+		world.TestVectors["scriptArgType"] = "vector<u8>"
+		return nil
+	})
+
+	ctx.Step(`^a script expecting \(address, u64, vector<u8>\)$`, func() error {
+		world.TestVectors["scriptExpects"] = []string{"address", "u64", "vector<u8>"}
+		return nil
+	})
+
+	ctx.Step(`^a script that calls abort$`, func() error {
+		world.TestVectors["scriptAborts"] = true
+		return nil
+	})
+
+	ctx.Step(`^a script that transfers to multiple recipients$`, func() error {
+		world.TestVectors["multiRecipientScript"] = true
+		return nil
+	})
+
+	ctx.Step(`^a script with conditional logic$`, func() error {
+		world.TestVectors["conditionalScript"] = true
+		return nil
+	})
+
+	ctx.Step(`^a script with expensive operations$`, func() error {
+		world.TestVectors["expensiveScript"] = true
+		return nil
+	})
+
+	// =============================================================================
+	// Account/Signer Steps
+	// =============================================================================
+
+	ctx.Step(`^a secondary signer account$`, func() error {
+		account, err := aptos.NewEd25519Account()
+		if err != nil {
+			return err
+		}
+		world.TestVectors["secondarySigner"] = account
+		return nil
+	})
+
+	ctx.Step(`^a sender account$`, func() error {
+		account, err := aptos.NewEd25519Account()
+		if err != nil {
+			return err
+		}
+		world.TestVectors["senderAccount"] = account
+		return nil
+	})
+
+	ctx.Step(`^a sender who wants sponsored transaction$`, func() error {
+		account, err := aptos.NewEd25519Account()
+		if err != nil {
+			return err
+		}
+		world.TestVectors["sponsoredSender"] = account
+		return nil
+	})
+
+	ctx.Step(`^a signing account$`, func() error {
+		if world.Account == nil {
+			account, err := aptos.NewEd25519Account()
+			if err != nil {
+				return err
+			}
+			world.Account = account
+		}
+		return nil
+	})
+
+	// =============================================================================
+	// Fee Payer Steps
+	// =============================================================================
+
+	ctx.Step(`^a partially signed fee payer transaction from sender$`, func() error {
+		world.TestVectors["partiallySignedFeePayer"] = true
+		return nil
+	})
+
+	ctx.Step(`^a signed fee payer transaction$`, func() error {
+		world.TestVectors["signedFeePayer"] = true
+		return nil
+	})
+
+	// =============================================================================
+	// Miscellaneous Steps
+	// =============================================================================
+
+	ctx.Step(`^a short timeout$`, func() error {
+		world.TestVectors["shortTimeout"] = true
+		return nil
+	})
+
+	ctx.Step(`^a signature from different keys$`, func() error {
+		world.TestVectors["differentKeys"] = true
+		return nil
+	})
+
+	ctx.Step(`^a signature with only (\d+) signer$`, func(count int) error {
+		world.TestVectors["signerCount"] = count
+		return nil
+	})
+
+	ctx.Step(`^a simple operation like transfer$`, func() error {
+		world.TestVectors["simpleTransfer"] = true
+		return nil
+	})
+
+	ctx.Step(`^a simple transfer$`, func() error {
+		world.TestVectors["simpleTransfer"] = true
+		return nil
+	})
+
+	ctx.Step(`^a simulated and executed transaction$`, func() error {
+		world.TestVectors["simulatedAndExecuted"] = true
+		return nil
+	})
 }
