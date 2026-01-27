@@ -139,6 +139,9 @@ func InitializeScenario(ctx *godog.ScenarioContext) {
 	// Final steps
 	initFinalSteps(ctx, world)
 
+	// Remaining steps
+	initRemainingSteps(ctx, world)
+
 	// Performance steps
 	initPerformanceSteps(ctx, world)
 
