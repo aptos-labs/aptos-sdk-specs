@@ -544,4 +544,50 @@ func initFinalSteps(ctx *godog.ScenarioContext, world *World) {
 		world.TestVectors["typeArgs"] = []aptos.TypeTag{*tag}
 		return nil
 	})
+
+	// =============================================================================
+	// Additional Hash Steps - Keyless Pending
+	// =============================================================================
+
+	ctx.Step(`^it should equal SHA(\d+)-(\d+) of the concatenated hashes with pepper and scheme$`, func(a, b int) error {
+		// TODO: awaiting SDK implementation - keyless
+		return godog.ErrPending
+	})
+
+	ctx.Step(`^it should start with SHA(\d+)-(\d+)\("([^"]*)"\)$`, func(a, b int, prefix string) error {
+		// TODO: implement hash prefix check
+		return godog.ErrPending
+	})
+
+	// =============================================================================
+	// Signature Steps
+	// =============================================================================
+
+	ctx.Step(`^signature(\d+) for "([^"]*)"$`, func(sigNum int, msg string) error {
+		world.TestVectors[fmt.Sprintf("signature%dMessage", sigNum)] = msg
+		return nil
+	})
+
+	// =============================================================================
+	// Scheme Identifier Steps
+	// =============================================================================
+
+	ctx.Step(`^the scheme identifier used should be (\d+)x(\d+)$`, func(a, b int) error {
+		// TODO: implement scheme identifier check
+		return godog.ErrPending
+	})
+
+	// =============================================================================
+	// Type Mapping Steps
+	// =============================================================================
+
+	ctx.Step(`^u64 should map to u64$`, func() error {
+		// Documentation assertion - Go uses uint64
+		return nil
+	})
+
+	ctx.Step(`^u128 should map to u128$`, func() error {
+		// Documentation assertion - Go uses *big.Int
+		return nil
+	})
 }

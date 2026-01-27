@@ -83,6 +83,16 @@ func initBLSSteps(ctx *godog.ScenarioContext, world *World) {
 		return godog.ErrPending
 	})
 
+	ctx.Step(`^I generate a proof of possession$`, func() error {
+		// TODO: awaiting SDK implementation - BLS12-381 PoP
+		return godog.ErrPending
+	})
+
+	ctx.Step(`^I generate a random BLS12-381 key pair$`, func() error {
+		// TODO: awaiting SDK implementation - BLS12-381
+		return godog.ErrPending
+	})
+
 	// =============================================================================
 	// Secp256r1 Steps - All Pending (not supported in Go SDK)
 	// =============================================================================

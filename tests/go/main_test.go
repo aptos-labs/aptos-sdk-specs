@@ -142,6 +142,15 @@ func InitializeScenario(ctx *godog.ScenarioContext) {
 	// Remaining steps
 	initRemainingSteps(ctx, world)
 
+	// Sender steps
+	initSenderSteps(ctx, world)
+
+	// Simulation steps
+	initSimulationSteps(ctx, world)
+
+	// The steps
+	initTheSteps(ctx, world)
+
 	// Performance steps
 	initPerformanceSteps(ctx, world)
 
