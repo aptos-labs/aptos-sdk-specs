@@ -76,6 +76,24 @@ func InitializeScenario(ctx *godog.ScenarioContext) {
 	// Miscellaneous steps
 	initMiscSteps(ctx, world)
 
+	// Indexer steps
+	initIndexerSteps(ctx, world)
+
+	// Retry steps
+	initRetrySteps(ctx, world)
+
+	// Multi-sig steps
+	initMultiSigSteps(ctx, world)
+
+	// Keyless steps (all pending - awaiting SDK implementation)
+	initKeylessSteps(ctx, world)
+
+	// BLS steps (all pending - awaiting SDK implementation)
+	initBLSSteps(ctx, world)
+
+	// Mnemonic/derivation steps
+	initMnemonicSteps(ctx, world)
+
 	// Performance steps
 	initPerformanceSteps(ctx, world)
 
