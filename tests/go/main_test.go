@@ -61,6 +61,9 @@ func InitializeScenario(ctx *godog.ScenarioContext) {
 	// API client steps
 	initAPIClientSteps(ctx, world)
 
+	// Error handling steps
+	initErrorSteps(ctx, world)
+
 	// Performance steps
 	initPerformanceSteps(ctx, world)
 

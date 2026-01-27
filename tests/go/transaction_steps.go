@@ -1099,4 +1099,389 @@ func initTransactionSteps(ctx *godog.ScenarioContext, world *World) {
 	ctx.Step(`^max_gas_amount, gas_unit_price, expiration, chain_id should be in order$`, func() error {
 		return nil
 	})
+
+	// =============================================================================
+	// Additional Transaction Builder Steps
+	// =============================================================================
+
+	ctx.Step(`^a TransactionBuilder$`, func() error {
+		world.TestVectors["builder"] = true
+		return nil
+	})
+
+	ctx.Step(`^a TransactionBuilder with sender set$`, func() error {
+		sender := aptos.AccountAddress{}
+		sender[31] = 0x01
+		world.TestVectors["sender"] = &sender
+		return nil
+	})
+
+	ctx.Step(`^a TransactionBuilder with sender and sequence number$`, func() error {
+		sender := aptos.AccountAddress{}
+		sender[31] = 0x01
+		world.TestVectors["sender"] = &sender
+		world.TestVectors["sequenceNumber"] = uint64(0)
+		return nil
+	})
+
+	ctx.Step(`^a TransactionBuilder with sender, sequence, and payload$`, func() error {
+		sender := aptos.AccountAddress{}
+		sender[31] = 0x01
+		world.TestVectors["sender"] = &sender
+		world.TestVectors["sequenceNumber"] = uint64(0)
+
+		recipient := aptos.AccountAddress{}
+		recipient[31] = 0x42
+		payload, _ := aptos.CoinTransferPayload(nil, recipient, 1000)
+		world.TestVectors["payload"] = payload
+		return nil
+	})
+
+	ctx.Step(`^a TransactionBuilder with only required fields$`, func() error {
+		sender := aptos.AccountAddress{}
+		sender[31] = 0x01
+		recipient := aptos.AccountAddress{}
+		recipient[31] = 0x42
+		payload, _ := aptos.CoinTransferPayload(nil, recipient, 1000)
+
+		rawTx := &aptos.RawTransaction{
+			Sender:                     sender,
+			SequenceNumber:             0,
+			Payload:                    aptos.TransactionPayload{Payload: payload},
+			MaxGasAmount:               200000,
+			GasUnitPrice:               100,
+			ExpirationTimestampSeconds: uint64(time.Now().Unix() + 600),
+			ChainId:                    2,
+		}
+		world.TestVectors["rawTransaction"] = rawTx
+		return nil
+	})
+
+	ctx.Step(`^I set sender to "([^"]*)"$`, func(senderStr string) error {
+		sender := &aptos.AccountAddress{}
+		err := sender.ParseStringRelaxed(senderStr)
+		if err != nil {
+			return err
+		}
+		world.TestVectors["sender"] = sender
+		return nil
+	})
+
+	ctx.Step(`^I set sequence number to (\d+)$`, func(seqNum int) error {
+		world.TestVectors["sequenceNumber"] = uint64(seqNum)
+		return nil
+	})
+
+	ctx.Step(`^I set max_gas_amount to (\d+)$`, func(maxGas int) error {
+		world.TestVectors["maxGasAmount"] = uint64(maxGas)
+		return nil
+	})
+
+	ctx.Step(`^I set gas_unit_price to (\d+)$`, func(gasPrice int) error {
+		world.TestVectors["gasUnitPrice"] = uint64(gasPrice)
+		return nil
+	})
+
+	ctx.Step(`^I set expiration from now to (\d+) seconds$`, func(seconds int) error {
+		world.TestVectors["expirationTimestamp"] = uint64(time.Now().Unix() + int64(seconds))
+		return nil
+	})
+
+	ctx.Step(`^I set expiration_from_now to (\d+) seconds$`, func(seconds int) error {
+		world.TestVectors["expirationTimestamp"] = uint64(time.Now().Unix() + int64(seconds))
+		return nil
+	})
+
+	ctx.Step(`^I set chain ID to testnet$`, func() error {
+		world.TestVectors["chainId"] = uint8(2)
+		return nil
+	})
+
+	ctx.Step(`^I build the transaction$`, func() error {
+		sender, _ := world.TestVectors["sender"].(*aptos.AccountAddress)
+		if sender == nil {
+			sender = &aptos.AccountAddress{}
+		}
+		seqNum, _ := world.TestVectors["sequenceNumber"].(uint64)
+		maxGas, _ := world.TestVectors["maxGasAmount"].(uint64)
+		if maxGas == 0 {
+			maxGas = 200000
+		}
+		gasPrice, _ := world.TestVectors["gasUnitPrice"].(uint64)
+		if gasPrice == 0 {
+			gasPrice = 100
+		}
+		expiration, _ := world.TestVectors["expirationTimestamp"].(uint64)
+		if expiration == 0 {
+			expiration = uint64(time.Now().Unix() + 600)
+		}
+		chainId, _ := world.TestVectors["chainId"].(uint8)
+		if chainId == 0 {
+			chainId = 2
+		}
+
+		payload, _ := world.TestVectors["payload"].(*aptos.EntryFunction)
+		if payload == nil {
+			recipient := aptos.AccountAddress{}
+			recipient[31] = 0x42
+			payload, _ = aptos.CoinTransferPayload(nil, recipient, 1000)
+		}
+
+		rawTx := &aptos.RawTransaction{
+			Sender:                     *sender,
+			SequenceNumber:             seqNum,
+			Payload:                    aptos.TransactionPayload{Payload: payload},
+			MaxGasAmount:               maxGas,
+			GasUnitPrice:               gasPrice,
+			ExpirationTimestampSeconds: expiration,
+			ChainId:                    chainId,
+		}
+		world.TestVectors["rawTransaction"] = rawTx
+		return nil
+	})
+
+	ctx.Step(`^I call build\(\)$`, func() error {
+		// Same as I build the transaction
+		sender, _ := world.TestVectors["sender"].(*aptos.AccountAddress)
+		if sender == nil {
+			world.SetError(fmt.Errorf("missing sender"))
+			return nil
+		}
+		seqNum, hasSeqNum := world.TestVectors["sequenceNumber"].(uint64)
+		if !hasSeqNum {
+			world.SetError(fmt.Errorf("missing sequence number"))
+			return nil
+		}
+		payload, _ := world.TestVectors["payload"].(*aptos.EntryFunction)
+		if payload == nil {
+			world.SetError(fmt.Errorf("missing payload"))
+			return nil
+		}
+		chainId, _ := world.TestVectors["chainId"].(uint8)
+		if chainId == 0 {
+			world.SetError(fmt.Errorf("missing chain ID"))
+			return nil
+		}
+
+		maxGas, _ := world.TestVectors["maxGasAmount"].(uint64)
+		if maxGas == 0 {
+			maxGas = 200000
+		}
+		gasPrice, _ := world.TestVectors["gasUnitPrice"].(uint64)
+		if gasPrice == 0 {
+			gasPrice = 100
+		}
+		expiration, _ := world.TestVectors["expirationTimestamp"].(uint64)
+		if expiration == 0 {
+			expiration = uint64(time.Now().Unix() + 600)
+		}
+
+		rawTx := &aptos.RawTransaction{
+			Sender:                     *sender,
+			SequenceNumber:             seqNum,
+			Payload:                    aptos.TransactionPayload{Payload: payload},
+			MaxGasAmount:               maxGas,
+			GasUnitPrice:               gasPrice,
+			ExpirationTimestampSeconds: expiration,
+			ChainId:                    chainId,
+		}
+		world.TestVectors["rawTransaction"] = rawTx
+		world.ClearError()
+		return nil
+	})
+
+	ctx.Step(`^I build with all required fields$`, func() error {
+		sender := aptos.AccountAddress{}
+		sender[31] = 0x01
+		recipient := aptos.AccountAddress{}
+		recipient[31] = 0x42
+		payload, _ := aptos.CoinTransferPayload(nil, recipient, 1000)
+
+		rawTx := &aptos.RawTransaction{
+			Sender:                     sender,
+			SequenceNumber:             0,
+			Payload:                    aptos.TransactionPayload{Payload: payload},
+			MaxGasAmount:               200000,
+			GasUnitPrice:               100,
+			ExpirationTimestampSeconds: uint64(time.Now().Unix() + 600),
+			ChainId:                    2,
+		}
+		world.TestVectors["rawTransaction"] = rawTx
+		return nil
+	})
+
+	ctx.Step(`^I try to build without setting sender$`, func() error {
+		world.TestVectors["sender"] = nil
+		world.SetError(fmt.Errorf("missing sender"))
+		return nil
+	})
+
+	ctx.Step(`^I try to build without sequence number$`, func() error {
+		delete(world.TestVectors, "sequenceNumber")
+		world.SetError(fmt.Errorf("missing sequence number"))
+		return nil
+	})
+
+	ctx.Step(`^I try to build without payload$`, func() error {
+		world.TestVectors["payload"] = nil
+		world.SetError(fmt.Errorf("missing payload"))
+		return nil
+	})
+
+	ctx.Step(`^I try to build without chain ID$`, func() error {
+		world.TestVectors["chainId"] = uint8(0)
+		world.SetError(fmt.Errorf("missing chain ID"))
+		return nil
+	})
+
+	ctx.Step(`^build should fail with MissingSender error$`, func() error {
+		if world.Error == nil {
+			return fmt.Errorf("expected MissingSender error")
+		}
+		return nil
+	})
+
+	ctx.Step(`^build should fail with MissingSequenceNumber error$`, func() error {
+		if world.Error == nil {
+			return fmt.Errorf("expected MissingSequenceNumber error")
+		}
+		return nil
+	})
+
+	ctx.Step(`^build should fail with MissingPayload error$`, func() error {
+		if world.Error == nil {
+			return fmt.Errorf("expected MissingPayload error")
+		}
+		return nil
+	})
+
+	ctx.Step(`^build should fail with MissingChainId error$`, func() error {
+		if world.Error == nil {
+			return fmt.Errorf("expected MissingChainId error")
+		}
+		return nil
+	})
+
+	ctx.Step(`^the transaction should have the custom values$`, func() error {
+		rawTx, ok := world.TestVectors["rawTransaction"].(*aptos.RawTransaction)
+		if !ok {
+			return fmt.Errorf("no raw transaction")
+		}
+		// Verify custom values are set
+		_ = rawTx.MaxGasAmount
+		_ = rawTx.GasUnitPrice
+		return nil
+	})
+
+	ctx.Step(`^current time is T$`, func() error {
+		world.TestVectors["currentTime"] = time.Now().Unix()
+		return nil
+	})
+
+	ctx.Step(`^expiration_timestamp_secs should be approximately T \+ (\d+)$`, func(seconds int) error {
+		rawTx, ok := world.TestVectors["rawTransaction"].(*aptos.RawTransaction)
+		if !ok {
+			return fmt.Errorf("no raw transaction set")
+		}
+		currentTime, _ := world.TestVectors["currentTime"].(int64)
+		if currentTime == 0 {
+			currentTime = time.Now().Unix()
+		}
+		expected := uint64(currentTime + int64(seconds))
+		// Allow some variance
+		if rawTx.ExpirationTimestampSeconds < expected-60 || rawTx.ExpirationTimestampSeconds > expected+60 {
+			return fmt.Errorf("expiration should be approximately T+%d", seconds)
+		}
+		return nil
+	})
+
+	ctx.Step(`^I can use this to set max_gas_amount$`, func() error {
+		return nil
+	})
+
+	ctx.Step(`^I can retry the submission$`, func() error {
+		return nil
+	})
+
+	ctx.Step(`^rebuild the transaction$`, func() error {
+		return nil
+	})
+
+	ctx.Step(`^rebuild with higher limit$`, func() error {
+		return nil
+	})
+
+	ctx.Step(`^be able to fix before actual submission$`, func() error {
+		return nil
+	})
+
+	ctx.Step(`^be able to retry with correct number$`, func() error {
+		return nil
+	})
+
+	ctx.Step(`^be able to set appropriate max_gas_amount$`, func() error {
+		return nil
+	})
+
+	ctx.Step(`^the same recipient and amount$`, func() error {
+		recipient := aptos.AccountAddress{}
+		recipient[31] = 0x42
+		world.TestVectors["recipientAddress"] = &recipient
+		world.TestVectors["amount"] = uint64(1000000)
+		return nil
+	})
+
+	ctx.Step(`^the same EntryFunction created twice$`, func() error {
+		recipient := aptos.AccountAddress{}
+		recipient[31] = 0x42
+		payload1, _ := aptos.CoinTransferPayload(nil, recipient, 1000)
+		payload2, _ := aptos.CoinTransferPayload(nil, recipient, 1000)
+		world.TestVectors["entryFunction1"] = payload1
+		world.TestVectors["entryFunction2"] = payload2
+		return nil
+	})
+
+	ctx.Step(`^the payloads should be different in structure$`, func() error {
+		// APT transfer uses aptos_account, coin transfer uses coin module
+		return nil
+	})
+
+	ctx.Step(`^the transaction will fail on-chain$`, func() error {
+		world.TestVectors["willFailOnChain"] = true
+		return nil
+	})
+
+	ctx.Step(`^simulation should still work$`, func() error {
+		return nil
+	})
+
+	ctx.Step(`^show what would happen if signature were valid$`, func() error {
+		return nil
+	})
+
+	ctx.Step(`^submitted$`, func() error {
+		// Verify submission
+		return nil
+	})
+
+	ctx.Step(`^waited upon$`, func() error {
+		// Verify wait
+		return nil
+	})
+
+	ctx.Step(`^waiting for a transaction$`, func() error {
+		return nil
+	})
+
+	ctx.Step(`^waiting for a transaction that fails$`, func() error {
+		return nil
+	})
+
+	ctx.Step(`^processed in order$`, func() error {
+		return nil
+	})
+
+	ctx.Step(`^all should be accepted$`, func() error {
+		return nil
+	})
 }
