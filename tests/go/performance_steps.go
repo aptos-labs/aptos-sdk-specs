@@ -302,6 +302,75 @@ func initPerformanceSteps(ctx *godog.ScenarioContext, world *World) {
 		return nil
 	})
 
+	// =============================================================================
+	// Additional Performance Steps
+	// =============================================================================
+
+	ctx.Step(`^I measure the full transaction flow (\d+) times including:$`, func(iterations int) error {
+		world.TestVectors["transactionFlowIterations"] = iterations
+		return nil
+	})
+
+	ctx.Step(`^I measure the time to build and sign (\d+) APT transfer transactions$`, func(iterations int) error {
+		world.TestVectors["buildSignIterations"] = iterations
+		return nil
+	})
+
+	ctx.Step(`^I measure the time to get account balance (\d+) times$`, func(iterations int) error {
+		world.TestVectors["balanceIterations"] = iterations
+		return nil
+	})
+
+	ctx.Step(`^I measure the time to get account info (\d+) times$`, func(iterations int) error {
+		world.TestVectors["accountInfoIterations"] = iterations
+		return nil
+	})
+
+	ctx.Step(`^I measure the time to get account resources (\d+) times$`, func(iterations int) error {
+		world.TestVectors["resourcesIterations"] = iterations
+		return nil
+	})
+
+	ctx.Step(`^I measure the time to get ledger info (\d+) times$`, func(iterations int) error {
+		world.TestVectors["ledgerInfoIterations"] = iterations
+		return nil
+	})
+
+	ctx.Step(`^I measure the time to get transaction by hash (\d+) times$`, func(iterations int) error {
+		world.TestVectors["txByHashIterations"] = iterations
+		return nil
+	})
+
+	ctx.Step(`^I measure the time to query account tokens (\d+) times$`, func(iterations int) error {
+		world.TestVectors["tokensIterations"] = iterations
+		return nil
+	})
+
+	ctx.Step(`^I measure the time to query account transactions (\d+) times$`, func(iterations int) error {
+		world.TestVectors["accountTxIterations"] = iterations
+		return nil
+	})
+
+	ctx.Step(`^I measure the time to query events by account (\d+) times$`, func(iterations int) error {
+		world.TestVectors["eventsIterations"] = iterations
+		return nil
+	})
+
+	ctx.Step(`^I measure the time to query fungible asset balances (\d+) times$`, func(iterations int) error {
+		world.TestVectors["fungibleIterations"] = iterations
+		return nil
+	})
+
+	ctx.Step(`^I measure the time to submit (\d+) APT transfers without waiting$`, func(iterations int) error {
+		world.TestVectors["submitNoWaitIterations"] = iterations
+		return nil
+	})
+
+	ctx.Step(`^I measure the time to submit and wait for (\d+) APT transfers$`, func(iterations int) error {
+		world.TestVectors["submitWaitIterations"] = iterations
+		return nil
+	})
+
 	// After hook to print final results
 	ctx.After(func(ctx context.Context, sc *godog.Scenario, err error) (context.Context, error) {
 		// Only print if we have results

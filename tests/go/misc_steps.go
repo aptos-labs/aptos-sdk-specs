@@ -114,35 +114,28 @@ func initMiscSteps(ctx *godog.ScenarioContext, world *World) {
 	})
 
 	ctx.Step(`^I create a BLS12-381 account$`, func() error {
-		// BLS not directly supported in current SDK
-		world.TestVectors["accountType"] = "BLS12-381"
-		world.SetError(fmt.Errorf("BLS12-381 not supported"))
-		return nil
+		// TODO: awaiting SDK implementation - BLS12-381 not supported in Go SDK
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^I create a BLS12-381 key pair from the seed$`, func() error {
-		world.TestVectors["keyType"] = "BLS12-381"
-		world.SetError(fmt.Errorf("BLS12-381 not supported"))
-		return nil
+		// TODO: awaiting SDK implementation - BLS12-381 not supported in Go SDK
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^I create a Secp256r1 account$`, func() error {
-		// Secp256r1 (P-256) - not directly supported
-		world.TestVectors["accountType"] = "Secp256r1"
-		world.SetError(fmt.Errorf("Secp256r1 not supported"))
-		return nil
+		// TODO: awaiting SDK implementation - Secp256r1 (P-256) not supported in Go SDK
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^I create a Secp256r1 key pair from hex$`, func() error {
-		world.TestVectors["keyType"] = "Secp256r1"
-		world.SetError(fmt.Errorf("Secp256r1 not supported"))
-		return nil
+		// TODO: awaiting SDK implementation - Secp256r1 not supported in Go SDK
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^I create a Secp256r1 key pair from the bytes$`, func() error {
-		world.TestVectors["keyType"] = "Secp256r1"
-		world.SetError(fmt.Errorf("Secp256r1 not supported"))
-		return nil
+		// TODO: awaiting SDK implementation - Secp256r1 not supported in Go SDK
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^I create Secp256k1 and Secp256r1 accounts$`, func() error {
@@ -164,10 +157,8 @@ func initMiscSteps(ctx *godog.ScenarioContext, world *World) {
 	})
 
 	ctx.Step(`^I create a keyless account$`, func() error {
-		world.TestVectors["accountType"] = "keyless"
-		// Keyless accounts require JWT setup
-		world.SetError(fmt.Errorf("keyless accounts require JWT setup"))
-		return nil
+		// TODO: awaiting SDK implementation - Keyless accounts require JWT/OIDC setup not available in Go SDK
+		return godog.ErrPending
 	})
 
 	ctx.Step(`^I create a multi-sig account$`, func() error {
