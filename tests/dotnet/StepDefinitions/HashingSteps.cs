@@ -138,7 +138,8 @@ public class HashingSteps
     {
         try
         {
-            _world.HashResult = Sha3_256(_world.Bytes!);
+            _world.HashResult = Sha3_256(_world.Bytes ?? Array.Empty<byte>());
+            _world.Bytes = _world.HashResult;
             _world.Result = _world.HashResult;
             _world.ClearError();
         }
@@ -190,7 +191,8 @@ public class HashingSteps
     {
         try
         {
-            _world.HashResult = Sha2_256(_world.Bytes!);
+            _world.HashResult = Sha2_256(_world.Bytes ?? Array.Empty<byte>());
+            _world.Bytes = _world.HashResult;
             _world.Result = _world.HashResult;
             _world.ClearError();
         }

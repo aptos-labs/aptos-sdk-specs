@@ -69,12 +69,7 @@ public class AdditionalSteps
     // Then Steps - Crypto
     // =========================================================================
 
-    [Then("the key pair should be valid")]
-    public void ThenTheKeyPairShouldBeValid()
-    {
-        _world.Ed25519PrivateKey.Should().NotBeNull();
-        _world.Ed25519PublicKey.Should().NotBeNull();
-    }
+    // Note: "the key pair should be valid" step is defined in CryptoSteps.cs
 
     // Note: "each inner vector should be length-prefixed" step is defined in SerializationSteps.cs
 
