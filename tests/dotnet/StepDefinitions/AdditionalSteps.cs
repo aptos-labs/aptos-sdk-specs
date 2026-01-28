@@ -199,12 +199,7 @@ public class AdditionalSteps
     // Given Steps - Auth Key
     // =========================================================================
 
-    [Given(@"an Ed(\d+) account")]
-    public void GivenAnEdAccount(int bits)
-    {
-        _world.Account = Ed25519Account.Generate();
-        _world.Ed25519PublicKey = (Ed25519PublicKey)_world.Account.PublicKey;
-    }
+    // Note: "an Ed25519 account" step is defined in AccountSteps.cs
 
     // =========================================================================
     // When Steps - Auth Key
