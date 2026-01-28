@@ -162,11 +162,15 @@ public class TypeTagSteps
         else if (_world.TestVectors.TryGetValue("moduleAddress", out var addr) &&
                  _world.TestVectors.TryGetValue("moduleName", out var name))
         {
-            _world.TestVectors["formattedString"] = $"{addr}::{name}";
+            var formatted = $"{addr}::{name}";
+            _world.TestVectors["formattedString"] = formatted;
+            _world.Result = formatted;
         }
         else if (_world.Address != null)
         {
-            _world.TestVectors["formattedString"] = _world.Address.ToString();
+            var formatted = _world.Address.ToString();
+            _world.TestVectors["formattedString"] = formatted;
+            _world.Result = formatted;
         }
     }
 
