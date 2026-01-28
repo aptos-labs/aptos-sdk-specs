@@ -464,19 +464,7 @@ public class SerializationSteps
         _world.Bytes![0].Should().Be(Convert.ToByte(expected, 16));
     }
 
-    [Then("the bytes should be {string}")]
-    public void ThenTheBytesShouldBe(string bytesStr)
-    {
-        var expected = System.Text.RegularExpressions.Regex.Matches(bytesStr, @"0x[0-9a-fA-F]+")
-            .Select(m => Convert.ToByte(m.Value, 16))
-            .ToArray();
-        _world.Bytes.Should().NotBeNull();
-        _world.Bytes!.Length.Should().Be(expected.Length);
-        for (int i = 0; i < expected.Length; i++)
-        {
-            _world.Bytes[i].Should().Be(expected[i], $"byte {i} mismatch");
-        }
-    }
+    // NOTE: "the bytes should be" step moved to ByteArraySteps.cs
 
     [Then(@"the result should be (\d+) bytes in little-endian")]
     public void ThenTheResultShouldBeBytesInLittleEndian(int count)
@@ -510,32 +498,9 @@ public class SerializationSteps
         }
     }
 
-    [Then(@"the result should be \[(0x[0-9a-fA-F]+)\]")]
-    public void ThenTheResultShouldBeSingleByte(string expected)
-    {
-        _world.Bytes.Should().NotBeNull();
-        _world.Bytes!.Length.Should().Be(1);
-        _world.Bytes[0].Should().Be(Convert.ToByte(expected, 16));
-    }
-
-    [Then(@"the result should be \[(0x[0-9a-fA-F]+), (0x[0-9a-fA-F]+)\]")]
-    public void ThenTheResultShouldBeTwoBytes(string b1, string b2)
-    {
-        _world.Bytes.Should().NotBeNull();
-        _world.Bytes!.Length.Should().Be(2);
-        _world.Bytes[0].Should().Be(Convert.ToByte(b1, 16));
-        _world.Bytes[1].Should().Be(Convert.ToByte(b2, 16));
-    }
-
-    [Then(@"the result should be \[(0x[0-9a-fA-F]+), (0x[0-9a-fA-F]+), (0x[0-9a-fA-F]+)\]")]
-    public void ThenTheResultShouldBeThreeBytes(string b1, string b2, string b3)
-    {
-        _world.Bytes.Should().NotBeNull();
-        _world.Bytes!.Length.Should().Be(3);
-        _world.Bytes[0].Should().Be(Convert.ToByte(b1, 16));
-        _world.Bytes[1].Should().Be(Convert.ToByte(b2, 16));
-        _world.Bytes[2].Should().Be(Convert.ToByte(b3, 16));
-    }
+    // NOTE: Byte array result assertions have been moved to ByteArraySteps.cs
+    // to avoid ambiguous step definitions and provide a unified approach to
+    // matching byte arrays of any size.
 
     [Then(@"the first byte should be (0x[0-9a-fA-F]+) \(length\)")]
     public void ThenTheFirstByteShouldBeLength(string expected)
