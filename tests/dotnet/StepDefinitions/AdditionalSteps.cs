@@ -149,45 +149,10 @@ public class AdditionalSteps
     // When Steps - TypeTag
     // =========================================================================
 
-    [When("I create a MoveStructTag")]
-    public void WhenICreateAMoveStructTag()
-    {
-        try
-        {
-            _world.TestVectors["structTagCreated"] = true;
-        }
-        catch (Exception ex)
-        {
-            _world.SetError(ex);
-        }
-    }
+    // Note: "When I create a MoveStructTag" step is defined in TypeTagSteps.cs
 
-    [When("I try to parse it")]
-    public void WhenITryToParseIt()
-    {
-        try
-        {
-            _world.TestVectors["parseAttempted"] = true;
-            // Simulate parsing error for invalid inputs
-            if (_world.TestVectors.ContainsKey("invalidStruct") ||
-                _world.TestVectors.ContainsKey("invalidAddress") ||
-                _world.TestVectors.ContainsKey("invalidVector") ||
-                _world.TestVectors.ContainsKey("malformedVector"))
-            {
-                _world.SetError(new FormatException("Invalid format"));
-            }
-        }
-        catch (Exception ex)
-        {
-            _world.SetError(ex);
-        }
-    }
-
-    [When("I format it as module ID")]
-    public void WhenIFormatItAsModuleId()
-    {
-        _world.TestVectors["formattedAsModuleId"] = true;
-    }
+    // Note: "When I try to parse it" and "When I format it as module ID" steps are
+    // defined in TypeTagSteps.cs
 
     // =========================================================================
     // Then Steps - TypeTag
