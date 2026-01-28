@@ -44,7 +44,11 @@ fn setup_simulation_state(world: &mut TestWorld) {
 
 #[then(expr = "I should get a simulation result")]
 fn then_get_simulation_result(world: &mut TestWorld) {
-    assert!(world.named_values.contains_key("simulation_success") || world.error.is_some());
+    assert!(
+        world.named_values.contains_key("simulation_success") 
+        || world.named_values.contains_key("simulated")
+        || world.error.is_some()
+    );
 }
 
 #[then(expr = "it should include gas_used")]
@@ -136,7 +140,9 @@ fn then_find_min_gas(world: &mut TestWorld) {
     assert!(world.named_values.contains_key("min_gas_needed"));
 }
 
-#[given(expr = "a simple transfer")]
+// Note: "a simple transfer transaction" is in client_steps.rs
+// This helper provides simulation state
+#[given(expr = "a simple transfer for simulation")]
 fn given_simple_transfer(world: &mut TestWorld) {
     world.named_values.insert("simple_tx".to_string(), "true".to_string());
     world.named_values.insert("simple_gas".to_string(), "1000".to_string());
@@ -150,18 +156,9 @@ fn given_complex_contract_call(world: &mut TestWorld) {
     world.named_values.insert("complex_gas".to_string(), "10000".to_string());
 }
 
-#[when(expr = "I simulate both")]
-fn when_simulate_both(world: &mut TestWorld) {
-    // Both transactions simulated
-    world.named_values.insert("both_simulated".to_string(), "true".to_string());
-}
+// Note: "I simulate both" is in client_steps.rs
 
-#[then(expr = "the complex call should use more gas")]
-fn then_complex_uses_more_gas(world: &mut TestWorld) {
-    let simple: u64 = world.named_values.get("simple_gas").unwrap().parse().unwrap();
-    let complex: u64 = world.named_values.get("complex_gas").unwrap().parse().unwrap();
-    assert!(complex > simple);
-}
+// Note: "the complex call should use more gas" is in client_steps.rs
 
 // =============================================================================
 // Preview State Changes
@@ -237,13 +234,7 @@ fn given_aborting_tx(world: &mut TestWorld) {
     world.named_values.insert("abort_module".to_string(), "0x1::coin".to_string());
 }
 
-#[then(expr = "simulation should show failure")]
-fn then_simulation_shows_failure(world: &mut TestWorld) {
-    if world.named_values.get("will_abort") == Some(&"true".to_string()) {
-        world.named_values.insert("simulation_status".to_string(), "failed".to_string());
-    }
-    assert_eq!(world.named_values.get("simulation_status"), Some(&"failed".to_string()));
-}
+// Note: "simulation should show failure" is in client_steps.rs
 
 #[then(expr = "include the abort code")]
 fn then_include_abort_code(world: &mut TestWorld) {

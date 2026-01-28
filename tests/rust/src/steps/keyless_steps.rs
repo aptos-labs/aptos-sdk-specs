@@ -117,6 +117,8 @@ fn when_check_expired(world: &mut TestWorld) {
     // If we "waited" and expiry was 1 second, it's expired
     let is_expired = waited && expiry_secs <= 1;
     world.named_values.insert("is_expired".to_string(), is_expired.to_string());
+    // Also set bool_result for generic "it should return true/false" steps
+    world.bool_result = Some(is_expired);
 }
 
 #[then(expr = "it should return true")]

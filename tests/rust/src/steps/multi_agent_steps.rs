@@ -2,12 +2,12 @@
 
 use crate::support::TestWorld;
 use aptos_rust_sdk_v2::account::Ed25519Account;
-use aptos_rust_sdk_v2::transaction::types::MultiAgentRawTransaction;
 use aptos_rust_sdk_v2::transaction::{
+    RawTransaction, TransactionPayload, EntryFunction,
     authenticator::{AccountAuthenticator, TransactionAuthenticator},
-    EntryFunction, RawTransaction, TransactionPayload,
 };
-use aptos_rust_sdk_v2::types::{AccountAddress, Identifier, MoveModuleId};
+use aptos_rust_sdk_v2::transaction::types::MultiAgentRawTransaction;
+use aptos_rust_sdk_v2::types::{AccountAddress, MoveModuleId, Identifier};
 use aptos_rust_sdk_v2::ChainId;
 use cucumber::{given, then, when};
 
@@ -81,9 +81,7 @@ fn given_secondary_addresses_abc(world: &mut TestWorld) {
 #[given("the same RawTransaction")]
 fn given_same_raw_transaction(world: &mut TestWorld) {
     if world.raw_transaction.is_none() {
-        let sender = world
-            .ed25519_account
-            .as_ref()
+        let sender = world.ed25519_account.as_ref()
             .map(|a| a.address())
             .unwrap_or(AccountAddress::ONE);
         world.raw_transaction = Some(create_sample_raw_transaction(sender));
@@ -105,17 +103,17 @@ fn given_multi_agent_transaction(world: &mut TestWorld) {
     if world.ed25519_account.is_none() {
         world.ed25519_account = Some(Ed25519Account::generate());
     }
-
+    
     // Ensure we have secondary signers
     if world.secondary_signer_addresses.is_empty() {
         let account = Ed25519Account::generate();
         world.secondary_signer_addresses.push(account.address());
         world.secondary_accounts.push(account);
     }
-
+    
     let sender = world.ed25519_account.as_ref().unwrap();
     let raw_txn = create_sample_raw_transaction(sender.address());
-
+    
     world.multi_agent_txn = Some(MultiAgentRawTransaction::new(
         raw_txn.clone(),
         world.secondary_signer_addresses.clone(),
@@ -128,16 +126,16 @@ fn given_multi_agent_with_n_secondary(world: &mut TestWorld, n: usize) {
     world.ed25519_account = Some(Ed25519Account::generate());
     world.secondary_signer_addresses.clear();
     world.secondary_accounts.clear();
-
+    
     for _ in 0..n {
         let account = Ed25519Account::generate();
         world.secondary_signer_addresses.push(account.address());
         world.secondary_accounts.push(account);
     }
-
+    
     let sender = world.ed25519_account.as_ref().unwrap();
     let raw_txn = create_sample_raw_transaction(sender.address());
-
+    
     world.multi_agent_txn = Some(MultiAgentRawTransaction::new(
         raw_txn.clone(),
         world.secondary_signer_addresses.clone(),
@@ -164,11 +162,14 @@ fn given_multi_agent_no_secondary(world: &mut TestWorld) {
     world.ed25519_account = Some(Ed25519Account::generate());
     world.secondary_signer_addresses.clear();
     world.secondary_accounts.clear();
-
+    
     let sender = world.ed25519_account.as_ref().unwrap();
     let raw_txn = create_sample_raw_transaction(sender.address());
-
-    world.multi_agent_txn = Some(MultiAgentRawTransaction::new(raw_txn.clone(), vec![]));
+    
+    world.multi_agent_txn = Some(MultiAgentRawTransaction::new(
+        raw_txn.clone(),
+        vec![],
+    ));
     world.raw_transaction = Some(raw_txn);
 }
 
@@ -204,9 +205,7 @@ fn given_n_secondary_addresses(world: &mut TestWorld, n: usize) {
 #[given(expr = "only {int} secondary signatures")]
 fn given_partial_secondary_signatures(world: &mut TestWorld, _n: usize) {
     // This is for error case testing - signatures will be added in when step
-    world
-        .named_values
-        .insert("partial_signatures".to_string(), "true".to_string());
+    world.named_values.insert("partial_signatures".to_string(), "true".to_string());
 }
 
 #[given("secondary signer address A")]
@@ -244,17 +243,13 @@ fn given_multi_agent_from_vectors(world: &mut TestWorld) {
 
 #[when("I create a multi-agent transaction")]
 fn when_create_multi_agent_transaction(world: &mut TestWorld) {
-    let sender = world
-        .ed25519_account
-        .as_ref()
+    let sender = world.ed25519_account.as_ref()
         .map(|a| a.address())
         .unwrap_or(AccountAddress::ONE);
-
-    let raw_txn = world
-        .raw_transaction
-        .clone()
+    
+    let raw_txn = world.raw_transaction.clone()
         .unwrap_or_else(|| create_sample_raw_transaction(sender));
-
+    
     world.multi_agent_txn = Some(MultiAgentRawTransaction::new(
         raw_txn,
         world.secondary_signer_addresses.clone(),
@@ -284,7 +279,7 @@ fn when_generate_multi_agent_message(world: &mut TestWorld) {
             ));
         }
     }
-
+    
     if let Some(ref multi_agent_txn) = world.multi_agent_txn {
         world.signing_message2 = multi_agent_txn.signing_message().ok();
     }
@@ -301,7 +296,7 @@ fn when_generate_multi_agent_signing_message(world: &mut TestWorld) {
             ));
         }
     }
-
+    
     if let Some(ref multi_agent_txn) = world.multi_agent_txn {
         world.signing_message = multi_agent_txn.signing_message().ok();
     }
@@ -322,7 +317,7 @@ fn when_each_party_generates_message(world: &mut TestWorld) {
 #[when("I sign the multi-agent transaction with all parties")]
 fn when_sign_multi_agent_all_parties(world: &mut TestWorld) {
     use aptos_rust_sdk_v2::account::Account;
-
+    
     // Create multi_agent_txn if not exists
     if world.multi_agent_txn.is_none() {
         if let Some(raw_txn) = &world.raw_transaction {
@@ -339,12 +334,12 @@ fn when_sign_multi_agent_all_parties(world: &mut TestWorld) {
             world.raw_transaction = Some(raw_txn);
         }
     }
-
+    
     let multi_agent_txn = match &world.multi_agent_txn {
         Some(txn) => txn,
         None => return,
     };
-
+    
     let signing_message = match multi_agent_txn.signing_message() {
         Ok(msg) => msg,
         Err(e) => {
@@ -352,7 +347,7 @@ fn when_sign_multi_agent_all_parties(world: &mut TestWorld) {
             return;
         }
     };
-
+    
     // Sign with sender
     let sender = match &world.ed25519_account {
         Some(a) => a,
@@ -365,8 +360,11 @@ fn when_sign_multi_agent_all_parties(world: &mut TestWorld) {
             return;
         }
     };
-    let sender_auth = AccountAuthenticator::ed25519(sender.public_key_bytes(), sender_sig);
-
+    let sender_auth = AccountAuthenticator::ed25519(
+        sender.public_key_bytes(),
+        sender_sig,
+    );
+    
     // Sign with secondary signers
     let mut secondary_auths = Vec::new();
     for account in &world.secondary_accounts {
@@ -382,13 +380,13 @@ fn when_sign_multi_agent_all_parties(world: &mut TestWorld) {
             sig,
         ));
     }
-
+    
     let authenticator = TransactionAuthenticator::multi_agent(
         sender_auth,
         world.secondary_signer_addresses.clone(),
         secondary_auths,
     );
-
+    
     world.signed_transaction = Some(aptos_rust_sdk_v2::transaction::SignedTransaction::new(
         multi_agent_txn.raw_txn.clone(),
         authenticator,
@@ -403,14 +401,11 @@ fn when_sign_multi_agent(world: &mut TestWorld) {
 #[when("sender signs their portion")]
 fn when_sender_signs_portion(world: &mut TestWorld) {
     use aptos_rust_sdk_v2::account::Account;
-
-    if let (Some(multi_agent_txn), Some(sender)) = (&world.multi_agent_txn, &world.ed25519_account)
-    {
+    
+    if let (Some(multi_agent_txn), Some(sender)) = (&world.multi_agent_txn, &world.ed25519_account) {
         if let Ok(signing_message) = multi_agent_txn.signing_message() {
             if let Ok(sig) = sender.sign(&signing_message) {
-                world
-                    .named_values
-                    .insert("sender_signed".to_string(), "true".to_string());
+                world.named_values.insert("sender_signed".to_string(), "true".to_string());
                 world.serialized_bytes = Some(sig.clone());
             }
         }
@@ -420,15 +415,13 @@ fn when_sender_signs_portion(world: &mut TestWorld) {
 #[when(expr = "secondary signer {int} signs their portion")]
 fn when_secondary_signer_signs(world: &mut TestWorld, idx: usize) {
     use aptos_rust_sdk_v2::account::Account;
-
+    
     let actual_idx = idx - 1; // Convert 1-indexed to 0-indexed
     if let Some(multi_agent_txn) = &world.multi_agent_txn {
         if let Ok(signing_message) = multi_agent_txn.signing_message() {
             if let Some(account) = world.secondary_accounts.get(actual_idx) {
                 if account.sign(&signing_message).is_ok() {
-                    world
-                        .named_values
-                        .insert(format!("secondary_{}_signed", idx), "true".to_string());
+                    world.named_values.insert(format!("secondary_{}_signed", idx), "true".to_string());
                 }
             }
         }
@@ -461,9 +454,7 @@ fn when_combine_correct_order(world: &mut TestWorld) {
 
 #[when(expr = "only {int} secondary signer signs")]
 fn when_partial_secondary_sign(world: &mut TestWorld, _n: usize) {
-    world
-        .named_values
-        .insert("partial_sign".to_string(), "true".to_string());
+    world.named_values.insert("partial_sign".to_string(), "true".to_string());
 }
 
 // Removed: "When I try to submit" - handled by client_steps.rs
@@ -480,9 +471,7 @@ fn when_try_create_authenticator(world: &mut TestWorld) {
 fn when_try_create_multi_agent_auth(world: &mut TestWorld) {
     if world.secondary_signer_addresses.is_empty() {
         // Creating with no secondary signers - this might succeed or fail depending on SDK
-        world
-            .named_values
-            .insert("no_secondary".to_string(), "true".to_string());
+        world.named_values.insert("no_secondary".to_string(), "true".to_string());
     }
 }
 
@@ -585,22 +574,13 @@ fn then_all_messages_identical(world: &mut TestWorld, _n: usize) {
 
 #[then("the authenticator should be MultiAgent variant")]
 fn then_authenticator_is_multi_agent(world: &mut TestWorld) {
-    let signed_tx = world
-        .signed_transaction
-        .as_ref()
-        .expect("no signed transaction");
-    assert!(matches!(
-        signed_tx.authenticator,
-        TransactionAuthenticator::MultiAgent { .. }
-    ));
+    let signed_tx = world.signed_transaction.as_ref().expect("no signed transaction");
+    assert!(matches!(signed_tx.authenticator, TransactionAuthenticator::MultiAgent { .. }));
 }
 
 #[then("it should contain sender authenticator")]
 fn then_contains_sender_authenticator(world: &mut TestWorld) {
-    let signed_tx = world
-        .signed_transaction
-        .as_ref()
-        .expect("no signed transaction");
+    let signed_tx = world.signed_transaction.as_ref().expect("no signed transaction");
     match &signed_tx.authenticator {
         TransactionAuthenticator::MultiAgent { sender, .. } => {
             assert!(matches!(sender, AccountAuthenticator::Ed25519 { .. }));
@@ -614,24 +594,12 @@ fn then_contains_sender_authenticator(world: &mut TestWorld) {
 
 #[then("it should contain secondary_signer_addresses")]
 fn then_contains_secondary_addresses(world: &mut TestWorld) {
-    let signed_tx = world
-        .signed_transaction
-        .as_ref()
-        .expect("no signed transaction");
+    let signed_tx = world.signed_transaction.as_ref().expect("no signed transaction");
     match &signed_tx.authenticator {
-        TransactionAuthenticator::MultiAgent {
-            secondary_signer_addresses,
-            ..
-        } => {
-            assert!(
-                !secondary_signer_addresses.is_empty()
-                    || world.secondary_signer_addresses.is_empty()
-            );
+        TransactionAuthenticator::MultiAgent { secondary_signer_addresses, .. } => {
+            assert!(!secondary_signer_addresses.is_empty() || world.secondary_signer_addresses.is_empty());
         }
-        TransactionAuthenticator::FeePayer {
-            secondary_signer_addresses,
-            ..
-        } => {
+        TransactionAuthenticator::FeePayer { secondary_signer_addresses, .. } => {
             // May be empty for fee payer without secondary signers
             let _ = secondary_signer_addresses;
         }
@@ -641,14 +609,9 @@ fn then_contains_secondary_addresses(world: &mut TestWorld) {
 
 #[then("it should contain secondary_signers list")]
 fn then_contains_secondary_signers(world: &mut TestWorld) {
-    let signed_tx = world
-        .signed_transaction
-        .as_ref()
-        .expect("no signed transaction");
+    let signed_tx = world.signed_transaction.as_ref().expect("no signed transaction");
     match &signed_tx.authenticator {
-        TransactionAuthenticator::MultiAgent {
-            secondary_signers, ..
-        } => {
+        TransactionAuthenticator::MultiAgent { secondary_signers, .. } => {
             assert_eq!(secondary_signers.len(), world.secondary_accounts.len());
         }
         _ => panic!("expected MultiAgent authenticator"),
@@ -662,13 +625,10 @@ fn then_multi_agent_signing_succeeds(world: &mut TestWorld) {
 
 #[then("sender authenticator should be Ed25519")]
 fn then_sender_auth_ed25519(world: &mut TestWorld) {
-    let signed_tx = world
-        .signed_transaction
-        .as_ref()
-        .expect("no signed transaction");
+    let signed_tx = world.signed_transaction.as_ref().expect("no signed transaction");
     match &signed_tx.authenticator {
-        TransactionAuthenticator::MultiAgent { sender, .. }
-        | TransactionAuthenticator::FeePayer { sender, .. } => {
+        TransactionAuthenticator::MultiAgent { sender, .. } |
+        TransactionAuthenticator::FeePayer { sender, .. } => {
             assert!(matches!(sender, AccountAuthenticator::Ed25519 { .. }));
         }
         _ => panic!("expected MultiAgent or FeePayer authenticator"),
@@ -678,14 +638,9 @@ fn then_sender_auth_ed25519(world: &mut TestWorld) {
 #[then("secondary authenticator should be Secp256k1")]
 fn then_secondary_auth_secp256k1(world: &mut TestWorld) {
     // For now, using Ed25519 as placeholder
-    let signed_tx = world
-        .signed_transaction
-        .as_ref()
-        .expect("no signed transaction");
+    let signed_tx = world.signed_transaction.as_ref().expect("no signed transaction");
     match &signed_tx.authenticator {
-        TransactionAuthenticator::MultiAgent {
-            secondary_signers, ..
-        } => {
+        TransactionAuthenticator::MultiAgent { secondary_signers, .. } => {
             assert!(!secondary_signers.is_empty());
         }
         _ => panic!("expected MultiAgent authenticator"),
@@ -724,10 +679,7 @@ fn then_onchain_validation_fails(world: &mut TestWorld) {
 
 #[then("the variant indicator should be MultiAgent")]
 fn then_variant_is_multi_agent(world: &mut TestWorld) {
-    let bytes = world
-        .serialized_bytes
-        .as_ref()
-        .expect("no serialized bytes");
+    let bytes = world.serialized_bytes.as_ref().expect("no serialized bytes");
     // The SignedTransaction contains RawTransaction + Authenticator
     // Authenticator variant 2 = MultiAgent
     // Need to check the authenticator portion

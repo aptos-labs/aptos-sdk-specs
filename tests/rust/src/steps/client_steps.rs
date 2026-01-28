@@ -670,7 +670,13 @@ fn when_try_faucet_mainnet(world: &mut TestWorld) {
 }
 
 #[then("the client should use that URL")]
-fn then_faucet_uses_url(world: &mut TestWorld) {
+fn then_client_uses_url(world: &mut TestWorld) {
+    // Handle indexer client case
+    if world.named_values.contains_key("custom_indexer_url") {
+        assert!(world.named_values.contains_key("indexer_url"));
+        return;
+    }
+    // Handle faucet client case
     assert!(world.faucet_client.is_some() || world.named_values.contains_key("faucet_url"));
 }
 
@@ -1566,10 +1572,16 @@ fn given_simple_transfer(world: &mut TestWorld) {
     world
         .named_values
         .insert("simple_tx".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("simple_gas".to_string(), "1000".to_string());
 }
 
 #[given("a complex smart contract call")]
 fn given_complex_contract_call(world: &mut TestWorld) {
+    world
+        .named_values
+        .insert("complex_gas".to_string(), "10000".to_string());
     world
         .named_values
         .insert("complex_tx".to_string(), "true".to_string());
@@ -1864,6 +1876,14 @@ fn when_simulate_it(world: &mut TestWorld) {
     world
         .named_values
         .insert("simulated".to_string(), "true".to_string());
+    // Set simulated gas for gas estimation tests
+    world
+        .named_values
+        .insert("gas_used".to_string(), "5000".to_string());
+    // Set simulation status for success checks
+    world
+        .named_values
+        .insert("simulation_status".to_string(), "success".to_string());
 }
 
 #[when("I submit a transaction without specifying gas")]

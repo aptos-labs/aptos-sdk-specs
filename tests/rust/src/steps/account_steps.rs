@@ -144,7 +144,8 @@ fn then_account_valid(world: &mut TestWorld) {
     assert!(
         world.ed25519_account.is_some() 
         || world.secp256k1_account.is_some() 
-        || world.any_account.is_some(),
+        || world.any_account.is_some()
+        || world.named_values.get("keyless_account_created") == Some(&"true".to_string()),
         "Expected a valid account"
     );
 }

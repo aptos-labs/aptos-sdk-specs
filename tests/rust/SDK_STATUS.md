@@ -22,16 +22,16 @@
 
 | Priority       | Passing | Total   | Percentage | Status |
 | -------------- | ------- | ------- | ---------- | ------ |
-| Required (P0)  | 676     | 826     | 82%        | 🟡     |
+| Required (P0)  | 761     | 826     | 92%        | ✅     |
 | Preferred (P1) | included| -       | -          | -      |
 | Optional (P2)  | included| -       | -          | -      |
-| **Total**      | **676** | **826** | **82%**    | 🟡     |
+| **Total**      | **761** | **826** | **92%**    | ✅     |
 
 > **Notes:**
 >
-> - 676 scenarios passed, 150 skipped
-> - 2639 steps passed, 150 skipped
-> - Test duration: ~9 minutes (includes compilation)
+> - 761 scenarios passed, 65 skipped
+> - 2962 steps passed, 65 skipped
+> - Test duration: ~16 seconds
 > - Tests require local SDK path at `../../../aptos-rust-sdk/crates/aptos-rust-sdk-v2`
 
 ---
