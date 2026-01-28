@@ -410,7 +410,18 @@ public class MoreCryptoSteps
     [Then(@"the public key should be (\d+) bytes")]
     public void ThenThePublicKeyShouldBeBytes(int bytes)
     {
-        // Validation placeholder
+        if (_world.Ed25519PublicKey != null)
+        {
+            _world.Ed25519PublicKey.ToByteArray().Length.Should().Be(bytes);
+        }
+        else if (_world.Secp256k1PublicKey != null)
+        {
+            _world.Secp256k1PublicKey.ToByteArray().Length.Should().Be(bytes);
+        }
+        else
+        {
+            throw new InvalidOperationException("No public key available");
+        }
     }
 
     [Then("the public key should match expected value")]
