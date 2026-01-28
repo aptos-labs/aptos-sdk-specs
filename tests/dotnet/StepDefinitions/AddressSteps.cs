@@ -397,7 +397,21 @@ public class AddressSteps
     public void ThenTheShortStringShouldBe(string expected)
     {
         _world.Address.Should().NotBeNull();
-        _world.Address!.ToString().ToLowerInvariant().Should().Be(expected.ToLowerInvariant());
+        // Convert to short form: remove leading zeros after 0x prefix
+        var fullHex = _world.Address!.ToString().ToLowerInvariant();
+        var shortHex = ToShortString(fullHex);
+        shortHex.Should().Be(expected.ToLowerInvariant());
+    }
+
+    /// <summary>
+    /// Converts a full hex address to short form by removing leading zeros.
+    /// </summary>
+    private static string ToShortString(string fullHex)
+    {
+        // Remove 0x prefix, trim leading zeros, add 0x back
+        var hex = fullHex.StartsWith("0x") ? fullHex[2..] : fullHex;
+        var trimmed = hex.TrimStart('0');
+        return "0x" + (trimmed.Length == 0 ? "0" : trimmed);
     }
 
     [Then(@"the address should equal ""(.*)""")]

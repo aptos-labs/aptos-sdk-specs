@@ -523,6 +523,16 @@ public class SerializationSteps
         _world.Bytes![0].Should().Be(Convert.ToByte(expected, 16));
     }
 
+    [Then(@"the first byte should be (0x[0-9a-fA-F]+)$")]
+    public void ThenTheFirstByteShouldBePlain(string expected)
+    {
+        _world.Bytes.Should().NotBeNull();
+        _world.Bytes![0].Should().Be(Convert.ToByte(expected, 16));
+    }
+
+    // Note: "the remaining 8 bytes should be the u64 value" is handled by
+    // ThenTheRemainingBytesShouldBeTheU64Value with parameter
+
     [Then(@"the remaining bytes should be UTF-8 encoded ""(.*)""")]
     public void ThenTheRemainingBytesShouldBeUTF8Encoded(string str)
     {
