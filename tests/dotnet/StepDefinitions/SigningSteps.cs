@@ -237,8 +237,22 @@ public class SigningSteps
     [Then(@"the signature should be (\d+) bytes")]
     public void ThenTheSignatureShouldBeBytes(int bytes)
     {
-        _world.Bytes.Should().NotBeNull();
-        _world.Bytes!.Length.Should().Be(bytes);
+        if (_world.Ed25519Signature != null)
+        {
+            _world.Ed25519Signature.ToByteArray().Length.Should().Be(bytes);
+        }
+        else if (_world.Secp256k1Signature != null)
+        {
+            _world.Secp256k1Signature.ToByteArray().Length.Should().Be(bytes);
+        }
+        else if (_world.Bytes != null)
+        {
+            _world.Bytes.Length.Should().Be(bytes);
+        }
+        else
+        {
+            throw new InvalidOperationException("No signature available");
+        }
     }
 
     [Then("it should equal the original RawTransaction")]
