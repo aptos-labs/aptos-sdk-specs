@@ -345,18 +345,7 @@ public class CryptoSteps
         _world.TestVectors["signature2"] = (Ed25519Signature)pk2.Sign(_world.Message!);
     }
 
-    [Then(@"the signature should be 64 bytes")]
-    public void ThenTheSignatureShouldBe64Bytes()
-    {
-        if (_world.Ed25519Signature != null)
-        {
-            _world.Ed25519Signature.ToByteArray().Length.Should().Be(64);
-        }
-        else if (_world.Secp256k1Signature != null)
-        {
-            _world.Secp256k1Signature.ToByteArray().Length.Should().Be(64);
-        }
-    }
+    // Note: "the signature should be NN bytes" step is defined in SigningSteps.cs
 
     [Then(@"the signature should be valid for the message")]
     public void ThenTheSignatureShouldBeValidForTheMessage()

@@ -210,24 +210,8 @@ public class AdditionalSteps
     // When Steps - Auth Key
     // =========================================================================
 
-    [When("I derive the authentication key")]
-    public void WhenIDeriveTheAuthenticationKey()
-    {
-        if (_world.Ed25519PublicKey != null)
-        {
-            // TODO: SDK API may differ - using placeholder
-            _world.TestVectors["authKeyDerived"] = true;
-        }
-    }
-
-    [When("I derive the account address")]
-    public void WhenIDeriveTheAccountAddress()
-    {
-        if (_world.Account != null)
-        {
-            _world.Address = _world.Account.Address;
-        }
-    }
+    // Note: "When I derive the authentication key" step is defined in AuthKeySteps.cs
+    // Note: "When I derive the account address" step is defined in AuthKeySteps.cs
 
     // =========================================================================
     // Then Steps - Auth Key

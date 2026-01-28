@@ -234,13 +234,13 @@ public class AddressSteps
     [When(@"I format it as short string")]
     public void WhenIFormatItAsShortString()
     {
-        _world.Result = _world.Address!.ToString();
+        _world.Result = ToShortString(_world.Address!.ToString().ToLowerInvariant());
     }
 
     [When(@"I format it as a short string")]
     public void WhenIFormatItAsAShortString()
     {
-        _world.HexString = _world.Address!.ToString();
+        _world.HexString = ToShortString(_world.Address!.ToString().ToLowerInvariant());
     }
 
     // =========================================================================

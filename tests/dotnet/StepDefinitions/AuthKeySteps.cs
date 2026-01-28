@@ -569,6 +569,7 @@ public class AuthKeySteps
     }
 
     [Then("it should equal SHA3-256(public_key_bytes || 0x00)")]
+    [Then("it should equal SHA3-256(public_key || 0x00)")]
     public void ThenItShouldEqualSHA3_256PublicKeyBytesOr0x00()
     {
         var pubKeyBytes = _world.Ed25519PublicKey?.ToByteArray();

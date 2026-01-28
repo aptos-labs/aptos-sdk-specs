@@ -529,8 +529,9 @@ public class MoreCryptoSteps
     [Then(@"the address should be (\d+) bytes")]
     public void ThenTheAddressShouldBeBytes(int bytes)
     {
-        _world.Address.Should().NotBeNull();
-        _world.Address!.ToByteArray().Length.Should().Be(bytes);
+        var address = _world.Address ?? _world.Account?.Address;
+        address.Should().NotBeNull("account or address should be set");
+        address!.ToByteArray().Length.Should().Be(bytes);
     }
 
     [Then("each address should match the expected values from test vectors")]
