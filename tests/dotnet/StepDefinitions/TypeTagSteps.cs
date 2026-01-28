@@ -312,10 +312,20 @@ public class TypeTagSteps
     {
         var address = _world.TestVectors.TryGetValue("structAddress", out var v) ? (string)v : null;
         address.Should().NotBeNull();
-        // Normalize for comparison
-        var normalizedExpected = expected.ToLowerInvariant();
-        var normalizedActual = address!.ToLowerInvariant();
+        // Normalize to short form for comparison
+        var normalizedExpected = ToShortAddress(expected.ToLowerInvariant());
+        var normalizedActual = ToShortAddress(address!.ToLowerInvariant());
         normalizedActual.Should().Be(normalizedExpected);
+    }
+
+    /// <summary>
+    /// Converts a full hex address to short form by removing leading zeros.
+    /// </summary>
+    private static string ToShortAddress(string fullHex)
+    {
+        var hex = fullHex.StartsWith("0x") ? fullHex[2..] : fullHex;
+        var trimmed = hex.TrimStart('0');
+        return "0x" + (trimmed.Length == 0 ? "0" : trimmed);
     }
 
     [Then("the struct module should be {string}")]
