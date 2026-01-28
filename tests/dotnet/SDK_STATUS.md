@@ -22,16 +22,17 @@
 
 | Priority       | Passing  | Total   | Percentage | Status |
 | -------------- | -------- | ------- | ---------- | ------ |
-| Required (P0)  | 476      | 808     | 59%        | 🟡     |
+| Required (P0)  | 478      | 808     | 59%        | 🟡     |
 | Preferred (P1) | included | -       | -          | -      |
 | Optional (P2)  | included | -       | -          | -      |
-| **Total**      | **476**  | **808** | **59%**    | 🟡     |
+| **Total**      | **478**  | **808** | **59%**    | 🟡     |
 
 > **Notes:**
 >
-> - 476 passed, 332 failed
+> - 478 passed, 330 failed
 > - Beta SDK - API may change
-> - Total test duration: ~18 seconds
+> - Total test duration: ~4 seconds
+> - Many failures due to undefined step definitions
 
 ---
 

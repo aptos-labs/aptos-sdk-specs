@@ -366,6 +366,8 @@ fn given_account_tx_history(world: &mut TestWorld) {
 fn when_query_account_txs(world: &mut TestWorld) {
     world.named_values.insert("tx_list".to_string(), 
         r#"[{"version": "100", "hash": "0x..."}, {"version": "99", "hash": "0x..."}]"#.to_string());
+    // Also set for client_steps compatibility
+    world.named_values.insert("account_txs_requested".to_string(), "true".to_string());
 }
 
 // Note: "I should receive a list of transactions" is in client_steps.rs

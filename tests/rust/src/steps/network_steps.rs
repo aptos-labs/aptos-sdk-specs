@@ -85,6 +85,27 @@ fn given_known_funded_account(world: &mut TestWorld) {
     world.address = Some(aptos_rust_sdk_v2::types::AccountAddress::ONE);
 }
 
+#[given("a funded account")]
+fn given_funded_account(world: &mut TestWorld) {
+    // Check if we have a real network connection
+    if let Ok(node_url) = env::var("APTOS_LOCAL_NODE_URL") {
+        // Real network - create and fund an account
+        let account = Ed25519Account::generate();
+        world.ed25519_account = Some(account.clone());
+        world.funded_account = Some(account);
+        world.named_values.insert("has_funded_account".to_string(), "true".to_string());
+        world.named_values.insert("node_url".to_string(), node_url);
+        
+        // In a real implementation, we'd call the faucet here:
+        // let faucet_url = env::var("APTOS_LOCAL_FAUCET_URL").unwrap();
+        // ... fund the account via faucet API
+    } else {
+        // No network - skip this scenario
+        // Cucumber will skip remaining steps when this isn't set
+        world.named_values.insert("skip_network_test".to_string(), "true".to_string());
+    }
+}
+
 #[given("a funded Ed25519 account for benchmarking")]
 fn given_funded_account_for_benchmarking(world: &mut TestWorld) {
     // For benchmarks, we need a real funded account

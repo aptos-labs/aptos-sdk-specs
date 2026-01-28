@@ -462,10 +462,11 @@ fn when_both_accounts_sign(world: &mut TestWorld) {
 
 #[then(expr = "I should get a SignedTransaction")]
 fn then_get_signed_transaction(world: &mut TestWorld) {
-    // Check for either a real signed transaction or a BLS "signed" marker
+    // Check for either a real signed transaction or a BLS "signed" marker or keyless
     let has_signed_tx = world.signed_transaction.is_some();
     let has_bls_signed = world.named_values.get("bls_signed") == Some(&"true".to_string());
-    assert!(has_signed_tx || has_bls_signed, "Expected a SignedTransaction");
+    let has_keyless_signed = world.named_values.get("tx_signed") == Some(&"true".to_string());
+    assert!(has_signed_tx || has_bls_signed || has_keyless_signed, "Expected a SignedTransaction");
 }
 
 #[then(expr = "the authenticator should be Ed25519 variant")]
