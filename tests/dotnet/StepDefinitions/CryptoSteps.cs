@@ -201,12 +201,7 @@ public class CryptoSteps
         (length == 32 || length == 64).Should().BeTrue("Ed25519 private key can be 32 or 64 bytes");
     }
 
-    [Then(@"the public key should be 32 bytes")]
-    public void ThenThePublicKeyShouldBe32Bytes()
-    {
-        _world.Ed25519PublicKey.Should().NotBeNull();
-        _world.Ed25519PublicKey!.ToByteArray().Length.Should().Be(32);
-    }
+    // Note: "the public key should be NN bytes" step is defined in MoreCryptoSteps.cs
 
     [Then(@"the key pair should be valid")]
     public void ThenTheKeyPairShouldBeValid()
