@@ -177,11 +177,7 @@ public class AdditionalSteps
         // Validation placeholder
     }
 
-    [Then(@"the result should be ""(.*)::(.*)""")]
-    public void ThenTheResultShouldBeModuleId(string addr, string module)
-    {
-        // Validation placeholder
-    }
+    // Note: "the result should be ..." step is defined in CommonSteps.cs
 
     [Then(@"the type tag should be Struct variant")]
     public void ThenTheTypeTagShouldBeStructVariant()
