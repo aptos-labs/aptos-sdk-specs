@@ -509,6 +509,13 @@ public class SerializationSteps
         _world.Bytes![0].Should().Be(Convert.ToByte(expected, 16));
     }
 
+    [Then(@"the first byte should be (0x[0-9a-fA-F]+) \(outer length\)")]
+    public void ThenTheFirstByteShouldBeOuterLength(string expected)
+    {
+        _world.Bytes.Should().NotBeNull();
+        _world.Bytes![0].Should().Be(Convert.ToByte(expected, 16));
+    }
+
     [Then(@"the first byte should be (0x[0-9a-fA-F]+) \(UTF-8 byte length\)")]
     public void ThenTheFirstByteShouldBeUtf8Length(string expected)
     {
