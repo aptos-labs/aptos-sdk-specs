@@ -109,33 +109,44 @@ public class TypeTagSteps
             else if (normalized == "signer") _world.TestVectors["parsedVariant"] = "Signer";
             else if (normalized.StartsWith("vector<"))
             {
-                _world.TestVectors["parsedVariant"] = "Vector";
+                // Validate vector format
+                if (!normalized.EndsWith(">"))
+                {
+                    throw new ArgumentException($"Unclosed vector bracket: {typeString}");
+                }
                 // Extract inner type
-                var inner = normalized.Substring(7, normalized.Length - 8);
+                var inner = normalized.Substring(7, normalized.Length - 8).Trim();
+                if (string.IsNullOrEmpty(inner))
+                {
+                    throw new ArgumentException($"Empty vector type: {typeString}");
+                }
+                _world.TestVectors["parsedVariant"] = "Vector";
                 _world.TestVectors["innerType"] = inner;
             }
             else if (normalized.Contains("::"))
             {
-                _world.TestVectors["parsedVariant"] = "Struct";
                 // Parse struct: address::module::name
                 var parts = typeString.Split("::");
-                if (parts.Length >= 3)
+                if (parts.Length < 3)
                 {
-                    _world.TestVectors["structAddress"] = parts[0];
-                    _world.TestVectors["structModule"] = parts[1];
-                    // Name might contain type args
-                    var namePart = string.Join("::", parts.Skip(2));
-                    var typeArgStart = namePart.IndexOf('<');
-                    if (typeArgStart > 0)
-                    {
-                        _world.TestVectors["structName"] = namePart.Substring(0, typeArgStart);
-                        var typeArgsStr = namePart.Substring(typeArgStart + 1, namePart.Length - typeArgStart - 2);
-                        _world.TestVectors["typeArgs"] = typeArgsStr;
-                    }
-                    else
-                    {
-                        _world.TestVectors["structName"] = namePart;
-                    }
+                    throw new ArgumentException($"Invalid struct format - must have address::module::name: {typeString}");
+                }
+
+                _world.TestVectors["parsedVariant"] = "Struct";
+                _world.TestVectors["structAddress"] = parts[0];
+                _world.TestVectors["structModule"] = parts[1];
+                // Name might contain type args
+                var namePart = string.Join("::", parts.Skip(2));
+                var typeArgStart = namePart.IndexOf('<');
+                if (typeArgStart > 0)
+                {
+                    _world.TestVectors["structName"] = namePart.Substring(0, typeArgStart);
+                    var typeArgsStr = namePart.Substring(typeArgStart + 1, namePart.Length - typeArgStart - 2);
+                    _world.TestVectors["typeArgs"] = typeArgsStr;
+                }
+                else
+                {
+                    _world.TestVectors["structName"] = namePart;
                 }
             }
             else
