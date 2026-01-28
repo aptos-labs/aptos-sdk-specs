@@ -1,0 +1,217 @@
+{
+  "version": "1.1",
+  "description": "Cryptographic signature and hashing test vectors for Aptos SDKs",
+  "ed25519": {
+    "key_vectors": [
+      {
+        "name": "ed25519_key_from_seed_1",
+        "description": "Ed25519 key derivation from minimal seed",
+        "input": {
+          "seed_hex": "0000000000000000000000000000000000000000000000000000000000000001"
+        },
+        "expected": {
+          "public_key_hex": "0x4cb5abf6ad79fbf5abbccafcc269d85cd2651ed4b885b5869f241aedf0a5ba29",
+          "public_key_length": 32
+        }
+      },
+      {
+        "name": "ed25519_key_from_random_seed",
+        "description": "Ed25519 key from random-looking seed",
+        "input": {
+          "seed_hex": "82001573a003fd3b7fd72ffb0eaf63aac62f12deb629dca72785a66268ec758b"
+        },
+        "expected": {
+          "public_key_hex": "0xea526ba1710343d953461ff68641f1b7df5f23b9042ffa2d2a798d3adb3f3d6c"
+        }
+      }
+    ],
+    "signing_vectors": [
+      {
+        "name": "ed25519_sign_hello",
+        "description": "Sign 'hello' with known key",
+        "input": {
+          "private_key_hex": "0000000000000000000000000000000000000000000000000000000000000001",
+          "message": "hello",
+          "message_hex": "68656c6c6f"
+        },
+        "expected": {
+          "signature_hex": "0xc6cb9b70e0ee28cea926c251aa06b131b51dcdc52b6cc05df6235a56478852a5c3f737b12c3f4fca6e020c714100e712c1c22cb0402e9ef446aa2669831a9106",
+          "signature_length": 64,
+          "note": "Ed25519 signatures are deterministic - same key+message always produces same signature"
+        }
+      },
+      {
+        "name": "ed25519_sign_empty",
+        "description": "Sign empty message",
+        "input": {
+          "private_key_hex": "0000000000000000000000000000000000000000000000000000000000000001",
+          "message": "",
+          "message_hex": ""
+        },
+        "expected": {
+          "signature_hex": "0x7e1b9dc1e332c4238edcd07a68101474b640fdcb1b7b84fb711ac4bfbc85eb85a77480950d69398dcd19f61e1ea74d0f183cfbf34df8f6e7733ebfb9f944f106",
+          "signature_length": 64
+        }
+      },
+      {
+        "name": "ed25519_sign_long_message",
+        "description": "Sign longer message",
+        "input": {
+          "private_key_hex": "0000000000000000000000000000000000000000000000000000000000000001",
+          "message": "The quick brown fox jumps over the lazy dog"
+        },
+        "expected": {
+          "signature_hex": "0xb22f61ee39fca21a76bc01e6fedae2648e727020dcb092cc76af83aa9ea6f0876f843114f100bc1a0fb17be126cdb31438fbd9b0cb1583b6d00fcf31842b3d0c",
+          "signature_length": 64
+        }
+      }
+    ],
+    "verification_vectors": [
+      {
+        "name": "ed25519_verify_valid",
+        "description": "Verify a valid Ed25519 signature",
+        "input": {
+          "public_key_hex": "0x4cb5abf6ad79fbf5abbccafcc269d85cd2651ed4b885b5869f241aedf0a5ba29",
+          "message": "hello",
+          "signature_hex": "0xc6cb9b70e0ee28cea926c251aa06b131b51dcdc52b6cc05df6235a56478852a5c3f737b12c3f4fca6e020c714100e712c1c22cb0402e9ef446aa2669831a9106"
+        },
+        "expected": {
+          "valid": true
+        }
+      }
+    ]
+  },
+  "secp256k1": {
+    "key_vectors": [
+      {
+        "name": "secp256k1_key_from_seed",
+        "description": "Secp256k1 key derivation",
+        "input": {
+          "private_key_hex": "0000000000000000000000000000000000000000000000000000000000000001"
+        },
+        "expected": {
+          "public_key_uncompressed_hex": "0x0479be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798483ada7726a3c4655da4fbfc0e1108a8fd17b448a68554199c47d08ffb10d4b8",
+          "public_key_compressed_length": 33,
+          "public_key_uncompressed_length": 65,
+          "note": "Private key 1 is valid for secp256k1"
+        }
+      }
+    ],
+    "signing_vectors": [
+      {
+        "name": "secp256k1_sign_hello",
+        "description": "Sign 'hello' with secp256k1 (RFC 6979 deterministic)",
+        "input": {
+          "private_key_hex": "0000000000000000000000000000000000000000000000000000000000000001",
+          "message": "hello"
+        },
+        "expected": {
+          "signature_hex": "0x24ea2d66a639d2b8c973094911a1b5d9ccdb6ee48d94487ecda2407edbbf6f4513bed23538ec23b13926dc510694564e20639fc4edea1c6c02558d8d2dd24d8c",
+          "signature_length": 64,
+          "note": "RFC 6979 makes secp256k1 signatures deterministic"
+        }
+      }
+    ]
+  },
+  "authentication_keys": [
+    {
+      "name": "ed25519_auth_key_derivation",
+      "description": "Auth key = SHA3-256(pubkey || 0x00)",
+      "input": {
+        "public_key_hex": "ea526ba1710343d953461ff68641f1b7df5f23b9042ffa2d2a798d3adb3f3d6c",
+        "scheme_identifier": "00"
+      },
+      "expected": {
+        "input_to_hash_hex": "ea526ba1710343d953461ff68641f1b7df5f23b9042ffa2d2a798d3adb3f3d6c00",
+        "auth_key_hex": "9c3a0eeb9f91075eefa4d1f58c02e59e9d34e41320a3ccb357e6a5c7bfa540fa"
+      }
+    },
+    {
+      "name": "secp256k1_auth_key_derivation",
+      "description": "Auth key = SHA3-256(uncompressed_pubkey || 0x01)",
+      "input": {
+        "scheme_identifier": "01"
+      },
+      "expected": {
+        "note": "Uses uncompressed (65-byte) public key"
+      }
+    }
+  ],
+  "hashing": {
+    "sha3_256": [
+      {
+        "name": "sha3_256_empty",
+        "input_hex": "",
+        "expected_hex": "a7ffc6f8bf1ed76651c14756a061d662f580ff4de43b49fa82d80a4b80f8434a"
+      },
+      {
+        "name": "sha3_256_hello",
+        "input": "hello",
+        "input_hex": "68656c6c6f",
+        "expected_hex": "3338be694f50c5f338814986cdf0686453a888b84f424d792af4b9202398f392"
+      },
+      {
+        "name": "sha3_256_hello_world",
+        "input": "hello world",
+        "input_hex": "68656c6c6f20776f726c64",
+        "expected_hex": "644bcc7e564373040999aac89e7622f3ca71fba1d972fd94a31c3bfbf24e3938"
+      },
+      {
+        "name": "sha3_256_single_byte",
+        "input_hex": "00",
+        "expected_hex": "5d53469f20fef4f8eab52b88044ede69c77a6a68a60728609fc4a65ff531e7d0"
+      },
+      {
+        "name": "sha3_256_32_zeros",
+        "input_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+        "expected_hex": "9e6291970cb44dd94008c79bcaf9d86f18b4b49ba5b2a04781db7199ed3b9e4e"
+      }
+    ],
+    "sha2_256": [
+      {
+        "name": "sha256_empty",
+        "input_hex": "",
+        "expected_hex": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "sha256_hello",
+        "input": "hello",
+        "input_hex": "68656c6c6f",
+        "expected_hex": "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824"
+      },
+      {
+        "name": "sha256_hello_world",
+        "input": "hello world",
+        "expected_hex": "b94d27b9934d3e08a52e52d7da7dabfac484efe37a5380ee9088f7ace2efcde9"
+      }
+    ],
+    "domain_separators": [
+      {
+        "name": "raw_transaction_domain",
+        "domain_string": "APTOS::RawTransaction",
+        "domain_bytes_hex": "4150544f533a3a5261775472616e73616374696f6e",
+        "sha3_256_hex": "b5e97db07fa0bd0e5598aa3643a9bc6f6693bddc1a9fec9e674a461eaa00b193"
+      },
+      {
+        "name": "raw_transaction_with_data_domain",
+        "domain_string": "APTOS::RawTransactionWithData",
+        "domain_bytes_hex": "4150544f533a3a5261775472616e73616374696f6e5769746844617461",
+        "sha3_256_hex": "5efa3c4f02f83a0f4b2d69fc95c607cc02825cc4e7be536ef0992df050d9e67c"
+      },
+      {
+        "name": "transaction_domain",
+        "domain_string": "APTOS::Transaction",
+        "domain_bytes_hex": "4150544f533a3a5472616e73616374696f6e",
+        "sha3_256_hex": "fa210a9417ef3e7fa45bfa1d17a8dbd4d883711910a550d265fee189e9266dd4"
+      }
+    ]
+  },
+  "scheme_identifiers": {
+    "ed25519": "0x00",
+    "secp256k1_ecdsa": "0x01",
+    "secp256r1_ecdsa": "0x02",
+    "multi_ed25519": "0x01",
+    "multi_key": "0x03",
+    "keyless": "0x05"
+  }
+}

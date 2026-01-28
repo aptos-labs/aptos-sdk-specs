@@ -1,7 +1,7 @@
 # Rust SDK Test Status
 
-> **Last Updated:** 2026-01-27  
-> **Last Verified:** 2026-01-27 via `make test-required`
+> **Last Updated:** 2026-01-28  
+> **Last Verified:** 2026-01-28 via `cargo test --test specs`
 
 ---
 
@@ -22,16 +22,17 @@
 
 | Priority       | Passing | Total   | Percentage | Status |
 | -------------- | ------- | ------- | ---------- | ------ |
-| Required (P0)  | 591     | 826     | 72%        | 🟡     |
+| Required (P0)  | 676     | 826     | 82%        | 🟡     |
 | Preferred (P1) | included| -       | -          | -      |
 | Optional (P2)  | included| -       | -          | -      |
-| **Total**      | **591** | **826** | **72%**    | 🟡     |
+| **Total**      | **676** | **826** | **82%**    | 🟡     |
 
 > **Notes:**
 >
-> - 591 scenarios passed, 235 skipped
-> - 2330 steps passed, 235 skipped
-> - Tests require local SDK path at `../../../crates/aptos-rust-sdk-v2`
+> - 676 scenarios passed, 150 skipped
+> - 2639 steps passed, 150 skipped
+> - Test duration: ~9 minutes (includes compilation)
+> - Tests require local SDK path at `../../../aptos-rust-sdk/crates/aptos-rust-sdk-v2`
 
 ---
 

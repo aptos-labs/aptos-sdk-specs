@@ -1,7 +1,7 @@
 # Kotlin SDK Test Status
 
-> **Last Updated:** 2026-01-27  
-> **Last Verified:** 2026-01-27 via `./gradlew testRequired`
+> **Last Updated:** 2026-01-28  
+> **Last Verified:** 2026-01-28 via `./gradlew test`
 
 ---
 
@@ -20,18 +20,19 @@
 
 ## 2. Coverage Summary
 
-| Priority       | Passing  | Total   | Percentage | Status |
-| -------------- | -------- | ------- | ---------- | ------ |
-| Required (P0)  | ~176     | 370     | 48%        | 🟡     |
-| Preferred (P1) | 0        | 183     | 0%         | ❌     |
-| Optional (P2)  | 0        | 250     | 0%         | ❌     |
-| **Total**      | **~176** | **826** | **21%**    | 🟡     |
+| Priority       | Passing  | Total    | Percentage | Status |
+| -------------- | -------- | -------- | ---------- | ------ |
+| Required (P0)  | 176      | 1652     | 11%        | ❌     |
+| Preferred (P1) | included | -        | -          | -      |
+| Optional (P2)  | included | -        | -          | -      |
+| **Total**      | **176**  | **1652** | **11%**    | ❌     |
 
 > **Notes:**
 >
-> - 1652 tests completed, 564 failed, 912 skipped
+> - 1652 tests completed, 176 passed, 1476 failed
 > - Community SDK, not official aptos-labs
-> - Many failures due to assertion errors in crypto steps
+> - Many failures due to undefined step definitions
+> - Test duration: ~28 seconds
 
 ---
 

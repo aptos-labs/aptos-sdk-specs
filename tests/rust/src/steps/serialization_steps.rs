@@ -625,3 +625,50 @@ fn parse_int(s: &str) -> u64 {
         s.parse().unwrap_or_else(|_| panic!("Invalid int: {}", s))
     }
 }
+
+// =============================================================================
+// Move Struct Definition
+// =============================================================================
+
+/// A sample Move struct definition for serialization tests
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+struct SampleMoveStruct {
+    sender: [u8; 32],
+    amount: u64,
+}
+
+#[given(expr = "a Move struct definition")]
+fn given_move_struct_definition(world: &mut TestWorld) {
+    // Create a sample Move struct for testing
+    let sample = SampleMoveStruct {
+        sender: [0u8; 32],
+        amount: 1000,
+    };
+    world.named_values.insert("move_struct".to_string(), "defined".to_string());
+    // Serialize it for later use
+    if let Ok(bytes) = aptos_bcs::to_bytes(&sample) {
+        world.serialized_bytes = Some(bytes);
+    }
+}
+
+#[when(expr = "I serialize it")]
+fn when_serialize_it(world: &mut TestWorld) {
+    // Generic serialization - check various sources
+    if world.named_values.get("move_struct") == Some(&"defined".to_string()) {
+        // Already serialized in the given step
+        if world.serialized_bytes.is_none() {
+            let sample = SampleMoveStruct {
+                sender: [0u8; 32],
+                amount: 1000,
+            };
+            world.serialized_bytes = Some(aptos_bcs::to_bytes(&sample).unwrap());
+        }
+    } else if let Some(ref raw_tx) = world.raw_transaction {
+        world.serialized_bytes = Some(aptos_bcs::to_bytes(raw_tx).unwrap());
+    } else if let Some(ref signed_tx) = world.signed_transaction {
+        world.serialized_bytes = Some(aptos_bcs::to_bytes(signed_tx).unwrap());
+    } else if let Some(ref entry_fn) = world.entry_function {
+        world.serialized_bytes = Some(aptos_bcs::to_bytes(entry_fn).unwrap());
+        world.bytes = world.serialized_bytes.clone();
+    }
+}

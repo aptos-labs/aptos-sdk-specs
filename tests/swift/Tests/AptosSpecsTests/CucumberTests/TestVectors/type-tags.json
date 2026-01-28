@@ -1,0 +1,254 @@
+{
+  "version": "1.0",
+  "description": "TypeTag parsing and serialization test vectors for Aptos SDKs",
+  "primitive_types": [
+    {
+      "name": "bool",
+      "string": "bool",
+      "bcs_variant_index": 0
+    },
+    {
+      "name": "u8",
+      "string": "u8",
+      "bcs_variant_index": 1
+    },
+    {
+      "name": "u16",
+      "string": "u16",
+      "bcs_variant_index": 8
+    },
+    {
+      "name": "u32",
+      "string": "u32",
+      "bcs_variant_index": 9
+    },
+    {
+      "name": "u64",
+      "string": "u64",
+      "bcs_variant_index": 2
+    },
+    {
+      "name": "u128",
+      "string": "u128",
+      "bcs_variant_index": 3
+    },
+    {
+      "name": "u256",
+      "string": "u256",
+      "bcs_variant_index": 10
+    },
+    {
+      "name": "address",
+      "string": "address",
+      "bcs_variant_index": 4
+    },
+    {
+      "name": "signer",
+      "string": "signer",
+      "bcs_variant_index": 5
+    }
+  ],
+  "vector_types": [
+    {
+      "name": "vector_u8",
+      "string": "vector<u8>",
+      "bcs_variant_index": 6,
+      "inner_type": "u8"
+    },
+    {
+      "name": "vector_address",
+      "string": "vector<address>",
+      "inner_type": "address"
+    },
+    {
+      "name": "vector_u64",
+      "string": "vector<u64>",
+      "inner_type": "u64"
+    },
+    {
+      "name": "nested_vector",
+      "string": "vector<vector<u8>>",
+      "inner_type": "vector<u8>"
+    },
+    {
+      "name": "vector_of_struct",
+      "string": "vector<0x1::aptos_coin::AptosCoin>",
+      "inner_type": "0x1::aptos_coin::AptosCoin"
+    }
+  ],
+  "struct_types": [
+    {
+      "name": "aptos_coin",
+      "string": "0x1::aptos_coin::AptosCoin",
+      "components": {
+        "address": "0x1",
+        "module": "aptos_coin",
+        "name": "AptosCoin",
+        "type_args": []
+      }
+    },
+    {
+      "name": "coin_store",
+      "string": "0x1::coin::CoinStore<0x1::aptos_coin::AptosCoin>",
+      "components": {
+        "address": "0x1",
+        "module": "coin",
+        "name": "CoinStore",
+        "type_args": ["0x1::aptos_coin::AptosCoin"]
+      }
+    },
+    {
+      "name": "full_address_struct",
+      "string": "0x0000000000000000000000000000000000000000000000000000000000000001::coin::Coin<0x1::aptos_coin::AptosCoin>",
+      "normalized": "0x1::coin::Coin<0x1::aptos_coin::AptosCoin>",
+      "note": "Full address should normalize to short form"
+    },
+    {
+      "name": "multiple_type_args",
+      "string": "0x1::pool::LiquidityPool<0x1::coin_a::CoinA, 0x1::coin_b::CoinB>",
+      "components": {
+        "address": "0x1",
+        "module": "pool",
+        "name": "LiquidityPool",
+        "type_args": ["0x1::coin_a::CoinA", "0x1::coin_b::CoinB"]
+      }
+    },
+    {
+      "name": "nested_generics",
+      "string": "0x1::option::Option<0x1::coin::Coin<0x1::aptos_coin::AptosCoin>>",
+      "components": {
+        "address": "0x1",
+        "module": "option",
+        "name": "Option",
+        "type_args": ["0x1::coin::Coin<0x1::aptos_coin::AptosCoin>"]
+      }
+    },
+    {
+      "name": "long_address_struct",
+      "string": "0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890::my_module::MyStruct",
+      "components": {
+        "address": "0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890",
+        "module": "my_module",
+        "name": "MyStruct",
+        "type_args": []
+      }
+    }
+  ],
+  "module_id_vectors": [
+    {
+      "name": "framework_coin",
+      "string": "0x1::coin",
+      "address": "0x1",
+      "name": "coin"
+    },
+    {
+      "name": "framework_aptos_account",
+      "string": "0x1::aptos_account",
+      "address": "0x1",
+      "name": "aptos_account"
+    },
+    {
+      "name": "full_address_module",
+      "string": "0x0000000000000000000000000000000000000000000000000000000000000001::coin",
+      "normalized": "0x1::coin"
+    }
+  ],
+  "invalid_type_strings": [
+    {
+      "name": "empty",
+      "string": "",
+      "error": "ParseError"
+    },
+    {
+      "name": "unknown_primitive",
+      "string": "int",
+      "error": "ParseError"
+    },
+    {
+      "name": "unclosed_vector",
+      "string": "vector<u8",
+      "error": "ParseError"
+    },
+    {
+      "name": "empty_vector",
+      "string": "vector<>",
+      "error": "ParseError"
+    },
+    {
+      "name": "missing_struct_name",
+      "string": "0x1::module",
+      "error": "ParseError"
+    },
+    {
+      "name": "invalid_address",
+      "string": "invalid::module::Struct",
+      "error": "ParseError"
+    },
+    {
+      "name": "unclosed_generic",
+      "string": "0x1::coin::Coin<0x1::aptos_coin::AptosCoin",
+      "error": "ParseError"
+    },
+    {
+      "name": "double_colon_only",
+      "string": "::",
+      "error": "ParseError"
+    }
+  ],
+  "formatting_vectors": [
+    {
+      "name": "canonical_short_address",
+      "input": {
+        "address": "0x0000000000000000000000000000000000000000000000000000000000000001",
+        "module": "coin",
+        "name": "Coin"
+      },
+      "expected_string": "0x1::coin::Coin"
+    },
+    {
+      "name": "with_type_args",
+      "input": {
+        "address": "0x1",
+        "module": "coin",
+        "name": "CoinStore",
+        "type_args": [
+          {
+            "address": "0x1",
+            "module": "aptos_coin",
+            "name": "AptosCoin"
+          }
+        ]
+      },
+      "expected_string": "0x1::coin::CoinStore<0x1::aptos_coin::AptosCoin>"
+    }
+  ],
+  "bcs_serialization": {
+    "type_tag_variants": {
+      "bool": 0,
+      "u8": 1,
+      "u64": 2,
+      "u128": 3,
+      "address": 4,
+      "signer": 5,
+      "vector": 6,
+      "struct": 7,
+      "u16": 8,
+      "u32": 9,
+      "u256": 10
+    },
+    "examples": [
+      {
+        "name": "bcs_u64",
+        "type_string": "u64",
+        "bcs_hex": "02"
+      },
+      {
+        "name": "bcs_vector_u8",
+        "type_string": "vector<u8>",
+        "bcs_hex": "0601",
+        "note": "06 = vector variant, 01 = u8 variant"
+      }
+    ]
+  }
+}
+

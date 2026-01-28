@@ -1,7 +1,7 @@
 # Swift SDK Test Status
 
-> **Last Updated:** 2026-01-22  
-> **Last Verified:** 2026-01-22 via `swift test`
+> **Last Updated:** 2026-01-28  
+> **Last Verified:** 2026-01-28 via `swift test`
 
 ---
 
@@ -10,7 +10,7 @@
 | Property             | Value                                         |
 | -------------------- | --------------------------------------------- |
 | **Package**          | `aptos-swift-sdk`                             |
-| **Version Tested**   | main (bf2aa06)                                |
+| **Version Tested**   | main                                          |
 | **Publisher**        | ALCOVE-LAB (community)                        |
 | **Repository**       | https://github.com/ALCOVE-LAB/aptos-swift-sdk |
 | **Package Registry** | Swift Package Manager                         |
@@ -20,17 +20,20 @@
 
 ## 2. Coverage Summary
 
-| Priority       | Passing | Total   | Percentage | Status |
-| -------------- | ------- | ------- | ---------- | ------ |
-| Required (P0)  | 286     | 370     | 77%        | 🟡     |
-| Preferred (P1) | 0       | 183     | 0%         | ❌     |
-| Optional (P2)  | 0       | 250     | 0%         | ❌     |
-| **Total**      | **286** | **803** | **36%**    | 🟡     |
+| Priority       | Passing  | Total   | Percentage | Status |
+| -------------- | -------- | ------- | ---------- | ------ |
+| Required (P0)  | 286      | 370     | 77%        | 🟡     |
+| Preferred (P1) | 0        | 183     | 0%         | ❌     |
+| Optional (P2)  | 0        | 250     | 0%         | ❌     |
+| **Total**      | **286**  | **826** | **35%**    | 🟡     |
 
 > **Notes:**
 >
-> - Uses XCTest (CucumberSwift has SPM compatibility issues)
+> - XCTest-based tests: 286 tests passed (0 failures)
+> - Test duration: ~2.6 seconds
 > - Community SDK from ALCOVE-LAB
+> - Requires Xcode (not just Command Line Tools)
+> - CucumberSwift step definitions prepared for future BDD integration
 
 ---
 

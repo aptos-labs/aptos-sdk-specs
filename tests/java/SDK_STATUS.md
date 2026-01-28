@@ -1,7 +1,7 @@
 # Java SDK Test Status
 
-> **Last Updated:** 2026-01-27  
-> **Last Verified:** 2026-01-27 via `mvn test`
+> **Last Updated:** 2026-01-28  
+> **Last Verified:** 2026-01-28 via `mvn test`
 
 ---
 
@@ -22,16 +22,17 @@
 
 | Priority       | Passing | Total   | Percentage | Status |
 | -------------- | ------- | ------- | ---------- | ------ |
-| Required (P0)  | ~22     | 370     | 6%         | ❌     |
-| Preferred (P1) | 0       | 183     | 0%         | ❌     |
-| Optional (P2)  | 0       | 250     | 0%         | ❌     |
-| **Total**      | **~22** | **826** | **~3%**    | ❌     |
+| Required (P0)  | ~22     | 837     | ~3%        | ❌     |
+| Preferred (P1) | included| -       | -          | -      |
+| Optional (P2)  | included| -       | -          | -      |
+| **Total**      | **~22** | **837** | **~3%**    | ❌     |
 
 > **Notes:**
 >
-> - Tests run: 837, Errors: 359, Skipped: 456
+> - Tests run: 837, Errors: 815, Failures: 0
 > - Most step definitions are undefined
 > - Only address parsing and basic Ed25519 implemented
+> - Test duration: ~15 seconds
 
 ---
 

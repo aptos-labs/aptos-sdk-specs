@@ -1,8 +1,9 @@
 # Swift SDK Test Implementation Plan
 
-> **Status:** In Progress - Core + Crypto + Move + Config Complete **Last Updated:** 2026-01-22
-> **Target SDK:** ALCOVE-LAB/aptos-swift-sdk **BDD Framework:** XCTest (CucumberSwift has SPM
-> compatibility issues)
+> **Status:** In Progress - Core + Crypto + Move + Config Complete  
+> **Last Updated:** 2026-01-28  
+> **Target SDK:** ALCOVE-LAB/aptos-swift-sdk  
+> **BDD Framework:** XCTest (CucumberSwift step definitions prepared for future integration)
 
 ## Current Coverage
 

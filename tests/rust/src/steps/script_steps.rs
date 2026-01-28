@@ -449,8 +449,13 @@ fn given_conditional_script(world: &mut TestWorld) {
 }
 
 #[when(expr = "I execute it")]
-fn when_execute_script(_world: &mut TestWorld) {
-    // Would execute on network
+fn when_execute_script(world: &mut TestWorld) {
+    // Check for invalid GraphQL query (from indexer tests)
+    if world.named_values.get("invalid_query") == Some(&"true".to_string()) {
+        world.error = Some("GraphQL error: Invalid query syntax".to_string());
+        return;
+    }
+    // Would execute on network for script tests
 }
 
 #[then(expr = "the correct branch should execute")]

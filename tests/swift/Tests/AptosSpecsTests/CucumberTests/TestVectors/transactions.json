@@ -1,0 +1,308 @@
+{
+  "version": "1.1",
+  "description": "Transaction building and signing test vectors for Aptos SDKs",
+  "chain_ids": {
+    "mainnet": 1,
+    "testnet": 2,
+    "devnet": 3,
+    "local": 4
+  },
+  "raw_transaction_vectors": [
+    {
+      "name": "simple_apt_transfer",
+      "description": "Basic APT transfer transaction",
+      "input": {
+        "sender": "0x9c3a0eeb9f91075eefa4d1f58c02e59e9d34e41320a3ccb357e6a5c7bfa540fa",
+        "sequence_number": 0,
+        "payload": {
+          "type": "entry_function",
+          "module_address": "0x1",
+          "module_name": "aptos_account",
+          "function_name": "transfer",
+          "type_arguments": [],
+          "arguments": [
+            {
+              "type": "address",
+              "value": "0x0000000000000000000000000000000000000000000000000000000000000002"
+            },
+            {
+              "type": "u64",
+              "value": 1000000
+            }
+          ]
+        },
+        "max_gas_amount": 200000,
+        "gas_unit_price": 100,
+        "expiration_timestamp_secs": 1700000000,
+        "chain_id": 2
+      },
+      "expected": {
+        "note": "BCS serialization follows field order: sender, seq, payload, max_gas, gas_price, expiration, chain_id"
+      }
+    },
+    {
+      "name": "coin_transfer_with_type_arg",
+      "description": "Coin transfer using 0x1::coin::transfer with type argument",
+      "input": {
+        "sender": "0x0000000000000000000000000000000000000000000000000000000000000001",
+        "sequence_number": 5,
+        "payload": {
+          "type": "entry_function",
+          "module_address": "0x1",
+          "module_name": "coin",
+          "function_name": "transfer",
+          "type_arguments": ["0x1::aptos_coin::AptosCoin"],
+          "arguments": [
+            {
+              "type": "address",
+              "value": "0x0000000000000000000000000000000000000000000000000000000000000003"
+            },
+            {
+              "type": "u64",
+              "value": 500000
+            }
+          ]
+        },
+        "max_gas_amount": 100000,
+        "gas_unit_price": 150,
+        "expiration_timestamp_secs": 1700001000,
+        "chain_id": 1
+      }
+    }
+  ],
+  "entry_function_vectors": [
+    {
+      "name": "apt_transfer_payload",
+      "description": "Entry function for APT transfer",
+      "input": {
+        "module": {
+          "address": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "name": "aptos_account"
+        },
+        "function": "transfer",
+        "type_arguments": [],
+        "arguments": [
+          {
+            "type": "address",
+            "bcs_hex": "0000000000000000000000000000000000000000000000000000000000000002"
+          },
+          {
+            "type": "u64",
+            "value": 1000000,
+            "bcs_hex": "40420f0000000000"
+          }
+        ]
+      }
+    },
+    {
+      "name": "coin_transfer_payload",
+      "description": "Entry function for generic coin transfer",
+      "input": {
+        "module": {
+          "address": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "name": "coin"
+        },
+        "function": "transfer",
+        "type_arguments": [
+          {
+            "struct": {
+              "address": "0x1",
+              "module": "aptos_coin",
+              "name": "AptosCoin",
+              "type_args": []
+            }
+          }
+        ],
+        "arguments": [
+          {
+            "type": "address"
+          },
+          {
+            "type": "u64"
+          }
+        ]
+      }
+    }
+  ],
+  "bcs_encoding_vectors": {
+    "primitives": [
+      {
+        "name": "bool_true",
+        "type": "bool",
+        "value": true,
+        "bcs_hex": "01"
+      },
+      {
+        "name": "bool_false",
+        "type": "bool",
+        "value": false,
+        "bcs_hex": "00"
+      },
+      {
+        "name": "u8_zero",
+        "type": "u8",
+        "value": 0,
+        "bcs_hex": "00"
+      },
+      {
+        "name": "u8_max",
+        "type": "u8",
+        "value": 255,
+        "bcs_hex": "ff"
+      },
+      {
+        "name": "u16_256",
+        "type": "u16",
+        "value": 256,
+        "bcs_hex": "0001"
+      },
+      {
+        "name": "u32_example",
+        "type": "u32",
+        "value": 305419896,
+        "bcs_hex": "78563412"
+      },
+      {
+        "name": "u64_million",
+        "type": "u64",
+        "value": 1000000,
+        "bcs_hex": "40420f0000000000"
+      },
+      {
+        "name": "u64_max",
+        "type": "u64",
+        "value": "18446744073709551615",
+        "bcs_hex": "ffffffffffffffff"
+      },
+      {
+        "name": "u128_one",
+        "type": "u128",
+        "value": 1,
+        "bcs_hex": "01000000000000000000000000000000"
+      },
+      {
+        "name": "u256_one",
+        "type": "u256",
+        "value": 1,
+        "bcs_hex": "0100000000000000000000000000000000000000000000000000000000000000"
+      }
+    ],
+    "strings_and_bytes": [
+      {
+        "name": "empty_string",
+        "type": "string",
+        "value": "",
+        "bcs_hex": "00"
+      },
+      {
+        "name": "hello_string",
+        "type": "string",
+        "value": "hello",
+        "bcs_hex": "0568656c6c6f"
+      },
+      {
+        "name": "empty_bytes",
+        "type": "vector<u8>",
+        "value": [],
+        "bcs_hex": "00"
+      },
+      {
+        "name": "bytes_123",
+        "type": "vector<u8>",
+        "value": [1, 2, 3],
+        "bcs_hex": "03010203"
+      }
+    ],
+    "uleb128": [
+      {
+        "name": "uleb128_0",
+        "value": 0,
+        "bcs_hex": "00"
+      },
+      {
+        "name": "uleb128_1",
+        "value": 1,
+        "bcs_hex": "01"
+      },
+      {
+        "name": "uleb128_127",
+        "value": 127,
+        "bcs_hex": "7f"
+      },
+      {
+        "name": "uleb128_128",
+        "value": 128,
+        "bcs_hex": "8001"
+      },
+      {
+        "name": "uleb128_255",
+        "value": 255,
+        "bcs_hex": "ff01"
+      },
+      {
+        "name": "uleb128_16383",
+        "value": 16383,
+        "bcs_hex": "ff7f"
+      },
+      {
+        "name": "uleb128_16384",
+        "value": 16384,
+        "bcs_hex": "808001"
+      }
+    ]
+  },
+  "signing_message_vectors": [
+    {
+      "name": "single_signer_signing_message",
+      "description": "Signing message for single-signer transaction",
+      "formula": "SHA3-256('APTOS::RawTransaction') || BCS(RawTransaction)",
+      "domain_prefix_hex": "b5e97db07fa0bd0e5598aa3643a9bc6f6693bddc1a9fec9e674a461eaa00b193",
+      "note": "Domain prefix is 32 bytes, followed by BCS-serialized transaction"
+    },
+    {
+      "name": "multi_agent_signing_message",
+      "description": "Signing message for multi-agent transaction",
+      "formula": "SHA3-256('APTOS::RawTransactionWithData') || BCS(RawTransactionWithData::MultiAgent)",
+      "domain_prefix_hex": "5efa3c4f02f83a0f4b2d69fc95c607cc02825cc4e7be536ef0992df050d9e67c",
+      "note": "RawTransactionWithData includes secondary_signer_addresses"
+    },
+    {
+      "name": "fee_payer_signing_message",
+      "description": "Signing message for fee payer transaction",
+      "formula": "SHA3-256('APTOS::RawTransactionWithData') || BCS(RawTransactionWithData::FeePayer)",
+      "domain_prefix_hex": "5efa3c4f02f83a0f4b2d69fc95c607cc02825cc4e7be536ef0992df050d9e67c",
+      "note": "RawTransactionWithData includes secondary_signer_addresses and fee_payer_address"
+    }
+  ],
+  "transaction_hash_vectors": [
+    {
+      "name": "transaction_hash_formula",
+      "description": "How to compute transaction hash",
+      "formula": "SHA3-256(SHA3-256('APTOS::Transaction') || BCS(SignedTransaction))",
+      "domain_prefix_hex": "fa210a9417ef3e7fa45bfa1d17a8dbd4d883711910a550d265fee189e9266dd4",
+      "note": "Double SHA3-256 with domain separator"
+    }
+  ],
+  "authenticator_variants": {
+    "ed25519": {
+      "variant_index": 0,
+      "structure": ["public_key (32 bytes)", "signature (64 bytes)"]
+    },
+    "multi_ed25519": {
+      "variant_index": 1,
+      "structure": ["public_keys", "threshold", "signatures with bitmap"]
+    },
+    "multi_agent": {
+      "variant_index": 2,
+      "structure": ["sender", "secondary_signer_addresses", "secondary_signers"]
+    },
+    "fee_payer": {
+      "variant_index": 3,
+      "structure": ["sender", "secondary_signer_addresses", "secondary_signers", "fee_payer_address", "fee_payer_signer"]
+    },
+    "single_sender": {
+      "variant_index": 4,
+      "structure": ["AccountAuthenticator"]
+    }
+  }
+}
