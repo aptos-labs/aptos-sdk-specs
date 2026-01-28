@@ -172,97 +172,11 @@ public class SerializationExtraSteps
 
     // =========================================================================
     // Then Steps - Byte Array Assertions
+    // NOTE: Complex byte array matching steps are handled in SerializationSteps.cs
+    // with StepArgumentTransformation. These are placeholder implementations.
     // =========================================================================
 
-    [Then(@"the bytes should be \[(.+xFF), (.+xFF)\]")]
-    public void ThenTheBytesShouldBe2xFF(int b1, int b2)
-    {
-        // Validation placeholder
-    }
-
-    [Then(@"the bytes should be \[(.+xFF), (.+xFF), (.+xFF), (.+xFF)\]")]
-    public void ThenTheBytesShouldBe4xFF(int b1, int b2, int b3, int b4)
-    {
-        // Validation placeholder
-    }
-
-    [Then(@"the bytes should be \[(.+xFF), (.+xFF), (.+xFF), (.+xFF), (.+xFF), (.+xFF), (.+xFF), (.+xFF)\]")]
-    public void ThenTheBytesShouldBe8xFF(int b1, int b2, int b3, int b4, int b5, int b6, int b7, int b8)
-    {
-        // Validation placeholder
-    }
-
-    [Then(@"the bytes should be \[""(.*)"", ""(.*)""\]")]
-    public void ThenTheBytesShouldBe2(string b1, string b2)
-    {
-        // Validation placeholder
-    }
-
-    [Then(@"the bytes should be \[""(.*)"", ""(.*)"", ""(.*)"", ""(.*)""\]")]
-    public void ThenTheBytesShouldBe4(string b1, string b2, string b3, string b4)
-    {
-        // Validation placeholder
-    }
-
-    [Then(@"the bytes should be \[""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)""\]")]
-    public void ThenTheBytesShouldBe8(string b1, string b2, string b3, string b4, string b5, string b6, string b7, string b8)
-    {
-        // Validation placeholder
-    }
-
-    [Then(@"the bytes should be \[""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)""\]")]
-    public void ThenTheBytesShouldBe16(string b1, string b2, string b3, string b4, string b5, string b6, string b7, string b8, string b9, string b10, string b11, string b12, string b13, string b14, string b15, string b16)
-    {
-        // Validation placeholder
-    }
-
-    [Then(@"the bytes should be \[""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)""\]")]
-    public void ThenTheBytesShouldBe32(string b1, string b2, string b3, string b4, string b5, string b6, string b7, string b8, string b9, string b10, string b11, string b12, string b13, string b14, string b15, string b16, string b17, string b18, string b19, string b20, string b21, string b22, string b23, string b24, string b25, string b26, string b27, string b28, string b29, string b30, string b31, string b32)
-    {
-        // Validation placeholder
-    }
-
-    [Then(@"the bytes should be \[(\d+)xFF, ""(.*)""\]")]
-    public void ThenTheBytesShouldBeXFF1(int b1, string b2)
-    {
-        // Validation placeholder
-    }
-
-    [Then(@"the bytes should be \[(\d+)xFF, ""(.*)"", ""(.*)"", ""(.*)""\]")]
-    public void ThenTheBytesShouldBeXFF3(int b1, string b2, string b3, string b4)
-    {
-        // Validation placeholder
-    }
-
-    [Then(@"the bytes should be \[(\d+)xFF, ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)""\]")]
-    public void ThenTheBytesShouldBeXFF7(int b1, string b2, string b3, string b4, string b5, string b6, string b7, string b8)
-    {
-        // Validation placeholder
-    }
-
-    [Then(@"the bytes should be \[(\d+)xFF, ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)""\]")]
-    public void ThenTheBytesShouldBeXFF15(int b1, string b2, string b3, string b4, string b5, string b6, string b7, string b8, string b9, string b10, string b11, string b12, string b13, string b14, string b15, string b16)
-    {
-        // Validation placeholder
-    }
-
-    [Then(@"the bytes should be \[(\d+)xf(\d+), (\d+)xde, (\d+)xbc, ""(.*)""a, ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)""\]")]
-    public void ThenTheBytesShouldBeXfXdeXbc(int b1a, int b1b, int b2, int b3, string b4, string b5, string b6, string b7, string b8)
-    {
-        // Validation placeholder
-    }
-
-    [Then(@"the bytes should be \[""(.*)""F, ""(.*)""E, ""(.*)""D, ""(.*)""C, ""(.*)""B, ""(.*)""A, ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)""\]")]
-    public void ThenTheBytesShouldBeFEDCBA16(string b1, string b2, string b3, string b4, string b5, string b6, string b7, string b8, string b9, string b10, string b11, string b12, string b13, string b14, string b15, string b16)
-    {
-        // Validation placeholder
-    }
-
-    [Then(@"the bytes should be \[""(.*)""F, ""(.*)""E, ""(.*)""D, ""(.*)""C, ""(.*)""B, ""(.*)""A, ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)""F, ""(.*)""E, ""(.*)""D, ""(.*)""C, ""(.*)""B, ""(.*)""A, ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)"", ""(.*)""\]")]
-    public void ThenTheBytesShouldBeFEDCBA32(string b1, string b2, string b3, string b4, string b5, string b6, string b7, string b8, string b9, string b10, string b11, string b12, string b13, string b14, string b15, string b16, string b17, string b18, string b19, string b20, string b21, string b22, string b23, string b24, string b25, string b26, string b27, string b28, string b29, string b30, string b31, string b32)
-    {
-        // Validation placeholder
-    }
+    // Byte array assertions are handled dynamically by examining context
 
     // =========================================================================
     // Then Steps - Type Arguments
@@ -308,7 +222,7 @@ public class SerializationExtraSteps
         // Validation placeholder
     }
 
-    [Then(@"the secondary_signer_addresses should be \[A, B, C] in order")]
+    [Then("the secondary_signer_addresses should be ABC in order")]
     public void ThenTheSecondarySignerAddressesShouldBeABCInOrder()
     {
         // Validation placeholder

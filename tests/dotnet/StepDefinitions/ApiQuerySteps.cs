@@ -134,7 +134,7 @@ public class ApiQuerySteps
     // When Steps - Account Checks
     // =========================================================================
 
-    [When("I check can_sign()")]
+    [When(@"I check can_sign\(\)")]
     public void WhenICheckCanSign()
     {
         _world.TestVectors["canSignChecked"] = true;
@@ -146,19 +146,19 @@ public class ApiQuerySteps
         _world.TestVectors["gasInfoChecked"] = true;
     }
 
-    [When("I check is_expired()")]
+    [When(@"I check is_expired\(\)")]
     public void WhenICheckIsExpired()
     {
         _world.TestVectors["isExpiredChecked"] = true;
     }
 
-    [When("I check is_valid()")]
+    [When(@"I check is_valid\(\)")]
     public void WhenICheckIsValid()
     {
         _world.TestVectors["isValidChecked"] = true;
     }
 
-    [When("I call address()")]
+    [When(@"I call address\(\)")]
     public void WhenICallAddress()
     {
         if (_world.Account != null)

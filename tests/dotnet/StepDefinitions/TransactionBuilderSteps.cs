@@ -29,7 +29,7 @@ public class TransactionBuilderSteps
         _world.TestVectors["allFieldsBuilt"] = true;
     }
 
-    [When("I call build()")]
+    [When(@"I call build\(\)")]
     public void WhenICallBuild()
     {
         _world.TestVectors["buildCalled"] = true;
@@ -229,43 +229,43 @@ public class TransactionBuilderSteps
         // Validation placeholder
     }
 
-    [Then("sender() should return the sender address")]
+    [Then(@"sender\(\) should return the sender address")]
     public void ThenSenderShouldReturnTheSenderAddress()
     {
         // Validation placeholder
     }
 
-    [Then("sequence_number() should return the sequence number")]
+    [Then(@"sequence_number\(\) should return the sequence number")]
     public void ThenSequenceNumberShouldReturnTheSequenceNumber()
     {
         // Validation placeholder
     }
 
-    [Then("expiration_timestamp_secs() should return the expiration")]
+    [Then(@"expiration_timestamp_secs\(\) should return the expiration")]
     public void ThenExpirationTimestampSecsShouldReturnTheExpiration()
     {
         // Validation placeholder
     }
 
-    [Then("gas_unit_price() should return the gas price")]
+    [Then(@"gas_unit_price\(\) should return the gas price")]
     public void ThenGasUnitPriceShouldReturnTheGasPrice()
     {
         // Validation placeholder
     }
 
-    [Then("max_gas_amount() should return the max gas")]
+    [Then(@"max_gas_amount\(\) should return the max gas")]
     public void ThenMaxGasAmountShouldReturnTheMaxGas()
     {
         // Validation placeholder
     }
 
-    [Then("chain_id() should return the chain ID")]
+    [Then(@"chain_id\(\) should return the chain ID")]
     public void ThenChainIdShouldReturnTheChainId()
     {
         // Validation placeholder
     }
 
-    [Then("payload() should return the payload")]
+    [Then(@"payload\(\) should return the payload")]
     public void ThenPayloadShouldReturnThePayload()
     {
         // Validation placeholder
