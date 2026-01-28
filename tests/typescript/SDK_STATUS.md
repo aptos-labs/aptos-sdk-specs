@@ -1,7 +1,7 @@
 # TypeScript SDK Test Status
 
-> **Last Updated:** 2026-01-22  
-> **Last Verified:** 2026-01-22 via `bun run cucumber-js`
+> **Last Updated:** 2026-01-28  
+> **Last Verified:** 2026-01-28 via `bun run cucumber-js`
 
 ---
 
@@ -22,15 +22,17 @@
 
 | Priority       | Passing  | Total   | Percentage | Status |
 | -------------- | -------- | ------- | ---------- | ------ |
-| Required (P0)  | 320      | 370     | 86%        | 🟡     |
+| Required (P0)  | ~320     | 370     | ~86%       | 🟡     |
 | Preferred (P1) | ~100     | 183     | ~55%       | 🟡     |
-| Optional (P2)  | 131      | 252     | 52%        | 🟡     |
-| **Total**      | **~551** | **805** | **~68%**   | 🟡     |
+| Optional (P2)  | ~131     | 252     | ~52%       | 🟡     |
+| **Total**      | **~551** | **826** | **~67%**   | 🟡     |
 
 > **Notes:**
 >
-> - 46 required scenarios require network access (`@network` tag)
-> - Some keyless and script tests use mocks and are excluded from passing counts
+> - core-types: 121/121 passed (100%)
+> - cryptography: 79 passed, 13 failed, 35 undefined
+> - Full test runs timeout on network-dependent tests (~5+ minutes)
+> - Some keyless and script tests use mocks
 
 ---
 

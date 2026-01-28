@@ -1,6 +1,6 @@
 # Feature Coverage Matrix
 
-> **Last Updated:** 2026-01-27
+> **Last Updated:** 2026-01-28
 >
 > This file tracks implementation status of behavioral specifications across all SDK
 > implementations. Check boxes indicate that step definitions exist and tests pass for that
@@ -29,19 +29,19 @@
 
 ## Coverage Summary
 
-> **Last verified:** 2026-01-27. Numbers reflect actual test runs.
+> **Last verified:** 2026-01-28. Numbers reflect actual test runs.
 
 | SDK        | Required (P0) | Preferred (P1) | Optional (P2) | Total     | Notes                                    |
 | ---------- | ------------- | -------------- | ------------- | --------- | ---------------------------------------- |
 | TypeScript | ~320/370 (86%)| ~100/183 (55%) | ~131/252 (52%)| ~551/826  | Reference implementation                 |
-| Go         | 304/370 (82%) | ~25/183 (14%)  | ~0/250 (0%)   | 329/826   | 23 pending (awaiting SDK features)       |
-| Rust       | 591/826 (72%) | included       | included      | 591/826   | 235 skipped (SDK path issues)            |
-| .NET       | 170/370 (46%) | ~10/183 (5%)   | ~5/250 (2%)   | ~185/826  | 200 failures in required tests           |
-| Python     | ~197/370 (53%)| ~20/183 (11%)  | ~10/250 (4%)  | ~227/826  | Many undefined steps                     |
-| Java       | ~22/370 (6%)  | 0/183 (0%)     | 0/250 (0%)    | ~22/826   | 359 errors, most steps undefined         |
-| Kotlin     | ~176/370 (48%)| 0/183 (0%)     | 0/250 (0%)    | ~176/826  | 564 failures, community SDK              |
+| Go         | 332/826 (40%) | included       | included      | 332/826   | 146 failed, 348 pending                  |
+| Rust       | 676/826 (82%) | included       | included      | 676/826   | 150 skipped                              |
+| .NET       | 476/808 (59%) | included       | included      | 476/808   | 332 failures                             |
+| Python     | 272/826 (33%) | included       | included      | 272/826   | 36 failed, 60 errors, 458 skipped        |
+| Java       | ~22/837 (3%)  | included       | included      | ~22/837   | 815 errors, most steps undefined         |
+| Kotlin     | 176/1652 (11%)| included       | included      | 176/1652  | 1476 failures, community SDK             |
 | C++        | 0/370 (0%)    | 0/183 (0%)     | 0/250 (0%)    | 0/826     | Segfault in test runner                  |
-| Swift      | 0/370 (0%)    | 0/183 (0%)     | 0/250 (0%)    | 0/826     | Test harness not implemented             |
+| Swift      | 286/370 (77%) | 0/183 (0%)     | 0/250 (0%)    | 286/826   | XCTest-based tests passing               |
 
 ---
 

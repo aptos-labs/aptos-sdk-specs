@@ -1,7 +1,7 @@
 # Go SDK Test Status
 
-> **Last Updated:** 2026-01-27  
-> **Last Verified:** 2026-01-27 via `make test-required`
+> **Last Updated:** 2026-01-28  
+> **Last Verified:** 2026-01-28 via `go test -v ./...`
 
 ---
 
@@ -22,16 +22,16 @@
 
 | Priority       | Passing | Total   | Percentage | Status |
 | -------------- | ------- | ------- | ---------- | ------ |
-| Required (P0)  | 304     | 370     | 82%        | 🟡     |
-| Preferred (P1) | ~25     | 183     | 14%        | ❌     |
-| Optional (P2)  | ~0      | 250     | 0%         | ❌     |
-| **Total**      | **329** | **826** | **40%**    | 🟡     |
+| Required (P0)  | 332     | 826     | 40%        | 🟡     |
+| Preferred (P1) | included| -       | -          | -      |
+| Optional (P2)  | included| -       | -          | -      |
+| **Total**      | **332** | **826** | **40%**    | 🟡     |
 
 > **Notes:**
 >
-> - 66 failures in required tests: mostly network-dependent or SDK limitations
-> - 23 scenarios marked as pending (awaiting SDK implementation)
-> - 422 scenarios undefined (step definitions not yet written)
+> - 332 scenarios passed, 146 failed, 348 pending
+> - 1932 steps passed, 146 failed, 348 pending, 753 skipped
+> - Test duration: ~32 seconds
 
 ---
 

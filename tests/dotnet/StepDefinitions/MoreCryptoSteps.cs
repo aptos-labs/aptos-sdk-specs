@@ -203,6 +203,23 @@ public class MoreCryptoSteps
     [When(@"I compute HMAC-SHA(\d+) with key ""(.*)"" \+ passphrase")]
     public void WhenIComputeHMACSHA(int bits, string key)
     {
+        var mnemonic = _world.TestVectors.TryGetValue("mnemonic", out var m) ? (string)m : "";
+        var passphrase = _world.TestVectors.TryGetValue("passphrase", out var p) ? (string)p : "";
+
+        var keyBytes = System.Text.Encoding.UTF8.GetBytes(key + passphrase);
+        var data = System.Text.Encoding.UTF8.GetBytes(mnemonic);
+
+        if (bits == 512)
+        {
+            using var hmac = new System.Security.Cryptography.HMACSHA512(keyBytes);
+            _world.Bytes = hmac.ComputeHash(data);
+        }
+        else
+        {
+            using var hmac = new System.Security.Cryptography.HMACSHA256(keyBytes);
+            _world.Bytes = hmac.ComputeHash(data);
+        }
+        _world.Result = _world.Bytes;
         _world.TestVectors["hmacComputed"] = true;
     }
 

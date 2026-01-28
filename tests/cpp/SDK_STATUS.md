@@ -1,7 +1,7 @@
 # C++ SDK Test Status
 
-> **Last Updated:** 2026-01-22  
-> **Last Verified:** 2026-01-22 via `make test`
+> **Last Updated:** 2026-01-28  
+> **Last Verified:** 2026-01-28 - Tests cannot run (segfault)
 
 ---
 
@@ -22,13 +22,14 @@
 
 | Priority       | Passing | Total   | Percentage | Status |
 | -------------- | ------- | ------- | ---------- | ------ |
-| Required (P0)  | 49      | 370     | 13%        | ❌     |
+| Required (P0)  | 0       | 370     | 0%         | ❌     |
 | Preferred (P1) | 0       | 183     | 0%         | ❌     |
 | Optional (P2)  | 0       | 250     | 0%         | ❌     |
-| **Total**      | **49**  | **803** | **6%**     | ❌     |
+| **Total**      | **0**   | **826** | **0%**     | ❌     |
 
 > **Notes:**
 >
+> - **BLOCKED:** Test runner segfaults on execution
 > - SDK integration in progress
 > - Many step definitions are scaffolds
 > - Community SDK from VAR-META-Tech

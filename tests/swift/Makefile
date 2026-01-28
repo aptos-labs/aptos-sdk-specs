@@ -1,7 +1,7 @@
 # Aptos Swift SDK Behavioral Specification Tests
 # Uses CucumberSwift with XCTest
 
-.PHONY: all build test test-required test-preferred test-optional \
+.PHONY: all build test test-xctest test-cucumber test-required test-preferred test-optional \
         test-core-types test-cryptography test-accounts test-transactions \
         test-api-clients test-advanced clean setup link-features format lint help
 
@@ -23,19 +23,37 @@ link-features:
 			cp -r "$$dir" Tests/AptosSpecsTests/Features/; \
 		fi \
 	done
+	@mkdir -p Tests/AptosSpecsTests/CucumberTests/Features
+	@rm -rf Tests/AptosSpecsTests/CucumberTests/Features/*
+	@for dir in ../../features/*/; do \
+		if [ -d "$$dir" ]; then \
+			cp -r "$$dir" Tests/AptosSpecsTests/CucumberTests/Features/; \
+		fi \
+	done
 	@echo "Linking test vectors..."
 	@mkdir -p Tests/AptosSpecsTests/TestVectors
 	@rm -rf Tests/AptosSpecsTests/TestVectors/*
 	@cp ../../test-vectors/*.json Tests/AptosSpecsTests/TestVectors/ 2>/dev/null || true
+	@mkdir -p Tests/AptosSpecsTests/CucumberTests/TestVectors
+	@rm -rf Tests/AptosSpecsTests/CucumberTests/TestVectors/*
+	@cp ../../test-vectors/*.json Tests/AptosSpecsTests/CucumberTests/TestVectors/ 2>/dev/null || true
 	@echo "Done."
 
 # Build the package
 build:
 	swift build
 
-# Run all tests
+# Run all tests (both XCTest and Cucumber)
 test: link-features
 	swift test
+
+# Run only XCTest-based tests
+test-xctest: link-features
+	swift test --filter AptosSpecsTests
+
+# Run only Cucumber BDD tests
+test-cucumber: link-features
+	swift test --filter CucumberTests
 
 # Run tests by priority
 test-required: link-features
@@ -76,6 +94,8 @@ clean:
 	rm -rf .build
 	rm -rf Tests/AptosSpecsTests/Features
 	rm -rf Tests/AptosSpecsTests/TestVectors
+	rm -rf Tests/AptosSpecsTests/CucumberTests/Features
+	rm -rf Tests/AptosSpecsTests/CucumberTests/TestVectors
 
 # Format code (requires swift-format: brew install swift-format)
 format:
@@ -94,7 +114,9 @@ help:
 	@echo "Targets:"
 	@echo "  setup            - Resolve dependencies and link feature files"
 	@echo "  build            - Build the package"
-	@echo "  test             - Run all tests"
+	@echo "  test             - Run all tests (XCTest + Cucumber)"
+	@echo "  test-xctest      - Run only XCTest-based tests"
+	@echo "  test-cucumber    - Run only Cucumber BDD tests"
 	@echo "  test-required    - Run only @required (P0) tests"
 	@echo "  test-preferred   - Run only @preferred (P1) tests"
 	@echo "  test-optional    - Run only @optional (P2) tests"

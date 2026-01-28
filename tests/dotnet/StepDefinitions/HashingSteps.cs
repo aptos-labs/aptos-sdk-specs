@@ -61,6 +61,20 @@ public class HashingSteps
         _world.TestVectors["input2"] = Encoding.UTF8.GetBytes(str2);
     }
 
+    [Given(@"bytes \[""(.*)"", ""(.*)"", ""(.*)""\]")]
+    public void GivenBytesThreeStrings(string str1, string str2, string str3)
+    {
+        _world.TestVectors["input1"] = Encoding.UTF8.GetBytes(str1);
+        _world.TestVectors["input2"] = Encoding.UTF8.GetBytes(str2);
+        _world.TestVectors["input3"] = Encoding.UTF8.GetBytes(str3);
+        // Also set concatenated bytes for direct use
+        var combined = new List<byte>();
+        combined.AddRange(Encoding.UTF8.GetBytes(str1));
+        combined.AddRange(Encoding.UTF8.GetBytes(str2));
+        combined.AddRange(Encoding.UTF8.GetBytes(str3));
+        _world.Bytes = combined.ToArray();
+    }
+
     [Given(@"the domain string ""(.*)""")]
     public void GivenTheDomainString(string domain)
     {
@@ -111,6 +125,14 @@ public class HashingSteps
         _world.Bytes = new byte[32];
         _world.Bytes[0] = 0xab;
         _world.Bytes[1] = 0xcd;
+    }
+
+    [Given(@"a mnemonic entropy and passphrase")]
+    public void GivenAMnemonicEntropyAndPassphrase()
+    {
+        // Test mnemonic and passphrase for BIP-39 seed derivation
+        _world.TestVectors["mnemonic"] = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
+        _world.TestVectors["passphrase"] = "TREZOR";
     }
 
     [Given(@"two HashValues from the same bytes")]
@@ -321,6 +343,8 @@ public class HashingSteps
         _world.Result = _world.HashResult;
         _world.TestVectors["expectedHash"] = _world.HashResult;
     }
+
+    // Note: "When I compute HMAC-SHA..." step is defined in MoreCryptoSteps.cs
 
     // =========================================================================
     // Then Steps - Hash Validation

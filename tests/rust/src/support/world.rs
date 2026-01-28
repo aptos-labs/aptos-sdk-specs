@@ -493,6 +493,34 @@ pub struct TestWorld {
     pub benchmark_results: HashMap<String, f64>,
 
     // ==========================================================================
+    // Error Handling State
+    // ==========================================================================
+    /// Error category (network, api, validation, transaction, etc.).
+    pub error_category: Option<String>,
+
+    /// HTTP status code from API errors.
+    pub http_status_code: Option<u16>,
+
+    /// VM status code from transaction errors.
+    pub vm_status_code: Option<u64>,
+
+    /// VM status string for parsing.
+    pub vm_status_string: Option<String>,
+
+    // ==========================================================================
+    // Retry Configuration State
+    // ==========================================================================
+    /// Retry configuration for testing retry logic.
+    #[world(skip)]
+    pub retry_config: Option<aptos_rust_sdk_v2::retry::RetryConfig>,
+
+    // ==========================================================================
+    // Code Generation State
+    // ==========================================================================
+    /// Generated code output.
+    pub codegen_output: Option<String>,
+
+    // ==========================================================================
     // Generic State
     // ==========================================================================
     /// Generic bytes storage.

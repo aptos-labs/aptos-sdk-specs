@@ -1,0 +1,206 @@
+{
+  "version": "1.1",
+  "description": "Address parsing and formatting test vectors for Aptos SDKs",
+  "note": "All expected values are deterministic and must match across all SDK implementations",
+  "parsing_vectors": [
+    {
+      "name": "framework_address_short",
+      "description": "Parse the framework address 0x1",
+      "input": "0x1",
+      "expected": {
+        "full_hex": "0x0000000000000000000000000000000000000000000000000000000000000001",
+        "short_string": "0x1",
+        "bytes_hex": "0000000000000000000000000000000000000000000000000000000000000001",
+        "last_byte": 1
+      }
+    },
+    {
+      "name": "framework_address_no_prefix",
+      "description": "Parse without 0x prefix",
+      "input": "1",
+      "expected": {
+        "full_hex": "0x0000000000000000000000000000000000000000000000000000000000000001",
+        "short_string": "0x1"
+      }
+    },
+    {
+      "name": "framework_address_full",
+      "description": "Parse full 64-character address",
+      "input": "0x0000000000000000000000000000000000000000000000000000000000000001",
+      "expected": {
+        "full_hex": "0x0000000000000000000000000000000000000000000000000000000000000001",
+        "short_string": "0x1"
+      }
+    },
+    {
+      "name": "two_digit_address",
+      "description": "Parse two-digit hex address",
+      "input": "0x10",
+      "expected": {
+        "full_hex": "0x0000000000000000000000000000000000000000000000000000000000000010",
+        "short_string": "0x10",
+        "bytes_hex": "0000000000000000000000000000000000000000000000000000000000000010",
+        "last_byte": 16
+      }
+    },
+    {
+      "name": "max_single_byte",
+      "description": "Parse address with max single byte value",
+      "input": "0xff",
+      "expected": {
+        "full_hex": "0x00000000000000000000000000000000000000000000000000000000000000ff",
+        "short_string": "0xff",
+        "last_byte": 255
+      }
+    },
+    {
+      "name": "two_byte_address",
+      "description": "Parse two-byte address",
+      "input": "0x100",
+      "expected": {
+        "full_hex": "0x0000000000000000000000000000000000000000000000000000000000000100",
+        "short_string": "0x100",
+        "last_two_bytes_hex": "0100"
+      }
+    },
+    {
+      "name": "uppercase_hex",
+      "description": "Parse uppercase hex (case insensitive)",
+      "input": "0xABCDEF",
+      "expected": {
+        "full_hex": "0x0000000000000000000000000000000000000000000000000000000000abcdef",
+        "short_string": "0xabcdef"
+      }
+    },
+    {
+      "name": "mixed_case_hex",
+      "description": "Parse mixed case hex",
+      "input": "0xAbCdEf123456",
+      "expected": {
+        "full_hex": "0x0000000000000000000000000000000000000000000000000000abcdef123456",
+        "short_string": "0xabcdef123456"
+      }
+    },
+    {
+      "name": "leading_nonzero_byte",
+      "description": "Address with leading non-zero byte (no shortening possible)",
+      "input": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+      "expected": {
+        "full_hex": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+        "short_string": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+      }
+    },
+    {
+      "name": "realistic_account_address",
+      "description": "A realistic derived account address",
+      "input": "0x9c3a0eeb9f91075eefa4d1f58c02e59e9d34e41320a3ccb357e6a5c7bfa540fa",
+      "expected": {
+        "full_hex": "0x9c3a0eeb9f91075eefa4d1f58c02e59e9d34e41320a3ccb357e6a5c7bfa540fa",
+        "short_string": "0x9c3a0eeb9f91075eefa4d1f58c02e59e9d34e41320a3ccb357e6a5c7bfa540fa"
+      }
+    }
+  ],
+  "constants": [
+    {
+      "name": "ZERO",
+      "description": "The all-zeros address",
+      "expected": {
+        "full_hex": "0x0000000000000000000000000000000000000000000000000000000000000000",
+        "short_string": "0x0",
+        "bytes": [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+      }
+    },
+    {
+      "name": "ONE",
+      "description": "The framework address (0x1)",
+      "expected": {
+        "full_hex": "0x0000000000000000000000000000000000000000000000000000000000000001",
+        "short_string": "0x1",
+        "bytes": [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1]
+      }
+    },
+    {
+      "name": "THREE",
+      "description": "The token address (0x3)",
+      "expected": {
+        "full_hex": "0x0000000000000000000000000000000000000000000000000000000000000003",
+        "short_string": "0x3",
+        "bytes": [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3]
+      }
+    },
+    {
+      "name": "FOUR",
+      "description": "The objects address (0x4)",
+      "expected": {
+        "full_hex": "0x0000000000000000000000000000000000000000000000000000000000000004",
+        "short_string": "0x4",
+        "bytes": [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4]
+      }
+    }
+  ],
+  "invalid_inputs": [
+    {
+      "name": "empty_string",
+      "input": "",
+      "expected_error": "InvalidAddress",
+      "reason": "Empty string cannot be parsed"
+    },
+    {
+      "name": "only_prefix",
+      "input": "0x",
+      "expected_error": "InvalidAddress",
+      "reason": "No hex digits after prefix"
+    },
+    {
+      "name": "invalid_hex_g",
+      "input": "0xGHIJKL",
+      "expected_error": "InvalidHex",
+      "reason": "G-Z are not valid hex characters"
+    },
+    {
+      "name": "too_long",
+      "input": "0x00000000000000000000000000000000000000000000000000000000000000001",
+      "expected_error": "InvalidLength",
+      "reason": "65 hex chars exceeds 32 bytes"
+    },
+    {
+      "name": "spaces_in_address",
+      "input": "0x1 2 3",
+      "expected_error": "InvalidHex",
+      "reason": "Spaces are not valid hex"
+    },
+    {
+      "name": "special_characters",
+      "input": "0x123!@#",
+      "expected_error": "InvalidHex",
+      "reason": "Special characters are not valid hex"
+    },
+    {
+      "name": "odd_length_not_allowed",
+      "input": "0x123",
+      "expected_error": null,
+      "reason": "Odd length hex is typically allowed (padded with leading zero)",
+      "note": "This may vary by implementation - some require even length"
+    }
+  ],
+  "bcs_serialization": [
+    {
+      "name": "bcs_address_one",
+      "description": "BCS serialization of address 0x1",
+      "input": "0x1",
+      "expected": {
+        "bcs_hex": "0000000000000000000000000000000000000000000000000000000000000001",
+        "length": 32
+      }
+    },
+    {
+      "name": "bcs_address_max",
+      "description": "BCS serialization of max address",
+      "input": "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+      "expected": {
+        "bcs_hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+        "length": 32
+      }
+    }
+  ]
+}

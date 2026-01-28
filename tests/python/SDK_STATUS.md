@@ -1,7 +1,7 @@
 # Python SDK Test Status
 
-> **Last Updated:** 2026-01-22  
-> **Last Verified:** 2026-01-22 via `behave`
+> **Last Updated:** 2026-01-28  
+> **Last Verified:** 2026-01-28 via `behave --tags=@required`
 
 ---
 
@@ -10,7 +10,7 @@
 | Property             | Value                                          |
 | -------------------- | ---------------------------------------------- |
 | **Package**          | `aptos-sdk`                                    |
-| **Version Tested**   | 0.11.0                                         |
+| **Version Tested**   | >=0.11.0                                       |
 | **Publisher**        | aptos-labs                                     |
 | **Repository**       | https://github.com/aptos-labs/aptos-python-sdk |
 | **Package Registry** | PyPI                                           |
@@ -22,16 +22,16 @@
 
 | Priority       | Passing  | Total   | Percentage | Status |
 | -------------- | -------- | ------- | ---------- | ------ |
-| Required (P0)  | 197      | 370     | 53%        | 🟡     |
-| Preferred (P1) | ~20      | 183     | ~11%       | ❌     |
-| Optional (P2)  | ~10      | 250     | ~4%        | ❌     |
-| **Total**      | **~227** | **803** | **~28%**   | 🟡     |
+| Required (P0)  | 272      | 826     | 33%        | 🟡     |
+| Preferred (P1) | included | -       | -          | -      |
+| Optional (P2)  | included | -       | -          | -      |
+| **Total**      | **272**  | **826** | **33%**    | 🟡     |
 
 > **Notes:**
 >
-> - 332 undefined step definitions
-> - 148 scenarios with errors (missing steps)
-> - 438 scenarios skipped (network tests or features not available)
+> - 272 passed, 36 failed, 60 errors, 458 skipped
+> - 1240 steps passed, 36 failed, 60 errors, 1843 skipped
+> - Test duration: ~1.2 seconds
 
 ---
 

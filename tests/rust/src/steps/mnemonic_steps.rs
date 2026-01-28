@@ -464,6 +464,15 @@ fn then_addresses_different(world: &mut TestWorld) {
         return;
     }
     
+    // Handle keyless/generic address comparison via named_values
+    if let (Some(addr1), Some(addr2)) = (
+        world.named_values.get("address_1"),
+        world.named_values.get("address_2")
+    ) {
+        assert_ne!(addr1, addr2, "Addresses should be different");
+        return;
+    }
+    
     // Handle multi-sig test where accounts were "created" conceptually
     if world.named_values.contains_key("accounts_created") {
         // For multi-sig key order test, we'd verify that different key orders 

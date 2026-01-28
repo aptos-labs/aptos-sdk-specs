@@ -132,8 +132,15 @@ public class TypeTagSteps
                     throw new ArgumentException($"Invalid struct format - must have address::module::name: {typeString}");
                 }
 
+                // Validate address starts with 0x
+                var address = parts[0].Trim();
+                if (!address.StartsWith("0x") && !address.StartsWith("0X"))
+                {
+                    throw new ArgumentException($"Invalid address format - must start with 0x: {address}");
+                }
+
                 _world.TestVectors["parsedVariant"] = "Struct";
-                _world.TestVectors["structAddress"] = parts[0];
+                _world.TestVectors["structAddress"] = address;
                 _world.TestVectors["structModule"] = parts[1];
                 // Name might contain type args
                 var namePart = string.Join("::", parts.Skip(2));
