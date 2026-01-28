@@ -39,11 +39,7 @@ public class AdditionalSteps
         _world.TestVectors["innerVectorLength"] = 2;
     }
 
-    [Given(@"bytes \[(0x[0-9a-fA-F]+)\]")]
-    public void GivenSingleByte(string hex)
-    {
-        _world.Bytes = new[] { Convert.ToByte(hex, 16) };
-    }
+    // Note: "bytes [0xNN]" step is defined in SerializationSteps.cs as GivenBytesArray
 
     [Given("an Option containing a u64 value 1000000")]
     public void GivenAnOptionContainingU64()
@@ -80,11 +76,7 @@ public class AdditionalSteps
         _world.Ed25519PublicKey.Should().NotBeNull();
     }
 
-    [Then("each inner vector should be length-prefixed")]
-    public void ThenEachInnerVectorShouldBeLengthPrefixed()
-    {
-        // Validation for nested vector serialization
-    }
+    // Note: "each inner vector should be length-prefixed" step is defined in SerializationSteps.cs
 
     // =========================================================================
     // Then Steps - Serialization
