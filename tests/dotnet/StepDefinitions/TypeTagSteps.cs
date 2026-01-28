@@ -58,6 +58,16 @@ public class TypeTagSteps
         _world.Result = "0x1::coin::CoinStore<0x1::aptos_coin::AptosCoin>";
     }
 
+    [Given(@"address ""(.*)"", module ""(.*)"", name ""(.*)"", and type args \[AptosCoin\]")]
+    public void GivenAddressModuleNameAndTypeArgsAptosCoin(string address, string module, string name)
+    {
+        _world.TestVectors["structAddress"] = address;
+        _world.TestVectors["structModule"] = module;
+        _world.TestVectors["structName"] = name;
+        _world.TestVectors["typeArgs"] = new[] { "0x1::aptos_coin::AptosCoin" };
+        _world.Result = $"{address}::{module}::{name}<0x1::aptos_coin::AptosCoin>";
+    }
+
     // =========================================================================
     // Given Steps - Module ID
     // =========================================================================
@@ -199,7 +209,15 @@ public class TypeTagSteps
             var module = (string)_world.TestVectors["structModule"];
             var name = (string)_world.TestVectors["structName"];
 
-            _world.Result = $"{address}::{module}::{name}";
+            var result = $"{address}::{module}::{name}";
+
+            // Add type args if present
+            if (_world.TestVectors.TryGetValue("typeArgs", out var typeArgsObj) && typeArgsObj is string[] typeArgs && typeArgs.Length > 0)
+            {
+                result += "<" + string.Join(", ", typeArgs) + ">";
+            }
+
+            _world.Result = result;
             _world.ClearError();
         }
         catch (Exception ex)
