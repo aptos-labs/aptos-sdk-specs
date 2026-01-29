@@ -478,8 +478,32 @@ fn when_try_create_multi_agent_auth(world: &mut TestWorld) {
 #[when("I submit the transaction")]
 fn when_submit_transaction(world: &mut TestWorld) {
     // For validation tests - if addresses don't match signatures, it fails
-    if world.ed25519_account2.is_some() {
-        world.set_error("signature address mismatch");
+    if world.ed25519_account2.is_some() && world.aptos_client.is_none() {
+        world.error = Some("signature address mismatch".to_string());
+        return;
+    }
+    
+    // If we have a real client and signed transaction, try to submit
+    if let (Some(ref aptos), Some(ref signed_tx)) = (&world.aptos_client, &world.signed_transaction) {
+        let rt = tokio::runtime::Runtime::new().expect("Failed to create runtime");
+        let result = rt.block_on(async {
+            aptos.fullnode().submit_transaction(signed_tx).await
+        });
+        
+        match result {
+            Ok(response) => {
+                let pending = response.into_inner();
+                world.named_values.insert("tx_hash".to_string(), pending.hash.to_string());
+                world.named_values.insert("tx_submitted".to_string(), "true".to_string());
+            }
+            Err(e) => {
+                world.error = Some(format!("Failed to submit transaction: {}", e));
+            }
+        }
+    } else if world.signed_transaction.is_some() {
+        // Mock mode - no client, but we have a signed transaction
+        world.named_values.insert("tx_hash".to_string(), "0xmock_tx_hash".to_string());
+        world.named_values.insert("tx_submitted".to_string(), "true".to_string());
     }
 }
 
