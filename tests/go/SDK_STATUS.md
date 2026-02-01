@@ -20,12 +20,12 @@
 
 ## 2. Coverage Summary
 
-| Priority       | Passing | Total   | Percentage | Status |
-| -------------- | ------- | ------- | ---------- | ------ |
-| Required (P0)  | 332     | 826     | 40%        | 🟡     |
-| Preferred (P1) | included| -       | -          | -      |
-| Optional (P2)  | included| -       | -          | -      |
-| **Total**      | **332** | **826** | **40%**    | 🟡     |
+| Priority       | Passing  | Total   | Percentage | Status |
+| -------------- | -------- | ------- | ---------- | ------ |
+| Required (P0)  | 332      | 826     | 40%        | 🟡     |
+| Preferred (P1) | included | -       | -          | -      |
+| Optional (P2)  | included | -       | -          | -      |
+| **Total**      | **332**  | **826** | **40%**    | 🟡     |
 
 > **Notes:**
 >
@@ -61,24 +61,24 @@
 
 ### 🟡 Partially Available
 
-| Feature         | Notes                                  |
-| --------------- | -------------------------------------- |
-| multi-signature | MultiEd25519 partial support           |
-| retry           | Retry logic (SDK handles internally)   |
-| simulation      | Transaction simulation via API         |
+| Feature         | Notes                                |
+| --------------- | ------------------------------------ |
+| multi-signature | MultiEd25519 partial support         |
+| retry           | Retry logic (SDK handles internally) |
+| simulation      | Transaction simulation via API       |
 
 ### ➖ Not Available in SDK (Tests marked as Pending)
 
-| Feature             | Reason                              | Status  |
-| ------------------- | ----------------------------------- | ------- |
-| secp256r1           | P-256/WebAuthn not implemented      | Pending |
-| bls12381            | BLS cryptography not implemented    | Pending |
-| keyless             | JWT/OIDC authentication not in SDK  | Pending |
-| ephemeral-keys      | Keyless dependency                  | Pending |
-| pepper-service      | Keyless infrastructure              | Pending |
-| mnemonic-derivation | HD derivation not exposed           | Pending |
-| AIP-80 key format   | Not implemented                     | Pending |
-| codegen             | Code generation not available       | Pending |
+| Feature             | Reason                             | Status  |
+| ------------------- | ---------------------------------- | ------- |
+| secp256r1           | P-256/WebAuthn not implemented     | Pending |
+| bls12381            | BLS cryptography not implemented   | Pending |
+| keyless             | JWT/OIDC authentication not in SDK | Pending |
+| ephemeral-keys      | Keyless dependency                 | Pending |
+| pepper-service      | Keyless infrastructure             | Pending |
+| mnemonic-derivation | HD derivation not exposed          | Pending |
+| AIP-80 key format   | Not implemented                    | Pending |
+| codegen             | Code generation not available      | Pending |
 
 ---
 
@@ -270,11 +270,11 @@ To add or update tests for this SDK:
 
 ### Pending Features (Awaiting SDK Implementation)
 
-| Feature      | Scenarios | Reason                           |
-| ------------ | --------- | -------------------------------- |
-| BLS12-381    | ~8        | Cryptography not in SDK          |
-| Secp256r1    | ~5        | P-256 curve not in SDK           |
-| Keyless      | ~10       | JWT/OIDC infrastructure required |
+| Feature   | Scenarios | Reason                           |
+| --------- | --------- | -------------------------------- |
+| BLS12-381 | ~8        | Cryptography not in SDK          |
+| Secp256r1 | ~5        | P-256 curve not in SDK           |
+| Keyless   | ~10       | JWT/OIDC infrastructure required |
 
 ### Failure Details
 
