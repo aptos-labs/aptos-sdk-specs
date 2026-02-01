@@ -1,6 +1,7 @@
 # Swift SDK Behavioral Specification Tests
 
-This directory contains BDD test implementations for the Aptos Swift SDK using CucumberSwift and XCTest.
+This directory contains BDD test implementations for the Aptos Swift SDK using CucumberSwift and
+XCTest.
 
 ## Prerequisites
 
@@ -136,9 +137,12 @@ XCTest requires full Xcode installation, not just Command Line Tools. To run tes
 
 ### CucumberSwift Bug
 
-CucumberSwift has a bug in `CucumberTest.swift` line 84 - it uses `addTeardownBlock` without the required `@available(macOS 10.15, iOS 13.0, tvOS 13.0, *)` annotation. This causes compilation errors even when targeting macOS 10.15 or newer.
+CucumberSwift has a bug in `CucumberTest.swift` line 84 - it uses `addTeardownBlock` without the
+required `@available(macOS 10.15, iOS 13.0, tvOS 13.0, *)` annotation. This causes compilation
+errors even when targeting macOS 10.15 or newer.
 
-The step definitions in `CucumberTests/Steps/` are ready and waiting for this upstream fix. Once fixed, uncomment the CucumberSwift dependency and CucumberTests target in `Package.swift`.
+The step definitions in `CucumberTests/Steps/` are ready and waiting for this upstream fix. Once
+fixed, uncomment the CucumberSwift dependency and CucumberTests target in `Package.swift`.
 
 **Workaround:** Use the XCTest-based tests in `AptosSpecsTests.swift` (286 tests, all passing).
 

@@ -20,12 +20,12 @@
 
 ## 2. Coverage Summary
 
-| Priority       | Passing | Total   | Percentage | Status |
-| -------------- | ------- | ------- | ---------- | ------ |
-| Required (P0)  | ~22     | 837     | ~3%        | ❌     |
-| Preferred (P1) | included| -       | -          | -      |
-| Optional (P2)  | included| -       | -          | -      |
-| **Total**      | **~22** | **837** | **~3%**    | ❌     |
+| Priority       | Passing  | Total   | Percentage | Status |
+| -------------- | -------- | ------- | ---------- | ------ |
+| Required (P0)  | ~22      | 837     | ~3%        | ❌     |
+| Preferred (P1) | included | -       | -          | -      |
+| Optional (P2)  | included | -       | -          | -      |
+| **Total**      | **~22**  | **837** | **~3%**    | ❌     |
 
 > **Notes:**
 >

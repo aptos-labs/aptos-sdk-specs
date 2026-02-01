@@ -20,12 +20,12 @@
 
 ## 2. Coverage Summary
 
-| Priority       | Passing | Total   | Percentage | Status |
-| -------------- | ------- | ------- | ---------- | ------ |
-| Required (P0)  | 761     | 826     | 92%        | ✅     |
-| Preferred (P1) | included| -       | -          | -      |
-| Optional (P2)  | included| -       | -          | -      |
-| **Total**      | **761** | **826** | **92%**    | ✅     |
+| Priority       | Passing  | Total   | Percentage | Status |
+| -------------- | -------- | ------- | ---------- | ------ |
+| Required (P0)  | 761      | 826     | 92%        | ✅     |
+| Preferred (P1) | included | -       | -          | -      |
+| Optional (P2)  | included | -       | -          | -      |
+| **Total**      | **761**  | **826** | **92%**    | ✅     |
 
 > **Notes:**
 >
@@ -170,23 +170,24 @@ fn given_hex_string(world: &mut TestWorld, hex_string: String) {
 
 ### By Feature Category
 
-| Feature            | Status | Notes                           |
-| ------------------ | ------ | ------------------------------- |
-| address            | ✅     | Full address support            |
-| serialization      | ✅     | BCS serialization working       |
-| type-tags          | ✅     | TypeTag parsing working         |
-| ed25519            | ✅     | Ed25519 cryptography working    |
-| hashing            | ✅     | SHA3-256 support                |
-| authentication-key | ✅     | Auth key derivation             |
-| entry-function     | ✅     | Entry function building         |
-| raw-transaction    | ✅     | Transaction building            |
-| signing            | ✅     | Transaction signing             |
-| fullnode-api       | 🟡     | Some tests skipped              |
-| error-handling     | 🟡     | Some scenarios skipped          |
+| Feature            | Status | Notes                        |
+| ------------------ | ------ | ---------------------------- |
+| address            | ✅     | Full address support         |
+| serialization      | ✅     | BCS serialization working    |
+| type-tags          | ✅     | TypeTag parsing working      |
+| ed25519            | ✅     | Ed25519 cryptography working |
+| hashing            | ✅     | SHA3-256 support             |
+| authentication-key | ✅     | Auth key derivation          |
+| entry-function     | ✅     | Entry function building      |
+| raw-transaction    | ✅     | Transaction building         |
+| signing            | ✅     | Transaction signing          |
+| fullnode-api       | 🟡     | Some tests skipped           |
+| error-handling     | 🟡     | Some scenarios skipped       |
 
 ### Skipped Tests
 
 235 scenarios are skipped, primarily:
+
 - Network-dependent tests requiring live testnet/devnet
 - Advanced features not yet implemented in SDK
 - Error handling edge cases
