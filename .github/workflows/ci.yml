@@ -312,38 +312,38 @@ jobs:
         continue-on-error: true
 
   # ==========================================================================
-  # C++ Tests
+  # C++ Tests (disabled - SDK not yet available)
   # ==========================================================================
-  cpp:
-    name: C++ Tests
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: tests/cpp
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y cmake ninja-build
-
-      - name: Setup Conan
-        run: |
-          pip install conan
-          conan profile detect
-
-      - name: Install Conan dependencies
-        run: conan install . --output-folder=build --build=missing
-
-      - name: Build
-        run: |
-          cmake -S . -B build -DCMAKE_TOOLCHAIN_FILE=build/conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Release -G Ninja
-          cmake --build build
-
-      - name: Run tests
-        run: ./build/aptos_spec_tests ../../features --tags "@required"
-        continue-on-error: true
+  # cpp:
+  #   name: C++ Tests
+  #   runs-on: ubuntu-latest
+  #   defaults:
+  #     run:
+  #       working-directory: tests/cpp
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #
+  #     - name: Install dependencies
+  #       run: |
+  #         sudo apt-get update
+  #         sudo apt-get install -y cmake ninja-build
+  #
+  #     - name: Setup Conan
+  #       run: |
+  #         pip install conan
+  #         conan profile detect
+  #
+  #     - name: Install Conan dependencies
+  #       run: conan install . --output-folder=build --build=missing
+  #
+  #     - name: Build
+  #       run: |
+  #         cmake -S . -B build -DCMAKE_TOOLCHAIN_FILE=build/conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Release -G Ninja
+  #         cmake --build build
+  #
+  #     - name: Run tests
+  #       run: ./build/aptos_spec_tests ../../features --tags "@required"
+  #       continue-on-error: true
 
   # ==========================================================================
   # Summary Job
@@ -361,7 +361,7 @@ jobs:
       - java
       - kotlin
       - swift
-      - cpp
+      # - cpp  # disabled
     if: always()
     steps:
       - name: Check required jobs
@@ -382,7 +382,7 @@ jobs:
           echo "Java: ${{ needs.java.result }}"
           echo "Kotlin: ${{ needs.kotlin.result }}"
           echo "Swift: ${{ needs.swift.result }}"
-          echo "C++: ${{ needs.cpp.result }}"
+          # echo "C++: ${{ needs.cpp.result }}"  # disabled
           echo ""
           echo "Note: SDK tests depend on external services (testnet, faucet)"
           echo "and may fail due to network issues, not code problems."
