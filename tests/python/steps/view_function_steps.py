@@ -188,62 +188,79 @@ def step_try_call_at_version(context):
 
 @then("I should receive true")
 def step_receive_true(context):
-    pass
+    assert context.world.error is None
+    assert context.world.result is True
 
 
 @then("I should receive return values")
 def step_receive_return_values(context):
-    pass
+    assert context.world.error is None
+    assert context.world.result is not None
 
 
 @then("I should receive all return values in order")
 def step_receive_all_return_values(context):
-    pass
+    assert context.world.error is None
+    assert isinstance(context.world.result, (list, tuple)) or context.world.result is not None
 
 
 @then("I should receive the balance amount")
 def step_receive_balance(context):
-    pass
+    assert context.world.error is None
+    assert context.world.result is not None
+    assert isinstance(context.world.result, int) or isinstance(context.world.result, str)
 
 
 @then("I should receive the balance as u64")
 def step_receive_balance_u64(context):
-    pass
+    assert context.world.error is None
+    assert isinstance(context.world.result, int)
+    assert context.world.result >= 0
 
 
 @then("I should receive current blockchain timestamp")
 def step_receive_timestamp(context):
-    pass
+    assert context.world.error is None
+    assert context.world.result is not None
+    assert isinstance(context.world.result, int)
 
 
 @then("I should receive the total supply")
 def step_receive_total_supply(context):
-    pass
+    assert context.world.error is None
+    assert context.world.result is not None
+    assert isinstance(context.world.result, int) or isinstance(context.world.result, str)
 
 
 @then("I should be able to parse the result as boolean")
 def step_parse_as_bool(context):
-    pass
+    assert context.world.error is None
+    assert isinstance(context.world.result, bool)
 
 
 @then("I should be able to parse the result as string")
 def step_parse_as_string(context):
-    pass
+    assert context.world.error is None
+    assert isinstance(context.world.result, str)
 
 
 @then("I should be able to parse the result as u64")
 def step_parse_as_u64(context):
-    pass
+    assert context.world.error is None
+    assert isinstance(context.world.result, int)
+    assert context.world.result >= 0
 
 
 @then("I should be able to parse the result as byte array")
 def step_parse_as_bytes(context):
-    pass
+    assert context.world.error is None
+    assert isinstance(context.world.result, (bytes, bytearray, list))
 
 
 @then("I should be able to access struct fields")
 def step_access_struct_fields(context):
-    pass
+    assert context.world.error is None
+    assert isinstance(context.world.result, dict) or hasattr(context.world.result, "__dict__")
 
 
 @then("I should handle type parameters correctly")

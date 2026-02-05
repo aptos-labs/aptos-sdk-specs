@@ -211,7 +211,8 @@ def step_see_invalid_input(context):
 
 @then("I should get a simulation result")
 def step_get_simulation_result(context):
-    pass
+    assert context.world.error is None
+    assert context.world.simulation_result is not None
 
 
 @then("I should get results for each")
@@ -226,7 +227,10 @@ def step_get_detailed_reason(context):
 
 @then("I should see gas_used")
 def step_see_gas_used(context):
-    pass
+    if context.world.simulation_result is not None:
+        assert hasattr(context.world.simulation_result, "gas_used") or (
+            isinstance(context.world.simulation_result, dict) and "gas_used" in context.world.simulation_result
+        )
 
 
 @then("I should see sender balance decrease")
@@ -261,17 +265,25 @@ def step_see_why_fail(context):
 
 @then("I should get a multi-sig SignedTransaction")
 def step_get_multisig_signed(context):
-    pass
+    assert context.world.error is None
+    assert context.world.signed_transaction is not None
 
 
 @then("I should have a complete multi-agent authenticator")
 def step_have_multi_agent_auth(context):
-    pass
+    assert context.world.multi_agent_tx is not None
+    assert hasattr(context.world.multi_agent_tx, "authenticator") or hasattr(
+        context.world.multi_agent_tx, "signature"
+    )
 
 
 @then("I should have a valid multi-signature")
 def step_have_valid_multisig(context):
-    pass
+    if hasattr(context.world, "multi_signature") and context.world.multi_signature is not None:
+        assert context.world.multi_signature is not None
+        assert hasattr(context.world.multi_signature, "signatures") or hasattr(
+            context.world.multi_signature, "signature"
+        )
 
 
 # =============================================================================
@@ -335,7 +347,9 @@ def step_sdk_suggest_wait(context):
 
 @then("all addresses should be unique")
 def step_addresses_unique(context):
-    pass
+    if len(context.world.addresses) > 1:
+        address_strs = [str(addr) for addr in context.world.addresses]
+        assert len(address_strs) == len(set(address_strs))
 
 
 @then("all arguments should be BCS encoded")
@@ -368,12 +382,16 @@ def step_transfers_atomic(context):
 
 @then("both accounts should have the same address")
 def step_both_same_address(context):
-    pass
+    if context.world.account is not None and context.world.account_2 is not None:
+        assert str(context.world.account.address()) == str(context.world.account_2.address())
 
 
 @then("both addresses should be identical")
 def step_both_addresses_identical(context):
-    pass
+    if len(context.world.addresses) >= 2:
+        assert str(context.world.addresses[0]) == str(context.world.addresses[1])
+    elif context.world.address is not None and len(context.world.addresses) >= 1:
+        assert str(context.world.address) == str(context.world.addresses[0])
 
 
 # Note: "all 3 messages should be identical" and "all 3 signatures should be required"

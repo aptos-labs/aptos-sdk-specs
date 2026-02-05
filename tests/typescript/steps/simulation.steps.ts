@@ -919,5 +919,9 @@ Then("gas_used should be similar \\(may differ slightly\\)", function (this: Apt
 
 Then("events should match", function (this: AptosWorld) {
   // Events should match between simulation and execution
-  expect(true).to.be.true;
+  const sim = this.testVectors.get("simulationResult") as any;
+  const exec = this.testVectors.get("executionResult") as any;
+  if (sim?.events && exec?.events) {
+    expect(sim.events.length).to.equal(exec.events.length);
+  }
 });

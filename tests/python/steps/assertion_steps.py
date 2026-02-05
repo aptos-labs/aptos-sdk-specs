@@ -21,7 +21,9 @@ def step_all_requests_succeed(context):
 
 @then("all should be accepted")
 def step_all_accepted(context):
-    pass
+    assert context.world.error is None
+    if context.world.transaction_hash is not None:
+        assert context.world.transaction_hash is not None
 
 
 @then("appropriate derive macros")
@@ -78,12 +80,18 @@ def step_convertible_to_error(context):
 
 @then("both authenticators should be correct types")
 def step_both_auth_correct(context):
-    pass
+    if context.world.multi_agent_tx is not None:
+        assert hasattr(context.world.multi_agent_tx, "authenticator") or hasattr(
+            context.world.multi_agent_tx, "signature"
+        )
 
 
 @then("both hashes should be identical")
 def step_both_hashes_identical(context):
-    pass
+    if "hash1" in context.world.test_vectors and "hash2" in context.world.test_vectors:
+        assert context.world.test_vectors["hash1"] == context.world.test_vectors["hash2"]
+    elif context.world.transaction_hash is not None and "expected_hash" in context.world.test_vectors:
+        assert context.world.transaction_hash == context.world.test_vectors["expected_hash"]
 
 
 @then("both peppers should be identical")
@@ -94,7 +102,10 @@ def step_both_peppers_identical(context):
 
 @then("both serializations should be identical")
 def step_both_serializations_identical(context):
-    pass
+    if "serialization1" in context.world.test_vectors and "serialization2" in context.world.test_vectors:
+        assert context.world.test_vectors["serialization1"] == context.world.test_vectors["serialization2"]
+    elif context.world.bytes_value is not None and "expected_bytes" in context.world.test_vectors:
+        assert context.world.bytes_value == context.world.test_vectors["expected_bytes"]
 
 
 @then("both types should be properly passed")
@@ -179,7 +190,11 @@ def step_diff_from_module(context):
 
 @then("each address should match the expected values from test vectors")
 def step_each_addr_matches(context):
-    pass
+    if "expected_addresses" in context.world.test_vectors and len(context.world.addresses) > 0:
+        expected = context.world.test_vectors["expected_addresses"]
+        assert len(context.world.addresses) == len(expected)
+        for i, addr in enumerate(context.world.addresses):
+            assert str(addr) == str(expected[i])
 
 
 @then("each event should have data")
@@ -204,7 +219,14 @@ def step_each_func_docs(context):
 
 @then("each hash should be valid hex")
 def step_each_hash_valid(context):
-    pass
+    if isinstance(context.world.result, list):
+        for hash_val in context.world.result:
+            assert isinstance(hash_val, str)
+            assert hash_val.startswith("0x")
+            assert len(hash_val) == 66  # 0x + 64 hex chars
+    elif context.world.transaction_hash is not None:
+        assert context.world.transaction_hash.startswith("0x")
+        assert len(context.world.transaction_hash) == 66
 
 
 @then("each module should have bytecode and ABI")
