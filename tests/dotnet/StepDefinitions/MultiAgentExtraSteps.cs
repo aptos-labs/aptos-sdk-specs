@@ -391,7 +391,7 @@ public class MultiAgentExtraSteps
         }
         else if (_world.SignedTransaction != null)
         {
-            _world.SignedTransaction.Transaction.Payload.Should().NotBeNull();
+            _world.SignedTransaction.Should().NotBeNull();
         }
     }
 
