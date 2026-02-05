@@ -1,8 +1,8 @@
 //! Step definitions for account management feature tests.
 
 use crate::support::TestWorld;
-use aptos_rust_sdk_v2::account::{Account, AnyAccount, AuthenticationKey, Ed25519Account, Secp256k1Account};
-use aptos_rust_sdk_v2::crypto::{ED25519_SCHEME, SINGLE_KEY_SCHEME, Verifier};
+use aptos_sdk::account::{Account, AnyAccount, AuthenticationKey, Ed25519Account, Secp256k1Account};
+use aptos_sdk::crypto::{ED25519_SCHEME, SINGLE_KEY_SCHEME, Verifier};
 use cucumber::{given, then, when};
 
 // =============================================================================
@@ -221,7 +221,7 @@ fn then_auth_key_from_public_key(world: &mut TestWorld) {
     if let Some(ref account) = world.ed25519_account {
         let auth_key = account.authentication_key();
         // The authentication key should be SHA3-256(public_key || scheme_byte)
-        use aptos_rust_sdk_v2::crypto::derive_authentication_key;
+        use aptos_sdk::crypto::derive_authentication_key;
         let derived = derive_authentication_key(&account.public_key_bytes(), ED25519_SCHEME);
         assert_eq!(auth_key.to_bytes(), derived);
     }
@@ -691,14 +691,14 @@ fn then_it_should_be_string(world: &mut TestWorld, expected: String) {
 fn then_signature_verify_against_public_key(world: &mut TestWorld) {
     if let (Some(ref account), Some(ref sig_bytes), Some(ref message)) = 
         (world.ed25519_account.as_ref(), world.bytes.as_ref(), world.message.as_ref()) {
-        use aptos_rust_sdk_v2::crypto::Ed25519Signature;
+        use aptos_sdk::crypto::Ed25519Signature;
         let sig = Ed25519Signature::from_bytes(sig_bytes).expect("Invalid signature bytes");
-        let pk = aptos_rust_sdk_v2::crypto::Ed25519PublicKey::from_bytes(&account.public_key_bytes())
+        let pk = aptos_sdk::crypto::Ed25519PublicKey::from_bytes(&account.public_key_bytes())
             .expect("Invalid public key");
         assert!(pk.verify(message, &sig).is_ok(), "Signature verification failed");
     } else if let (Some(ref account), Some(ref sig_bytes), Some(ref message)) =
         (world.secp256k1_account.as_ref(), world.bytes.as_ref(), world.message.as_ref()) {
-        use aptos_rust_sdk_v2::crypto::Secp256k1Signature;
+        use aptos_sdk::crypto::Secp256k1Signature;
         let sig = Secp256k1Signature::from_bytes(sig_bytes).expect("Invalid signature bytes");
         assert!(account.public_key().verify(message, &sig).is_ok(), "Signature verification failed");
     }

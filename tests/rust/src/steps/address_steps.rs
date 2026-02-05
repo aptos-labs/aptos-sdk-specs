@@ -1,7 +1,7 @@
 //! Step definitions for address feature tests.
 
 use crate::support::TestWorld;
-use aptos_rust_sdk_v2::types::AccountAddress;
+use aptos_sdk::types::AccountAddress;
 use cucumber::{given, then, when};
 
 // =============================================================================

@@ -1,8 +1,8 @@
 //! Step definitions for EntryFunction payload tests
 
 use crate::support::world::TestWorld;
-use aptos_rust_sdk_v2::transaction::{EntryFunction, TransactionPayload};
-use aptos_rust_sdk_v2::types::{AccountAddress, Identifier, MoveModuleId, TypeTag};
+use aptos_sdk::transaction::{EntryFunction, TransactionPayload};
+use aptos_sdk::types::{AccountAddress, Identifier, MoveModuleId, TypeTag};
 use cucumber::{given, then, when};
 
 // =============================================================================

@@ -1,8 +1,8 @@
 //! Step definitions for hashing feature tests
 
 use crate::support::world::TestWorld;
-use aptos_rust_sdk_v2::crypto::sha3_256;
-use aptos_rust_sdk_v2::types::HashValue;
+use aptos_sdk::crypto::sha3_256;
+use aptos_sdk::types::HashValue;
 use cucumber::{given, then, when};
 
 // =============================================================================

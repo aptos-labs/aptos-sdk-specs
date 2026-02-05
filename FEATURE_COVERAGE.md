@@ -17,7 +17,7 @@
 | ---------- | -------------------- | ---------- | ------------- | ------------------------------------------------------------------ | ----------------------------------------- |
 | TypeScript | `@aptos-labs/ts-sdk` | ^5.2.0     | aptos-labs    | [aptos-ts-sdk](https://github.com/aptos-labs/aptos-ts-sdk)         | [Details](tests/typescript/SDK_STATUS.md) |
 | Go         | `aptos-go-sdk`       | v1.11.0    | aptos-labs    | [aptos-go-sdk](https://github.com/aptos-labs/aptos-go-sdk)         | [Details](tests/go/SDK_STATUS.md)         |
-| Rust       | `aptos-rust-sdk-v2`  | dev        | aptos-labs    | [aptos-rust-sdk](https://github.com/aptos-labs/aptos-rust-sdk)     | [Details](tests/rust/SDK_STATUS.md)       |
+| Rust       | `aptos-sdk`          | dev (git)  | aptos-labs    | [aptos-rust-sdk](https://github.com/aptos-labs/aptos-rust-sdk)     | [Details](tests/rust/SDK_STATUS.md)       |
 | Java       | `japtos`             | 1.1.8      | aptos-labs    | [aptos-java-sdk](https://github.com/aptos-labs/aptos-java-sdk)     | [Details](tests/java/SDK_STATUS.md)       |
 | Kotlin     | `kaptos`             | 0.1.2-beta | mcxross       | [kaptos](https://github.com/mcxross/kaptos)                        | [Details](tests/kotlin/SDK_STATUS.md)     |
 | Python     | `aptos-sdk`          | >=0.11.0   | aptos-labs    | [aptos-python-sdk](https://github.com/aptos-labs/aptos-python-sdk) | [Details](tests/python/SDK_STATUS.md)     |
@@ -1190,11 +1190,11 @@ cd tests/rust && cargo test --test specs
 
 ---
 
-### Rust (`aptos-rust-sdk-v2` dev) — [Full Status](tests/rust/SDK_STATUS.md)
+### Rust (`aptos-sdk` dev) — [Full Status](tests/rust/SDK_STATUS.md)
 
 **Status:** Not verified (SDK path not available)
 
-**Issue:** Tests depend on local path `../../../crates/aptos-rust-sdk-v2` which doesn't exist.
+**Note:** Tests depend on `aptos-sdk` from GitHub (`https://github.com/aptos-labs/aptos-rust-sdk`), which is not yet on crates.io.
 
 **To Fix:** Update `Cargo.toml` to use:
 

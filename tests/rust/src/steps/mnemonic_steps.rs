@@ -1,7 +1,7 @@
 //! Step definitions for mnemonic-based key derivation feature tests.
 
 use crate::support::TestWorld;
-use aptos_rust_sdk_v2::account::{Account, Ed25519Account, Mnemonic};
+use aptos_sdk::account::{Account, Ed25519Account, Mnemonic};
 use cucumber::{given, then, when};
 
 // =============================================================================

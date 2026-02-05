@@ -1,22 +1,22 @@
 //! Test world - holds state between Cucumber steps.
 
-use aptos_rust_sdk_v2::account::{Account, AnyAccount, Ed25519Account, MultiEd25519Account, Secp256k1Account, Secp256r1Account};
-use aptos_rust_sdk_v2::api::{FaucetClient, FullnodeClient};
-use aptos_rust_sdk_v2::Aptos;
-use aptos_rust_sdk_v2::crypto::{
+use aptos_sdk::account::{Account, AnyAccount, Ed25519Account, MultiEd25519Account, Secp256k1Account, Secp256r1Account};
+use aptos_sdk::api::{FaucetClient, FullnodeClient};
+use aptos_sdk::Aptos;
+use aptos_sdk::crypto::{
     Bls12381PrivateKey, Bls12381ProofOfPossession, Bls12381PublicKey, Bls12381Signature,
     Ed25519PrivateKey, Ed25519PublicKey, Ed25519Signature,
     MultiEd25519PublicKey, MultiEd25519Signature,
     Secp256k1PrivateKey, Secp256k1PublicKey, Secp256k1Signature,
     Secp256r1PrivateKey, Secp256r1PublicKey, Secp256r1Signature,
 };
-use aptos_rust_sdk_v2::transaction::{
+use aptos_sdk::transaction::{
     EntryFunction, PartiallySigned, RawTransaction, Script, ScriptArgument, SignedTransaction, TransactionPayload,
 };
-use aptos_rust_sdk_v2::transaction::types::{FeePayerRawTransaction, MultiAgentRawTransaction};
-use aptos_rust_sdk_v2::transaction::authenticator::TransactionAuthenticator;
-use aptos_rust_sdk_v2::ChainId;
-use aptos_rust_sdk_v2::types::{AccountAddress, HashValue, MoveModuleId, MoveStructTag, TypeTag};
+use aptos_sdk::transaction::types::{FeePayerRawTransaction, MultiAgentRawTransaction};
+use aptos_sdk::transaction::authenticator::TransactionAuthenticator;
+use aptos_sdk::ChainId;
+use aptos_sdk::types::{AccountAddress, HashValue, MoveModuleId, MoveStructTag, TypeTag};
 use cucumber::World;
 use std::collections::HashMap;
 
@@ -272,7 +272,7 @@ pub struct TestWorld {
 
     /// Transaction builder.
     #[world(skip)]
-    pub tx_builder: Option<aptos_rust_sdk_v2::transaction::TransactionBuilder>,
+    pub tx_builder: Option<aptos_sdk::transaction::TransactionBuilder>,
 
     /// Signing message bytes.
     pub signing_message: Option<Vec<u8>>,
@@ -512,7 +512,7 @@ pub struct TestWorld {
     // ==========================================================================
     /// Retry configuration for testing retry logic.
     #[world(skip)]
-    pub retry_config: Option<aptos_rust_sdk_v2::retry::RetryConfig>,
+    pub retry_config: Option<aptos_sdk::retry::RetryConfig>,
 
     // ==========================================================================
     // Code Generation State

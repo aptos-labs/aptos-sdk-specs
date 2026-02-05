@@ -40,7 +40,7 @@ make test                     # All tests
 make test-required            # Only @required tests
 ```
 
-### Rust (tests aptos-rust-sdk-v2)
+### Rust (tests aptos-rust-sdk)
 
 ```bash
 cd tests/rust

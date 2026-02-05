@@ -1,12 +1,12 @@
 //! Step definitions for transaction building and signing tests
 
 use crate::support::world::TestWorld;
-use aptos_rust_sdk_v2::account::Ed25519Account;
-use aptos_rust_sdk_v2::transaction::{
+use aptos_sdk::account::Ed25519Account;
+use aptos_sdk::transaction::{
     EntryFunction, RawTransaction, SignedTransaction, TransactionPayload,
 };
-use aptos_rust_sdk_v2::types::{AccountAddress, MoveModuleId};
-use aptos_rust_sdk_v2::ChainId;
+use aptos_sdk::types::{AccountAddress, MoveModuleId};
+use aptos_sdk::ChainId;
 use cucumber::{given, then, when};
 
 // =============================================================================
@@ -25,7 +25,7 @@ fn given_sequence_number(world: &mut TestWorld, seq: u64) {
 
 #[given(expr = "an entry function payload for APT transfer")]
 fn given_apt_transfer_payload(world: &mut TestWorld) {
-    use aptos_rust_sdk_v2::types::Identifier;
+    use aptos_sdk::types::Identifier;
     let module = MoveModuleId::new(
         AccountAddress::ONE,
         Identifier::new("aptos_account").unwrap(),
@@ -108,7 +108,7 @@ fn given_raw_tx_with_known_values(world: &mut TestWorld) {
 
 #[given(expr = "a RawTransaction")]
 fn given_raw_transaction(world: &mut TestWorld) {
-    use aptos_rust_sdk_v2::account::Account;
+    use aptos_sdk::account::Account;
     
     // If an account already exists, use its address as sender
     if let Some(ref account) = world.ed25519_account {
@@ -362,7 +362,7 @@ fn when_generate_signing_messages_both(world: &mut TestWorld) {
 
 #[then(regex = r#"^the message should start with SHA3-256\("APTOS::RawTransaction"\)$"#)]
 fn then_message_starts_with_domain(world: &mut TestWorld) {
-    use aptos_rust_sdk_v2::crypto::sha3_256;
+    use aptos_sdk::crypto::sha3_256;
     let domain_hash = sha3_256(b"APTOS::RawTransaction");
     let signing_msg = world.signing_message.as_ref().expect("No signing message");
     assert!(signing_msg.starts_with(&domain_hash));
@@ -412,7 +412,7 @@ fn then_chain_id_byte(world: &mut TestWorld, hex: String) {
 
 #[when(expr = "I sign the transaction with the account")]
 fn when_sign_with_account(world: &mut TestWorld) {
-    use aptos_rust_sdk_v2::transaction::sign_transaction;
+    use aptos_sdk::transaction::sign_transaction;
 
     let raw_tx = world.raw_transaction.as_ref().expect("No RawTransaction");
     
@@ -441,7 +441,7 @@ fn when_sign_transaction(world: &mut TestWorld) {
 
 #[when(expr = "I sign the transaction twice")]
 fn when_sign_transaction_twice(world: &mut TestWorld) {
-    use aptos_rust_sdk_v2::transaction::sign_transaction;
+    use aptos_sdk::transaction::sign_transaction;
 
     let raw_tx = world.raw_transaction.as_ref().expect("No RawTransaction");
     let account = world.ed25519_account.as_ref().expect("No account");
@@ -451,7 +451,7 @@ fn when_sign_transaction_twice(world: &mut TestWorld) {
 
 #[when(expr = "both accounts sign the transaction")]
 fn when_both_accounts_sign(world: &mut TestWorld) {
-    use aptos_rust_sdk_v2::transaction::sign_transaction;
+    use aptos_sdk::transaction::sign_transaction;
 
     let raw_tx = world.raw_transaction.as_ref().expect("No RawTransaction");
     let account1 = world.ed25519_account.as_ref().expect("No first account");
@@ -676,7 +676,7 @@ fn parse_hex_byte(s: &str) -> u8 {
 
 #[when(regex = r#"^I compute SHA3-256 of "APTOS::RawTransaction"$"#)]
 fn when_compute_sha3_domain(world: &mut TestWorld) {
-    use aptos_rust_sdk_v2::crypto::sha3_256;
+    use aptos_sdk::crypto::sha3_256;
     let hash = sha3_256(b"APTOS::RawTransaction");
     world.hash_result = Some(hash);
 }
@@ -695,14 +695,14 @@ fn then_prefix_of_signing_messages(_world: &mut TestWorld) {
 
 #[given(expr = "a TransactionBuilder")]
 fn given_transaction_builder(world: &mut TestWorld) {
-    use aptos_rust_sdk_v2::transaction::TransactionBuilder;
+    use aptos_sdk::transaction::TransactionBuilder;
     world.tx_builder = Some(TransactionBuilder::new());
 }
 
 #[given(expr = "a TransactionBuilder with only required fields")]
 fn given_builder_required_only(world: &mut TestWorld) {
-    use aptos_rust_sdk_v2::transaction::TransactionBuilder;
-    use aptos_rust_sdk_v2::types::Identifier;
+    use aptos_sdk::transaction::TransactionBuilder;
+    use aptos_sdk::types::Identifier;
     
     // Create a builder with the minimum required fields
     let module = MoveModuleId::new(
@@ -732,7 +732,7 @@ fn given_builder_required_only(world: &mut TestWorld) {
 
 #[given(expr = "a TransactionBuilder with sender set")]
 fn given_builder_with_sender(world: &mut TestWorld) {
-    use aptos_rust_sdk_v2::transaction::TransactionBuilder;
+    use aptos_sdk::transaction::TransactionBuilder;
     let mut builder = TransactionBuilder::new();
     builder = builder.sender(AccountAddress::ONE);
     world.tx_builder = Some(builder);
@@ -740,7 +740,7 @@ fn given_builder_with_sender(world: &mut TestWorld) {
 
 #[given(expr = "a TransactionBuilder with sender and sequence number")]
 fn given_builder_with_sender_seq(world: &mut TestWorld) {
-    use aptos_rust_sdk_v2::transaction::TransactionBuilder;
+    use aptos_sdk::transaction::TransactionBuilder;
     let mut builder = TransactionBuilder::new();
     builder = builder.sender(AccountAddress::ONE).sequence_number(0);
     world.tx_builder = Some(builder);
@@ -748,8 +748,8 @@ fn given_builder_with_sender_seq(world: &mut TestWorld) {
 
 #[given(regex = r"^a TransactionBuilder with sender, sequence, and payload$")]
 fn given_builder_with_sender_seq_payload(world: &mut TestWorld) {
-    use aptos_rust_sdk_v2::transaction::TransactionBuilder;
-    use aptos_rust_sdk_v2::types::Identifier;
+    use aptos_sdk::transaction::TransactionBuilder;
+    use aptos_sdk::types::Identifier;
     
     let module = MoveModuleId::new(
         AccountAddress::ONE,
@@ -786,7 +786,7 @@ fn when_set_sequence_number(world: &mut TestWorld, seq: u64) {
 
 #[when(expr = "I set payload to an APT transfer")]
 fn when_set_payload_apt_transfer(world: &mut TestWorld) {
-    use aptos_rust_sdk_v2::types::Identifier;
+    use aptos_sdk::types::Identifier;
     
     let module = MoveModuleId::new(
         AccountAddress::ONE,
@@ -857,7 +857,7 @@ fn when_set_gas_unit_price(world: &mut TestWorld, price: u64) {
 
 #[when(expr = "I build with all required fields")]
 fn when_build_with_all_required(world: &mut TestWorld) {
-    use aptos_rust_sdk_v2::types::Identifier;
+    use aptos_sdk::types::Identifier;
     
     let builder = world.tx_builder.take().expect("No builder");
     
@@ -899,8 +899,8 @@ fn then_tx_has_custom_values(world: &mut TestWorld) {
 
 #[when(expr = "I try to build without setting sender")]
 fn when_try_build_without_sender(world: &mut TestWorld) {
-    use aptos_rust_sdk_v2::transaction::TransactionBuilder;
-    use aptos_rust_sdk_v2::types::Identifier;
+    use aptos_sdk::transaction::TransactionBuilder;
+    use aptos_sdk::types::Identifier;
     
     let module = MoveModuleId::new(
         AccountAddress::ONE,
@@ -935,8 +935,8 @@ fn then_missing_sender_error(world: &mut TestWorld) {
 
 #[when(expr = "I try to build without sequence number")]
 fn when_try_build_without_seq(world: &mut TestWorld) {
-    use aptos_rust_sdk_v2::transaction::TransactionBuilder;
-    use aptos_rust_sdk_v2::types::Identifier;
+    use aptos_sdk::transaction::TransactionBuilder;
+    use aptos_sdk::types::Identifier;
     
     let module = MoveModuleId::new(
         AccountAddress::ONE,
@@ -971,7 +971,7 @@ fn then_missing_seq_error(world: &mut TestWorld) {
 
 #[when(expr = "I try to build without payload")]
 fn when_try_build_without_payload(world: &mut TestWorld) {
-    use aptos_rust_sdk_v2::transaction::TransactionBuilder;
+    use aptos_sdk::transaction::TransactionBuilder;
     
     let builder = TransactionBuilder::new()
         .sender(AccountAddress::ONE)
@@ -994,8 +994,8 @@ fn then_missing_payload_error(world: &mut TestWorld) {
 
 #[when(expr = "I try to build without chain ID")]
 fn when_try_build_without_chain_id(world: &mut TestWorld) {
-    use aptos_rust_sdk_v2::transaction::TransactionBuilder;
-    use aptos_rust_sdk_v2::types::Identifier;
+    use aptos_sdk::transaction::TransactionBuilder;
+    use aptos_sdk::types::Identifier;
     
     let module = MoveModuleId::new(
         AccountAddress::ONE,
@@ -1079,8 +1079,8 @@ fn then_authenticator_secp256k1(world: &mut TestWorld) {
 
 #[given(expr = "a signed transaction with Secp256k1")]
 fn given_signed_tx_secp256k1(world: &mut TestWorld) {
-    use aptos_rust_sdk_v2::account::Secp256k1Account;
-    use aptos_rust_sdk_v2::transaction::sign_transaction;
+    use aptos_sdk::account::Secp256k1Account;
+    use aptos_sdk::transaction::sign_transaction;
     
     given_valid_raw_transaction(world);
     let account = Secp256k1Account::generate();
@@ -1120,7 +1120,7 @@ fn given_same_signed_transaction(world: &mut TestWorld) {
 
 #[then(regex = r#"^it should equal SHA3-256\(SHA3-256\("APTOS::Transaction"\) \|\| bcs\(SignedTransaction\)\)$"#)]
 fn then_hash_equals_expected(world: &mut TestWorld) {
-    use aptos_rust_sdk_v2::crypto::sha3_256;
+    use aptos_sdk::crypto::sha3_256;
     
     let signed_tx = world.signed_transaction.as_ref().expect("No SignedTransaction");
     let tx_bytes = aptos_bcs::to_bytes(signed_tx).unwrap();
@@ -1193,7 +1193,7 @@ fn given_account_impl_trait(world: &mut TestWorld) {
 
 #[when(regex = r"^I call sign_transaction\(raw_txn, account\)$")]
 fn when_call_sign_transaction(world: &mut TestWorld) {
-    use aptos_rust_sdk_v2::transaction::sign_transaction;
+    use aptos_sdk::transaction::sign_transaction;
     
     let raw_tx = world.raw_transaction.as_ref().expect("No RawTransaction");
     let account = world.ed25519_account.as_ref().expect("No account");
@@ -1202,7 +1202,7 @@ fn when_call_sign_transaction(world: &mut TestWorld) {
 
 #[when(regex = r"^I call account\.sign_transaction\(raw_txn\)$")]
 fn when_call_account_sign_transaction(world: &mut TestWorld) {
-    use aptos_rust_sdk_v2::transaction::sign_transaction;
+    use aptos_sdk::transaction::sign_transaction;
     
     let raw_tx = world.raw_transaction.as_ref().expect("No RawTransaction");
     let account = world.ed25519_account.as_ref().expect("No account");
@@ -1211,7 +1211,7 @@ fn when_call_account_sign_transaction(world: &mut TestWorld) {
 
 #[then(expr = "the sender should match the account address")]
 fn then_sender_matches_account(world: &mut TestWorld) {
-    use aptos_rust_sdk_v2::account::Account;
+    use aptos_sdk::account::Account;
     
     let signed_tx = world.signed_transaction.as_ref().expect("No SignedTransaction");
     let account = world.ed25519_account.as_ref().expect("No account");
@@ -1280,7 +1280,7 @@ fn then_tx_hash_matches(_world: &mut TestWorld) {
 
 #[given(expr = "a RawTransaction and Secp256k1 key from test vectors")]
 fn given_raw_tx_secp_test_vectors(world: &mut TestWorld) {
-    use aptos_rust_sdk_v2::account::Secp256k1Account;
+    use aptos_sdk::account::Secp256k1Account;
     given_valid_raw_transaction(world);
     world.secp256k1_account = Some(Secp256k1Account::generate());
 }

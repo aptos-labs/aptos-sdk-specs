@@ -3,10 +3,10 @@
 //! These steps require a running Aptos node (localnet or devnet).
 
 use crate::support::TestWorld;
-use aptos_rust_sdk_v2::account::{Account, Ed25519Account};
-use aptos_rust_sdk_v2::config::AptosConfig;
-use aptos_rust_sdk_v2::types::AccountAddress;
-use aptos_rust_sdk_v2::Aptos;
+use aptos_sdk::account::{Account, Ed25519Account};
+use aptos_sdk::config::AptosConfig;
+use aptos_sdk::types::AccountAddress;
+use aptos_sdk::Aptos;
 use cucumber::{given, then, when};
 use std::env;
 use std::time::{Duration, Instant};
@@ -83,7 +83,7 @@ fn given_configured_client_testnet(world: &mut TestWorld) {
 #[given("a known funded account address")]
 fn given_known_funded_account(world: &mut TestWorld) {
     // Use 0x1 which is always funded on any network
-    world.address = Some(aptos_rust_sdk_v2::types::AccountAddress::ONE);
+    world.address = Some(aptos_sdk::types::AccountAddress::ONE);
 }
 
 #[given("a funded account")]
@@ -132,8 +132,8 @@ fn given_funded_account(world: &mut TestWorld) {
 
 #[given("a valid signed APT transfer transaction")]
 fn given_valid_signed_apt_transfer(world: &mut TestWorld) {
-    use aptos_rust_sdk_v2::transaction::{EntryFunction, TransactionBuilder, TransactionPayload, builder::sign_transaction};
-    use aptos_rust_sdk_v2::ChainId;
+    use aptos_sdk::transaction::{EntryFunction, TransactionBuilder, TransactionPayload, builder::sign_transaction};
+    use aptos_sdk::ChainId;
     
     if let Some(ref account) = world.ed25519_account {
         let recipient = AccountAddress::from_hex("0x2").unwrap();
@@ -312,7 +312,7 @@ fn when_wait_for_tx(world: &mut TestWorld) {
         let rt = tokio::runtime::Runtime::new().expect("Failed to create runtime");
         let result = rt.block_on(async {
             // Parse hash and wait
-            use aptos_rust_sdk_v2::types::HashValue;
+            use aptos_sdk::types::HashValue;
             let hash = HashValue::from_hex(&hash_str.trim_start_matches("0x"))
                 .expect("Invalid hash");
             aptos.fullnode().wait_for_transaction(&hash, Some(Duration::from_secs(30))).await
@@ -393,17 +393,17 @@ fn given_funded_account_for_benchmarking(world: &mut TestWorld) {
 #[given("a known account with tokens")]
 fn given_account_with_tokens(world: &mut TestWorld) {
     // Use a well-known account that has tokens
-    world.address = Some(aptos_rust_sdk_v2::types::AccountAddress::ONE);
+    world.address = Some(aptos_sdk::types::AccountAddress::ONE);
 }
 
 #[given("a known account with fungible assets")]
 fn given_account_with_fungible_assets(world: &mut TestWorld) {
-    world.address = Some(aptos_rust_sdk_v2::types::AccountAddress::ONE);
+    world.address = Some(aptos_sdk::types::AccountAddress::ONE);
 }
 
 #[given("a known account with events")]
 fn given_account_with_events(world: &mut TestWorld) {
-    world.address = Some(aptos_rust_sdk_v2::types::AccountAddress::ONE);
+    world.address = Some(aptos_sdk::types::AccountAddress::ONE);
 }
 
 #[given("a known transaction hash for benchmarking")]
@@ -416,7 +416,7 @@ fn given_tx_hash_for_benchmarking(world: &mut TestWorld) {
 
 #[given("an Ed25519 key pair for benchmarking")]
 fn given_ed25519_keypair_for_benchmarking(world: &mut TestWorld) {
-    use aptos_rust_sdk_v2::crypto::Ed25519PrivateKey;
+    use aptos_sdk::crypto::Ed25519PrivateKey;
     let private_key = Ed25519PrivateKey::generate();
     world.ed25519_public_key = Some(private_key.public_key());
     world.ed25519_private_key = Some(private_key);
@@ -429,7 +429,7 @@ fn given_n_byte_message(world: &mut TestWorld, size: usize) {
 
 #[given("a signed 256-byte message")]
 fn given_signed_256_byte_message(world: &mut TestWorld) {
-    use aptos_rust_sdk_v2::crypto::{Ed25519PrivateKey, Signer};
+    use aptos_sdk::crypto::{Ed25519PrivateKey, Signer};
     
     let message = vec![0x42u8; 256];
     let private_key = world.ed25519_private_key.get_or_insert_with(Ed25519PrivateKey::generate);
@@ -440,9 +440,9 @@ fn given_signed_256_byte_message(world: &mut TestWorld) {
 
 #[given("a sample raw transaction for benchmarking")]
 fn given_sample_raw_transaction(world: &mut TestWorld) {
-    use aptos_rust_sdk_v2::transaction::{EntryFunction, TransactionBuilder, TransactionPayload};
-    use aptos_rust_sdk_v2::types::AccountAddress;
-    use aptos_rust_sdk_v2::ChainId;
+    use aptos_sdk::transaction::{EntryFunction, TransactionBuilder, TransactionPayload};
+    use aptos_sdk::types::AccountAddress;
+    use aptos_sdk::ChainId;
     
     let payload = EntryFunction::apt_transfer(AccountAddress::ONE, 1000)
         .expect("Failed to create transfer");
@@ -552,10 +552,10 @@ fn when_measure_submit_transfers(world: &mut TestWorld, count: usize) {
 
 #[when(expr = "I measure the time to build and sign {int} APT transfer transactions")]
 fn when_measure_build_sign(world: &mut TestWorld, count: usize) {
-    use aptos_rust_sdk_v2::crypto::Ed25519PrivateKey;
-    use aptos_rust_sdk_v2::transaction::{EntryFunction, TransactionBuilder, TransactionPayload, builder::sign_transaction};
-    use aptos_rust_sdk_v2::types::AccountAddress;
-    use aptos_rust_sdk_v2::ChainId;
+    use aptos_sdk::crypto::Ed25519PrivateKey;
+    use aptos_sdk::transaction::{EntryFunction, TransactionBuilder, TransactionPayload, builder::sign_transaction};
+    use aptos_sdk::types::AccountAddress;
+    use aptos_sdk::ChainId;
     
     world.benchmark_timings.clear();
     
@@ -602,7 +602,7 @@ fn when_measure_full_flow(world: &mut TestWorld, count: usize) {
 
 #[when(expr = "I measure the time to generate {int} Ed25519 key pairs")]
 fn when_measure_keygen(world: &mut TestWorld, count: usize) {
-    use aptos_rust_sdk_v2::crypto::Ed25519PrivateKey;
+    use aptos_sdk::crypto::Ed25519PrivateKey;
     
     world.benchmark_timings.clear();
     
@@ -615,7 +615,7 @@ fn when_measure_keygen(world: &mut TestWorld, count: usize) {
 
 #[when(expr = "I measure the time to sign the message {int} times")]
 fn when_measure_signing(world: &mut TestWorld, count: usize) {
-    use aptos_rust_sdk_v2::crypto::Signer;
+    use aptos_sdk::crypto::Signer;
     
     world.benchmark_timings.clear();
     
@@ -630,7 +630,7 @@ fn when_measure_signing(world: &mut TestWorld, count: usize) {
 
 #[when(expr = "I measure the time to verify the signature {int} times")]
 fn when_measure_verification(world: &mut TestWorld, count: usize) {
-    use aptos_rust_sdk_v2::crypto::Verifier;
+    use aptos_sdk::crypto::Verifier;
     
     world.benchmark_timings.clear();
     
@@ -662,7 +662,7 @@ fn when_measure_bcs_serialize(world: &mut TestWorld, count: usize) {
 
 #[when(expr = "I measure the time to hash the message {int} times")]
 fn when_measure_hashing(world: &mut TestWorld, count: usize) {
-    use aptos_rust_sdk_v2::crypto::sha3_256;
+    use aptos_sdk::crypto::sha3_256;
     
     world.benchmark_timings.clear();
     
