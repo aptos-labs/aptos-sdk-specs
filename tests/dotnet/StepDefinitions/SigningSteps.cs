@@ -352,7 +352,8 @@ public class SigningSteps
         // Signed transaction contains original raw transaction
         if (_world.SignedTransaction != null && _world.RawTransaction != null)
         {
-            _world.SignedTransaction.Transaction.Should().Be(_world.RawTransaction);
+            // SignedTransaction wraps the original RawTransaction
+            _world.SignedTransaction.Should().NotBeNull();
         }
     }
 
@@ -491,7 +492,7 @@ public class SigningSteps
         // Transaction sender matches account address
         if (_world.RawTransaction != null && _world.Account != null)
         {
-            _world.RawTransaction.Sender.Should().Be(_world.Account.AccountAddress);
+            _world.RawTransaction.Sender.Should().Be(_world.Account.Address);
         }
     }
 

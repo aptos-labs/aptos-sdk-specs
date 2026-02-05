@@ -164,7 +164,7 @@ public class AdditionalSteps
         // Address parsing validation
         if (_world.Address != null)
         {
-            var expectedAddress = AccountAddress.FromHex(expected);
+            var expectedAddress = AccountAddress.FromString(expected);
             _world.Address.Should().Be(expectedAddress);
         }
         else if (_world.Result != null)
