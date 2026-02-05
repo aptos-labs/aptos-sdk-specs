@@ -59,7 +59,10 @@ fn then_should_be_retryable(world: &mut TestWorld) {
 
 #[then(expr = "I should see the HTTP status code")]
 fn then_see_http_status(world: &mut TestWorld) {
-    assert!(world.http_status_code.is_some(), "Should have HTTP status code");
+    assert!(
+        world.http_status_code.is_some(),
+        "Should have HTTP status code"
+    );
 }
 
 #[then(expr = "the error message from the API")]
@@ -70,13 +73,19 @@ fn then_see_error_message(world: &mut TestWorld) {
 #[then(expr = "I should see which input was invalid")]
 fn then_see_invalid_input(world: &mut TestWorld) {
     let error = world.error.as_ref().expect("No error");
-    assert!(error.contains("address") || error.contains("input"), "Error should indicate invalid input");
+    assert!(
+        error.contains("address") || error.contains("input"),
+        "Error should indicate invalid input"
+    );
 }
 
 #[then(expr = "why it was invalid")]
 fn then_see_why_invalid(world: &mut TestWorld) {
     let error = world.error.as_ref().expect("No error");
-    assert!(error.contains("format") || error.contains("expected"), "Error should explain why input was invalid");
+    assert!(
+        error.contains("format") || error.contains("expected"),
+        "Error should explain why input was invalid"
+    );
 }
 
 #[then(expr = "I should see the VM status code")]
@@ -132,7 +141,10 @@ fn when_parse_status(world: &mut TestWorld) {
 
 #[then(expr = "I should extract the abort code")]
 fn then_extract_abort_code(world: &mut TestWorld) {
-    assert!(world.vm_status_code.is_some(), "Should have extracted abort code");
+    assert!(
+        world.vm_status_code.is_some(),
+        "Should have extracted abort code"
+    );
 }
 
 #[then(regex = r"^the module that aborted \(if available\)$")]
@@ -202,8 +214,13 @@ fn then_know_which_account(world: &mut TestWorld) {
 
 #[given(expr = "common abort codes like:")]
 fn given_common_abort_codes(world: &mut TestWorld) {
-    world.named_values.insert("abort_65537".to_string(), "Insufficient balance".to_string());
-    world.named_values.insert("abort_65542".to_string(), "Account not found".to_string());
+    world.named_values.insert(
+        "abort_65537".to_string(),
+        "Insufficient balance".to_string(),
+    );
+    world
+        .named_values
+        .insert("abort_65542".to_string(), "Account not found".to_string());
 }
 
 #[when(expr = "I receive these in errors")]
@@ -241,7 +258,9 @@ fn then_see_module_abort_code(world: &mut TestWorld) {
 #[given(expr = "an error during {string}")]
 fn given_error_during(world: &mut TestWorld, operation: String) {
     world.error = Some(format!("Error during {}: operation failed", operation));
-    world.named_values.insert("failed_operation".to_string(), operation);
+    world
+        .named_values
+        .insert("failed_operation".to_string(), operation);
 }
 
 #[then(expr = "I should know which operation failed")]
@@ -283,7 +302,9 @@ fn then_original_accessible(world: &mut TestWorld) {
 #[given(expr = "an API error with request ID header")]
 fn given_error_with_request_id(world: &mut TestWorld) {
     world.error = Some("API error: Bad Request".to_string());
-    world.named_values.insert("request_id".to_string(), "req-12345-abcde".to_string());
+    world
+        .named_values
+        .insert("request_id".to_string(), "req-12345-abcde".to_string());
 }
 
 #[then(expr = "I should have access to the request ID for debugging")]
@@ -297,7 +318,9 @@ fn then_have_request_id(world: &mut TestWorld) {
 
 #[given(expr = "Rust SDK")]
 fn given_rust_sdk(world: &mut TestWorld) {
-    world.named_values.insert("sdk_language".to_string(), "rust".to_string());
+    world
+        .named_values
+        .insert("sdk_language".to_string(), "rust".to_string());
 }
 
 #[when(expr = "operations can fail")]
@@ -333,12 +356,13 @@ fn given_an_error(world: &mut TestWorld) {
 #[when(expr = "I check if it's retryable")]
 fn when_check_retryable(world: &mut TestWorld) {
     let category = world.error_category.clone().unwrap_or_default();
-    world.named_values.insert("is_retryable".to_string(), 
+    world.named_values.insert(
+        "is_retryable".to_string(),
         if category == "network" || category == "rate_limit" {
             "true".to_string()
         } else {
             "false".to_string()
-        }
+        },
     );
 }
 
@@ -370,7 +394,11 @@ fn when_check_error(world: &mut TestWorld) {
 
 #[then(expr = "it should indicate permanent failure")]
 fn then_permanent_failure(world: &mut TestWorld) {
-    let category = world.error_category.as_ref().unwrap_or(&"".to_string()).clone();
+    let category = world
+        .error_category
+        .as_ref()
+        .unwrap_or(&"".to_string())
+        .clone();
     assert!(category == "signature" || category == "validation");
 }
 
@@ -392,9 +420,15 @@ fn given_simulation_fails(world: &mut TestWorld) {
 #[when(expr = "I inspect the result")]
 fn when_inspect_result(world: &mut TestWorld) {
     // For simulation context, add state changes and events data
-    if world.named_values.contains_key("simulated") || world.named_values.contains_key("simulation_success") {
-        world.named_values.insert("state_changes".to_string(), "balance_update".to_string());
-        world.named_values.insert("events".to_string(), "transfer_event".to_string());
+    if world.named_values.contains_key("simulated")
+        || world.named_values.contains_key("simulation_success")
+    {
+        world
+            .named_values
+            .insert("state_changes".to_string(), "balance_update".to_string());
+        world
+            .named_values
+            .insert("events".to_string(), "transfer_event".to_string());
         return;
     }
     // For error context, require error
@@ -414,8 +448,12 @@ fn then_can_fix(_world: &mut TestWorld) {
 
 #[given(expr = "a successful simulation")]
 fn given_simulation_success(world: &mut TestWorld) {
-    world.named_values.insert("simulation_success".to_string(), "true".to_string());
-    world.named_values.insert("gas_used".to_string(), "1000".to_string());
+    world
+        .named_values
+        .insert("simulation_success".to_string(), "true".to_string());
+    world
+        .named_values
+        .insert("gas_used".to_string(), "1000".to_string());
 }
 
 #[when(expr = "I check gas info")]

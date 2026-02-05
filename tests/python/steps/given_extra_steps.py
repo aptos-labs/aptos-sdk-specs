@@ -2,8 +2,7 @@
 Additional Given step definitions for various scenarios.
 """
 
-from behave import given, when, then
-
+from behave import given
 
 # =============================================================================
 # Given Steps - Account Types
@@ -13,18 +12,21 @@ from behave import given, when, then
 @given("an Ed25519 sender")
 def step_given_ed25519_sender(context):
     from aptos_sdk.account import Account
+
     context.world.account = Account.generate()
 
 
 @given("fee payer account")
 def step_given_fee_payer_account(context):
     from aptos_sdk.account import Account
+
     context.world.fee_payer = Account.generate()
 
 
 @given("fee payer address A")
 def step_given_fee_payer_address_a(context):
-    from aptos_sdk.account import Account
+    pass
+
     context.world.test_vectors["fee_payer_address"] = "A"
 
 

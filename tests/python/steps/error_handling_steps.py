@@ -27,13 +27,9 @@ class AptosApiError(Exception):
 class NetworkError(AptosApiError):
     """Network-related errors (connection, timeout)."""
 
-    pass
-
 
 class ValidationError(AptosApiError):
     """Input validation errors."""
-
-    pass
 
 
 class TransactionError(AptosApiError):
@@ -70,7 +66,7 @@ def step_given_connection_refused(context):
 
 @given("an API error with status {status:d}")
 def step_given_api_error_with_status(context, status):
-    context.world.error = AptosApiError(f"API error", status_code=status)
+    context.world.error = AptosApiError("API error", status_code=status)
 
 
 @given("a validation error with message {message}")

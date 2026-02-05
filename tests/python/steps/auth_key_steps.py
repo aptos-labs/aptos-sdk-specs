@@ -3,12 +3,10 @@ Step definitions for authentication-key.feature
 Tests authentication key derivation and conversion.
 """
 
-from support.vectors import hex_to_bytes, bytes_to_hex
 from aptos_sdk.account_address import AccountAddress
 from aptos_sdk.account import Account
 from aptos_sdk.ed25519 import (
     PrivateKey as Ed25519PrivateKey,
-    PublicKey as Ed25519PublicKey,
 )
 from behave import given, when, then
 import sys

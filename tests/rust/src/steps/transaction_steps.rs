@@ -108,8 +108,6 @@ fn given_raw_tx_with_known_values(world: &mut TestWorld) {
 
 #[given(expr = "a RawTransaction")]
 fn given_raw_transaction(world: &mut TestWorld) {
-    use aptos_sdk::account::Account;
-    
     // If an account already exists, use its address as sender
     if let Some(ref account) = world.ed25519_account {
         world.tx_sender = Some(account.address());
@@ -415,7 +413,7 @@ fn when_sign_with_account(world: &mut TestWorld) {
     use aptos_sdk::transaction::sign_transaction;
 
     let raw_tx = world.raw_transaction.as_ref().expect("No RawTransaction");
-    
+
     if let Some(ref account) = world.ed25519_account {
         let signed_tx = sign_transaction(raw_tx, account).expect("Failed to sign");
         world.signed_transaction = Some(signed_tx);
@@ -435,7 +433,9 @@ fn when_sign_transaction(world: &mut TestWorld) {
     } else if world.bls_private_key.is_some() {
         // BLS signing is not yet fully supported for transactions
         // Just mark that we have a "signed" transaction for test purposes
-        world.named_values.insert("bls_signed".to_string(), "true".to_string());
+        world
+            .named_values
+            .insert("bls_signed".to_string(), "true".to_string());
     }
 }
 
@@ -466,7 +466,10 @@ fn then_get_signed_transaction(world: &mut TestWorld) {
     let has_signed_tx = world.signed_transaction.is_some();
     let has_bls_signed = world.named_values.get("bls_signed") == Some(&"true".to_string());
     let has_keyless_signed = world.named_values.get("tx_signed") == Some(&"true".to_string());
-    assert!(has_signed_tx || has_bls_signed || has_keyless_signed, "Expected a SignedTransaction");
+    assert!(
+        has_signed_tx || has_bls_signed || has_keyless_signed,
+        "Expected a SignedTransaction"
+    );
 }
 
 #[then(expr = "the authenticator should be Ed25519 variant")]
@@ -703,7 +706,7 @@ fn given_transaction_builder(world: &mut TestWorld) {
 fn given_builder_required_only(world: &mut TestWorld) {
     use aptos_sdk::transaction::TransactionBuilder;
     use aptos_sdk::types::Identifier;
-    
+
     // Create a builder with the minimum required fields
     let module = MoveModuleId::new(
         AccountAddress::ONE,
@@ -719,14 +722,14 @@ fn given_builder_required_only(world: &mut TestWorld) {
         ],
     };
     let payload = TransactionPayload::EntryFunction(entry_fn);
-    
+
     let builder = TransactionBuilder::new()
         .sender(AccountAddress::ONE)
         .sequence_number(0)
         .payload(payload)
         .chain_id(ChainId::testnet())
         .expiration_from_now(600);
-    
+
     world.tx_builder = Some(builder);
 }
 
@@ -750,7 +753,7 @@ fn given_builder_with_sender_seq(world: &mut TestWorld) {
 fn given_builder_with_sender_seq_payload(world: &mut TestWorld) {
     use aptos_sdk::transaction::TransactionBuilder;
     use aptos_sdk::types::Identifier;
-    
+
     let module = MoveModuleId::new(
         AccountAddress::ONE,
         Identifier::new("aptos_account").unwrap(),
@@ -765,9 +768,12 @@ fn given_builder_with_sender_seq_payload(world: &mut TestWorld) {
         ],
     };
     let payload = TransactionPayload::EntryFunction(entry_fn);
-    
+
     let mut builder = TransactionBuilder::new();
-    builder = builder.sender(AccountAddress::ONE).sequence_number(0).payload(payload);
+    builder = builder
+        .sender(AccountAddress::ONE)
+        .sequence_number(0)
+        .payload(payload);
     world.tx_builder = Some(builder);
 }
 
@@ -787,7 +793,7 @@ fn when_set_sequence_number(world: &mut TestWorld, seq: u64) {
 #[when(expr = "I set payload to an APT transfer")]
 fn when_set_payload_apt_transfer(world: &mut TestWorld) {
     use aptos_sdk::types::Identifier;
-    
+
     let module = MoveModuleId::new(
         AccountAddress::ONE,
         Identifier::new("aptos_account").unwrap(),
@@ -802,7 +808,7 @@ fn when_set_payload_apt_transfer(world: &mut TestWorld) {
         ],
     };
     let payload = TransactionPayload::EntryFunction(entry_fn);
-    
+
     let builder = world.tx_builder.take().expect("No builder");
     world.tx_builder = Some(builder.payload(payload));
 }
@@ -845,7 +851,9 @@ fn when_set_max_gas_amount(world: &mut TestWorld, amount: u64) {
         world.tx_builder = Some(builder.max_gas_amount(amount));
     } else {
         // Fallback for client/gas estimation tests that use named_values
-        world.named_values.insert("max_gas_amount".to_string(), amount.to_string());
+        world
+            .named_values
+            .insert("max_gas_amount".to_string(), amount.to_string());
     }
 }
 
@@ -858,9 +866,9 @@ fn when_set_gas_unit_price(world: &mut TestWorld, price: u64) {
 #[when(expr = "I build with all required fields")]
 fn when_build_with_all_required(world: &mut TestWorld) {
     use aptos_sdk::types::Identifier;
-    
+
     let builder = world.tx_builder.take().expect("No builder");
-    
+
     let module = MoveModuleId::new(
         AccountAddress::ONE,
         Identifier::new("aptos_account").unwrap(),
@@ -875,14 +883,14 @@ fn when_build_with_all_required(world: &mut TestWorld) {
         ],
     };
     let payload = TransactionPayload::EntryFunction(entry_fn);
-    
+
     let builder = builder
         .sender(AccountAddress::ONE)
         .sequence_number(0)
         .payload(payload)
         .chain_id(ChainId::testnet())
         .expiration_from_now(600);
-    
+
     match builder.build() {
         Ok(tx) => world.raw_transaction = Some(tx),
         Err(e) => world.error = Some(e.to_string()),
@@ -901,7 +909,7 @@ fn then_tx_has_custom_values(world: &mut TestWorld) {
 fn when_try_build_without_sender(world: &mut TestWorld) {
     use aptos_sdk::transaction::TransactionBuilder;
     use aptos_sdk::types::Identifier;
-    
+
     let module = MoveModuleId::new(
         AccountAddress::ONE,
         Identifier::new("aptos_account").unwrap(),
@@ -913,13 +921,13 @@ fn when_try_build_without_sender(world: &mut TestWorld) {
         args: vec![],
     };
     let payload = TransactionPayload::EntryFunction(entry_fn);
-    
+
     let builder = TransactionBuilder::new()
         .sequence_number(0)
         .payload(payload)
         .chain_id(ChainId::testnet())
         .expiration_from_now(600);
-    
+
     match builder.build() {
         Ok(tx) => world.raw_transaction = Some(tx),
         Err(e) => world.error = Some(e.to_string()),
@@ -930,14 +938,18 @@ fn when_try_build_without_sender(world: &mut TestWorld) {
 fn then_missing_sender_error(world: &mut TestWorld) {
     assert!(world.error.is_some(), "Expected error");
     let err = world.error.as_ref().unwrap();
-    assert!(err.contains("sender") || err.contains("Sender"), "Expected MissingSender error, got: {}", err);
+    assert!(
+        err.contains("sender") || err.contains("Sender"),
+        "Expected MissingSender error, got: {}",
+        err
+    );
 }
 
 #[when(expr = "I try to build without sequence number")]
 fn when_try_build_without_seq(world: &mut TestWorld) {
     use aptos_sdk::transaction::TransactionBuilder;
     use aptos_sdk::types::Identifier;
-    
+
     let module = MoveModuleId::new(
         AccountAddress::ONE,
         Identifier::new("aptos_account").unwrap(),
@@ -949,13 +961,13 @@ fn when_try_build_without_seq(world: &mut TestWorld) {
         args: vec![],
     };
     let payload = TransactionPayload::EntryFunction(entry_fn);
-    
+
     let builder = TransactionBuilder::new()
         .sender(AccountAddress::ONE)
         .payload(payload)
         .chain_id(ChainId::testnet())
         .expiration_from_now(600);
-    
+
     match builder.build() {
         Ok(tx) => world.raw_transaction = Some(tx),
         Err(e) => world.error = Some(e.to_string()),
@@ -966,19 +978,23 @@ fn when_try_build_without_seq(world: &mut TestWorld) {
 fn then_missing_seq_error(world: &mut TestWorld) {
     assert!(world.error.is_some(), "Expected error");
     let err = world.error.as_ref().unwrap();
-    assert!(err.contains("sequence") || err.contains("Sequence"), "Expected MissingSequenceNumber error, got: {}", err);
+    assert!(
+        err.contains("sequence") || err.contains("Sequence"),
+        "Expected MissingSequenceNumber error, got: {}",
+        err
+    );
 }
 
 #[when(expr = "I try to build without payload")]
 fn when_try_build_without_payload(world: &mut TestWorld) {
     use aptos_sdk::transaction::TransactionBuilder;
-    
+
     let builder = TransactionBuilder::new()
         .sender(AccountAddress::ONE)
         .sequence_number(0)
         .chain_id(ChainId::testnet())
         .expiration_from_now(600);
-    
+
     match builder.build() {
         Ok(tx) => world.raw_transaction = Some(tx),
         Err(e) => world.error = Some(e.to_string()),
@@ -989,14 +1005,18 @@ fn when_try_build_without_payload(world: &mut TestWorld) {
 fn then_missing_payload_error(world: &mut TestWorld) {
     assert!(world.error.is_some(), "Expected error");
     let err = world.error.as_ref().unwrap();
-    assert!(err.contains("payload") || err.contains("Payload"), "Expected MissingPayload error, got: {}", err);
+    assert!(
+        err.contains("payload") || err.contains("Payload"),
+        "Expected MissingPayload error, got: {}",
+        err
+    );
 }
 
 #[when(expr = "I try to build without chain ID")]
 fn when_try_build_without_chain_id(world: &mut TestWorld) {
     use aptos_sdk::transaction::TransactionBuilder;
     use aptos_sdk::types::Identifier;
-    
+
     let module = MoveModuleId::new(
         AccountAddress::ONE,
         Identifier::new("aptos_account").unwrap(),
@@ -1008,13 +1028,13 @@ fn when_try_build_without_chain_id(world: &mut TestWorld) {
         args: vec![],
     };
     let payload = TransactionPayload::EntryFunction(entry_fn);
-    
+
     let builder = TransactionBuilder::new()
         .sender(AccountAddress::ONE)
         .sequence_number(0)
         .payload(payload)
         .expiration_from_now(600);
-    
+
     match builder.build() {
         Ok(tx) => world.raw_transaction = Some(tx),
         Err(e) => world.error = Some(e.to_string()),
@@ -1025,7 +1045,11 @@ fn when_try_build_without_chain_id(world: &mut TestWorld) {
 fn then_missing_chain_id_error(world: &mut TestWorld) {
     assert!(world.error.is_some(), "Expected error");
     let err = world.error.as_ref().unwrap();
-    assert!(err.contains("chain") || err.contains("Chain"), "Expected MissingChainId error, got: {}", err);
+    assert!(
+        err.contains("chain") || err.contains("Chain"),
+        "Expected MissingChainId error, got: {}",
+        err
+    );
 }
 
 #[given(expr = "current time is T")]
@@ -1036,13 +1060,13 @@ fn given_current_time(_world: &mut TestWorld) {
 #[then(expr = "expiration_timestamp_secs should be approximately T + 600")]
 fn then_expiration_approx(world: &mut TestWorld) {
     use std::time::{SystemTime, UNIX_EPOCH};
-    
+
     let tx = world.raw_transaction.as_ref().expect("No RawTransaction");
     let now = SystemTime::now()
         .duration_since(UNIX_EPOCH)
         .unwrap()
         .as_secs();
-    
+
     // Should be within 10 seconds of expected (accounting for test execution time)
     let expected = now + 600;
     let diff = if tx.expiration_timestamp_secs > expected {
@@ -1050,7 +1074,11 @@ fn then_expiration_approx(world: &mut TestWorld) {
     } else {
         expected - tx.expiration_timestamp_secs
     };
-    assert!(diff < 10, "Expiration should be ~T+600, diff was {} seconds", diff);
+    assert!(
+        diff < 10,
+        "Expiration should be ~T+600, diff was {} seconds",
+        diff
+    );
 }
 
 #[then(expr = "max_gas_amount should be 200000")]
@@ -1081,7 +1109,7 @@ fn then_authenticator_secp256k1(world: &mut TestWorld) {
 fn given_signed_tx_secp256k1(world: &mut TestWorld) {
     use aptos_sdk::account::Secp256k1Account;
     use aptos_sdk::transaction::sign_transaction;
-    
+
     given_valid_raw_transaction(world);
     let account = Secp256k1Account::generate();
     world.secp256k1_account = Some(account.clone());
@@ -1118,13 +1146,18 @@ fn given_same_signed_transaction(world: &mut TestWorld) {
     given_signed_transaction(world);
 }
 
-#[then(regex = r#"^it should equal SHA3-256\(SHA3-256\("APTOS::Transaction"\) \|\| bcs\(SignedTransaction\)\)$"#)]
+#[then(
+    regex = r#"^it should equal SHA3-256\(SHA3-256\("APTOS::Transaction"\) \|\| bcs\(SignedTransaction\)\)$"#
+)]
 fn then_hash_equals_expected(world: &mut TestWorld) {
     use aptos_sdk::crypto::sha3_256;
-    
-    let signed_tx = world.signed_transaction.as_ref().expect("No SignedTransaction");
+
+    let signed_tx = world
+        .signed_transaction
+        .as_ref()
+        .expect("No SignedTransaction");
     let tx_bytes = aptos_bcs::to_bytes(signed_tx).unwrap();
-    
+
     // Compute the expected hash
     // Note: The SDK includes a variant byte (0 for user transaction) between domain and BCS bytes
     let domain = sha3_256(b"APTOS::Transaction");
@@ -1133,7 +1166,7 @@ fn then_hash_equals_expected(world: &mut TestWorld) {
     to_hash.push(0); // User transaction variant
     to_hash.extend_from_slice(&tx_bytes);
     let expected = sha3_256(&to_hash);
-    
+
     let actual = signed_tx.hash().expect("Failed to compute hash");
     assert_eq!(actual.as_bytes(), expected.as_slice());
 }
@@ -1194,7 +1227,7 @@ fn given_account_impl_trait(world: &mut TestWorld) {
 #[when(regex = r"^I call sign_transaction\(raw_txn, account\)$")]
 fn when_call_sign_transaction(world: &mut TestWorld) {
     use aptos_sdk::transaction::sign_transaction;
-    
+
     let raw_tx = world.raw_transaction.as_ref().expect("No RawTransaction");
     let account = world.ed25519_account.as_ref().expect("No account");
     world.signed_transaction = Some(sign_transaction(raw_tx, account).expect("Failed to sign"));
@@ -1203,7 +1236,7 @@ fn when_call_sign_transaction(world: &mut TestWorld) {
 #[when(regex = r"^I call account\.sign_transaction\(raw_txn\)$")]
 fn when_call_account_sign_transaction(world: &mut TestWorld) {
     use aptos_sdk::transaction::sign_transaction;
-    
+
     let raw_tx = world.raw_transaction.as_ref().expect("No RawTransaction");
     let account = world.ed25519_account.as_ref().expect("No account");
     world.signed_transaction = Some(sign_transaction(raw_tx, account).expect("Failed to sign"));
@@ -1211,9 +1244,10 @@ fn when_call_account_sign_transaction(world: &mut TestWorld) {
 
 #[then(expr = "the sender should match the account address")]
 fn then_sender_matches_account(world: &mut TestWorld) {
-    use aptos_sdk::account::Account;
-    
-    let signed_tx = world.signed_transaction.as_ref().expect("No SignedTransaction");
+    let signed_tx = world
+        .signed_transaction
+        .as_ref()
+        .expect("No SignedTransaction");
     let account = world.ed25519_account.as_ref().expect("No account");
     assert_eq!(signed_tx.raw_txn.sender, account.address());
 }
@@ -1292,7 +1326,10 @@ fn given_signed_tx_test_vectors(world: &mut TestWorld) {
 
 #[when(expr = "I serialize it to bytes")]
 fn when_serialize_to_bytes(world: &mut TestWorld) {
-    let signed_tx = world.signed_transaction.as_ref().expect("No SignedTransaction");
+    let signed_tx = world
+        .signed_transaction
+        .as_ref()
+        .expect("No SignedTransaction");
     world.serialized_bytes = Some(aptos_bcs::to_bytes(signed_tx).unwrap());
 }
 

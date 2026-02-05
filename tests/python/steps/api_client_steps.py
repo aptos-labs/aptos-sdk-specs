@@ -6,7 +6,6 @@ Note: The Python SDK uses an async client. These tests use asyncio.run()
 for synchronous execution in the BDD context.
 """
 
-from support.vectors import hex_to_bytes, bytes_to_hex
 from aptos_sdk.account_address import AccountAddress
 from aptos_sdk.async_client import RestClient
 from behave import given, when, then

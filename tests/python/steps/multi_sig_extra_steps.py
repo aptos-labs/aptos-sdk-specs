@@ -2,8 +2,7 @@
 Additional step definitions for multi-sig and multi-agent transactions.
 """
 
-from behave import given, when, then
-
+from behave import given, then
 
 # =============================================================================
 # Given Steps - Multi-Sig Setup
@@ -13,6 +12,7 @@ from behave import given, when, then
 @given("1 Ed25519 public key")
 def step_given_1_ed25519_pubkey(context):
     from aptos_sdk.ed25519 import PrivateKey
+
     context.world.ed25519_public_key = PrivateKey.random().public_key()
 
 
@@ -76,19 +76,21 @@ def step_given_signed_multisig_tx(context):
 @given("2 secondary signer accounts")
 def step_given_2_secondary(context):
     from aptos_sdk.account import Account
+
     context.world.test_vectors["secondary_accounts"] = [
         Account.generate(),
-        Account.generate()
+        Account.generate(),
     ]
 
 
 @given("3 secondary signer addresses")
 def step_given_3_secondary_addresses(context):
     from aptos_sdk.account import Account
+
     context.world.test_vectors["secondary_addresses"] = [
         Account.generate().address(),
         Account.generate().address(),
-        Account.generate().address()
+        Account.generate().address(),
     ]
 
 
@@ -131,7 +133,10 @@ def step_given_signed_multi_agent(context):
 def step_given_secp256k1_secondary(context):
     try:
         from aptos_sdk.account import Account
-        context.world.test_vectors["secp256k1_secondary"] = Account.generate_secp256k1_ecdsa()
+
+        context.world.test_vectors["secp256k1_secondary"] = (
+            Account.generate_secp256k1_ecdsa()
+        )
     except Exception:
         context.scenario.skip("Secp256k1 not supported")
 
@@ -144,6 +149,7 @@ def step_given_secp256k1_secondary(context):
 @given("a sender who wants sponsored transaction")
 def step_given_sender_wants_sponsor(context):
     from aptos_sdk.account import Account
+
     context.world.account = Account.generate()
     context.world.test_vectors["wants_sponsor"] = True
 
@@ -172,7 +178,10 @@ def step_given_partial_fee_payer(context):
 def step_given_secp256k1_fee_payer(context):
     try:
         from aptos_sdk.account import Account
-        context.world.test_vectors["secp256k1_fee_payer"] = Account.generate_secp256k1_ecdsa()
+
+        context.world.test_vectors["secp256k1_fee_payer"] = (
+            Account.generate_secp256k1_ecdsa()
+        )
     except Exception:
         context.scenario.skip("Secp256k1 not supported")
 
@@ -202,5 +211,6 @@ def step_multi_agent_msg_matches(context):
 @then("the authenticator should be MultiAgent variant")
 def step_auth_is_multi_agent(context):
     pass
+
 
 # Note: "the authenticator should be FeePayer variant" is defined in fee_payer_steps.py

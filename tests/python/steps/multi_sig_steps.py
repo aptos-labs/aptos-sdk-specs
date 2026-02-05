@@ -5,10 +5,7 @@ Tests multi-signature account and transaction handling.
 
 from support.vectors import (
     get_multi_sig_test_vectors,
-    hex_to_bytes,
-    bytes_to_hex,
 )
-from aptos_sdk.ed25519 import PublicKey
 from aptos_sdk.bcs import Serializer, Deserializer
 from aptos_sdk.account_address import AccountAddress
 from aptos_sdk.account import Account
@@ -216,7 +213,7 @@ def step_sign_message_with_multi_sig(context):
 @when("I derive the multi-sig authentication key")
 def step_derive_multi_sig_auth_key(context):
     try:
-        from aptos_sdk.authenticator import AuthenticationKey
+        pass
 
         # Multi-sig auth key derivation
         # SHA3-256(public_key_bytes || scheme_id)
@@ -294,8 +291,8 @@ def step_create_multi_signature(context):
         from aptos_sdk.ed25519 import MultiSignature
 
         signatures = context.world.test_vectors.get("signatures", {})
-        threshold = context.world.test_vectors.get("threshold", 2)
-        total_signers = len(context.world.test_vectors.get("multi_sig_accounts", []))
+        context.world.test_vectors.get("threshold", 2)
+        len(context.world.test_vectors.get("multi_sig_accounts", []))
 
         # Create bitmap
         bitmap = 0

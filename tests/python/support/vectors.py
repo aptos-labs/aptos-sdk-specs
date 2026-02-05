@@ -5,7 +5,7 @@ Loads JSON test vectors from the test-vectors directory.
 
 import json
 import os
-from typing import Any, Dict, List, Optional
+from typing import Dict, List, Optional
 
 # Path to test vectors directory
 VECTORS_DIR = os.path.join(os.path.dirname(__file__), "../../../test-vectors")

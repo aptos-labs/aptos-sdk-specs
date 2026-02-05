@@ -5,7 +5,6 @@ All steps marked pending as Python SDK does not support BLS12-381.
 
 from behave import given, when, then
 
-
 # =============================================================================
 # BLS12-381 Key Generation - All Pending
 # =============================================================================
@@ -466,7 +465,10 @@ def step_fail_invalid_point(context):
 @then("the public key should match expected value")
 def step_pubkey_matches_expected(context):
     # Generic assertion
-    assert context.world.ed25519_public_key is not None or context.world.bytes_value is not None
+    assert (
+        context.world.ed25519_public_key is not None
+        or context.world.bytes_value is not None
+    )
 
 
 @then("the signature should match expected value")

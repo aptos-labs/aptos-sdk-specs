@@ -3,7 +3,7 @@ Step definitions for single-key.feature
 Tests account creation and management.
 """
 
-from support.vectors import hex_to_bytes, bytes_to_hex
+from support.vectors import hex_to_bytes
 from nacl.signing import SigningKey
 from aptos_sdk.account_address import AccountAddress
 from aptos_sdk.ed25519 import PrivateKey as Ed25519PrivateKey

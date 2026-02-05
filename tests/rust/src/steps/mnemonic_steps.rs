@@ -282,7 +282,11 @@ fn when_derive_with_passphrase(world: &mut TestWorld) {
         let _seed = mnemonic.to_seed_with_passphrase(passphrase);
         // For now, derive without passphrase as SDK doesn't expose passphrase derivation
         // Use different indices for different passphrases to simulate different results
-        let index = if world.ed25519_account.is_some() { 1u32 } else { 0u32 };
+        let index = if world.ed25519_account.is_some() {
+            1u32
+        } else {
+            0u32
+        };
         match Ed25519Account::from_mnemonic(phrase, index) {
             Ok(account) => {
                 if world.ed25519_account.is_some() {
@@ -463,23 +467,23 @@ fn then_addresses_different(world: &mut TestWorld) {
         // The test is effectively skipped at this assertion
         return;
     }
-    
+
     // Handle keyless/generic address comparison via named_values
     if let (Some(addr1), Some(addr2)) = (
         world.named_values.get("address_1"),
-        world.named_values.get("address_2")
+        world.named_values.get("address_2"),
     ) {
         assert_ne!(addr1, addr2, "Addresses should be different");
         return;
     }
-    
+
     // Handle multi-sig test where accounts were "created" conceptually
     if world.named_values.contains_key("accounts_created") {
-        // For multi-sig key order test, we'd verify that different key orders 
+        // For multi-sig key order test, we'd verify that different key orders
         // produce different authentication keys. This is implicitly true.
         return;
     }
-    
+
     if let (Some(ref acc1), Some(ref acc2)) = (&world.ed25519_account, &world.ed25519_account2) {
         assert_ne!(
             acc1.address(),
@@ -488,7 +492,9 @@ fn then_addresses_different(world: &mut TestWorld) {
         );
     } else if let (Some(ref addr1), Some(ref addr2)) = (&world.address, &world.address2) {
         assert_ne!(addr1, addr2, "Addresses should be different");
-    } else if let (Some(ref ed25519_acc), Some(ref secp_acc)) = (&world.ed25519_account, &world.secp256k1_account) {
+    } else if let (Some(ref ed25519_acc), Some(ref secp_acc)) =
+        (&world.ed25519_account, &world.secp256k1_account)
+    {
         assert_ne!(
             ed25519_acc.address(),
             secp_acc.address(),

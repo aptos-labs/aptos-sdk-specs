@@ -2,8 +2,7 @@
 Step definitions for SDK-specific tests and language variations.
 """
 
-from behave import given, when, then
-
+from behave import given
 
 # =============================================================================
 # Given Steps - SDK Types
@@ -203,6 +202,7 @@ def step_given_network_failure(context):
 @given("a funded Ed25519 account for benchmarking")
 def step_given_funded_ed25519_benchmark(context):
     from aptos_sdk.account import Account
+
     context.world.account = Account.generate()
     context.world.test_vectors["benchmark_account"] = True
 
@@ -210,6 +210,7 @@ def step_given_funded_ed25519_benchmark(context):
 @given("an Ed25519 key pair for benchmarking")
 def step_given_ed25519_benchmark(context):
     from aptos_sdk.ed25519 import PrivateKey
+
     context.world.ed25519_private_key = PrivateKey.random()
     context.world.ed25519_public_key = context.world.ed25519_private_key.public_key()
 
@@ -297,6 +298,6 @@ def step_given_func_aborts(context):
     context.scenario.skip("Codegen not supported in Python SDK")
 
 
-@given("a passphrase \"mysecretpassphrase\"")
+@given('a passphrase "mysecretpassphrase"')
 def step_given_passphrase(context):
     context.world.passphrase = "mysecretpassphrase"

@@ -211,7 +211,13 @@ fn then_bytes_le(world: &mut TestWorld, count: usize) {
     } else {
         panic!("No bytes found (serialized_bytes or bytes)");
     };
-    assert_eq!(bytes.len(), count, "Expected {} bytes, got {}", count, bytes.len());
+    assert_eq!(
+        bytes.len(),
+        count,
+        "Expected {} bytes, got {}",
+        count,
+        bytes.len()
+    );
 }
 
 // Use regex for byte array assertions
@@ -600,9 +606,15 @@ fn when_bcs_serialize_both(world: &mut TestWorld) {
 
 #[then(expr = "the bytes should be identical")]
 fn then_bytes_identical(world: &mut TestWorld) {
-    let bytes1 = world.bytes.as_ref().or(world.serialized_bytes.as_ref())
+    let bytes1 = world
+        .bytes
+        .as_ref()
+        .or(world.serialized_bytes.as_ref())
         .expect("No first serialization");
-    let bytes2 = world.serialized_bytes2.as_ref().expect("No second serialization");
+    let bytes2 = world
+        .serialized_bytes2
+        .as_ref()
+        .expect("No second serialization");
     assert_eq!(bytes1, bytes2, "BCS serialization should be deterministic");
 }
 
@@ -644,7 +656,9 @@ fn given_move_struct_definition(world: &mut TestWorld) {
         sender: [0u8; 32],
         amount: 1000,
     };
-    world.named_values.insert("move_struct".to_string(), "defined".to_string());
+    world
+        .named_values
+        .insert("move_struct".to_string(), "defined".to_string());
     // Serialize it for later use
     if let Ok(bytes) = aptos_bcs::to_bytes(&sample) {
         world.serialized_bytes = Some(bytes);

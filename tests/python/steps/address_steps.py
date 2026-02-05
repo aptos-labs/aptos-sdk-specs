@@ -5,9 +5,6 @@ Tests AccountAddress parsing, formatting, and BCS serialization.
 
 from support.vectors import (
     get_address_parsing_vectors,
-    get_address_constants,
-    get_invalid_address_inputs,
-    hex_to_bytes,
     bytes_to_hex,
 )
 from aptos_sdk.bcs import Serializer, Deserializer

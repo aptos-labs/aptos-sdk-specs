@@ -812,7 +812,9 @@ fn when_wait_for_funding(world: &mut TestWorld) {
         .insert("wait_for_funding".to_string(), "true".to_string());
     // Mark transaction as confirmed if we have a funding tx hash
     if world.named_values.contains_key("funding_tx_hash") {
-        world.named_values.insert("tx_confirmed".to_string(), "true".to_string());
+        world
+            .named_values
+            .insert("tx_confirmed".to_string(), "true".to_string());
     }
 }
 

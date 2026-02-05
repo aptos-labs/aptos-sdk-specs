@@ -12,7 +12,7 @@ from behave import given, when, then
 @given("the Aptos SDK is available")
 def step_sdk_available(context):
     try:
-        import aptos_sdk
+        pass
 
         context.world.result = True
     except ImportError:
@@ -22,7 +22,7 @@ def step_sdk_available(context):
 
 @given("a testnet client")
 def step_testnet_client(context):
-    from aptos_sdk.async_client import RestClient
+    pass
 
     context.world.network_url = "https://fullnode.testnet.aptoslabs.com/v1"
     # Note: For actual API calls, would need to use async client
@@ -30,7 +30,7 @@ def step_testnet_client(context):
 
 @given("a devnet client")
 def step_devnet_client(context):
-    from aptos_sdk.async_client import RestClient
+    pass
 
     context.world.network_url = "https://fullnode.devnet.aptoslabs.com/v1"
 

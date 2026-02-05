@@ -6,7 +6,6 @@ Tests Secp256k1 cryptographic operations.
 from support.vectors import (
     get_secp256k1_test_vectors,
     hex_to_bytes,
-    bytes_to_hex,
 )
 from behave import given, when, then
 import sys
@@ -18,7 +17,6 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 # Try to import secp256k1 support
 try:
     from ecdsa import SECP256k1, SigningKey, VerifyingKey, BadSignatureError
-    from ecdsa.util import sigencode_der, sigdecode_der
 
     SECP256K1_AVAILABLE = True
 except ImportError:
@@ -195,7 +193,7 @@ def step_verify_different_public_key(context):
             context.world.result = False
     except BadSignatureError:
         context.world.result = False
-    except Exception as e:
+    except Exception:
         context.world.result = False
 
 

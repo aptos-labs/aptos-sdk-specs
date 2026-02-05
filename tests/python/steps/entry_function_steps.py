@@ -3,10 +3,10 @@ Step definitions for entry-function.feature
 Tests entry function payload creation and BCS serialization.
 """
 
-from support.vectors import hex_to_bytes, bytes_to_hex
+from support.vectors import bytes_to_hex
 from aptos_sdk.transactions import EntryFunction, TransactionArgument
 from aptos_sdk.bcs import Serializer, Deserializer
-from aptos_sdk.type_tag import TypeTag, StructTag
+from aptos_sdk.type_tag import TypeTag
 from aptos_sdk.account_address import AccountAddress
 from behave import given, when, then
 import sys

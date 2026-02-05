@@ -5,7 +5,6 @@ All steps marked pending as Python SDK does not support code generation.
 
 from behave import given, when, then
 
-
 # =============================================================================
 # Given Steps - Code Generation Setup (All Pending)
 # =============================================================================

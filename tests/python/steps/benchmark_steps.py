@@ -2,8 +2,7 @@
 Step definitions for benchmark recording.
 """
 
-from behave import given, when, then
-
+from behave import then
 
 # =============================================================================
 # Then Steps - Benchmark Recording

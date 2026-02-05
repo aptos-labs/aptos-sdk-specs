@@ -2,8 +2,7 @@
 More When step definitions.
 """
 
-from behave import given, when, then
-
+from behave import when
 
 # =============================================================================
 # When Steps - Keyless Operations (Pending)
@@ -421,6 +420,7 @@ def step_try_sign_msg(context):
 @when("I wait 2 seconds")
 def step_wait_2_sec(context):
     import time
+
     time.sleep(0.1)  # Don't actually wait in tests
 
 

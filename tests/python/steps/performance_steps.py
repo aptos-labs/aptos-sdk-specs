@@ -5,7 +5,6 @@ Step definitions for performance and benchmarking.
 from behave import given, when, then
 import time
 
-
 # =============================================================================
 # Given Steps - Performance Setup
 # =============================================================================

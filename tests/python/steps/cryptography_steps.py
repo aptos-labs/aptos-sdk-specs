@@ -10,10 +10,8 @@ from support.vectors import (
 )
 from nacl.signing import SigningKey
 from aptos_sdk.account_address import AccountAddress
-from aptos_sdk.account import Account
 from aptos_sdk.ed25519 import (
     PrivateKey as Ed25519PrivateKey,
-    PublicKey as Ed25519PublicKey,
     Signature as Ed25519Signature,
 )
 from behave import given, when, then

@@ -4,7 +4,6 @@ Step definitions for transaction operations.
 
 from behave import given, when, then
 
-
 # =============================================================================
 # Given Steps - Transaction Setup
 # =============================================================================

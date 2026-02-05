@@ -3,7 +3,6 @@ Step definitions for fee-payer.feature
 Tests sponsored/fee payer transaction creation and signing.
 """
 
-from support.vectors import hex_to_bytes, bytes_to_hex
 import time
 from aptos_sdk.transactions import (
     RawTransaction,

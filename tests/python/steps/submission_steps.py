@@ -3,7 +3,6 @@ Step definitions for transaction-submission.feature
 Tests transaction submission and status polling.
 """
 
-from support.vectors import hex_to_bytes, bytes_to_hex
 from aptos_sdk.transactions import (
     RawTransaction,
     SignedTransaction,
@@ -98,7 +97,6 @@ def step_given_invalid_signed_transaction(context):
     )
 
     # Sign with wrong message to create invalid signature
-    import hashlib
 
     wrong_message = b"wrong_message"
     signature = context.world.account.sign(wrong_message)

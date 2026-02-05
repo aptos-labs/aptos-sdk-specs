@@ -2,8 +2,7 @@
 Additional When step definitions for actions.
 """
 
-from behave import given, when, then
-
+from behave import when
 
 # =============================================================================
 # When Steps - Transaction Operations

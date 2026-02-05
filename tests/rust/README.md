@@ -47,8 +47,8 @@ rust/
 
 ## SDK Dependency
 
-The tests depend on [`aptos-sdk`](https://github.com/aptos-labs/aptos-rust-sdk), which is not
-yet published to crates.io. The dependency is configured as a Git dependency:
+The tests depend on [`aptos-sdk`](https://github.com/aptos-labs/aptos-rust-sdk), which is not yet
+published to crates.io. The dependency is configured as a Git dependency:
 
 ```toml
 aptos-sdk = { git = "https://github.com/aptos-labs/aptos-rust-sdk", features = ["full"] }

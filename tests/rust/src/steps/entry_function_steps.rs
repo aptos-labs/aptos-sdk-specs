@@ -2,7 +2,7 @@
 
 use crate::support::world::TestWorld;
 use aptos_sdk::transaction::{EntryFunction, TransactionPayload};
-use aptos_sdk::types::{AccountAddress, Identifier, MoveModuleId, TypeTag};
+use aptos_sdk::types::{AccountAddress, MoveModuleId, TypeTag};
 use cucumber::{given, then, when};
 
 // =============================================================================
@@ -161,12 +161,7 @@ fn then_the_function_should_be(world: &mut TestWorld, expected: String) {
 #[then(expr = "there should be {int} type arguments")]
 fn then_there_should_be_n_type_arguments(world: &mut TestWorld, n: usize) {
     let entry_fn = world.entry_function.as_ref().expect("No entry function");
-    assert_eq!(
-        entry_fn.type_args.len(),
-        n,
-        "Expected {} type arguments",
-        n
-    );
+    assert_eq!(entry_fn.type_args.len(), n, "Expected {} type arguments", n);
 }
 
 #[then(expr = "there should be {int} arguments")]
@@ -269,8 +264,14 @@ fn when_create_coin_transfer_aptos(world: &mut TestWorld) {
 #[then(expr = "the payloads should be different in structure")]
 fn then_payloads_different_structure(world: &mut TestWorld) {
     let bytes1 = world.bytes.as_ref().expect("No APT transfer bytes");
-    let bytes2 = world.serialized_bytes2.as_ref().expect("No coin transfer bytes");
-    assert_ne!(bytes1, bytes2, "APT and coin transfer payloads should differ");
+    let bytes2 = world
+        .serialized_bytes2
+        .as_ref()
+        .expect("No coin transfer bytes");
+    assert_ne!(
+        bytes1, bytes2,
+        "APT and coin transfer payloads should differ"
+    );
 }
 
 #[then(expr = "APT transfer should use aptos_account module")]
@@ -281,7 +282,10 @@ fn then_apt_transfer_uses_aptos_account(world: &mut TestWorld) {
 
 #[then(expr = "coin transfer should use coin module")]
 fn then_coin_transfer_uses_coin(world: &mut TestWorld) {
-    let entry_fn2 = world.entry_function2.as_ref().expect("No coin transfer entry function");
+    let entry_fn2 = world
+        .entry_function2
+        .as_ref()
+        .expect("No coin transfer entry function");
     assert_eq!(entry_fn2.module.name.as_str(), "coin");
 }
 
@@ -334,7 +338,10 @@ fn then_result_uleb128_plus_utf8(world: &mut TestWorld) {
     // Need to account for multibyte chars
     let utf8_len = s.as_bytes().len();
     // For short strings, ULEB128 is 1 byte
-    assert!(bytes.len() >= utf8_len + 1, "Should have length prefix plus string bytes");
+    assert!(
+        bytes.len() >= utf8_len + 1,
+        "Should have length prefix plus string bytes"
+    );
 }
 
 // =============================================================================
@@ -354,7 +361,10 @@ fn given_entry_function_for_apt_transfer(world: &mut TestWorld) {
 fn then_result_includes_components(world: &mut TestWorld) {
     let bytes = world.bytes.as_ref().expect("No serialized bytes");
     // Just verify it has reasonable size (module ID + function + type_args + args)
-    assert!(bytes.len() > 32, "Serialized EntryFunction should have reasonable size");
+    assert!(
+        bytes.len() > 32,
+        "Serialized EntryFunction should have reasonable size"
+    );
 }
 
 #[given(expr = "the same EntryFunction created twice")]
@@ -419,7 +429,11 @@ fn then_first_byte_indicates_entry_function(world: &mut TestWorld) {
         panic!("No serialized bytes found");
     };
     // EntryFunction is variant 2 in TransactionPayload
-    assert_eq!(bytes[0], 2, "First byte should be 2 (EntryFunction variant), got {}", bytes[0]);
+    assert_eq!(
+        bytes[0], 2,
+        "First byte should be 2 (EntryFunction variant), got {}",
+        bytes[0]
+    );
 }
 
 // =============================================================================
@@ -495,7 +509,9 @@ fn given_recipient_amount_from_test_vectors(world: &mut TestWorld) {
 
 #[then(regex = r"^the bytes should match the expected value from test vectors$")]
 fn then_bytes_match_test_vectors(world: &mut TestWorld) {
-    let bytes = world.bytes.as_ref()
+    let bytes = world
+        .bytes
+        .as_ref()
         .or(world.serialized_bytes.as_ref())
         .expect("No serialized bytes");
     // Just verify it's non-empty and reasonable

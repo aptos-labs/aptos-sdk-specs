@@ -3,7 +3,7 @@ Step definitions for raw-transaction.feature
 Tests RawTransaction creation and BCS serialization.
 """
 
-from support.vectors import hex_to_bytes, bytes_to_hex
+from support.vectors import bytes_to_hex
 from aptos_sdk.transactions import (
     RawTransaction,
     TransactionPayload,

@@ -4,7 +4,6 @@ Step definitions for view function operations.
 
 from behave import given, when, then
 
-
 # =============================================================================
 # Given Steps - View Function Setup
 # =============================================================================
