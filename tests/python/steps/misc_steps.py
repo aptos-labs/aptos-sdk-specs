@@ -4,7 +4,6 @@ Miscellaneous step definitions for various features.
 
 from behave import given, when, then
 
-
 # =============================================================================
 # Given Steps - Faucet
 # =============================================================================
@@ -178,6 +177,7 @@ def step_mainnet_no_faucet(context):
 @given("an Ed25519 key pair created in a scope")
 def step_given_ed25519_in_scope(context):
     from aptos_sdk.ed25519 import PrivateKey
+
     context.world.ed25519_private_key = PrivateKey.random()
     context.world.ed25519_public_key = context.world.ed25519_private_key.public_key()
 

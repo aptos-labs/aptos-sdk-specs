@@ -1,8 +1,8 @@
 //! Step definitions for account management feature tests.
 
 use crate::support::TestWorld;
-use aptos_sdk::account::{Account, AnyAccount, AuthenticationKey, Ed25519Account, Secp256k1Account};
-use aptos_sdk::crypto::{ED25519_SCHEME, SINGLE_KEY_SCHEME, Verifier};
+use aptos_sdk::account::{Account, AnyAccount, Ed25519Account, Secp256k1Account};
+use aptos_sdk::crypto::{ED25519_SCHEME, SINGLE_KEY_SCHEME};
 use cucumber::{given, then, when};
 
 // =============================================================================
@@ -142,10 +142,10 @@ fn when_derive_auth_key_from_account(world: &mut TestWorld) {
 #[then("the account should be valid")]
 fn then_account_valid(world: &mut TestWorld) {
     assert!(
-        world.ed25519_account.is_some() 
-        || world.secp256k1_account.is_some() 
-        || world.any_account.is_some()
-        || world.named_values.get("keyless_account_created") == Some(&"true".to_string()),
+        world.ed25519_account.is_some()
+            || world.secp256k1_account.is_some()
+            || world.any_account.is_some()
+            || world.named_values.get("keyless_account_created") == Some(&"true".to_string()),
         "Expected a valid account"
     );
 }
@@ -336,18 +336,27 @@ fn given_key_type_string(world: &mut TestWorld, type1: String, type2: String) {
     world.named_values.insert("key_type_1".to_string(), type1);
     world.named_values.insert("key_type_2".to_string(), type2);
     // Default to first type
-    world.named_values.insert("selected_key_type".to_string(), world.named_values.get("key_type_1").cloned().unwrap_or_default());
+    world.named_values.insert(
+        "selected_key_type".to_string(),
+        world
+            .named_values
+            .get("key_type_1")
+            .cloned()
+            .unwrap_or_default(),
+    );
 }
 
 #[given("a private key hex string")]
 fn given_private_key_hex_string(world: &mut TestWorld) {
-    world.hex_string = Some("1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef".to_string());
+    world.hex_string =
+        Some("1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef".to_string());
 }
 
 #[given(expr = "private key {string} from test vectors")]
 fn given_private_key_from_test_vectors(world: &mut TestWorld, _key: String) {
     // Test vector private key - using a known value
-    world.hex_string = Some("0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef".to_string());
+    world.hex_string =
+        Some("0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef".to_string());
 }
 
 // =============================================================================
@@ -409,14 +418,22 @@ fn when_get_address(world: &mut TestWorld) {
 #[when("I get the signature scheme")]
 fn when_get_signature_scheme(world: &mut TestWorld) {
     if let Some(ref account) = world.ed25519_account {
-        world.named_values.insert("signature_scheme".to_string(), 
-            if account.signature_scheme() == ED25519_SCHEME { "ed25519".to_string() }
-            else { format!("{}", account.signature_scheme()) }
+        world.named_values.insert(
+            "signature_scheme".to_string(),
+            if account.signature_scheme() == ED25519_SCHEME {
+                "ed25519".to_string()
+            } else {
+                format!("{}", account.signature_scheme())
+            },
         );
     } else if let Some(ref account) = world.secp256k1_account {
-        world.named_values.insert("signature_scheme".to_string(), 
-            if account.signature_scheme() == SINGLE_KEY_SCHEME { "secp256k1_ecdsa".to_string() }
-            else { format!("{}", account.signature_scheme()) }
+        world.named_values.insert(
+            "signature_scheme".to_string(),
+            if account.signature_scheme() == SINGLE_KEY_SCHEME {
+                "secp256k1_ecdsa".to_string()
+            } else {
+                format!("{}", account.signature_scheme())
+            },
         );
     }
 }
@@ -521,7 +538,10 @@ fn when_call_address(world: &mut TestWorld) {
 
 #[when("I call sign(message)")]
 fn when_call_sign_message(world: &mut TestWorld) {
-    let message = world.message.clone().unwrap_or_else(|| b"test message".to_vec());
+    let message = world
+        .message
+        .clone()
+        .unwrap_or_else(|| b"test message".to_vec());
     // Test through the Account trait interface
     if let Some(ref account) = world.ed25519_account {
         let account: &dyn Account = account;
@@ -565,22 +585,24 @@ fn when_wrap_in_any_account(world: &mut TestWorld) {
 
 #[when("I create an AnyAccount based on the key type")]
 fn when_create_any_account_based_on_key_type(world: &mut TestWorld) {
-    let key_type = world.named_values.get("selected_key_type").cloned().unwrap_or_default();
-    let hex = world.hex_string.clone().unwrap_or_else(|| "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef".to_string());
-    
+    let key_type = world
+        .named_values
+        .get("selected_key_type")
+        .cloned()
+        .unwrap_or_default();
+    let hex = world.hex_string.clone().unwrap_or_else(|| {
+        "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef".to_string()
+    });
+
     match key_type.as_str() {
-        "ed25519" => {
-            match Ed25519Account::from_private_key_hex(&hex) {
-                Ok(account) => world.any_account = Some(AnyAccount::from(account)),
-                Err(e) => world.set_error(e),
-            }
-        }
-        "secp256k1" => {
-            match Secp256k1Account::from_private_key_hex(&hex) {
-                Ok(account) => world.any_account = Some(AnyAccount::from(account)),
-                Err(e) => world.set_error(e),
-            }
-        }
+        "ed25519" => match Ed25519Account::from_private_key_hex(&hex) {
+            Ok(account) => world.any_account = Some(AnyAccount::from(account)),
+            Err(e) => world.set_error(e),
+        },
+        "secp256k1" => match Secp256k1Account::from_private_key_hex(&hex) {
+            Ok(account) => world.any_account = Some(AnyAccount::from(account)),
+            Err(e) => world.set_error(e),
+        },
         _ => world.set_error(format!("Unknown key type: {}", key_type)),
     }
 }
@@ -622,7 +644,10 @@ fn then_account_has_valid_address(world: &mut TestWorld) {
     } else if world.bls_public_key.is_some() {
         // BLS accounts derive address from public key
         // Just verify we have a public key
-        assert!(world.bls_public_key.is_some(), "BLS public key should exist");
+        assert!(
+            world.bls_public_key.is_some(),
+            "BLS public key should exist"
+        );
     } else {
         panic!("No account available");
     }
@@ -631,9 +656,15 @@ fn then_account_has_valid_address(world: &mut TestWorld) {
 #[then("the account should have a valid public key")]
 fn then_account_has_valid_public_key(world: &mut TestWorld) {
     if let Some(ref account) = world.ed25519_account {
-        assert!(!account.public_key_bytes().is_empty(), "Public key should not be empty");
+        assert!(
+            !account.public_key_bytes().is_empty(),
+            "Public key should not be empty"
+        );
     } else if let Some(ref account) = world.secp256k1_account {
-        assert!(!account.public_key_bytes().is_empty(), "Public key should not be empty");
+        assert!(
+            !account.public_key_bytes().is_empty(),
+            "Public key should not be empty"
+        );
     }
 }
 
@@ -645,10 +676,13 @@ fn then_account_has_valid_public_key(world: &mut TestWorld) {
 
 #[then("recreating from the same key should produce the same address")]
 fn then_recreating_same_address(world: &mut TestWorld) {
-    if let (Some(ref hex), Some(acc1)) = (world.hex_string.as_ref(), world.ed25519_account.as_ref()) {
+    if let (Some(ref hex), Some(acc1)) = (world.hex_string.as_ref(), world.ed25519_account.as_ref())
+    {
         let acc2 = Ed25519Account::from_private_key_hex(hex).unwrap();
         assert_eq!(acc1.address(), acc2.address());
-    } else if let (Some(ref bytes), Some(acc1)) = (world.bytes.as_ref(), world.ed25519_account.as_ref()) {
+    } else if let (Some(ref bytes), Some(acc1)) =
+        (world.bytes.as_ref(), world.ed25519_account.as_ref())
+    {
         let acc2 = Ed25519Account::from_private_key_bytes(bytes).unwrap();
         assert_eq!(acc1.address(), acc2.address());
     }
@@ -677,7 +711,11 @@ fn then_it_should_be_32_bytes(world: &mut TestWorld) {
 #[then(expr = "it should be {string}")]
 fn then_it_should_be_string(world: &mut TestWorld, expected: String) {
     if let Some(scheme) = world.named_values.get("signature_scheme") {
-        assert_eq!(scheme, &expected, "Expected signature scheme {}, got {}", expected, scheme);
+        assert_eq!(
+            scheme, &expected,
+            "Expected signature scheme {}, got {}",
+            expected, scheme
+        );
     }
 }
 
@@ -689,18 +727,30 @@ fn then_it_should_be_string(world: &mut TestWorld, expected: String) {
 
 #[then("the signature should verify against the public key")]
 fn then_signature_verify_against_public_key(world: &mut TestWorld) {
-    if let (Some(ref account), Some(ref sig_bytes), Some(ref message)) = 
-        (world.ed25519_account.as_ref(), world.bytes.as_ref(), world.message.as_ref()) {
+    if let (Some(ref account), Some(ref sig_bytes), Some(ref message)) = (
+        world.ed25519_account.as_ref(),
+        world.bytes.as_ref(),
+        world.message.as_ref(),
+    ) {
         use aptos_sdk::crypto::Ed25519Signature;
         let sig = Ed25519Signature::from_bytes(sig_bytes).expect("Invalid signature bytes");
         let pk = aptos_sdk::crypto::Ed25519PublicKey::from_bytes(&account.public_key_bytes())
             .expect("Invalid public key");
-        assert!(pk.verify(message, &sig).is_ok(), "Signature verification failed");
-    } else if let (Some(ref account), Some(ref sig_bytes), Some(ref message)) =
-        (world.secp256k1_account.as_ref(), world.bytes.as_ref(), world.message.as_ref()) {
+        assert!(
+            pk.verify(message, &sig).is_ok(),
+            "Signature verification failed"
+        );
+    } else if let (Some(ref account), Some(ref sig_bytes), Some(ref message)) = (
+        world.secp256k1_account.as_ref(),
+        world.bytes.as_ref(),
+        world.message.as_ref(),
+    ) {
         use aptos_sdk::crypto::Secp256k1Signature;
         let sig = Secp256k1Signature::from_bytes(sig_bytes).expect("Invalid signature bytes");
-        assert!(account.public_key().verify(message, &sig).is_ok(), "Signature verification failed");
+        assert!(
+            account.public_key().verify(message, &sig).is_ok(),
+            "Signature verification failed"
+        );
     }
 }
 
@@ -721,18 +771,30 @@ fn then_signature_scheme_is(world: &mut TestWorld, expected: String) {
         // Skip this assertion since Secp256k1 mnemonic derivation isn't implemented
         return;
     }
-    
+
     if let Some(ref account) = world.ed25519_account {
-        let scheme = if account.signature_scheme() == ED25519_SCHEME { "ed25519" } else { "unknown" };
+        let scheme = if account.signature_scheme() == ED25519_SCHEME {
+            "ed25519"
+        } else {
+            "unknown"
+        };
         assert_eq!(scheme, expected);
     } else if let Some(ref account) = world.secp256k1_account {
-        let scheme = if account.signature_scheme() == SINGLE_KEY_SCHEME { "secp256k1_ecdsa" } else { "unknown" };
+        let scheme = if account.signature_scheme() == SINGLE_KEY_SCHEME {
+            "secp256k1_ecdsa"
+        } else {
+            "unknown"
+        };
         assert_eq!(scheme, expected);
     } else if let Some(ref any) = world.any_account {
         let scheme_byte = any.signature_scheme();
-        let scheme = if scheme_byte == ED25519_SCHEME { "ed25519" } 
-            else if scheme_byte == SINGLE_KEY_SCHEME { "secp256k1_ecdsa" } 
-            else { "unknown" };
+        let scheme = if scheme_byte == ED25519_SCHEME {
+            "ed25519"
+        } else if scheme_byte == SINGLE_KEY_SCHEME {
+            "secp256k1_ecdsa"
+        } else {
+            "unknown"
+        };
         assert_eq!(scheme, expected);
     }
 }
@@ -746,37 +808,52 @@ fn then_signature_scheme_is(world: &mut TestWorld, expected: String) {
 #[then("it should return the correct address")]
 fn then_return_correct_address(world: &mut TestWorld) {
     assert!(world.address.is_some(), "Should have an address");
-    assert!(!world.address.as_ref().unwrap().is_zero(), "Address should not be zero");
+    assert!(
+        !world.address.as_ref().unwrap().is_zero(),
+        "Address should not be zero"
+    );
 }
 
 #[then("it should return a valid signature")]
 fn then_return_valid_signature(world: &mut TestWorld) {
     assert!(world.bytes.is_some(), "Should have signature bytes");
-    assert!(!world.bytes.as_ref().unwrap().is_empty(), "Signature should not be empty");
+    assert!(
+        !world.bytes.as_ref().unwrap().is_empty(),
+        "Signature should not be empty"
+    );
 }
 
 #[then("I should be able to iterate and sign with each")]
 fn then_iterate_and_sign_with_each(world: &mut TestWorld) {
     let message = b"test message";
     let mut signed_count = 0;
-    
+
     if let Some(ref account) = world.ed25519_account {
         let account: &dyn Account = account;
         let sig = account.sign(message);
         assert!(sig.is_ok(), "Ed25519 signing should succeed");
-        assert!(!sig.unwrap().is_empty(), "Ed25519 signature should not be empty");
+        assert!(
+            !sig.unwrap().is_empty(),
+            "Ed25519 signature should not be empty"
+        );
         signed_count += 1;
     }
-    
+
     if let Some(ref account) = world.secp256k1_account {
         let account: &dyn Account = account;
         let sig = account.sign(message);
         assert!(sig.is_ok(), "Secp256k1 signing should succeed");
-        assert!(!sig.unwrap().is_empty(), "Secp256k1 signature should not be empty");
+        assert!(
+            !sig.unwrap().is_empty(),
+            "Secp256k1 signature should not be empty"
+        );
         signed_count += 1;
     }
-    
-    assert!(signed_count > 0, "Should have signed with at least one account");
+
+    assert!(
+        signed_count > 0,
+        "Should have signed with at least one account"
+    );
 }
 
 // =============================================================================

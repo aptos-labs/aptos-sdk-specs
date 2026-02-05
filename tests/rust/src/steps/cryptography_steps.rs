@@ -3,9 +3,8 @@
 use crate::support::TestWorld;
 use aptos_sdk::account::Account;
 use aptos_sdk::crypto::{
-    derive_authentication_key, sha3_256, Ed25519PrivateKey, Ed25519PublicKey, Ed25519Signature,
-    Secp256k1PrivateKey, Secp256k1Signature, Secp256r1PrivateKey, Secp256r1Signature,
-    ED25519_SCHEME,
+    derive_authentication_key, sha3_256, Ed25519PrivateKey, Ed25519Signature, Secp256k1PrivateKey,
+    Secp256k1Signature, Secp256r1PrivateKey, Secp256r1Signature, ED25519_SCHEME,
 };
 use aptos_sdk::types::AccountAddress;
 use cucumber::{given, then, when};
@@ -279,8 +278,6 @@ fn when_try_create_ed25519_key_pair(world: &mut TestWorld) {
 
 #[when("I sign the message")]
 fn when_sign_message(world: &mut TestWorld) {
-    use aptos_sdk::crypto::Signer;
-    
     if let (Some(private_key), Some(message)) =
         (world.ed25519_private_key.as_ref(), world.message.as_ref())
     {
@@ -401,10 +398,9 @@ fn when_verify_signature(world: &mut TestWorld) {
             Ok(()) => world.bool_result = Some(true),
             Err(_) => world.bool_result = Some(false),
         }
-    } else if let (Some(public_key), Some(signature)) = (
-        world.bls_public_key.as_ref(),
-        world.bls_signature.as_ref(),
-    ) {
+    } else if let (Some(public_key), Some(signature)) =
+        (world.bls_public_key.as_ref(), world.bls_signature.as_ref())
+    {
         match public_key.verify(message, signature) {
             Ok(()) => world.bool_result = Some(true),
             Err(_) => world.bool_result = Some(false),
@@ -443,10 +439,9 @@ fn when_verify_with_second_key(world: &mut TestWorld) {
             Ok(()) => world.bool_result = Some(true),
             Err(_) => world.bool_result = Some(false),
         }
-    } else if let (Some(public_key2), Some(signature)) = (
-        world.bls_public_key2.as_ref(),
-        world.bls_signature.as_ref(),
-    ) {
+    } else if let (Some(public_key2), Some(signature)) =
+        (world.bls_public_key2.as_ref(), world.bls_signature.as_ref())
+    {
         match public_key2.verify(message, signature) {
             Ok(()) => world.bool_result = Some(true),
             Err(_) => world.bool_result = Some(false),
@@ -646,7 +641,12 @@ fn then_signature_length(world: &mut TestWorld, length: usize) {
     } else if let Some(signature) = world.bls_signature.as_ref() {
         assert_eq!(signature.to_bytes().len(), length);
     } else if let Some(sig_bytes) = world.bytes.as_ref() {
-        assert_eq!(sig_bytes.len(), length, "Signature should be {} bytes", length);
+        assert_eq!(
+            sig_bytes.len(),
+            length,
+            "Signature should be {} bytes",
+            length
+        );
     }
 }
 
@@ -690,15 +690,13 @@ fn then_signatures_identical(world: &mut TestWorld) {
         world.ed25519_signature2.as_ref(),
     ) {
         assert_eq!(sig1.to_bytes(), sig2.to_bytes());
-    } else if let (Some(sig1), Some(sig2)) = (
-        world.bls_signature.as_ref(),
-        world.bls_signature2.as_ref(),
-    ) {
+    } else if let (Some(sig1), Some(sig2)) =
+        (world.bls_signature.as_ref(), world.bls_signature2.as_ref())
+    {
         assert_eq!(sig1.to_bytes(), sig2.to_bytes());
-    } else if let (Some(sig1), Some(sig2)) = (
-        world.bytes.as_ref(),
-        world.serialized_bytes2.as_ref(),
-    ) {
+    } else if let (Some(sig1), Some(sig2)) =
+        (world.bytes.as_ref(), world.serialized_bytes2.as_ref())
+    {
         assert_eq!(sig1, sig2, "Signatures should be identical");
     }
 }
@@ -710,15 +708,13 @@ fn then_signatures_different(world: &mut TestWorld) {
         world.ed25519_signature2.as_ref(),
     ) {
         assert_ne!(sig1.to_bytes(), sig2.to_bytes());
-    } else if let (Some(sig1), Some(sig2)) = (
-        world.bls_signature.as_ref(),
-        world.bls_signature2.as_ref(),
-    ) {
+    } else if let (Some(sig1), Some(sig2)) =
+        (world.bls_signature.as_ref(), world.bls_signature2.as_ref())
+    {
         assert_ne!(sig1.to_bytes(), sig2.to_bytes());
-    } else if let (Some(sig1), Some(sig2)) = (
-        world.bytes.as_ref(),
-        world.serialized_bytes2.as_ref(),
-    ) {
+    } else if let (Some(sig1), Some(sig2)) =
+        (world.bytes.as_ref(), world.serialized_bytes2.as_ref())
+    {
         assert_ne!(sig1, sig2, "Signatures should be different");
     }
 }
@@ -853,8 +849,8 @@ fn then_address_matches_vectors(world: &mut TestWorld) {
 fn then_signature_matches_vectors(world: &mut TestWorld) {
     // Verify we have a signature (any type) - either raw signature or in a signed transaction
     assert!(
-        world.ed25519_signature.is_some() 
-            || world.secp256k1_signature.is_some() 
+        world.ed25519_signature.is_some()
+            || world.secp256k1_signature.is_some()
             || world.secp256r1_signature.is_some()
             || world.signed_transaction.is_some(),
         "No signature found"

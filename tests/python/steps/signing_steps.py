@@ -3,12 +3,7 @@ Step definitions for signing.feature
 Tests transaction signing and authenticator creation.
 """
 
-from support.vectors import hex_to_bytes, bytes_to_hex
-from aptos_sdk.authenticator import (
-    Authenticator,
-    AccountAuthenticator,
-    Ed25519Authenticator,
-)
+from support.vectors import hex_to_bytes
 from aptos_sdk.transactions import (
     RawTransaction,
     SignedTransaction,
@@ -844,7 +839,7 @@ def step_both_tx_hashes_identical(context):
 
 
 @then("the transaction hashes should be different")
-def step_tx_hashes_different(context):
+def step_tx_hashes_should_be_different(context):
     hash1 = context.world.test_vectors.get("tx_hash_1")
     hash2 = context.world.test_vectors.get("tx_hash_2")
     assert hash1 != hash2

@@ -5,7 +5,6 @@ Most steps marked pending as Python SDK has limited mnemonic support.
 
 from behave import given, when, then
 
-
 # =============================================================================
 # Given Steps - Mnemonic Setup
 # =============================================================================
@@ -65,27 +64,35 @@ def step_given_mnemonic_entropy_passphrase(context):
     context.scenario.skip("Mnemonic support limited in Python SDK")
 
 
-@given('mnemonic "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about"')
+@given(
+    'mnemonic "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about"'
+)
 def step_given_test_mnemonic(context):
     context.world.mnemonic = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about"
 
 
-@given('the mnemonic phrase "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about"')
+@given(
+    'the mnemonic phrase "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about"'
+)
 def step_given_test_mnemonic_alt(context):
     context.world.mnemonic = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about"
 
 
-@given('the mnemonic phrase "ABANDON ABANDON ABANDON ABANDON ABANDON ABANDON ABANDON ABANDON ABANDON ABANDON ABANDON ABOUT"')
+@given(
+    'the mnemonic phrase "ABANDON ABANDON ABANDON ABANDON ABANDON ABANDON ABANDON ABANDON ABANDON ABANDON ABANDON ABOUT"'
+)
 def step_given_test_mnemonic_upper(context):
     context.world.mnemonic = "ABANDON ABANDON ABANDON ABANDON ABANDON ABANDON ABANDON ABANDON ABANDON ABANDON ABANDON ABOUT"
 
 
-@given('the mnemonic phrase "invalid word abandon abandon abandon abandon abandon abandon abandon abandon abandon about"')
+@given(
+    'the mnemonic phrase "invalid word abandon abandon abandon abandon abandon abandon abandon abandon abandon about"'
+)
 def step_given_invalid_mnemonic(context):
     context.world.mnemonic = "invalid word abandon abandon abandon abandon abandon abandon abandon abandon abandon about"
 
 
-@given('derivation path "m/44\'/637\'/0\'/0\'/5\'"')
+@given("derivation path \"m/44'/637'/0'/0'/5'\"")
 def step_given_derivation_path(context):
     context.world.derivation_path = "m/44'/637'/0'/0'/5'"
 
@@ -226,7 +233,7 @@ def step_derive_accounts_indices(context):
     context.scenario.skip("Mnemonic support limited in Python SDK")
 
 
-@when('I derive accounts at paths "m/44\'/637\'/0\'/0\'/0\'" and "m/44\'/637\'/0\'/0\'/1\'"')
+@when("I derive accounts at paths \"m/44'/637'/0'/0'/0'\" and \"m/44'/637'/0'/0'/1'\"")
 def step_derive_accounts_paths(context):
     # TODO: awaiting SDK implementation - mnemonic support limited
     context.scenario.skip("Mnemonic support limited in Python SDK")
@@ -238,7 +245,7 @@ def step_derive_ed25519_from_each(context):
     context.scenario.skip("Mnemonic support limited in Python SDK")
 
 
-@when('I derive with path "m/44\'/637\'/0\'/0\'/0\'"')
+@when("I derive with path \"m/44'/637'/0'/0'/0'\"")
 def step_derive_with_default_path(context):
     # TODO: awaiting SDK implementation - mnemonic support limited
     context.scenario.skip("Mnemonic support limited in Python SDK")
@@ -256,7 +263,7 @@ def step_derive_secp256k1_account(context):
     context.scenario.skip("Mnemonic support limited in Python SDK")
 
 
-@when('I try to derive with path "44\'/637\'/0\'/0\'/0\'"')
+@when("I try to derive with path \"44'/637'/0'/0'/0'\"")
 def step_try_derive_no_m(context):
     # TODO: awaiting SDK implementation - mnemonic support limited
     context.scenario.skip("Mnemonic support limited in Python SDK")
@@ -268,7 +275,7 @@ def step_try_derive_no_hardened(context):
     context.scenario.skip("Mnemonic support limited in Python SDK")
 
 
-@when('I try to derive with path "m/44\'/60\'/0\'/0\'/0\'"')
+@when("I try to derive with path \"m/44'/60'/0'/0'/0'\"")
 def step_try_derive_ethereum_path(context):
     # TODO: awaiting SDK implementation - mnemonic support limited
     context.scenario.skip("Mnemonic support limited in Python SDK")
@@ -319,7 +326,7 @@ def step_words_in_wordlist(context):
     context.scenario.skip("Mnemonic support limited in Python SDK")
 
 
-@then('the derivation path used should be "m/44\'/637\'/0\'/0\'/0\'"')
+@then("the derivation path used should be \"m/44'/637'/0'/0'/0'\"")
 def step_derivation_path_default(context):
     # TODO: awaiting SDK implementation - mnemonic support limited
     context.scenario.skip("Mnemonic support limited in Python SDK")
@@ -349,7 +356,9 @@ def step_derivation_fails_or_different(context):
     context.scenario.skip("Mnemonic support limited in Python SDK")
 
 
-@then("the derivation should either fail or produce a different result than Aptos default")
+@then(
+    "the derivation should either fail or produce a different result than Aptos default"
+)
 def step_derivation_fails_or_different_alt(context):
     # TODO: awaiting SDK implementation - mnemonic support limited
     context.scenario.skip("Mnemonic support limited in Python SDK")

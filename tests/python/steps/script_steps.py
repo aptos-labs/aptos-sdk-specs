@@ -4,7 +4,6 @@ Step definitions for Move script operations.
 
 from behave import given, when, then
 
-
 # =============================================================================
 # Given Steps - Script Setup
 # =============================================================================
@@ -77,7 +76,9 @@ def step_given_arg_u64(context):
 
 @given("a script argument of type vector<u8>")
 def step_given_arg_bytes(context):
-    context.world.test_vectors["script_args"] = [{"type": "vector<u8>", "value": [1, 2, 3]}]
+    context.world.test_vectors["script_args"] = [
+        {"type": "vector<u8>", "value": [1, 2, 3]}
+    ]
 
 
 @given("a script expecting (address, u64, vector<u8>)")

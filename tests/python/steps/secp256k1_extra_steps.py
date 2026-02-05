@@ -4,7 +4,6 @@ Additional step definitions for Secp256k1 cryptography.
 
 from behave import given, when, then
 
-
 # =============================================================================
 # Given Steps - Secp256k1 Setup
 # =============================================================================
@@ -13,6 +12,7 @@ from behave import given, when, then
 @given("a 32-byte private key")
 def step_given_32_byte_key(context):
     import os
+
     context.world.bytes_value = os.urandom(32)
 
 
@@ -30,6 +30,7 @@ def step_given_invalid_secp256k1_value(context):
 @given("a hex-encoded Secp256k1 private key")
 def step_given_hex_secp256k1(context):
     import os
+
     context.world.hex_string = os.urandom(32).hex()
 
 
@@ -37,6 +38,7 @@ def step_given_hex_secp256k1(context):
 def step_given_secp256k1_keypair(context):
     try:
         from aptos_sdk.account import Account
+
         context.world.secp256k1_account = Account.generate_secp256k1_ecdsa()
         context.world.clear_error()
     except Exception as e:
@@ -47,6 +49,7 @@ def step_given_secp256k1_keypair(context):
 def step_given_two_secp256k1(context):
     try:
         from aptos_sdk.account import Account
+
         context.world.secp256k1_account = Account.generate_secp256k1_ecdsa()
         context.world.secp256k1_account_2 = Account.generate_secp256k1_ecdsa()
         context.world.clear_error()
@@ -87,6 +90,7 @@ def step_given_struct_fields(context):
 @given("a SHA256 hash of a message")
 def step_given_sha256_hash(context):
     import hashlib
+
     msg = context.world.message or b"test"
     context.world.hash_result = hashlib.sha256(msg).digest()
 
@@ -100,6 +104,7 @@ def step_given_sha256_hash(context):
 def step_generate_secp256k1(context):
     try:
         from aptos_sdk.account import Account
+
         context.world.secp256k1_account = Account.generate_secp256k1_ecdsa()
         context.world.account = context.world.secp256k1_account
         context.world.clear_error()
@@ -129,6 +134,7 @@ def step_create_secp256k1_from_hex(context):
 def step_try_create_secp256k1(context):
     try:
         from aptos_sdk.account import Account
+
         context.world.secp256k1_account = Account.generate_secp256k1_ecdsa()
         context.world.clear_error()
     except Exception as e:
@@ -166,6 +172,7 @@ def step_derive_auth_from_uncompressed(context):
 @when("I compute SHA-256 of the message")
 def step_compute_sha256(context):
     import hashlib
+
     if context.world.message:
         context.world.hash_result = hashlib.sha256(context.world.message).digest()
 
@@ -184,6 +191,7 @@ def step_parse_it(context):
 @when("I create a funded Ed25519 account")
 def step_create_funded_ed25519(context):
     from aptos_sdk.account import Account
+
     context.world.account = Account.generate()
     context.world.test_vectors["funded"] = True
 
@@ -192,6 +200,7 @@ def step_create_funded_ed25519(context):
 def step_create_funded_secp256k1(context):
     try:
         from aptos_sdk.account import Account
+
         context.world.secp256k1_account = Account.generate_secp256k1_ecdsa()
         context.world.test_vectors["funded"] = True
     except Exception as e:

@@ -232,12 +232,15 @@ fn then_type_arg_struct_named(world: &mut TestWorld, idx: usize, name: String) {
 fn then_type_arg_is_string(world: &mut TestWorld, idx: usize, variant: String) {
     // Check entry function first
     if let Some(ref entry_fn) = world.entry_function {
-        assert!(idx < entry_fn.type_args.len(), "Type argument index out of bounds");
+        assert!(
+            idx < entry_fn.type_args.len(),
+            "Type argument index out of bounds"
+        );
         let expected = TypeTag::from_str_strict(&variant).expect("Invalid expected type tag");
         assert_eq!(entry_fn.type_args[idx], expected, "Type argument mismatch");
         return;
     }
-    
+
     let tag = world.type_tag.as_ref().expect("No TypeTag");
     if let TypeTag::Struct(st) = tag {
         // Try to match as a variant name first, then as a full type string
@@ -246,15 +249,17 @@ fn then_type_arg_is_string(world: &mut TestWorld, idx: usize, variant: String) {
             TypeTag::U8 => "U8",
             TypeTag::Struct(s) => {
                 // Return full type string
-                let type_str = format!("{}::{}::{}", 
-                    s.address.to_short_string(), 
-                    s.module.as_str(), 
-                    s.name.as_str());
+                let type_str = format!(
+                    "{}::{}::{}",
+                    s.address.to_short_string(),
+                    s.module.as_str(),
+                    s.name.as_str()
+                );
                 if type_str == variant {
                     return; // Match!
                 }
                 "Struct"
-            },
+            }
             _ => "Other",
         };
         assert_eq!(actual, variant);
@@ -263,7 +268,9 @@ fn then_type_arg_is_string(world: &mut TestWorld, idx: usize, variant: String) {
     }
 }
 
-#[then(regex = r"^type argument (\d+) should be (U8|U16|U32|U64|U128|U256|Bool|Address|Struct|Other)$")]
+#[then(
+    regex = r"^type argument (\d+) should be (U8|U16|U32|U64|U128|U256|Bool|Address|Struct|Other)$"
+)]
 fn then_type_arg_is_variant(world: &mut TestWorld, idx: usize, variant: String) {
     let tag = world.type_tag.as_ref().expect("No TypeTag");
     if let TypeTag::Struct(st) = tag {
@@ -465,7 +472,7 @@ fn then_deserializable_back(world: &mut TestWorld) {
 
 #[when(expr = "I BCS serialize and deserialize it")]
 fn when_bcs_roundtrip(world: &mut TestWorld) {
-    use aptos_sdk::transaction::{RawTransaction, EntryFunction};
+    use aptos_sdk::transaction::{EntryFunction, RawTransaction};
 
     if let Some(ref tag) = world.type_tag {
         let bytes = aptos_bcs::to_bytes(tag).expect("Failed to serialize");
@@ -486,7 +493,8 @@ fn when_bcs_roundtrip(world: &mut TestWorld) {
         world.struct_tag_deserialized = Some(deserialized);
     } else if let Some(ref entry_fn) = world.entry_function {
         let bytes = aptos_bcs::to_bytes(entry_fn).expect("Failed to serialize");
-        let deserialized: EntryFunction = aptos_bcs::from_bytes(&bytes).expect("Failed to deserialize");
+        let deserialized: EntryFunction =
+            aptos_bcs::from_bytes(&bytes).expect("Failed to deserialize");
         world.entry_function2 = Some(deserialized);
     }
 }

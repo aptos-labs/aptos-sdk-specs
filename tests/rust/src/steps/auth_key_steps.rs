@@ -296,7 +296,7 @@ fn then_equals_sha3_256_alt(world: &mut TestWorld, scheme_hex: String) {
 
 fn verify_sha3_256_auth_key(world: &mut TestWorld, scheme_hex: String) {
     use aptos_sdk::account::Account;
-    
+
     let scheme = u8::from_str_radix(scheme_hex.trim_start_matches("0x"), 16).unwrap_or(0);
 
     let public_key_bytes = if let Some(ref pk) = world.ed25519_public_key {

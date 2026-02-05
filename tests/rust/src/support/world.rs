@@ -1,22 +1,23 @@
 //! Test world - holds state between Cucumber steps.
 
-use aptos_sdk::account::{Account, AnyAccount, Ed25519Account, MultiEd25519Account, Secp256k1Account, Secp256r1Account};
+use aptos_sdk::account::{
+    AnyAccount, Ed25519Account, MultiEd25519Account, Secp256k1Account, Secp256r1Account,
+};
 use aptos_sdk::api::{FaucetClient, FullnodeClient};
-use aptos_sdk::Aptos;
 use aptos_sdk::crypto::{
     Bls12381PrivateKey, Bls12381ProofOfPossession, Bls12381PublicKey, Bls12381Signature,
-    Ed25519PrivateKey, Ed25519PublicKey, Ed25519Signature,
-    MultiEd25519PublicKey, MultiEd25519Signature,
-    Secp256k1PrivateKey, Secp256k1PublicKey, Secp256k1Signature,
+    Ed25519PrivateKey, Ed25519PublicKey, Ed25519Signature, MultiEd25519PublicKey,
+    MultiEd25519Signature, Secp256k1PrivateKey, Secp256k1PublicKey, Secp256k1Signature,
     Secp256r1PrivateKey, Secp256r1PublicKey, Secp256r1Signature,
 };
-use aptos_sdk::transaction::{
-    EntryFunction, PartiallySigned, RawTransaction, Script, ScriptArgument, SignedTransaction, TransactionPayload,
-};
 use aptos_sdk::transaction::types::{FeePayerRawTransaction, MultiAgentRawTransaction};
-use aptos_sdk::transaction::authenticator::TransactionAuthenticator;
-use aptos_sdk::ChainId;
+use aptos_sdk::transaction::{
+    EntryFunction, PartiallySigned, RawTransaction, Script, ScriptArgument, SignedTransaction,
+    TransactionPayload,
+};
 use aptos_sdk::types::{AccountAddress, HashValue, MoveModuleId, MoveStructTag, TypeTag};
+use aptos_sdk::Aptos;
+use aptos_sdk::ChainId;
 use cucumber::World;
 use std::collections::HashMap;
 
@@ -562,4 +563,3 @@ impl TestWorld {
         self.last_error = None;
     }
 }
-

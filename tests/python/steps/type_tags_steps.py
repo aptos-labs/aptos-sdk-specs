@@ -6,11 +6,10 @@ Note: The Python SDK's TypeTag doesn't have a from_str parser.
 We implement basic parsing here for testing purposes.
 """
 
-from support.vectors import hex_to_bytes, bytes_to_hex
 from aptos_sdk.bcs import Serializer, Deserializer
 from aptos_sdk.account_address import AccountAddress
 from aptos_sdk.type_tag import TypeTag, StructTag
-from behave import given, when, then, use_step_matcher
+from behave import given, when, then
 import sys
 import os
 import re

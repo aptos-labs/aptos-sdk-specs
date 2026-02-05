@@ -4,7 +4,6 @@ Step definitions for Aptos client configuration and operations.
 
 from behave import given, when, then
 
-
 # =============================================================================
 # Given Steps - Client Configuration
 # =============================================================================

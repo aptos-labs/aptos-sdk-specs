@@ -2,8 +2,7 @@
 Final When step definitions.
 """
 
-from behave import given, when, then
-
+from behave import when
 
 # =============================================================================
 # When Steps - Faucet

@@ -3,7 +3,6 @@ Step definitions for multi-agent.feature
 Tests multi-agent transaction creation and signing.
 """
 
-from support.vectors import hex_to_bytes, bytes_to_hex
 import time
 from aptos_sdk.transactions import (
     RawTransaction,
@@ -12,7 +11,6 @@ from aptos_sdk.transactions import (
     MultiAgentRawTransaction,
 )
 from aptos_sdk.bcs import Serializer, Deserializer
-from aptos_sdk.account_address import AccountAddress
 from aptos_sdk.account import Account
 from behave import given, when, then
 import sys

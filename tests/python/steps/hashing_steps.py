@@ -3,7 +3,6 @@ Step definitions for hashing.feature
 Tests SHA3-256, SHA2-256, and domain-separated hashing.
 """
 
-from support.vectors import hex_to_bytes, bytes_to_hex
 from behave import given, when, then
 import sys
 import os

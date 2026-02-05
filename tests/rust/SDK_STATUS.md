@@ -1,7 +1,6 @@
 # Rust SDK Test Status
 
-> **Last Updated:** 2026-02-05
-> **Last Verified:** 2026-02-05
+> **Last Updated:** 2026-02-05 **Last Verified:** 2026-02-05
 
 ---
 
@@ -65,25 +64,25 @@
 
 The SDK uses feature flags. The `full` feature enables all:
 
-| Feature    | Default | Description                |
-| ---------- | ------- | -------------------------- |
-| `ed25519`  | Yes     | Ed25519 signatures         |
-| `secp256k1`| Yes     | Secp256k1 ECDSA            |
-| `secp256r1`| Yes     | Secp256r1 (P-256) ECDSA    |
-| `mnemonic` | Yes     | BIP-39 mnemonic support    |
-| `indexer`  | Yes     | GraphQL indexer client      |
-| `faucet`   | Yes     | Faucet integration          |
-| `bls`      | No      | BLS12-381 signatures        |
-| `keyless`  | No      | OIDC-based keyless auth     |
-| `full`     | No      | All features combined       |
+| Feature     | Default | Description             |
+| ----------- | ------- | ----------------------- |
+| `ed25519`   | Yes     | Ed25519 signatures      |
+| `secp256k1` | Yes     | Secp256k1 ECDSA         |
+| `secp256r1` | Yes     | Secp256r1 (P-256) ECDSA |
+| `mnemonic`  | Yes     | BIP-39 mnemonic support |
+| `indexer`   | Yes     | GraphQL indexer client  |
+| `faucet`    | Yes     | Faucet integration      |
+| `bls`       | No      | BLS12-381 signatures    |
+| `keyless`   | No      | OIDC-based keyless auth |
+| `full`      | No      | All features combined   |
 
 ---
 
 ## 4. Known Issues
 
-| Issue              | Impact             | Resolution                       |
-| ------------------ | ------------------ | -------------------------------- |
-| Not on crates.io   | Git dep required   | Use git dependency from GitHub   |
+| Issue            | Impact           | Resolution                     |
+| ---------------- | ---------------- | ------------------------------ |
+| Not on crates.io | Git dep required | Use git dependency from GitHub |
 
 ### SDK Dependency
 
@@ -116,6 +115,7 @@ cargo test --test specs
 ```
 
 Scenarios that skip are typically due to:
+
 - Network-dependent tests requiring live testnet/devnet
 - Advanced features not yet fully tested
 - Error handling edge cases

@@ -3,12 +3,10 @@ Step definitions for serialization.feature
 Tests BCS serialization and deserialization.
 """
 
-from support.vectors import hex_to_bytes, bytes_to_hex
 from aptos_sdk.bcs import Serializer, Deserializer
 from behave import given, when, then, use_step_matcher
 import sys
 import os
-import re
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 

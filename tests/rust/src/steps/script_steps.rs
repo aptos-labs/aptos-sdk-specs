@@ -16,9 +16,10 @@ fn sample_script_bytecode() -> Vec<u8> {
     // This is a placeholder - real scripts would be compiled from Move source
     vec![
         0xa1, 0x1c, 0xeb, 0x0b, // Magic number (Move bytecode)
-        0x05, 0x00, 0x00, 0x00, // Version
-        // ... rest would be actual bytecode
-        // For testing purposes, we use a simple byte sequence
+        0x05, 0x00, 0x00,
+        0x00, // Version
+              // ... rest would be actual bytecode
+              // For testing purposes, we use a simple byte sequence
     ]
 }
 
@@ -82,7 +83,10 @@ fn then_arguments_empty(world: &mut TestWorld) {
 #[then(expr = "type arguments should be empty")]
 fn then_type_arguments_empty(world: &mut TestWorld) {
     let script = world.script.as_ref().expect("No script");
-    assert!(script.type_args.is_empty(), "Type arguments should be empty");
+    assert!(
+        script.type_args.is_empty(),
+        "Type arguments should be empty"
+    );
 }
 
 #[given(expr = "a compiled generic script")]
@@ -163,10 +167,7 @@ fn given_script_arg_string(world: &mut TestWorld) {
 
 #[when(expr = "I encode the value {string}")]
 fn when_encode_value_string(world: &mut TestWorld, value: String) {
-    let arg_type = world
-        .script_arg_type
-        .as_ref()
-        .expect("No script arg type");
+    let arg_type = world.script_arg_type.as_ref().expect("No script arg type");
 
     match arg_type.as_str() {
         "address" => {
@@ -183,10 +184,7 @@ fn when_encode_value_string(world: &mut TestWorld, value: String) {
 
 #[when(expr = "I encode the value {int}")]
 fn when_encode_value_int(world: &mut TestWorld, value: u64) {
-    let arg_type = world
-        .script_arg_type
-        .as_ref()
-        .expect("No script arg type");
+    let arg_type = world.script_arg_type.as_ref().expect("No script arg type");
 
     match arg_type.as_str() {
         "u64" => {
@@ -202,10 +200,7 @@ fn when_encode_value_int(world: &mut TestWorld, value: u64) {
 
 #[when(expr = "I encode the value [{int}, {int}, {int}]")]
 fn when_encode_value_array(world: &mut TestWorld, a: u8, b: u8, c: u8) {
-    let arg_type = world
-        .script_arg_type
-        .as_ref()
-        .expect("No script arg type");
+    let arg_type = world.script_arg_type.as_ref().expect("No script arg type");
 
     match arg_type.as_str() {
         "vector<u8>" => {
@@ -246,7 +241,10 @@ fn then_encoded_bytes_bcs_address(world: &mut TestWorld) {
     let bytes = world.bytes.as_ref().expect("No encoded bytes");
     // ScriptArgument::Address is variant 6 (0-indexed)
     // First byte is variant, rest is address
-    assert!(bytes.len() >= 32, "Should have at least 32 bytes for address");
+    assert!(
+        bytes.len() >= 32,
+        "Should have at least 32 bytes for address"
+    );
 }
 
 #[then(expr = "the encoded bytes should be {string}")]
@@ -263,7 +261,11 @@ fn then_encoded_bytes_should_be(world: &mut TestWorld, expected_hex: String) {
             "Encoded bytes (without variant) should match"
         );
     } else {
-        assert_eq!(bytes.as_slice(), expected.as_slice(), "Encoded bytes should match");
+        assert_eq!(
+            bytes.as_slice(),
+            expected.as_slice(),
+            "Encoded bytes should match"
+        );
     }
 }
 
@@ -346,10 +348,10 @@ fn given_signing_account(world: &mut TestWorld) {
 #[given(expr = "a SignedTransaction with Script payload")]
 fn given_signed_transaction_with_script(world: &mut TestWorld) {
     use aptos_sdk::transaction::sign_transaction;
-    
+
     given_raw_transaction_with_script(world);
     given_signing_account(world);
-    
+
     let raw_tx = world.raw_transaction.as_ref().expect("No raw transaction");
     let account = world.ed25519_account.as_ref().expect("No account");
     let signed_tx = sign_transaction(raw_tx, account).expect("Failed to sign");

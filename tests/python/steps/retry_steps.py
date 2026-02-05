@@ -4,7 +4,6 @@ Step definitions for retry and error handling.
 
 from behave import given, when, then
 
-
 # =============================================================================
 # Given Steps - Retry Configuration
 # =============================================================================
@@ -289,7 +288,9 @@ def step_receive_timeout(context):
 
 @then("I should receive a network error")
 def step_receive_network_error(context):
-    assert context.world.error is not None or context.world.test_vectors.get("network_error")
+    assert context.world.error is not None or context.world.test_vectors.get(
+        "network_error"
+    )
 
 
 @then("I should receive a Network error")

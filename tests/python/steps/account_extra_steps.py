@@ -5,7 +5,6 @@ Additional step definitions for accounts.
 from behave import given, when, then
 from aptos_sdk.account import Account
 
-
 # =============================================================================
 # Given Steps - Account Setup
 # =============================================================================
@@ -86,6 +85,7 @@ def step_given_account_various_txs(context):
 @given("an account with published modules (e.g., 0x1)")
 def step_given_account_with_modules(context):
     from aptos_sdk.account_address import AccountAddress
+
     context.world.address = AccountAddress.from_str_relaxed("0x1")
 
 
@@ -169,6 +169,7 @@ def step_given_variable_values(context):
 @given("current time is T")
 def step_given_current_time(context):
     import time
+
     context.world.test_vectors["current_time"] = time.time()
 
 

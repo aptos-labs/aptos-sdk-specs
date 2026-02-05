@@ -4,7 +4,6 @@ Step definitions for transaction building.
 
 from behave import given, when, then
 
-
 # =============================================================================
 # Given Steps - Transaction Builder Setup
 # =============================================================================

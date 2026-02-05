@@ -3,8 +3,7 @@ Step definitions for keyless accounts and ZK proofs.
 All steps marked pending as Python SDK may have limited keyless support.
 """
 
-from behave import given, when, then
-
+from behave import given, then
 
 # =============================================================================
 # Given Steps - Keyless Setup (Most Pending)

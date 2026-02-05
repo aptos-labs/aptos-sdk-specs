@@ -1194,7 +1194,8 @@ cd tests/rust && cargo test --test specs
 
 **Status:** Not verified (SDK path not available)
 
-**Note:** Tests depend on `aptos-sdk` from GitHub (`https://github.com/aptos-labs/aptos-rust-sdk`), which is not yet on crates.io.
+**Note:** Tests depend on `aptos-sdk` from GitHub (`https://github.com/aptos-labs/aptos-rust-sdk`),
+which is not yet on crates.io.
 
 **To Fix:** Update `Cargo.toml` to use:
 

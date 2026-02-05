@@ -5,7 +5,6 @@ All steps marked pending as Python SDK does not support Secp256r1.
 
 from behave import given, when, then
 
-
 # =============================================================================
 # Secp256r1 Key Generation - All Pending
 # =============================================================================
@@ -98,6 +97,7 @@ def step_given_secp256r1_msg_from_vectors(context):
 @given("the same 32-byte private key")
 def step_given_same_32byte_privkey(context):
     import os
+
     context.world.bytes_value = os.urandom(32)
 
 
@@ -317,7 +317,10 @@ def step_diff_due_to_scheme(context):
 
 @then("I should get a valid public key")
 def step_get_valid_pubkey(context):
-    assert context.world.ed25519_public_key is not None or context.world.public_key is not None
+    assert (
+        context.world.ed25519_public_key is not None
+        or context.world.public_key is not None
+    )
 
 
 @then("I should get a Secp256r1 SignedTransaction")

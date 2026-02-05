@@ -4,9 +4,7 @@
 //! are handled by cryptography_steps.rs - this file only contains BLS-specific steps.
 
 use crate::support::TestWorld;
-use aptos_sdk::crypto::{
-    Bls12381PrivateKey, Bls12381ProofOfPossession, Bls12381PublicKey, Bls12381Signature, Verifier,
-};
+use aptos_sdk::crypto::{Bls12381PrivateKey, Bls12381PublicKey, Bls12381Signature};
 use cucumber::{given, then, when};
 
 // =============================================================================
@@ -78,7 +76,10 @@ fn given_invalid_bls_private_key(world: &mut TestWorld) {
 
 #[when("I try to create a key pair")]
 fn when_try_create_bls_keypair(world: &mut TestWorld) {
-    let bytes = world.private_key_bytes.as_ref().expect("No private key bytes");
+    let bytes = world
+        .private_key_bytes
+        .as_ref()
+        .expect("No private key bytes");
     match Bls12381PrivateKey::from_bytes(bytes) {
         Ok(pk) => {
             world.bls_public_key = Some(pk.public_key());
@@ -93,7 +94,11 @@ fn then_same_seed_same_key(world: &mut TestWorld) {
     let seed = world.seed_bytes.as_ref().expect("No seed bytes");
     let pk1 = world.bls_private_key.as_ref().expect("No BLS private key");
     let pk2 = Bls12381PrivateKey::from_seed(seed).expect("Failed to create key from seed");
-    assert_eq!(pk1.to_bytes(), pk2.to_bytes(), "Keys from same seed should match");
+    assert_eq!(
+        pk1.to_bytes(),
+        pk2.to_bytes(),
+        "Keys from same seed should match"
+    );
 }
 
 // =============================================================================
@@ -138,7 +143,9 @@ fn given_bls_signature(world: &mut TestWorld) {
 
 #[given("a message and valid signature")]
 fn given_message_and_valid_signature_bls(world: &mut TestWorld) {
-    let pk = world.bls_private_key.get_or_insert_with(Bls12381PrivateKey::generate);
+    let pk = world
+        .bls_private_key
+        .get_or_insert_with(Bls12381PrivateKey::generate);
     world.bls_public_key = Some(pk.public_key());
     let message = b"test message".to_vec();
     world.bls_signature = Some(pk.sign(&message));
@@ -156,11 +163,9 @@ fn given_message_signed_by_first_bls(world: &mut TestWorld) {
 
 #[when("I verify with second key's public key")]
 fn when_verify_with_second_bls_key(world: &mut TestWorld) {
-    if let (Some(ref pk2), Some(ref sig), Some(ref msg)) = (
-        &world.bls_public_key2,
-        &world.bls_signature,
-        &world.message,
-    ) {
+    if let (Some(ref pk2), Some(ref sig), Some(ref msg)) =
+        (&world.bls_public_key2, &world.bls_signature, &world.message)
+    {
         match pk2.verify(msg, sig) {
             Ok(()) => world.bool_result = Some(true),
             Err(_) => world.bool_result = Some(false),
@@ -195,10 +200,10 @@ fn given_malformed_bls_signature(world: &mut TestWorld) {
 
 #[when("I try to verify")]
 fn when_try_verify_bls(world: &mut TestWorld) {
-    let pk = world.bls_public_key.get_or_insert_with(|| {
-        Bls12381PrivateKey::generate().public_key()
-    });
-    
+    let pk = world
+        .bls_public_key
+        .get_or_insert_with(|| Bls12381PrivateKey::generate().public_key());
+
     if let Some(ref bytes) = world.bytes {
         match Bls12381Signature::from_bytes(bytes) {
             Ok(sig) => {
@@ -222,7 +227,7 @@ fn given_two_bls_sigs_same_message(world: &mut TestWorld) {
     let pk1 = Bls12381PrivateKey::generate();
     let pk2 = Bls12381PrivateKey::generate();
     let message = b"shared message".to_vec();
-    
+
     world.bls_signature = Some(pk1.sign(&message));
     world.bls_signature2 = Some(pk2.sign(&message));
     world.bls_public_key = Some(pk1.public_key());
@@ -241,7 +246,7 @@ fn when_aggregate_signatures(world: &mut TestWorld) {
     if world.bls_signature.is_some() && world.bls_signature2.is_some() {
         let sig1 = world.bls_signature.as_ref().unwrap();
         let sig2 = world.bls_signature2.as_ref().unwrap();
-        
+
         match Bls12381Signature::aggregate(&[sig1, sig2]) {
             Ok(agg) => world.bls_aggregated_signature = Some(agg),
             Err(e) => world.error = Some(e.to_string()),
@@ -268,7 +273,7 @@ fn given_n_bls_signatures(world: &mut TestWorld, count: usize) {
     let message = b"shared message".to_vec();
     world.bls_signatures.clear();
     world.bls_public_keys.clear();
-    
+
     for _ in 0..count {
         let pk = Bls12381PrivateKey::generate();
         world.bls_signatures.push(pk.sign(&message));
@@ -330,18 +335,21 @@ fn when_aggregate_different_orders(world: &mut TestWorld) {
     // Aggregate in original order
     let sig_refs: Vec<&Bls12381Signature> = world.bls_signatures.iter().collect();
     let agg1 = Bls12381Signature::aggregate(&sig_refs).expect("Aggregation failed");
-    
+
     // Aggregate in reverse order
     let sig_refs_rev: Vec<&Bls12381Signature> = world.bls_signatures.iter().rev().collect();
     let agg2 = Bls12381Signature::aggregate(&sig_refs_rev).expect("Aggregation failed");
-    
+
     world.bls_aggregated_signature = Some(agg1);
     world.bls_signature2 = Some(agg2);
 }
 
 #[then("the aggregated signatures should be the same")]
 fn then_aggregated_sigs_same(world: &mut TestWorld) {
-    let agg1 = world.bls_aggregated_signature.as_ref().expect("No aggregated sig 1");
+    let agg1 = world
+        .bls_aggregated_signature
+        .as_ref()
+        .expect("No aggregated sig 1");
     let agg2 = world.bls_signature2.as_ref().expect("No aggregated sig 2");
     assert_eq!(agg1.to_bytes(), agg2.to_bytes());
 }
@@ -368,7 +376,7 @@ fn when_aggregate_them(world: &mut TestWorld) {
     if world.bls_signature.is_some() && world.bls_signature2.is_some() {
         let sig1 = world.bls_signature.as_ref().unwrap();
         let sig2 = world.bls_signature2.as_ref().unwrap();
-        
+
         match Bls12381Signature::aggregate(&[sig1, sig2]) {
             Ok(agg) => world.bls_aggregated_signature = Some(agg),
             Err(e) => world.error = Some(e.to_string()),
@@ -377,7 +385,7 @@ fn when_aggregate_them(world: &mut TestWorld) {
         // Aggregating public keys
         let pk1 = world.bls_public_key.as_ref().unwrap();
         let pk2 = world.bls_public_key2.as_ref().unwrap();
-        
+
         match Bls12381PublicKey::aggregate(&[pk1, pk2]) {
             Ok(agg) => world.bls_aggregated_public_key = Some(agg),
             Err(e) => world.error = Some(e.to_string()),
@@ -391,14 +399,23 @@ fn then_verification_against_single_fails(world: &mut TestWorld) {
     let pk1 = world.bls_public_key.as_ref().expect("No public key 1");
     let pk2 = world.bls_public_key2.as_ref().expect("No public key 2");
     let agg_pk = Bls12381PublicKey::aggregate(&[pk1, pk2]).expect("Failed to aggregate PKs");
-    
-    let agg_sig = world.bls_aggregated_signature.as_ref().expect("No aggregated sig");
+
+    let agg_sig = world
+        .bls_aggregated_signature
+        .as_ref()
+        .expect("No aggregated sig");
     let msg1 = world.message.as_ref().expect("No message 1");
     let msg2 = world.message2.as_ref().expect("No message 2");
-    
+
     // Both verifications should fail
-    assert!(agg_pk.verify(msg1, agg_sig).is_err(), "Verification against msg1 should fail");
-    assert!(agg_pk.verify(msg2, agg_sig).is_err(), "Verification against msg2 should fail");
+    assert!(
+        agg_pk.verify(msg1, agg_sig).is_err(),
+        "Verification against msg1 should fail"
+    );
+    assert!(
+        agg_pk.verify(msg2, agg_sig).is_err(),
+        "Verification against msg2 should fail"
+    );
 }
 
 // =============================================================================
@@ -417,7 +434,7 @@ fn given_two_bls_public_keys(world: &mut TestWorld) {
 fn when_aggregate_bls_public_keys(world: &mut TestWorld) {
     let pk1 = world.bls_public_key.as_ref().expect("No public key 1");
     let pk2 = world.bls_public_key2.as_ref().expect("No public key 2");
-    
+
     match Bls12381PublicKey::aggregate(&[pk1, pk2]) {
         Ok(agg) => world.bls_aggregated_public_key = Some(agg),
         Err(e) => world.error = Some(e.to_string()),
@@ -518,7 +535,7 @@ fn given_pop_from_different_key(world: &mut TestWorld) {
 fn given_aggregated_pks_with_pops(world: &mut TestWorld) {
     world.bls_public_keys.clear();
     world.bls_pops.clear();
-    
+
     for _ in 0..3 {
         let pk = Bls12381PrivateKey::generate();
         world.bls_pops.push(pk.create_proof_of_possession());

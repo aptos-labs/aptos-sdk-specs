@@ -4,7 +4,6 @@ Additional step definitions for entry functions.
 
 from behave import given, when, then
 
-
 # =============================================================================
 # Given Steps - Entry Function Setup
 # =============================================================================

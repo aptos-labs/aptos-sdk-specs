@@ -4,7 +4,6 @@ Step definitions for indexer and GraphQL operations.
 
 from behave import given, when, then
 
-
 # =============================================================================
 # Given Steps - Indexer Setup
 # =============================================================================
@@ -38,7 +37,9 @@ def step_given_graphql_query(context):
 
 @given("a GraphQL query with variables")
 def step_given_graphql_with_vars(context):
-    context.world.test_vectors["graphql_query"] = "query($addr: String!) { account(address: $addr) { sequence_number } }"
+    context.world.test_vectors["graphql_query"] = (
+        "query($addr: String!) { account(address: $addr) { sequence_number } }"
+    )
     context.world.test_vectors["graphql_vars"] = {"addr": "0x1"}
 
 
