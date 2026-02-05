@@ -39,6 +39,12 @@ fn then_type_tag_variant(world: &mut TestWorld, variant: String) {
         TypeTag::Signer => "Signer",
         TypeTag::Vector(_) => "Vector",
         TypeTag::Struct(_) => "Struct",
+        TypeTag::I8 => "I8",
+        TypeTag::I16 => "I16",
+        TypeTag::I32 => "I32",
+        TypeTag::I64 => "I64",
+        TypeTag::I128 => "I128",
+        TypeTag::I256 => "I256",
     };
     assert_eq!(
         actual_variant, variant,

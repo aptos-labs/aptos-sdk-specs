@@ -594,7 +594,7 @@ fn then_see_decimals_8(world: &mut TestWorld) {
 #[when("I create a faucet client for testnet")]
 fn when_create_faucet_testnet(world: &mut TestWorld) {
     let config = AptosConfig::testnet().without_retry();
-    match FaucetClient::new(config) {
+    match FaucetClient::new(&config) {
         Ok(client) => {
             world.faucet_client = Some(client);
             world.named_values.insert(
@@ -609,7 +609,7 @@ fn when_create_faucet_testnet(world: &mut TestWorld) {
 #[when("I create a faucet client for devnet")]
 fn when_create_faucet_devnet(world: &mut TestWorld) {
     let config = AptosConfig::devnet().without_retry();
-    match FaucetClient::new(config) {
+    match FaucetClient::new(&config) {
         Ok(client) => {
             world.faucet_client = Some(client);
             world.named_values.insert(
@@ -624,7 +624,7 @@ fn when_create_faucet_devnet(world: &mut TestWorld) {
 #[when("I create a faucet client for localnet")]
 fn when_create_faucet_localnet(world: &mut TestWorld) {
     let config = AptosConfig::local();
-    match FaucetClient::new(config) {
+    match FaucetClient::new(&config) {
         Ok(client) => {
             world.faucet_client = Some(client);
             world.named_values.insert(
@@ -659,7 +659,7 @@ fn when_create_custom_faucet(world: &mut TestWorld) {
 #[when("I try to create a faucet client for mainnet")]
 fn when_try_faucet_mainnet(world: &mut TestWorld) {
     let config = AptosConfig::mainnet();
-    match FaucetClient::new(config) {
+    match FaucetClient::new(&config) {
         Ok(_) => {
             world
                 .named_values
