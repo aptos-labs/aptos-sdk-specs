@@ -3,9 +3,9 @@
 //! These tests use wiremock to mock HTTP responses for deterministic testing.
 
 use crate::support::TestWorld;
-use aptos_rust_sdk_v2::api::{FaucetClient, FullnodeClient};
-use aptos_rust_sdk_v2::config::AptosConfig;
-use aptos_rust_sdk_v2::types::AccountAddress;
+use aptos_sdk::api::{FaucetClient, FullnodeClient};
+use aptos_sdk::config::AptosConfig;
+use aptos_sdk::types::AccountAddress;
 use cucumber::{given, then, when};
 use rand::RngCore;
 use std::time::Duration;

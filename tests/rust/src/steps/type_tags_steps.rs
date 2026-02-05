@@ -1,7 +1,7 @@
 //! Step definitions for TypeTag parsing tests
 
 use crate::support::world::TestWorld;
-use aptos_rust_sdk_v2::types::{MoveModuleId, MoveStructTag, TypeTag};
+use aptos_sdk::types::{MoveModuleId, MoveStructTag, TypeTag};
 use cucumber::{given, then, when};
 
 // =============================================================================
@@ -275,8 +275,8 @@ fn then_type_arg_is_variant(world: &mut TestWorld, idx: usize, variant: String) 
 
 #[given(expr = "a TypeTag struct with address {string}, module {string}, name {string}")]
 fn given_type_tag_struct(world: &mut TestWorld, addr: String, module: String, name: String) {
-    use aptos_rust_sdk_v2::types::Identifier;
-    use aptos_rust_sdk_v2::AccountAddress;
+    use aptos_sdk::types::Identifier;
+    use aptos_sdk::AccountAddress;
     let address = AccountAddress::from_hex(&addr).unwrap();
     let struct_tag = MoveStructTag {
         address,
@@ -289,8 +289,8 @@ fn given_type_tag_struct(world: &mut TestWorld, addr: String, module: String, na
 
 #[given(expr = "a TypeTag for CoinStore of AptosCoin")]
 fn given_type_tag_coin_store(world: &mut TestWorld) {
-    use aptos_rust_sdk_v2::types::Identifier;
-    use aptos_rust_sdk_v2::AccountAddress;
+    use aptos_sdk::types::Identifier;
+    use aptos_sdk::AccountAddress;
     let aptos_coin = MoveStructTag {
         address: AccountAddress::from_hex("0x1").unwrap(),
         module: Identifier::new("aptos_coin").unwrap(),
@@ -337,7 +337,7 @@ fn when_parse_as_module_id(world: &mut TestWorld) {
 #[then(expr = "the module address should be {string}")]
 fn then_module_address(world: &mut TestWorld, addr: String) {
     if let Some(ref entry_fn) = world.entry_function {
-        let expected = aptos_rust_sdk_v2::AccountAddress::from_hex(&addr).expect("Invalid address");
+        let expected = aptos_sdk::AccountAddress::from_hex(&addr).expect("Invalid address");
         assert_eq!(entry_fn.module.address, expected, "Module address mismatch");
     } else {
         let module_id = world.module_id.as_ref().expect("No MoveModuleId");
@@ -357,8 +357,8 @@ fn then_module_name(world: &mut TestWorld, name: String) {
 
 #[given(expr = "a MoveModuleId with address {string} and name {string}")]
 fn given_move_module_id(world: &mut TestWorld, addr: String, name: String) {
-    use aptos_rust_sdk_v2::types::Identifier;
-    use aptos_rust_sdk_v2::AccountAddress;
+    use aptos_sdk::types::Identifier;
+    use aptos_sdk::AccountAddress;
     world.module_id = Some(MoveModuleId {
         address: AccountAddress::from_hex(&addr).unwrap(),
         name: Identifier::new(&name).unwrap(),
@@ -378,8 +378,8 @@ fn then_parsing_fail_generic(world: &mut TestWorld) {
     regex = r#"^address "([^"]+)", module "([^"]+)", name "([^"]+)", and type args \[AptosCoin\]$"#
 )]
 fn given_struct_tag_components(world: &mut TestWorld, addr: String, module: String, name: String) {
-    use aptos_rust_sdk_v2::types::Identifier;
-    use aptos_rust_sdk_v2::AccountAddress;
+    use aptos_sdk::types::Identifier;
+    use aptos_sdk::AccountAddress;
     let aptos_coin = MoveStructTag {
         address: AccountAddress::from_hex("0x1").unwrap(),
         module: Identifier::new("aptos_coin").unwrap(),
@@ -459,7 +459,7 @@ fn then_deserializable_back(world: &mut TestWorld) {
 
 #[when(expr = "I BCS serialize and deserialize it")]
 fn when_bcs_roundtrip(world: &mut TestWorld) {
-    use aptos_rust_sdk_v2::transaction::{RawTransaction, EntryFunction};
+    use aptos_sdk::transaction::{RawTransaction, EntryFunction};
 
     if let Some(ref tag) = world.type_tag {
         let bytes = aptos_bcs::to_bytes(tag).expect("Failed to serialize");

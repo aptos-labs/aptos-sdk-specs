@@ -517,7 +517,7 @@ fn then_remaining_two_u64(world: &mut TestWorld) {
 
 #[given(expr = "an AccountAddress {string}")]
 fn given_account_address_string(world: &mut TestWorld, addr: String) {
-    use aptos_rust_sdk_v2::AccountAddress;
+    use aptos_sdk::AccountAddress;
     world.account_address = Some(AccountAddress::from_hex(&addr).expect("Invalid address"));
 }
 
@@ -540,7 +540,7 @@ fn given_bytes_with_specific_byte(world: &mut TestWorld, total: usize, idx: usiz
 #[given(expr = "a struct with fields:")]
 fn given_struct_with_fields(world: &mut TestWorld) {
     // For simplicity, we'll serialize a (AccountAddress, u64) tuple
-    use aptos_rust_sdk_v2::AccountAddress;
+    use aptos_sdk::AccountAddress;
     let addr = AccountAddress::from_hex("0x1").unwrap();
     let amount: u64 = 1000;
     world.serialized_bytes = Some(aptos_bcs::to_bytes(&(addr, amount)).unwrap());

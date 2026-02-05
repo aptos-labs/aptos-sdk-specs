@@ -1,8 +1,8 @@
 //! Step definitions for Script payload tests
 
 use crate::support::world::TestWorld;
-use aptos_rust_sdk_v2::transaction::{Script, ScriptArgument, TransactionPayload};
-use aptos_rust_sdk_v2::types::{AccountAddress, TypeTag};
+use aptos_sdk::transaction::{Script, ScriptArgument, TransactionPayload};
+use aptos_sdk::types::{AccountAddress, TypeTag};
 use cucumber::{given, then, when};
 
 // =============================================================================
@@ -280,7 +280,7 @@ fn given_a_script_payload(world: &mut TestWorld) {
 
 #[given(regex = r"^transaction parameters \(sender, seq num, gas, etc\.\)$")]
 fn given_transaction_parameters(world: &mut TestWorld) {
-    use aptos_rust_sdk_v2::account::Ed25519Account;
+    use aptos_sdk::account::Ed25519Account;
 
     let account = Ed25519Account::generate();
     world.ed25519_account = Some(account.clone());
@@ -292,8 +292,8 @@ fn given_transaction_parameters(world: &mut TestWorld) {
 
 #[when(expr = "I build the RawTransaction")]
 fn when_build_raw_transaction(world: &mut TestWorld) {
-    use aptos_rust_sdk_v2::transaction::RawTransaction;
-    use aptos_rust_sdk_v2::ChainId;
+    use aptos_sdk::transaction::RawTransaction;
+    use aptos_sdk::ChainId;
 
     let sender = world.tx_sender.expect("No sender");
     let seq_num = world.tx_sequence_number.unwrap_or(0);
@@ -331,7 +331,7 @@ fn given_raw_transaction_with_script(world: &mut TestWorld) {
 
 #[given(expr = "a signing account")]
 fn given_signing_account(world: &mut TestWorld) {
-    use aptos_rust_sdk_v2::account::Ed25519Account;
+    use aptos_sdk::account::Ed25519Account;
 
     if world.ed25519_account.is_none() {
         let account = Ed25519Account::generate();
@@ -345,7 +345,7 @@ fn given_signing_account(world: &mut TestWorld) {
 
 #[given(expr = "a SignedTransaction with Script payload")]
 fn given_signed_transaction_with_script(world: &mut TestWorld) {
-    use aptos_rust_sdk_v2::transaction::sign_transaction;
+    use aptos_sdk::transaction::sign_transaction;
     
     given_raw_transaction_with_script(world);
     given_signing_account(world);

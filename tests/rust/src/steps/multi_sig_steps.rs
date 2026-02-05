@@ -1,14 +1,14 @@
 //! Step definitions for multi-signature account tests
 
 use crate::support::TestWorld;
-use aptos_rust_sdk_v2::account::MultiEd25519Account;
-use aptos_rust_sdk_v2::crypto::{
+use aptos_sdk::account::MultiEd25519Account;
+use aptos_sdk::crypto::{
     Ed25519PrivateKey, Ed25519PublicKey, Ed25519Signature,
     MultiEd25519PublicKey, MultiEd25519Signature,
 };
-use aptos_rust_sdk_v2::transaction::{RawTransaction, TransactionPayload, EntryFunction};
-use aptos_rust_sdk_v2::types::{AccountAddress, MoveModuleId, Identifier};
-use aptos_rust_sdk_v2::ChainId;
+use aptos_sdk::transaction::{RawTransaction, TransactionPayload, EntryFunction};
+use aptos_sdk::types::{AccountAddress, MoveModuleId, Identifier};
+use aptos_sdk::ChainId;
 use cucumber::{given, then, when};
 
 // =============================================================================
@@ -449,8 +449,8 @@ fn when_serialize_multi_signature(world: &mut TestWorld) {
 
 #[when("I sign the transaction with multi-sig")]
 fn when_sign_transaction_with_multi_sig(world: &mut TestWorld) {
-    use aptos_rust_sdk_v2::account::Account;
-    use aptos_rust_sdk_v2::transaction::authenticator::TransactionAuthenticator;
+    use aptos_sdk::account::Account;
+    use aptos_sdk::transaction::authenticator::TransactionAuthenticator;
     
     if let (Some(ref account), Some(ref raw_txn)) = (&world.multi_ed25519_account, &world.raw_transaction) {
         if let Ok(signing_message) = raw_txn.signing_message() {
@@ -462,7 +462,7 @@ fn when_sign_transaction_with_multi_sig(world: &mut TestWorld) {
                         signature: sig_bytes,
                     };
                     world.signed_transaction = Some(
-                        aptos_rust_sdk_v2::transaction::SignedTransaction::new(
+                        aptos_sdk::transaction::SignedTransaction::new(
                             raw_txn.clone(),
                             authenticator,
                         )
@@ -628,14 +628,14 @@ fn then_get_multi_sig_signed_tx(world: &mut TestWorld) {
 fn then_authenticator_is_multi_ed25519(world: &mut TestWorld) {
     let signed_tx = world.signed_transaction.as_ref().expect("no signed transaction");
     assert!(matches!(signed_tx.authenticator, 
-        aptos_rust_sdk_v2::transaction::authenticator::TransactionAuthenticator::MultiEd25519 { .. }));
+        aptos_sdk::transaction::authenticator::TransactionAuthenticator::MultiEd25519 { .. }));
 }
 
 #[then("it should contain the multi public key")]
 fn then_contains_multi_public_key(world: &mut TestWorld) {
     let signed_tx = world.signed_transaction.as_ref().expect("no signed transaction");
     match &signed_tx.authenticator {
-        aptos_rust_sdk_v2::transaction::authenticator::TransactionAuthenticator::MultiEd25519 { public_key, .. } => {
+        aptos_sdk::transaction::authenticator::TransactionAuthenticator::MultiEd25519 { public_key, .. } => {
             assert!(!public_key.is_empty());
         }
         _ => panic!("expected MultiEd25519 authenticator"),
@@ -646,7 +646,7 @@ fn then_contains_multi_public_key(world: &mut TestWorld) {
 fn then_contains_multi_signature(world: &mut TestWorld) {
     let signed_tx = world.signed_transaction.as_ref().expect("no signed transaction");
     match &signed_tx.authenticator {
-        aptos_rust_sdk_v2::transaction::authenticator::TransactionAuthenticator::MultiEd25519 { signature, .. } => {
+        aptos_sdk::transaction::authenticator::TransactionAuthenticator::MultiEd25519 { signature, .. } => {
             assert!(!signature.is_empty());
         }
         _ => panic!("expected MultiEd25519 authenticator"),

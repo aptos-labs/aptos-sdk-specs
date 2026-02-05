@@ -18,7 +18,7 @@ All agents share this foundational knowledge about the repository.
 - `tests/` - BDD test implementations for different SDKs:
   - `tests/typescript/` - Cucumber.js + Bun (tests @aptos-labs/ts-sdk)
   - `tests/go/` - Godog (tests aptos-go-sdk)
-  - `tests/rust/` - cucumber-rs (tests aptos-rust-sdk-v2)
+  - `tests/rust/` - cucumber-rs (tests aptos-rust-sdk)
   - `tests/java/` - Cucumber-JVM (tests japtos)
   - `tests/kotlin/` - Cucumber-JVM (tests kaptos)
   - `tests/python/` - Behave (tests aptos-sdk)

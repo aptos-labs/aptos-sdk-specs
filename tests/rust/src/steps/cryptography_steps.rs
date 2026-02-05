@@ -1,13 +1,13 @@
 //! Step definitions for cryptography feature tests.
 
 use crate::support::TestWorld;
-use aptos_rust_sdk_v2::account::Account;
-use aptos_rust_sdk_v2::crypto::{
+use aptos_sdk::account::Account;
+use aptos_sdk::crypto::{
     derive_authentication_key, sha3_256, Ed25519PrivateKey, Ed25519PublicKey, Ed25519Signature,
     Secp256k1PrivateKey, Secp256k1Signature, Secp256r1PrivateKey, Secp256r1Signature,
     ED25519_SCHEME,
 };
-use aptos_rust_sdk_v2::types::AccountAddress;
+use aptos_sdk::types::AccountAddress;
 use cucumber::{given, then, when};
 
 // =============================================================================
@@ -279,7 +279,7 @@ fn when_try_create_ed25519_key_pair(world: &mut TestWorld) {
 
 #[when("I sign the message")]
 fn when_sign_message(world: &mut TestWorld) {
-    use aptos_rust_sdk_v2::crypto::Signer;
+    use aptos_sdk::crypto::Signer;
     
     if let (Some(private_key), Some(message)) =
         (world.ed25519_private_key.as_ref(), world.message.as_ref())
@@ -526,7 +526,7 @@ fn when_derive_auth_key(world: &mut TestWorld) {
     } else if !world.ed25519_public_keys.is_empty() {
         // Create multi-sig key from public keys and derive auth key
         let threshold = world.multi_sig_threshold.unwrap_or(2);
-        if let Ok(multi_pk) = aptos_rust_sdk_v2::crypto::MultiEd25519PublicKey::new(
+        if let Ok(multi_pk) = aptos_sdk::crypto::MultiEd25519PublicKey::new(
             world.ed25519_public_keys.clone(),
             threshold,
         ) {

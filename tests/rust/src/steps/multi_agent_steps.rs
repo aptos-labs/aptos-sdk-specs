@@ -1,14 +1,14 @@
 //! Step definitions for multi-agent transaction tests
 
 use crate::support::TestWorld;
-use aptos_rust_sdk_v2::account::Ed25519Account;
-use aptos_rust_sdk_v2::transaction::{
+use aptos_sdk::account::Ed25519Account;
+use aptos_sdk::transaction::{
     RawTransaction, TransactionPayload, EntryFunction,
     authenticator::{AccountAuthenticator, TransactionAuthenticator},
 };
-use aptos_rust_sdk_v2::transaction::types::MultiAgentRawTransaction;
-use aptos_rust_sdk_v2::types::{AccountAddress, MoveModuleId, Identifier};
-use aptos_rust_sdk_v2::ChainId;
+use aptos_sdk::transaction::types::MultiAgentRawTransaction;
+use aptos_sdk::types::{AccountAddress, MoveModuleId, Identifier};
+use aptos_sdk::ChainId;
 use cucumber::{given, then, when};
 
 // =============================================================================
@@ -316,7 +316,7 @@ fn when_each_party_generates_message(world: &mut TestWorld) {
 
 #[when("I sign the multi-agent transaction with all parties")]
 fn when_sign_multi_agent_all_parties(world: &mut TestWorld) {
-    use aptos_rust_sdk_v2::account::Account;
+    use aptos_sdk::account::Account;
     
     // Create multi_agent_txn if not exists
     if world.multi_agent_txn.is_none() {
@@ -387,7 +387,7 @@ fn when_sign_multi_agent_all_parties(world: &mut TestWorld) {
         secondary_auths,
     );
     
-    world.signed_transaction = Some(aptos_rust_sdk_v2::transaction::SignedTransaction::new(
+    world.signed_transaction = Some(aptos_sdk::transaction::SignedTransaction::new(
         multi_agent_txn.raw_txn.clone(),
         authenticator,
     ));
@@ -400,7 +400,7 @@ fn when_sign_multi_agent(world: &mut TestWorld) {
 
 #[when("sender signs their portion")]
 fn when_sender_signs_portion(world: &mut TestWorld) {
-    use aptos_rust_sdk_v2::account::Account;
+    use aptos_sdk::account::Account;
     
     if let (Some(multi_agent_txn), Some(sender)) = (&world.multi_agent_txn, &world.ed25519_account) {
         if let Ok(signing_message) = multi_agent_txn.signing_message() {
@@ -414,7 +414,7 @@ fn when_sender_signs_portion(world: &mut TestWorld) {
 
 #[when(expr = "secondary signer {int} signs their portion")]
 fn when_secondary_signer_signs(world: &mut TestWorld, idx: usize) {
-    use aptos_rust_sdk_v2::account::Account;
+    use aptos_sdk::account::Account;
     
     let actual_idx = idx - 1; // Convert 1-indexed to 0-indexed
     if let Some(multi_agent_txn) = &world.multi_agent_txn {
@@ -579,7 +579,7 @@ fn then_includes_secondary_addresses(world: &mut TestWorld) {
 
 #[then(regex = r#"^it should start with SHA3-256\("APTOS::RawTransactionWithData"\)$"#)]
 fn then_starts_with_domain(world: &mut TestWorld) {
-    let expected_prefix = aptos_rust_sdk_v2::crypto::sha3_256(b"APTOS::RawTransactionWithData");
+    let expected_prefix = aptos_sdk::crypto::sha3_256(b"APTOS::RawTransactionWithData");
     let msg = world.signing_message.as_ref().expect("no signing message");
     assert!(msg.starts_with(&expected_prefix));
 }

@@ -1,7 +1,7 @@
 //! Step definitions for retry and backoff tests
 
 use crate::support::world::TestWorld;
-use aptos_rust_sdk_v2::retry::{RetryConfig, RetryConfigBuilder};
+use aptos_sdk::retry::{RetryConfig, RetryConfigBuilder};
 use cucumber::{given, then, when};
 
 // =============================================================================

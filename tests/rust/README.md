@@ -1,12 +1,12 @@
 # Rust Behavioral Specification Tests
 
 This directory contains the Cucumber-rs implementation of behavioral specification tests for
-`aptos-rust-sdk-v2`.
+[`aptos-rust-sdk`](https://github.com/aptos-labs/aptos-rust-sdk).
 
 ## Prerequisites
 
 - Rust 1.75+ (stable)
-- The SDK must be built with the `full` feature
+- The SDK is pulled from GitHub with the `full` feature enabled
 
 ## Quick Start
 
@@ -43,6 +43,21 @@ rust/
 │       └── world.rs    # Test context/state
 └── tests/
     └── specs.rs        # Main test runner
+```
+
+## SDK Dependency
+
+The tests depend on [`aptos-sdk`](https://github.com/aptos-labs/aptos-rust-sdk), which is not
+yet published to crates.io. The dependency is configured as a Git dependency:
+
+```toml
+aptos-sdk = { git = "https://github.com/aptos-labs/aptos-rust-sdk", features = ["full"] }
+```
+
+For local development against a local clone:
+
+```toml
+aptos-sdk = { path = "../../../aptos-rust-sdk/crates/aptos-sdk", features = ["full"] }
 ```
 
 ## Test Results

@@ -159,7 +159,7 @@ fn given_move_struct_def(world: &mut TestWorld) {
 fn when_generate_rust_code(world: &mut TestWorld) {
     // Generate Rust code from ABI
     let rust_code = r#"
-use aptos_rust_sdk_v2::types::AccountAddress;
+use aptos_sdk::types::AccountAddress;
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct CoinStore {

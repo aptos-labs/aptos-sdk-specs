@@ -1,7 +1,7 @@
 # Rust SDK Test Status
 
-> **Last Updated:** 2026-01-28  
-> **Last Verified:** 2026-01-28 via `cargo test --test specs`
+> **Last Updated:** 2026-02-05
+> **Last Verified:** 2026-02-05
 
 ---
 
@@ -9,11 +9,11 @@
 
 | Property             | Value                                        |
 | -------------------- | -------------------------------------------- |
-| **Package**          | `aptos-rust-sdk-v2`                          |
-| **Version Tested**   | dev (local path)                             |
+| **Package**          | `aptos-sdk`                                  |
+| **Version Tested**   | dev (git dependency)                         |
 | **Publisher**        | aptos-labs                                   |
 | **Repository**       | https://github.com/aptos-labs/aptos-rust-sdk |
-| **Package Registry** | crates.io (when published)                   |
+| **Package Registry** | Not yet on crates.io                         |
 | **Test Framework**   | cucumber-rs                                  |
 
 ---
@@ -32,7 +32,7 @@
 > - 761 scenarios passed, 65 skipped
 > - 2962 steps passed, 65 skipped
 > - Test duration: ~16 seconds
-> - Tests require local SDK path at `../../../aptos-rust-sdk/crates/aptos-rust-sdk-v2`
+> - Tests use `aptos-sdk` from GitHub: `https://github.com/aptos-labs/aptos-rust-sdk`
 
 ---
 
@@ -42,65 +42,83 @@
 
 | Feature            | Expected Status | Notes                            |
 | ------------------ | --------------- | -------------------------------- |
-| address            | ✅ Available    | Full address support expected    |
-| serialization      | ✅ Available    | BCS serialization expected       |
-| type-tags          | ✅ Available    | TypeTag parsing expected         |
-| ed25519            | ✅ Available    | Ed25519 support expected         |
-| hashing            | ✅ Available    | SHA3-256 support expected        |
-| authentication-key | ✅ Available    | Auth key derivation expected     |
-| entry-function     | ✅ Available    | Entry function building expected |
-| raw-transaction    | ✅ Available    | Transaction building expected    |
-| signing            | ✅ Available    | Transaction signing expected     |
+| address            | ✅ Available    | Full address support (AIP-40)    |
+| serialization      | ✅ Available    | BCS serialization via aptos-bcs  |
+| type-tags          | ✅ Available    | TypeTag parsing                  |
+| ed25519            | ✅ Available    | Ed25519 signatures               |
+| secp256k1          | ✅ Available    | Secp256k1 ECDSA                  |
+| secp256r1          | ✅ Available    | Secp256r1 (P-256) ECDSA          |
+| bls12381           | ✅ Available    | BLS12-381 (behind `bls` feature) |
+| hashing            | ✅ Available    | SHA3-256 and SHA2-256            |
+| authentication-key | ✅ Available    | Auth key derivation              |
+| mnemonic           | ✅ Available    | BIP-39 mnemonic support          |
+| entry-function     | ✅ Available    | Entry function building          |
+| raw-transaction    | ✅ Available    | Transaction building             |
+| signing            | ✅ Available    | Transaction signing              |
+| multi-agent        | ✅ Available    | Multi-agent transactions         |
+| fee-payer          | ✅ Available    | Sponsored transactions           |
+| multi-signature    | ✅ Available    | Multi-Ed25519 and MultiKey       |
+| keyless            | ✅ Available    | OIDC-based keyless accounts      |
+| codegen            | ✅ Available    | Code generation from Move ABIs   |
 
-### ➖ Likely Not Available
+### Feature Flags
 
-| Feature              | Reason                 | Tracking Issue |
-| -------------------- | ---------------------- | -------------- |
-| secp256r1 (WebAuthn) | May not be implemented | -              |
-| bls12381             | May not be implemented | -              |
-| keyless              | May not be implemented | -              |
-| codegen              | May not be implemented | -              |
+The SDK uses feature flags. The `full` feature enables all:
+
+| Feature    | Default | Description                |
+| ---------- | ------- | -------------------------- |
+| `ed25519`  | Yes     | Ed25519 signatures         |
+| `secp256k1`| Yes     | Secp256k1 ECDSA            |
+| `secp256r1`| Yes     | Secp256r1 (P-256) ECDSA    |
+| `mnemonic` | Yes     | BIP-39 mnemonic support    |
+| `indexer`  | Yes     | GraphQL indexer client      |
+| `faucet`   | Yes     | Faucet integration          |
+| `bls`      | No      | BLS12-381 signatures        |
+| `keyless`  | No      | OIDC-based keyless auth     |
+| `full`     | No      | All features combined       |
 
 ---
 
 ## 4. Known Issues
 
-| Issue                  | Impact                 | Resolution                      |
-| ---------------------- | ---------------------- | ------------------------------- |
-| SDK path not available | Tests cannot run       | Update Cargo.toml               |
-| Local path dependency  | CI/CD cannot run tests | Use git or crates.io dependency |
+| Issue              | Impact             | Resolution                       |
+| ------------------ | ------------------ | -------------------------------- |
+| Not on crates.io   | Git dep required   | Use git dependency from GitHub   |
 
-### To Fix
+### SDK Dependency
 
-Update `Cargo.toml` dependency from:
+The Cargo.toml uses a Git dependency since the SDK is not yet published to crates.io:
 
 ```toml
-aptos-rust-sdk-v2 = { path = "../../../crates/aptos-rust-sdk-v2" }
+aptos-sdk = { git = "https://github.com/aptos-labs/aptos-rust-sdk", features = ["full"] }
 ```
 
-To one of:
+For local development against a local clone:
 
 ```toml
-# Option 1: Git dependency
-aptos-rust-sdk-v2 = { git = "https://github.com/aptos-labs/aptos-rust-sdk" }
+aptos-sdk = { path = "../../../aptos-rust-sdk/crates/aptos-sdk", features = ["full"] }
+```
 
-# Option 2: crates.io (when published)
-aptos-rust-sdk-v2 = "0.1"
+When the SDK is published to crates.io:
+
+```toml
+aptos-sdk = { version = "0.3", features = ["full"] }
 ```
 
 ---
 
 ## 5. Missing Test Implementations
 
-### Cannot Determine
-
-Tests cannot run until SDK dependency is resolved. Once fixed, run:
+Run the following to identify undefined steps:
 
 ```bash
 cargo test --test specs
 ```
 
-To identify undefined steps.
+Scenarios that skip are typically due to:
+- Network-dependent tests requiring live testnet/devnet
+- Advanced features not yet fully tested
+- Error handling edge cases
 
 ---
 
@@ -110,6 +128,8 @@ To identify undefined steps.
 - **Strong typing**: Compile-time type safety
 - **No runtime overhead**: Zero-cost abstractions
 - **Memory safe**: Ownership and borrowing
+- **Zeroize**: Private keys are zeroized on drop
+- **Feature flags**: Selective compilation of crypto schemes
 - Good for performance-critical applications and blockchain infrastructure
 
 ---
@@ -119,9 +139,7 @@ To identify undefined steps.
 ```bash
 cd tests/rust
 
-# First, fix the Cargo.toml dependency (see Known Issues)
-
-# Then run tests
+# Run all tests
 cargo test --test specs
 
 # Run by priority
@@ -139,12 +157,11 @@ cargo test --test specs -- --tags @cryptography
 
 To add or update tests for this SDK:
 
-1. **First**: Fix the Cargo.toml dependency issue
-2. Add step definitions in `src/steps/*.rs`
-3. Run `cargo test --test specs` to verify tests pass
-4. Update `FEATURE_COVERAGE.md` with test status (✅/🟡/❌)
-5. Update this file's coverage summary
-6. Submit PR with test results
+1. Add step definitions in `src/steps/*.rs`
+2. Run `cargo test --test specs` to verify tests pass
+3. Update `FEATURE_COVERAGE.md` with test status (✅/🟡/❌)
+4. Update this file's coverage summary
+5. Submit PR with test results
 
 ### Step Definition Pattern (Rust)
 
@@ -159,7 +176,7 @@ fn given_hex_string(world: &mut TestWorld, hex_string: String) {
 
 ## 9. Test Results Matrix
 
-> Last run: 2026-01-27
+> Last run: 2026-02-05
 
 ### Full Test Suite Summary
 
@@ -176,8 +193,12 @@ fn given_hex_string(world: &mut TestWorld, hex_string: String) {
 | serialization      | ✅     | BCS serialization working    |
 | type-tags          | ✅     | TypeTag parsing working      |
 | ed25519            | ✅     | Ed25519 cryptography working |
+| secp256k1          | ✅     | Secp256k1 ECDSA working      |
+| secp256r1          | ✅     | Secp256r1/P-256 working      |
+| bls12381           | ✅     | BLS12-381 working            |
 | hashing            | ✅     | SHA3-256 support             |
 | authentication-key | ✅     | Auth key derivation          |
+| mnemonic           | ✅     | BIP-39 derivation            |
 | entry-function     | ✅     | Entry function building      |
 | raw-transaction    | ✅     | Transaction building         |
 | signing            | ✅     | Transaction signing          |

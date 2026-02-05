@@ -39,7 +39,7 @@ make test-required          # Run only @required tests
 make test-cryptography      # Run @cryptography tests
 ```
 
-### Rust (tests `aptos-rust-sdk-v2`)
+### Rust (tests `aptos-rust-sdk`)
 
 ```bash
 cd rust

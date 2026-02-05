@@ -1,4 +1,4 @@
-# Behavioral specification tests for aptos-rust-sdk-v2
+# Behavioral specification tests for aptos-rust-sdk
 .PHONY: test test-required test-preferred test-all test-core-types test-cryptography test-accounts clean
 
 # Default: run all tests

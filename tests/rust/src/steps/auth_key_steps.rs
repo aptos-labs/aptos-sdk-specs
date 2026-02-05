@@ -4,8 +4,8 @@
 //! are defined in cryptography_steps.rs, secp_steps.rs, hashing_steps.rs to avoid duplication.
 
 use crate::support::TestWorld;
-use aptos_rust_sdk_v2::account::{Account, AuthenticationKey, Ed25519Account};
-use aptos_rust_sdk_v2::crypto::{
+use aptos_sdk::account::{Account, AuthenticationKey, Ed25519Account};
+use aptos_sdk::crypto::{
     derive_authentication_key, sha3_256, Ed25519PrivateKey, Secp256k1PrivateKey,
     Secp256r1PrivateKey, ED25519_SCHEME, MULTI_ED25519_SCHEME, MULTI_KEY_SCHEME, SINGLE_KEY_SCHEME,
 };
@@ -295,7 +295,7 @@ fn then_equals_sha3_256_alt(world: &mut TestWorld, scheme_hex: String) {
 }
 
 fn verify_sha3_256_auth_key(world: &mut TestWorld, scheme_hex: String) {
-    use aptos_rust_sdk_v2::account::Account;
+    use aptos_sdk::account::Account;
     
     let scheme = u8::from_str_radix(scheme_hex.trim_start_matches("0x"), 16).unwrap_or(0);
 
@@ -543,7 +543,7 @@ fn then_converts_to_zero_address(world: &mut TestWorld) {
         let address = auth_key.to_address();
         assert_eq!(
             address,
-            aptos_rust_sdk_v2::types::AccountAddress::ZERO,
+            aptos_sdk::types::AccountAddress::ZERO,
             "Should convert to zero address"
         );
     }

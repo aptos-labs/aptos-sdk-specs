@@ -4,7 +4,7 @@
 //! are handled by cryptography_steps.rs - this file only contains BLS-specific steps.
 
 use crate::support::TestWorld;
-use aptos_rust_sdk_v2::crypto::{
+use aptos_sdk::crypto::{
     Bls12381PrivateKey, Bls12381ProofOfPossession, Bls12381PublicKey, Bls12381Signature, Verifier,
 };
 use cucumber::{given, then, when};
@@ -248,7 +248,7 @@ fn when_aggregate_signatures(world: &mut TestWorld) {
         }
     } else if !world.signature_contributions.is_empty() {
         // Fall back to multi-Ed25519 signature aggregation
-        use aptos_rust_sdk_v2::crypto::MultiEd25519Signature;
+        use aptos_sdk::crypto::MultiEd25519Signature;
         match MultiEd25519Signature::new(world.signature_contributions.clone()) {
             Ok(sig) => world.multi_ed25519_signature = Some(sig),
             Err(e) => world.set_error(e),

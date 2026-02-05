@@ -1,14 +1,14 @@
 //! Step definitions for fee payer (sponsored) transaction tests
 
 use crate::support::TestWorld;
-use aptos_rust_sdk_v2::account::Ed25519Account;
-use aptos_rust_sdk_v2::transaction::{
+use aptos_sdk::account::Ed25519Account;
+use aptos_sdk::transaction::{
     PartiallySigned, RawTransaction, TransactionPayload, EntryFunction,
     authenticator::{AccountAuthenticator, TransactionAuthenticator},
 };
-use aptos_rust_sdk_v2::transaction::types::FeePayerRawTransaction;
-use aptos_rust_sdk_v2::types::{AccountAddress, MoveModuleId, Identifier};
-use aptos_rust_sdk_v2::ChainId;
+use aptos_sdk::transaction::types::FeePayerRawTransaction;
+use aptos_sdk::types::{AccountAddress, MoveModuleId, Identifier};
+use aptos_sdk::ChainId;
 use cucumber::{given, then, when};
 
 // =============================================================================
@@ -153,7 +153,7 @@ fn given_sender_wants_sponsored(world: &mut TestWorld) {
 
 #[given("a partially signed fee payer transaction from sender")]
 fn given_partially_signed_from_sender(world: &mut TestWorld) {
-    use aptos_rust_sdk_v2::account::Account;
+    use aptos_sdk::account::Account;
     
     // Create accounts
     if world.ed25519_account.is_none() {
@@ -289,7 +289,7 @@ fn when_generate_multi_agent_msg(world: &mut TestWorld) {
     
     // Create a multi-agent transaction for comparison
     if let Some(raw_txn) = &world.raw_transaction {
-        let multi_agent = aptos_rust_sdk_v2::transaction::types::MultiAgentRawTransaction::new(
+        let multi_agent = aptos_sdk::transaction::types::MultiAgentRawTransaction::new(
             raw_txn.clone(),
             world.secondary_signer_addresses.clone(),
         );
@@ -340,7 +340,7 @@ fn when_generate_fee_payer_msg(world: &mut TestWorld) {
 
 #[when("I sign the fee payer transaction with both parties")]
 fn when_sign_fee_payer_both_parties(world: &mut TestWorld) {
-    use aptos_rust_sdk_v2::account::Account;
+    use aptos_sdk::account::Account;
     
     // Create fee_payer_txn if not exists but we have the components
     if world.fee_payer_txn.is_none() {
@@ -430,7 +430,7 @@ fn when_sign_fee_payer_both_parties(world: &mut TestWorld) {
         fee_payer_auth,
     );
     
-    world.signed_transaction = Some(aptos_rust_sdk_v2::transaction::SignedTransaction::new(
+    world.signed_transaction = Some(aptos_sdk::transaction::SignedTransaction::new(
         fee_payer_txn.raw_txn.clone(),
         authenticator,
     ));
@@ -451,7 +451,7 @@ fn when_sender_creates_raw_tx(world: &mut TestWorld) {
 
 #[when("sender signs the fee payer signing message")]
 fn when_sender_signs_fee_payer_msg(world: &mut TestWorld) {
-    use aptos_rust_sdk_v2::account::Account;
+    use aptos_sdk::account::Account;
     
     // Create fee_payer_txn if not exists
     if world.fee_payer_txn.is_none() {
@@ -491,7 +491,7 @@ fn when_sponsor_reviews(world: &mut TestWorld) {
 
 #[when("sponsor signs the fee payer signing message")]
 fn when_sponsor_signs(world: &mut TestWorld) {
-    use aptos_rust_sdk_v2::account::Account;
+    use aptos_sdk::account::Account;
     
     if let (Some(ref mut partially_signed), Some(fee_payer)) = 
         (&mut world.partially_signed, &world.fee_payer_account) 

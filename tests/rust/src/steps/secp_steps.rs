@@ -4,8 +4,8 @@
 //! are defined in cryptography_steps.rs and handle all key types.
 
 use crate::support::world::TestWorld;
-use aptos_rust_sdk_v2::account::{Secp256k1Account, Secp256r1Account};
-use aptos_rust_sdk_v2::crypto::{Secp256k1PrivateKey, Secp256r1PrivateKey};
+use aptos_sdk::account::{Secp256k1Account, Secp256r1Account};
+use aptos_sdk::crypto::{Secp256k1PrivateKey, Secp256r1PrivateKey};
 use cucumber::{given, then, when};
 
 // =============================================================================
@@ -246,7 +246,7 @@ fn given_secp256r1_uncompressed(world: &mut TestWorld) {
 
 #[when(expr = "I derive authentication key from compressed public key")]
 fn when_derive_auth_key_from_compressed(world: &mut TestWorld) {
-    use aptos_rust_sdk_v2::crypto::derive_authentication_key;
+    use aptos_sdk::crypto::derive_authentication_key;
 
     if let Some(ref pk) = world.secp256k1_public_key {
         // For compressed, still use uncompressed for auth key derivation per Aptos spec
@@ -260,7 +260,7 @@ fn when_derive_auth_key_from_compressed(world: &mut TestWorld) {
 
 #[when(expr = "I derive authentication key from uncompressed public key")]
 fn when_derive_auth_key_from_uncompressed(world: &mut TestWorld) {
-    use aptos_rust_sdk_v2::crypto::derive_authentication_key;
+    use aptos_sdk::crypto::derive_authentication_key;
 
     if let Some(ref pk) = world.secp256k1_public_key {
         let auth_key = derive_authentication_key(&pk.to_uncompressed_bytes(), 0x01);
@@ -280,7 +280,7 @@ fn then_auth_keys_match(world: &mut TestWorld) {
 
 #[when(expr = "I derive the Secp authentication key")]
 fn when_derive_secp_auth_key(world: &mut TestWorld) {
-    use aptos_rust_sdk_v2::crypto::derive_authentication_key;
+    use aptos_sdk::crypto::derive_authentication_key;
 
     if let Some(ref pk) = world.secp256k1_public_key {
         let auth_key = derive_authentication_key(&pk.to_uncompressed_bytes(), 0x01);
@@ -293,7 +293,7 @@ fn when_derive_secp_auth_key(world: &mut TestWorld) {
 
 #[then(regex = r"^it should equal SHA3-256\(uncompressed_public_key \|\| (0x[0-9a-fA-F]+)\)$")]
 fn then_auth_key_equals(world: &mut TestWorld, scheme: String) {
-    use aptos_rust_sdk_v2::crypto::sha3_256;
+    use aptos_sdk::crypto::sha3_256;
 
     let scheme_byte = parse_hex_byte(&scheme);
     let auth_key = world.auth_key_bytes.as_ref().expect("No auth key");
@@ -335,7 +335,7 @@ fn given_sha256_hash(world: &mut TestWorld) {
 
 #[when(expr = "I sign the pre-hashed message")]
 fn when_sign_prehashed(world: &mut TestWorld) {
-    use aptos_rust_sdk_v2::crypto::Signer;
+    use aptos_sdk::crypto::Signer;
     
     if let (Some(ref key), Some(ref msg)) = (&world.secp256k1_private_key, &world.message) {
         let sig = key.sign(msg);
@@ -383,8 +383,8 @@ fn when_derive_public_key(world: &mut TestWorld) {
 
 #[when(expr = "I derive the account address")]
 fn when_derive_account_address(world: &mut TestWorld) {
-    use aptos_rust_sdk_v2::crypto::derive_authentication_key;
-    use aptos_rust_sdk_v2::types::AccountAddress;
+    use aptos_sdk::crypto::derive_authentication_key;
+    use aptos_sdk::types::AccountAddress;
     
     if let Some(ref pk) = world.secp256k1_public_key {
         let auth_key = derive_authentication_key(&pk.to_uncompressed_bytes(), 0x01);
@@ -490,7 +490,7 @@ fn given_65_byte_uncompressed_secp256r1_public_key(world: &mut TestWorld) {
 
 #[when(expr = "I parse it")]
 fn when_parse_public_key(world: &mut TestWorld) {
-    use aptos_rust_sdk_v2::crypto::Secp256r1PublicKey;
+    use aptos_sdk::crypto::Secp256r1PublicKey;
     
     if let Some(ref bytes) = world.bytes {
         match Secp256r1PublicKey::from_bytes(bytes) {
@@ -508,7 +508,7 @@ fn then_valid_secp256r1_public_key(world: &mut TestWorld) {
 
 #[when(expr = "I sign the message with Secp256r1")]
 fn when_sign_message_with_secp256r1(world: &mut TestWorld) {
-    use aptos_rust_sdk_v2::crypto::Signer;
+    use aptos_sdk::crypto::Signer;
     
     if let (Some(ref key), Some(ref msg)) = (&world.secp256r1_private_key, &world.message) {
         let sig = key.sign(msg);
@@ -525,7 +525,7 @@ fn then_secp256r1_signature_bytes(world: &mut TestWorld, n: usize) {
 
 #[then(expr = "the Secp256r1 signature should be valid for the message")]
 fn then_secp256r1_signature_valid(world: &mut TestWorld) {
-    use aptos_rust_sdk_v2::crypto::Verifier;
+    use aptos_sdk::crypto::Verifier;
     
     if let (Some(ref pk), Some(ref msg), Some(ref sig)) = 
         (&world.secp256r1_public_key, &world.message, &world.secp256r1_signature) {
@@ -535,7 +535,7 @@ fn then_secp256r1_signature_valid(world: &mut TestWorld) {
 
 #[when(expr = "I sign the Secp256r1 message twice")]
 fn when_sign_secp256r1_message_twice(world: &mut TestWorld) {
-    use aptos_rust_sdk_v2::crypto::Signer;
+    use aptos_sdk::crypto::Signer;
     
     if let (Some(ref key), Some(ref msg)) = (&world.secp256r1_private_key, &world.message) {
         world.secp256r1_signature = Some(key.sign(msg));
@@ -563,7 +563,7 @@ fn given_secp256r1_signature_created(world: &mut TestWorld) {
 
 #[when(expr = "I verify the Secp256r1 signature")]
 fn when_verify_secp256r1_signature(world: &mut TestWorld) {
-    use aptos_rust_sdk_v2::crypto::Verifier;
+    use aptos_sdk::crypto::Verifier;
     
     if let (Some(ref pk), Some(ref msg), Some(ref sig)) = 
         (&world.secp256r1_public_key, &world.message, &world.secp256r1_signature) {
@@ -583,7 +583,7 @@ fn then_secp256r1_verification_fails(world: &mut TestWorld) {
 
 #[given(expr = "a message signed by the first Secp256r1 key")]
 fn given_message_signed_by_first_secp256r1_key(world: &mut TestWorld) {
-    use aptos_rust_sdk_v2::crypto::Signer;
+    use aptos_sdk::crypto::Signer;
     
     if world.message.is_none() {
         world.message = Some(b"test message".to_vec());
@@ -596,7 +596,7 @@ fn given_message_signed_by_first_secp256r1_key(world: &mut TestWorld) {
 
 #[when(expr = "I verify with the second Secp256r1 key's public key")]
 fn when_verify_with_second_secp256r1_key(world: &mut TestWorld) {
-    use aptos_rust_sdk_v2::crypto::Verifier;
+    use aptos_sdk::crypto::Verifier;
     
     if let (Some(ref pk), Some(ref msg), Some(ref sig)) = 
         (&world.secp256r1_public_key2, &world.message, &world.secp256r1_signature) {
@@ -611,7 +611,7 @@ fn given_generated_secp256r1_public_key(world: &mut TestWorld) {
 
 #[given(expr = "a Secp256r1 signature with invalid bytes")]
 fn given_secp256r1_invalid_signature(world: &mut TestWorld) {
-    use aptos_rust_sdk_v2::crypto::Secp256r1Signature;
+    use aptos_sdk::crypto::Secp256r1Signature;
     
     // Create invalid signature bytes
     let invalid_bytes = vec![0xFFu8; 64];
@@ -620,7 +620,7 @@ fn given_secp256r1_invalid_signature(world: &mut TestWorld) {
         Err(_) => {
             // Expected to fail - use a valid but wrong signature
             if let Some(ref key) = world.secp256r1_private_key {
-                use aptos_rust_sdk_v2::crypto::Signer;
+                use aptos_sdk::crypto::Signer;
                 // Sign a different message to get wrong signature
                 world.secp256r1_signature = Some(key.sign(b"wrong message"));
             }
@@ -630,7 +630,7 @@ fn given_secp256r1_invalid_signature(world: &mut TestWorld) {
 
 #[when(expr = "I derive the Secp256r1 authentication key")]
 fn when_derive_secp256r1_auth_key(world: &mut TestWorld) {
-    use aptos_rust_sdk_v2::crypto::derive_authentication_key;
+    use aptos_sdk::crypto::derive_authentication_key;
     
     if let Some(ref pk) = world.secp256r1_public_key {
         let auth_key = derive_authentication_key(&pk.to_uncompressed_bytes(), 0x02);
@@ -645,7 +645,7 @@ fn given_same_32_byte_private_key(world: &mut TestWorld) {
 
 #[when(expr = "I create Secp256k1 and Secp256r1 accounts")]
 fn when_create_secp256k1_and_secp256r1_accounts(world: &mut TestWorld) {
-    use aptos_rust_sdk_v2::account::{Secp256k1Account, Secp256r1Account};
+    use aptos_sdk::account::{Secp256k1Account, Secp256r1Account};
     
     if let Some(ref bytes) = world.private_key_bytes {
         if let Ok(secp256k1_account) = Secp256k1Account::from_private_key_bytes(bytes) {
@@ -751,7 +751,7 @@ fn then_usable_with_aptos(world: &mut TestWorld) {
 
 #[when(expr = "I create a Secp256r1 account")]
 fn when_create_secp256r1_account(world: &mut TestWorld) {
-    use aptos_rust_sdk_v2::account::Secp256r1Account;
+    use aptos_sdk::account::Secp256r1Account;
     world.secp256r1_account = Some(Secp256r1Account::generate());
 }
 
@@ -763,7 +763,7 @@ fn given_secp256r1_account(world: &mut TestWorld) {
 #[then(expr = "the Secp256r1 account should have a valid address")]
 fn then_secp256r1_account_valid_address(world: &mut TestWorld) {
     if let Some(ref account) = world.secp256r1_account {
-        use aptos_rust_sdk_v2::account::Account;
+        use aptos_sdk::account::Account;
         assert!(!account.address().is_zero(), "Secp256r1 account should have valid address");
     }
 }
@@ -771,8 +771,8 @@ fn then_secp256r1_account_valid_address(world: &mut TestWorld) {
 #[then(expr = "the Secp256r1 signature scheme should be {string}")]
 fn then_secp256r1_signature_scheme(world: &mut TestWorld, expected: String) {
     if let Some(ref account) = world.secp256r1_account {
-        use aptos_rust_sdk_v2::account::Account;
-        use aptos_rust_sdk_v2::crypto::SINGLE_KEY_SCHEME;
+        use aptos_sdk::account::Account;
+        use aptos_sdk::crypto::SINGLE_KEY_SCHEME;
         let scheme = if account.signature_scheme() == SINGLE_KEY_SCHEME { 
             "secp256r1_ecdsa" 
         } else { 
@@ -785,12 +785,12 @@ fn then_secp256r1_signature_scheme(world: &mut TestWorld, expected: String) {
 #[given(expr = "a RawTransaction for Secp256r1 signing")]
 fn given_raw_transaction_for_secp256r1(world: &mut TestWorld) {
     // Create a simple raw transaction
-    use aptos_rust_sdk_v2::transaction::{RawTransaction, TransactionPayload, EntryFunction};
-    use aptos_rust_sdk_v2::types::{MoveModuleId, AccountAddress, Identifier};
-    use aptos_rust_sdk_v2::ChainId;
+    use aptos_sdk::transaction::{RawTransaction, TransactionPayload, EntryFunction};
+    use aptos_sdk::types::{MoveModuleId, AccountAddress, Identifier};
+    use aptos_sdk::ChainId;
     
     if let Some(ref account) = world.secp256r1_account {
-        use aptos_rust_sdk_v2::account::Account;
+        use aptos_sdk::account::Account;
         
         // Create a sample entry function payload
         let module = MoveModuleId::new(
@@ -822,7 +822,7 @@ fn given_raw_transaction_for_secp256r1(world: &mut TestWorld) {
 
 #[when(expr = "I sign the transaction with Secp256r1")]
 fn when_sign_transaction_secp256r1(world: &mut TestWorld) {
-    use aptos_rust_sdk_v2::transaction::sign_transaction;
+    use aptos_sdk::transaction::sign_transaction;
     
     if let (Some(ref raw_tx), Some(ref account)) = (&world.raw_transaction, &world.secp256r1_account) {
         match sign_transaction(raw_tx, account) {
@@ -906,7 +906,7 @@ fn then_secp256r1_signature_matches_test_vectors(world: &mut TestWorld) {
 #[then(expr = "the Secp256r1 address should match the expected value from test vectors")]
 fn then_secp256r1_address_matches_test_vectors(world: &mut TestWorld) {
     if let Some(ref account) = world.secp256r1_account {
-        use aptos_rust_sdk_v2::account::Account;
+        use aptos_sdk::account::Account;
         assert!(!account.address().is_zero(), "Address should be non-zero");
     } else if world.address.is_some() {
         assert!(world.address.as_ref().map(|a| !a.is_zero()).unwrap_or(false));
