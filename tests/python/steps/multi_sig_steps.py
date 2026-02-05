@@ -213,8 +213,6 @@ def step_sign_message_with_multi_sig(context):
 @when("I derive the multi-sig authentication key")
 def step_derive_multi_sig_auth_key(context):
     try:
-        pass
-
         # Multi-sig auth key derivation
         # SHA3-256(public_key_bytes || scheme_id)
         serializer = Serializer()

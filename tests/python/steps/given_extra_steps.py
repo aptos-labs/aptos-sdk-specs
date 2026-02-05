@@ -25,8 +25,6 @@ def step_given_fee_payer_account(context):
 
 @given("fee payer address A")
 def step_given_fee_payer_address_a(context):
-    pass
-
     context.world.test_vectors["fee_payer_address"] = "A"
 
 
