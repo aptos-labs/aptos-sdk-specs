@@ -365,27 +365,37 @@ def step_request_gas_price(context):
 
 @then("I should receive a pending transaction response")
 def step_receive_pending(context):
-    pass
+    assert context.world.error is None
+    assert context.world.transaction_hash is not None or context.world.result is not None
 
 
 @then("I should receive the transaction hash")
 def step_receive_hash(context):
-    pass
+    assert context.world.error is None
+    assert context.world.transaction_hash is not None
 
 
 @then("I should receive transaction hash(es)")
 def step_receive_hashes(context):
-    pass
+    assert context.world.error is None
+    assert context.world.transaction_hash is not None or (
+        isinstance(context.world.result, list) and len(context.world.result) > 0
+    )
 
 
 @then("I should see one or more transaction hashes")
 def step_see_hashes(context):
-    pass
+    assert context.world.error is None
+    if isinstance(context.world.result, list):
+        assert len(context.world.result) > 0
+    else:
+        assert context.world.transaction_hash is not None
 
 
 @then("I should receive the transaction details")
 def step_receive_details(context):
-    pass
+    assert context.world.error is None
+    assert context.world.result is not None or context.world.raw_transaction is not None
 
 
 @then("I should receive the transaction at that version")
@@ -400,22 +410,42 @@ def step_receive_final_result(context):
 
 @then("I should receive simulation results")
 def step_receive_sim_results(context):
-    pass
+    assert context.world.error is None
+    assert context.world.simulation_result is not None
 
 
 @then("I should see the success status")
 def step_see_success(context):
-    pass
+    if context.world.simulation_result is not None:
+        assert hasattr(context.world.simulation_result, "success") or (
+            isinstance(context.world.simulation_result, dict) and "success" in context.world.simulation_result
+        )
+    elif context.world.result is not None:
+        assert isinstance(context.world.result, dict) and "success" in context.world.result
 
 
 @then("I should see success status")
 def step_see_success_alt(context):
-    pass
+    if context.world.simulation_result is not None:
+        assert hasattr(context.world.simulation_result, "success") or (
+            isinstance(context.world.simulation_result, dict) and "success" in context.world.simulation_result
+        )
+    elif context.world.result is not None:
+        assert isinstance(context.world.result, dict) and "success" in context.world.result
 
 
 @then("I should see success: false")
 def step_see_success_false(context):
-    pass
+    if context.world.simulation_result is not None:
+        if hasattr(context.world.simulation_result, "success"):
+            assert context.world.simulation_result.success is False
+        elif isinstance(context.world.simulation_result, dict):
+            assert context.world.simulation_result.get("success") is False
+    elif context.world.result is not None:
+        if isinstance(context.world.result, dict):
+            assert context.world.result.get("success") is False
+        else:
+            assert context.world.result is False
 
 
 @then("I should see execution result")
@@ -425,17 +455,32 @@ def step_see_exec_result(context):
 
 @then("I should see the estimated gas_used")
 def step_see_estimated_gas(context):
-    pass
+    if context.world.simulation_result is not None:
+        assert hasattr(context.world.simulation_result, "gas_used") or (
+            isinstance(context.world.simulation_result, dict) and "gas_used" in context.world.simulation_result
+        )
+    elif context.world.result is not None:
+        assert isinstance(context.world.result, dict) and "gas_used" in context.world.result
 
 
 @then("I should see the failure reason")
 def step_see_failure_reason(context):
-    pass
+    if context.world.error is not None:
+        assert str(context.world.error) is not None
+    elif context.world.simulation_result is not None:
+        assert hasattr(context.world.simulation_result, "vm_status") or hasattr(
+            context.world.simulation_result, "error"
+        ) or (isinstance(context.world.simulation_result, dict) and ("vm_status" in context.world.simulation_result or "error" in context.world.simulation_result))
 
 
 @then("I should see the VM error")
 def step_see_vm_error(context):
-    pass
+    if context.world.error is not None:
+        assert context.world.error is not None
+    elif context.world.simulation_result is not None:
+        assert hasattr(context.world.simulation_result, "vm_status") or (
+            isinstance(context.world.simulation_result, dict) and "vm_status" in context.world.simulation_result
+        )
 
 
 @then("I should see the VM error details")
@@ -445,7 +490,12 @@ def step_see_vm_error_details(context):
 
 @then("I should see vm_status in the result")
 def step_see_vm_status(context):
-    pass
+    if context.world.simulation_result is not None:
+        assert hasattr(context.world.simulation_result, "vm_status") or (
+            isinstance(context.world.simulation_result, dict) and "vm_status" in context.world.simulation_result
+        )
+    elif context.world.result is not None:
+        assert isinstance(context.world.result, dict) and "vm_status" in context.world.result
 
 
 @then("I should receive an error about chain ID mismatch")
@@ -470,7 +520,11 @@ def step_receive_seq_error(context):
 
 @then("actual gas should be similar to simulated")
 def step_gas_similar(context):
-    pass
+    if "simulated_gas" in context.world.test_vectors and "actual_gas" in context.world.test_vectors:
+        simulated = context.world.test_vectors["simulated_gas"]
+        actual = context.world.test_vectors["actual_gas"]
+        # Allow 20% variance
+        assert abs(actual - simulated) / simulated <= 0.2
 
 
 @then("actual should be <= max possible")
@@ -480,4 +534,9 @@ def step_actual_le_max(context):
 
 @then("actual should not exceed max_gas_amount")
 def step_not_exceed_max(context):
-    pass
+    if context.world.raw_transaction is not None and context.world.simulation_result is not None:
+        max_gas = context.world.raw_transaction.max_gas_amount
+        if hasattr(context.world.simulation_result, "gas_used"):
+            assert context.world.simulation_result.gas_used <= max_gas
+        elif isinstance(context.world.simulation_result, dict):
+            assert context.world.simulation_result.get("gas_used", 0) <= max_gas

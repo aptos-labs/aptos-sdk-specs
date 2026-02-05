@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/cucumber/godog"
 )
 
@@ -16,8 +18,31 @@ func initSimulationSteps(ctx *godog.ScenarioContext, world *World) {
 	})
 
 	ctx.Step(`^simulation respects that limit$`, func() error {
-		// TODO: implement limit respect check
-		return godog.ErrPending
+		// Check if gas_used from simulation respects the max_gas_amount limit
+		if _, ok := world.TestVectors["simulationResults"]; ok {
+			// If we have results, validate they respect limits
+			// Check against max_gas_amount if available
+			if maxGas, ok := world.TestVectors["maxGasAmount"].(uint64); ok {
+				if gasUsed, ok := world.TestVectors["gasUsed"].(uint64); ok {
+					if gasUsed > maxGas {
+						return fmt.Errorf("gas used %d exceeds limit %d", gasUsed, maxGas)
+					}
+				}
+			}
+			return nil
+		}
+		// If simulationResults not available, check if gasUsed was set
+		gasUsed, ok := world.TestVectors["gasUsed"].(uint64)
+		if !ok {
+			return fmt.Errorf("no simulation results or gas used available")
+		}
+		// Check against max_gas_amount if available
+		if maxGas, ok := world.TestVectors["maxGasAmount"].(uint64); ok {
+			if gasUsed > maxGas {
+				return fmt.Errorf("gas used %d exceeds limit %d", gasUsed, maxGas)
+			}
+		}
+		return nil
 	})
 
 	ctx.Step(`^simulation should fail$`, func() error {
@@ -29,8 +54,22 @@ func initSimulationSteps(ctx *godog.ScenarioContext, world *World) {
 	})
 
 	ctx.Step(`^simulation should reflect that$`, func() error {
-		// TODO: implement simulation reflection check
-		return godog.ErrPending
+		// Check if simulation reflects fee payer (if fee payer transaction was simulated)
+		if _, ok := world.TestVectors["isFeePayerTx"].(bool); ok {
+			// Fee payer transaction was simulated - verify results exist
+			if _, ok := world.TestVectors["simulationResults"]; !ok {
+				return fmt.Errorf("no simulation results for fee payer transaction")
+			}
+			// If fee payer was set, simulation should have completed
+			if world.FeePayer != nil {
+				return nil
+			}
+		}
+		// For other cases, if simulation succeeded, it reflects the transaction
+		if _, ok := world.TestVectors["simulationResults"]; ok {
+			return nil
+		}
+		return fmt.Errorf("simulation results not available")
 	})
 
 	ctx.Step(`^simulation should show failure$`, func() error {
@@ -66,8 +105,19 @@ func initSimulationSteps(ctx *godog.ScenarioContext, world *World) {
 	})
 
 	ctx.Step(`^script simulation should fail$`, func() error {
-		// TODO: implement script simulation check
-		return godog.ErrPending
+		// Check if script simulation failed (error should be set)
+		if world.Error == nil {
+			// Check if simulation results indicate failure
+			if results, ok := world.TestVectors["simulationResults"].([]interface{}); ok && len(results) > 0 {
+				// If we have results but no error, check success status
+				if success, ok := world.TestVectors["simulationSuccess"].(bool); ok && success {
+					return fmt.Errorf("expected script simulation to fail")
+				}
+			} else {
+				return fmt.Errorf("expected script simulation error, but none occurred")
+			}
+		}
+		return nil
 	})
 
 	// =============================================================================

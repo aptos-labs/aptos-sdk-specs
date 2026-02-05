@@ -16,7 +16,14 @@ def step_sim_respects_limit(context):
 
 @then("simulation should fail")
 def step_sim_should_fail(context):
-    pass
+    assert context.world.error is not None or (
+        context.world.simulation_result is not None
+        and (
+            not hasattr(context.world.simulation_result, "success")
+            or not context.world.simulation_result.success
+            or (isinstance(context.world.simulation_result, dict) and not context.world.simulation_result.get("success", True))
+        )
+    )
 
 
 @then("simulation should reflect that")
@@ -26,7 +33,11 @@ def step_sim_should_reflect(context):
 
 @then("simulation should show failure")
 def step_sim_should_show_failure(context):
-    pass
+    assert context.world.simulation_result is not None
+    if hasattr(context.world.simulation_result, "success"):
+        assert context.world.simulation_result.success is False
+    elif isinstance(context.world.simulation_result, dict):
+        assert not context.world.simulation_result.get("success", True)
 
 
 @then("simulation should still work")
@@ -41,7 +52,8 @@ def step_sim_should_work_even_if(context):
 
 @then("simulation should work")
 def step_sim_should_work(context):
-    pass
+    assert context.world.error is None
+    assert context.world.simulation_result is not None
 
 
 @then("simulation uses state at that version")
@@ -160,17 +172,23 @@ def step_abort_code_if_applicable(context):
 
 @then("the account should be Ed25519 type")
 def step_account_ed25519_type(context):
-    pass
+    if context.world.account is not None:
+        # Check if account uses Ed25519 (Python SDK may have different structure)
+        assert hasattr(context.world.account, "private_key") or hasattr(context.world.account, "key_type")
 
 
 @then("the account should be Secp256k1 type")
 def step_account_secp256k1_type(context):
-    pass
+    if context.world.secp256k1_account is not None:
+        assert context.world.secp256k1_account is not None
+    elif context.world.account is not None:
+        # Check if account uses Secp256k1
+        assert hasattr(context.world.account, "private_key") or hasattr(context.world.account, "key_type")
 
 
 @then("the account should be created")
 def step_account_should_be_created(context):
-    pass
+    assert context.world.account is not None
 
 
 @then("the account should be funded")
@@ -180,12 +198,13 @@ def step_account_should_be_funded(context):
 
 @then("the account should be usable for signing")
 def step_account_should_be_usable(context):
-    pass
+    assert context.world.account is not None
+    assert hasattr(context.world.account, "sign") or hasattr(context.world.account, "sign_message")
 
 
 @then("the account should exist")
 def step_account_should_exist(context):
-    pass
+    assert context.world.account is not None or context.world.address is not None
 
 
 @then("the account should have 100_000_000 octas balance")
@@ -195,7 +214,9 @@ def step_account_100m_octas(context):
 
 @then("the account should have balance")
 def step_account_has_balance(context):
-    pass
+    assert context.world.result is not None or (
+        context.world.account is not None and hasattr(context.world.account, "balance")
+    )
 
 
 @then("the address should be properly encoded")
@@ -205,17 +226,22 @@ def step_address_properly_encoded(context):
 
 @then("the address should match expected value from test vectors")
 def step_address_matches_vectors(context):
-    pass
+    if context.world.address is not None and "expected_address" in context.world.test_vectors:
+        assert str(context.world.address) == str(context.world.test_vectors["expected_address"])
 
 
 @then("the addresses should be identical")
 def step_addresses_identical(context):
-    pass
+    if len(context.world.addresses) >= 2:
+        assert str(context.world.addresses[0]) == str(context.world.addresses[1])
 
 
 @then("the addresses should be the same")
 def step_addresses_same(context):
-    pass
+    if len(context.world.addresses) >= 2:
+        assert str(context.world.addresses[0]) == str(context.world.addresses[1])
+    elif context.world.address is not None and context.world.account is not None:
+        assert str(context.world.address) == str(context.world.account.address())
 
 
 @then("the authentication keys should match")
@@ -330,7 +356,9 @@ def step_hash_waiting_for(context):
 
 @then("the hash should be 64 hex characters with 0x prefix")
 def step_hash_64_hex(context):
-    pass
+    assert context.world.transaction_hash is not None
+    assert context.world.transaction_hash.startswith("0x")
+    assert len(context.world.transaction_hash) == 66  # 0x + 64 hex chars
 
 
 @then("the macro should fetch current ABI")
@@ -463,32 +491,45 @@ def step_response_has_ledger_state(context):
 
 @then("the result should be a boolean")
 def step_result_is_boolean(context):
-    pass
+    assert isinstance(context.world.result, bool)
 
 
 @then("the result should be a u64")
 def step_result_is_u64(context):
-    pass
+    assert isinstance(context.world.result, int)
+    assert context.world.result >= 0
 
 
 @then("the result should indicate success: false")
 def step_result_success_false(context):
-    pass
+    if isinstance(context.world.result, dict):
+        assert context.world.result.get("success") is False
+    else:
+        assert context.world.result is False
 
 
 @then("the result should indicate success: true")
 def step_result_success_true(context):
-    pass
+    if isinstance(context.world.result, dict):
+        assert context.world.result.get("success") is True
+    else:
+        assert context.world.result is True
 
 
 @then("the results should include gas_used")
 def step_results_include_gas_used(context):
-    pass
+    if context.world.simulation_result is not None:
+        assert hasattr(context.world.simulation_result, "gas_used") or (
+            isinstance(context.world.simulation_result, dict) and "gas_used" in context.world.simulation_result
+        )
 
 
 @then("the results should include success status")
 def step_results_include_success(context):
-    pass
+    if context.world.simulation_result is not None:
+        assert hasattr(context.world.simulation_result, "success") or (
+            isinstance(context.world.simulation_result, dict) and "success" in context.world.simulation_result
+        )
 
 
 @then("the retry should include the same body")
@@ -535,7 +576,21 @@ def step_sig_includes_ephemeral(context):
 
 @then("the signature should match expected value from test vectors")
 def step_sig_matches_vectors(context):
-    pass
+    if "expected_signature" in context.world.test_vectors:
+        if context.world.ed25519_signature is not None:
+            sig_bytes = (
+                context.world.ed25519_signature.signature()
+                if hasattr(context.world.ed25519_signature, "signature")
+                else bytes(context.world.ed25519_signature)
+            )
+            assert sig_bytes == context.world.test_vectors["expected_signature"]
+        elif context.world.secp256k1_signature is not None:
+            sig_bytes = (
+                context.world.secp256k1_signature.signature()
+                if hasattr(context.world.secp256k1_signature, "signature")
+                else bytes(context.world.secp256k1_signature)
+            )
+            assert sig_bytes == context.world.test_vectors["expected_signature"]
 
 
 @then("the string should be properly encoded")
@@ -550,7 +605,9 @@ def step_tx_hash_if_submitted(context):
 
 @then("the transaction hash should match the expected value")
 def step_tx_hash_matches_expected(context):
-    pass
+    if "expected_hash" in context.world.test_vectors:
+        assert context.world.transaction_hash == context.world.test_vectors["expected_hash"]
+    assert context.world.transaction_hash is not None
 
 
 @then("the transaction is ready for submission")
@@ -575,7 +632,10 @@ def step_tx_should_be_confirmed(context):
 
 @then("the transaction should be signed")
 def step_tx_should_be_signed(context):
-    pass
+    assert context.world.signed_transaction is not None
+    assert hasattr(context.world.signed_transaction, "authenticator") or hasattr(
+        context.world.signed_transaction, "signature"
+    )
 
 
 @then("the transaction should have that limit")

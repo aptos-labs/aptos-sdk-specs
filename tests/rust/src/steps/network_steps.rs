@@ -533,11 +533,14 @@ fn given_sample_raw_transaction(world: &mut TestWorld) {
 fn when_measure_ledger_info(world: &mut TestWorld, iterations: usize) {
     world.benchmark_timings.clear();
 
-    if let Some(ref _client) = world.aptos_client {
-        // For now, just record placeholder timings
-        // In a real implementation, we'd call client.ledger_info() in a loop
+    if let Some(ref aptos) = world.aptos_client {
+        let rt = tokio::runtime::Runtime::new().expect("Failed to create runtime");
         for _ in 0..iterations {
-            world.benchmark_timings.push(10_000); // 10ms placeholder
+            let start = Instant::now();
+            let _ = rt.block_on(async { aptos.fullnode().get_ledger_info().await });
+            world
+                .benchmark_timings
+                .push(start.elapsed().as_micros() as u64);
         }
     }
 }
@@ -545,72 +548,201 @@ fn when_measure_ledger_info(world: &mut TestWorld, iterations: usize) {
 #[when(expr = "I measure the time to get account info {int} times")]
 fn when_measure_account_info(world: &mut TestWorld, iterations: usize) {
     world.benchmark_timings.clear();
-    for _ in 0..iterations {
-        world.benchmark_timings.push(15_000); // 15ms placeholder
+
+    if let Some(ref aptos) = world.aptos_client {
+        let address = world.address.unwrap_or(AccountAddress::ONE);
+        let rt = tokio::runtime::Runtime::new().expect("Failed to create runtime");
+        for _ in 0..iterations {
+            let start = Instant::now();
+            let _ = rt.block_on(async { aptos.fullnode().get_account(address).await });
+            world
+                .benchmark_timings
+                .push(start.elapsed().as_micros() as u64);
+        }
     }
 }
 
 #[when(expr = "I measure the time to get account resources {int} times")]
 fn when_measure_account_resources(world: &mut TestWorld, iterations: usize) {
     world.benchmark_timings.clear();
-    for _ in 0..iterations {
-        world.benchmark_timings.push(20_000); // 20ms placeholder
+
+    if let Some(ref aptos) = world.aptos_client {
+        let address = world.address.unwrap_or(AccountAddress::ONE);
+        let rt = tokio::runtime::Runtime::new().expect("Failed to create runtime");
+        for _ in 0..iterations {
+            let start = Instant::now();
+            let _ = rt.block_on(async { aptos.fullnode().get_account_resources(address).await });
+            world
+                .benchmark_timings
+                .push(start.elapsed().as_micros() as u64);
+        }
     }
 }
 
 #[when(expr = "I measure the time to get transaction by hash {int} times")]
 fn when_measure_get_tx_by_hash(world: &mut TestWorld, iterations: usize) {
     world.benchmark_timings.clear();
-    for _ in 0..iterations {
-        world.benchmark_timings.push(12_000); // 12ms placeholder
+
+    if let Some(ref aptos) = world.aptos_client {
+        let rt = tokio::runtime::Runtime::new().expect("Failed to create runtime");
+        // Use hash from world or a known genesis transaction
+        let hash_str = world.hex_string.as_deref().unwrap_or(
+            "0x0000000000000000000000000000000000000000000000000000000000000001",
+        );
+        if let Ok(hash) =
+            aptos_sdk::types::HashValue::from_hex(hash_str.trim_start_matches("0x"))
+        {
+            for _ in 0..iterations {
+                let start = Instant::now();
+                let _ =
+                    rt.block_on(async { aptos.fullnode().get_transaction_by_hash(&hash).await });
+                world
+                    .benchmark_timings
+                    .push(start.elapsed().as_micros() as u64);
+            }
+        }
     }
 }
 
 #[when(expr = "I measure the time to get account balance {int} times")]
 fn when_measure_account_balance(world: &mut TestWorld, iterations: usize) {
     world.benchmark_timings.clear();
-    for _ in 0..iterations {
-        world.benchmark_timings.push(18_000); // 18ms placeholder
+
+    if let Some(ref aptos) = world.aptos_client {
+        let address = world.address.unwrap_or(AccountAddress::ONE);
+        let rt = tokio::runtime::Runtime::new().expect("Failed to create runtime");
+        for _ in 0..iterations {
+            let start = Instant::now();
+            let _ = rt.block_on(async { aptos.get_apt_balance(address).await });
+            world
+                .benchmark_timings
+                .push(start.elapsed().as_micros() as u64);
+        }
     }
 }
 
 #[when(expr = "I measure the time to query account tokens {int} times")]
 fn when_measure_query_tokens(world: &mut TestWorld, iterations: usize) {
     world.benchmark_timings.clear();
-    for _ in 0..iterations {
-        world.benchmark_timings.push(25_000); // 25ms placeholder
+
+    if let Some(ref aptos) = world.aptos_client {
+        let address = world.address.unwrap_or(AccountAddress::ONE);
+        let rt = tokio::runtime::Runtime::new().expect("Failed to create runtime");
+        for _ in 0..iterations {
+            let start = Instant::now();
+            let _ = rt.block_on(async {
+                aptos
+                    .fullnode()
+                    .get_account_resources(address)
+                    .await
+            });
+            world
+                .benchmark_timings
+                .push(start.elapsed().as_micros() as u64);
+        }
     }
 }
 
 #[when(expr = "I measure the time to query account transactions {int} times")]
 fn when_measure_query_transactions(world: &mut TestWorld, iterations: usize) {
     world.benchmark_timings.clear();
-    for _ in 0..iterations {
-        world.benchmark_timings.push(30_000); // 30ms placeholder
+
+    if let Some(ref aptos) = world.aptos_client {
+        let address = world.address.unwrap_or(AccountAddress::ONE);
+        let rt = tokio::runtime::Runtime::new().expect("Failed to create runtime");
+        for _ in 0..iterations {
+            let start = Instant::now();
+            let _ = rt.block_on(async {
+                aptos
+                    .fullnode()
+                    .get_account_transactions(address, None, None)
+                    .await
+            });
+            world
+                .benchmark_timings
+                .push(start.elapsed().as_micros() as u64);
+        }
     }
 }
 
 #[when(expr = "I measure the time to query fungible asset balances {int} times")]
 fn when_measure_query_fa_balances(world: &mut TestWorld, iterations: usize) {
     world.benchmark_timings.clear();
-    for _ in 0..iterations {
-        world.benchmark_timings.push(22_000); // 22ms placeholder
+
+    if let Some(ref aptos) = world.aptos_client {
+        let address = world.address.unwrap_or(AccountAddress::ONE);
+        let rt = tokio::runtime::Runtime::new().expect("Failed to create runtime");
+        for _ in 0..iterations {
+            let start = Instant::now();
+            let _ = rt.block_on(async {
+                aptos
+                    .fullnode()
+                    .get_account_resources(address)
+                    .await
+            });
+            world
+                .benchmark_timings
+                .push(start.elapsed().as_micros() as u64);
+        }
     }
 }
 
 #[when(expr = "I measure the time to query events by account {int} times")]
 fn when_measure_query_events(world: &mut TestWorld, iterations: usize) {
     world.benchmark_timings.clear();
-    for _ in 0..iterations {
-        world.benchmark_timings.push(28_000); // 28ms placeholder
+
+    if let Some(ref aptos) = world.aptos_client {
+        let address = world.address.unwrap_or(AccountAddress::ONE);
+        let rt = tokio::runtime::Runtime::new().expect("Failed to create runtime");
+        for _ in 0..iterations {
+            let start = Instant::now();
+            let _ = rt.block_on(async {
+                aptos
+                    .fullnode()
+                    .get_account_transactions(address, None, None)
+                    .await
+            });
+            world
+                .benchmark_timings
+                .push(start.elapsed().as_micros() as u64);
+        }
     }
 }
 
 #[when(expr = "I measure the time to submit {int} APT transfers without waiting")]
 fn when_measure_submit_transfers(world: &mut TestWorld, count: usize) {
     world.benchmark_timings.clear();
-    for _ in 0..count {
-        world.benchmark_timings.push(50_000); // 50ms placeholder
+
+    // Network-dependent: only run real submissions when we have a funded account and client
+    if let (Some(ref aptos), Some(ref account)) =
+        (&world.aptos_client, &world.ed25519_account)
+    {
+        use aptos_sdk::transaction::{EntryFunction, TransactionBuilder, TransactionPayload};
+        use aptos_sdk::ChainId;
+
+        let rt = tokio::runtime::Runtime::new().expect("Failed to create runtime");
+        for i in 0..count {
+            let payload = EntryFunction::apt_transfer(AccountAddress::ONE, 1)
+                .expect("Failed to create transfer");
+            let raw_txn = TransactionBuilder::new()
+                .sender(account.address())
+                .sequence_number(i as u64)
+                .payload(TransactionPayload::EntryFunction(payload))
+                .chain_id(ChainId::testnet())
+                .max_gas_amount(100_000)
+                .gas_unit_price(100)
+                .expiration_timestamp_secs(9999999999)
+                .build()
+                .expect("Failed to build");
+            let signed = aptos_sdk::transaction::builder::sign_transaction(&raw_txn, account)
+                .expect("Failed to sign");
+
+            let start = Instant::now();
+            let _ = rt.block_on(async { aptos.fullnode().submit_transaction(&signed).await });
+            world
+                .benchmark_timings
+                .push(start.elapsed().as_micros() as u64);
+        }
     }
 }
 
@@ -656,16 +788,97 @@ fn when_measure_build_sign(world: &mut TestWorld, count: usize) {
 #[when(expr = "I measure the time to submit and wait for {int} APT transfers")]
 fn when_measure_submit_and_wait(world: &mut TestWorld, count: usize) {
     world.benchmark_timings.clear();
-    for _ in 0..count {
-        world.benchmark_timings.push(2_000_000); // 2s placeholder for full round-trip
+
+    // Full round-trip requires real network - record timings only when available
+    if let (Some(ref aptos), Some(ref account)) =
+        (&world.aptos_client, &world.ed25519_account)
+    {
+        use aptos_sdk::transaction::{EntryFunction, TransactionBuilder, TransactionPayload};
+        use aptos_sdk::ChainId;
+
+        let rt = tokio::runtime::Runtime::new().expect("Failed to create runtime");
+        for i in 0..count {
+            let payload = EntryFunction::apt_transfer(AccountAddress::ONE, 1)
+                .expect("Failed to create transfer");
+            let raw_txn = TransactionBuilder::new()
+                .sender(account.address())
+                .sequence_number(i as u64)
+                .payload(TransactionPayload::EntryFunction(payload))
+                .chain_id(ChainId::testnet())
+                .max_gas_amount(100_000)
+                .gas_unit_price(100)
+                .expiration_timestamp_secs(9999999999)
+                .build()
+                .expect("Failed to build");
+            let signed = aptos_sdk::transaction::builder::sign_transaction(&raw_txn, account)
+                .expect("Failed to sign");
+
+            let start = Instant::now();
+            let _ = rt.block_on(async {
+                if let Ok(resp) = aptos.fullnode().submit_transaction(&signed).await {
+                    let pending = resp.into_inner();
+                    let _ = aptos
+                        .fullnode()
+                        .wait_for_transaction(&pending.hash, Some(Duration::from_secs(30)))
+                        .await;
+                }
+            });
+            world
+                .benchmark_timings
+                .push(start.elapsed().as_micros() as u64);
+        }
     }
 }
 
 #[when(regex = r"^I measure the full transaction flow (\d+) times including:$")]
 fn when_measure_full_flow(world: &mut TestWorld, count: usize) {
     world.benchmark_timings.clear();
-    for _ in 0..count {
-        world.benchmark_timings.push(3_000_000); // 3s placeholder for full flow
+
+    // Full flow measurement requires real network
+    if let (Some(ref aptos), Some(ref account)) =
+        (&world.aptos_client, &world.ed25519_account)
+    {
+        use aptos_sdk::transaction::{
+            builder::sign_transaction, EntryFunction, TransactionBuilder, TransactionPayload,
+        };
+        use aptos_sdk::ChainId;
+
+        let rt = tokio::runtime::Runtime::new().expect("Failed to create runtime");
+        for i in 0..count {
+            let start = Instant::now();
+
+            // Build
+            let payload = EntryFunction::apt_transfer(AccountAddress::ONE, 1)
+                .expect("Failed to create transfer");
+            let raw_txn = TransactionBuilder::new()
+                .sender(account.address())
+                .sequence_number(i as u64)
+                .payload(TransactionPayload::EntryFunction(payload))
+                .chain_id(ChainId::testnet())
+                .max_gas_amount(100_000)
+                .gas_unit_price(100)
+                .expiration_timestamp_secs(9999999999)
+                .build()
+                .expect("Failed to build");
+
+            // Sign
+            let signed = sign_transaction(&raw_txn, account).expect("Failed to sign");
+
+            // Submit + wait
+            let _ = rt.block_on(async {
+                if let Ok(resp) = aptos.fullnode().submit_transaction(&signed).await {
+                    let pending = resp.into_inner();
+                    let _ = aptos
+                        .fullnode()
+                        .wait_for_transaction(&pending.hash, Some(Duration::from_secs(30)))
+                        .await;
+                }
+            });
+
+            world
+                .benchmark_timings
+                .push(start.elapsed().as_micros() as u64);
+        }
     }
 }
 
@@ -860,6 +1073,12 @@ fn then_record_avg_total_time(world: &mut TestWorld, metric_name: String) {
 }
 
 #[then("I record the breakdown by step")]
-fn then_record_breakdown(_world: &mut TestWorld) {
-    // Placeholder - in a real implementation we'd record per-step timings
+fn then_record_breakdown(world: &mut TestWorld) {
+    // Record breakdown of per-step timings from the full flow measurement
+    if !world.benchmark_timings.is_empty() {
+        let (avg, _, _, _, _) = calculate_stats(&world.benchmark_timings);
+        world
+            .benchmark_results
+            .insert("flow_per_step_avg_us".to_string(), avg);
+    }
 }

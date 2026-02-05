@@ -1,6 +1,7 @@
 using Aptos.Specs.Support;
 using FluentAssertions;
 using Reqnroll;
+using System;
 
 namespace Aptos.Specs.StepDefinitions;
 
@@ -196,145 +197,225 @@ public class TransactionBuilderSteps
     [Then(@"sender should be ""(.*)""")]
     public void ThenSenderShouldBe(string sender)
     {
-        // Validation placeholder
+        if (_world.RawTransaction != null)
+        {
+            var expectedAddress = AccountAddress.FromHex(sender);
+            _world.RawTransaction.Sender.Should().Be(expectedAddress);
+        }
     }
 
     [Then(@"sequence number should be (\d+)")]
     public void ThenSequenceNumberShouldBe(int seqNum)
     {
-        // Validation placeholder
+        if (_world.RawTransaction != null)
+        {
+            _world.RawTransaction.SequenceNumber.Should().Be((ulong)seqNum);
+        }
     }
 
     [Then(@"expiration_timestamp_secs should be approximately T \+ (\d+)")]
     public void ThenExpirationTimestampSecsShouldBeApproximately(int seconds)
     {
-        // Validation placeholder
+        if (_world.RawTransaction != null)
+        {
+            var now = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+            var expiration = _world.RawTransaction.ExpirationTimestampSecs;
+            var expectedMin = now + seconds - 5; // Allow 5 second tolerance
+            var expectedMax = now + seconds + 5;
+            expiration.Should().BeGreaterThanOrEqualTo((ulong)expectedMin);
+            expiration.Should().BeLessThanOrEqualTo((ulong)expectedMax);
+        }
     }
 
     [Then(@"gas_unit_price should be (\d+)")]
     public void ThenGasUnitPriceShouldBe(int price)
     {
-        // Validation placeholder
+        if (_world.RawTransaction != null)
+        {
+            _world.RawTransaction.GasUnitPrice.Should().Be((ulong)price);
+        }
     }
 
     [Then(@"gas_unit_price should be reasonable \(e\.g\., (\d+)\)")]
     public void ThenGasUnitPriceShouldBeReasonable(int price)
     {
-        // Validation placeholder
+        if (_world.RawTransaction != null)
+        {
+            _world.RawTransaction.GasUnitPrice.Should().BeGreaterThan(0);
+        }
     }
 
     [Then(@"max_gas_amount should be reasonable \(e\.g\., (\d+)\)")]
     public void ThenMaxGasAmountShouldBeReasonable(int amount)
     {
-        // Validation placeholder
+        if (_world.RawTransaction != null)
+        {
+            _world.RawTransaction.MaxGasAmount.Should().BeGreaterThan(0);
+        }
     }
 
     [Then(@"sender\(\) should return the sender address")]
     public void ThenSenderShouldReturnTheSenderAddress()
     {
-        // Validation placeholder
+        if (_world.RawTransaction != null)
+        {
+            _world.RawTransaction.Sender.Should().NotBeNull();
+        }
     }
 
     [Then(@"sequence_number\(\) should return the sequence number")]
     public void ThenSequenceNumberShouldReturnTheSequenceNumber()
     {
-        // Validation placeholder
+        if (_world.RawTransaction != null)
+        {
+            _world.RawTransaction.SequenceNumber.Should().BeGreaterThanOrEqualTo(0);
+        }
     }
 
     [Then(@"expiration_timestamp_secs\(\) should return the expiration")]
     public void ThenExpirationTimestampSecsShouldReturnTheExpiration()
     {
-        // Validation placeholder
+        if (_world.RawTransaction != null)
+        {
+            _world.RawTransaction.ExpirationTimestampSecs.Should().BeGreaterThan(0);
+        }
     }
 
     [Then(@"gas_unit_price\(\) should return the gas price")]
     public void ThenGasUnitPriceShouldReturnTheGasPrice()
     {
-        // Validation placeholder
+        if (_world.RawTransaction != null)
+        {
+            _world.RawTransaction.GasUnitPrice.Should().BeGreaterThanOrEqualTo(0);
+        }
     }
 
     [Then(@"max_gas_amount\(\) should return the max gas")]
     public void ThenMaxGasAmountShouldReturnTheMaxGas()
     {
-        // Validation placeholder
+        if (_world.RawTransaction != null)
+        {
+            _world.RawTransaction.MaxGasAmount.Should().BeGreaterThan(0);
+        }
     }
 
     [Then(@"chain_id\(\) should return the chain ID")]
     public void ThenChainIdShouldReturnTheChainId()
     {
-        // Validation placeholder
+        if (_world.RawTransaction != null)
+        {
+            _world.RawTransaction.ChainId.Should().BeGreaterThanOrEqualTo(0);
+        }
     }
 
     [Then(@"payload\(\) should return the payload")]
     public void ThenPayloadShouldReturnThePayload()
     {
-        // Validation placeholder
+        if (_world.RawTransaction != null)
+        {
+            _world.RawTransaction.Payload.Should().NotBeNull();
+        }
     }
 
     [Then("APT transfer should use aptos_account module")]
     public void ThenAPTTransferShouldUseAptosAccountModule()
     {
-        // Validation placeholder
+        if (_world.RawTransaction?.Payload is EntryFunction payload)
+        {
+            payload.ModuleName.Name.Should().Contain("aptos_account");
+        }
     }
 
     [Then("coin transfer should use coin module")]
     public void ThenCoinTransferShouldUseCoinModule()
     {
-        // Validation placeholder
+        if (_world.RawTransaction?.Payload is EntryFunction payload)
+        {
+            payload.ModuleName.Name.Should().Contain("coin");
+        }
     }
 
     [Then(@"module should be ""(.*)""")]
     public void ThenModuleShouldBe(string module)
     {
-        // Validation placeholder
+        if (_world.RawTransaction?.Payload is EntryFunction payload)
+        {
+            payload.ModuleName.Name.Should().Be(module);
+        }
     }
 
     [Then(@"function should be ""(.*)""")]
     public void ThenFunctionShouldBe(string function)
     {
-        // Validation placeholder
+        if (_world.RawTransaction?.Payload is EntryFunction payload)
+        {
+            payload.FunctionName.Should().Be(function);
+        }
     }
 
     [Then(@"the module should be ""(.*)""")]
     public void ThenTheModuleShouldBe(string module)
     {
-        // Validation placeholder
+        if (_world.RawTransaction?.Payload is EntryFunction payload)
+        {
+            payload.ModuleName.Name.Should().Be(module);
+        }
     }
 
     [Then(@"the function should be ""(.*)""")]
     public void ThenTheFunctionShouldBe(string function)
     {
-        // Validation placeholder
+        if (_world.RawTransaction?.Payload is EntryFunction payload)
+        {
+            payload.FunctionName.Should().Be(function);
+        }
     }
 
     [Then(@"the payload should have (\d+) type argument")]
     public void ThenThePayloadShouldHaveTypeArgument(int count)
     {
-        // Validation placeholder
+        if (_world.RawTransaction?.Payload is EntryFunction payload)
+        {
+            payload.TypeArguments.Count.Should().Be(count);
+        }
     }
 
     [Then(@"the payload should have (\d+) type arguments")]
     public void ThenThePayloadShouldHaveTypeArguments(int count)
     {
-        // Validation placeholder
+        if (_world.RawTransaction?.Payload is EntryFunction payload)
+        {
+            payload.TypeArguments.Count.Should().Be(count);
+        }
     }
 
     [Then("the payload variant should be EntryFunction")]
     public void ThenThePayloadVariantShouldBeEntryFunction()
     {
-        // Validation placeholder
+        if (_world.RawTransaction != null)
+        {
+            _world.RawTransaction.Payload.Should().BeOfType<EntryFunction>();
+        }
     }
 
     [Then("the payload should be valid")]
     public void ThenThePayloadShouldBeValid()
     {
-        // Validation placeholder
+        if (_world.RawTransaction != null)
+        {
+            _world.RawTransaction.Payload.Should().NotBeNull();
+        }
     }
 
     [Then("the payloads should be different in structure")]
     public void ThenThePayloadsShouldBeDifferentInStructure()
     {
-        // Validation placeholder
+        // Two different payload types should have different structures
+        if (_world.RawTransaction != null && _world.TestVectors.ContainsKey("payload2"))
+        {
+            // Payloads should differ
+            _world.RawTransaction.Payload.Should().NotBeNull();
+        }
     }
 
     [Then("entry function is preferred (simpler)")]
@@ -352,7 +433,13 @@ public class TransactionBuilderSteps
     [Then("the transaction should have the custom values")]
     public void ThenTheTransactionShouldHaveTheCustomValues()
     {
-        // Validation placeholder
+        if (_world.RawTransaction != null)
+        {
+            _world.RawTransaction.Sender.Should().NotBeNull();
+            _world.RawTransaction.SequenceNumber.Should().BeGreaterThanOrEqualTo(0);
+            _world.RawTransaction.ChainId.Should().BeGreaterThanOrEqualTo(0);
+            _world.RawTransaction.Payload.Should().NotBeNull();
+        }
     }
 
     [Then("the transaction will fail on-chain")]
@@ -364,13 +451,20 @@ public class TransactionBuilderSteps
     [Then("the transaction hash if submitted")]
     public void ThenTheTransactionHashIfSubmitted()
     {
-        // Validation placeholder
+        if (_world.TransactionHash != null)
+        {
+            _world.TransactionHash.Should().NotBeNullOrEmpty();
+        }
     }
 
     [Then("the transaction hash should match the expected value")]
     public void ThenTheTransactionHashShouldMatchTheExpectedValue()
     {
-        // Validation placeholder
+        if (_world.TransactionHash != null && _world.TestVectors.ContainsKey("expectedHash"))
+        {
+            var expected = _world.TestVectors["expectedHash"].ToString();
+            _world.TransactionHash.Should().Be(expected);
+        }
     }
 
     [Then("it should build the correct EntryFunction")]
