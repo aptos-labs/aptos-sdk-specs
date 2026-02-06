@@ -348,7 +348,7 @@ fn then_base_url_is(world: &mut TestWorld, expected: String) {
             expected,
             "Base URL should match"
         );
-    } else if let Some(ref faucet) = world.faucet_client {
+    } else if let Some(ref _faucet) = world.faucet_client {
         // Handle faucet client URL check via named_values
         assert!(world.named_values.contains_key("faucet_url"));
     }

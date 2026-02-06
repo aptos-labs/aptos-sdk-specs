@@ -474,7 +474,7 @@ fn then_get_signed_transaction(world: &mut TestWorld) {
 
 #[then(expr = "the authenticator should be Ed25519 variant")]
 fn then_authenticator_ed25519(world: &mut TestWorld) {
-    let signed_tx = world
+    let _signed_tx = world
         .signed_transaction
         .as_ref()
         .expect("No SignedTransaction");
