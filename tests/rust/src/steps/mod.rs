@@ -3,7 +3,6 @@
 pub mod account_steps;
 pub mod address_steps;
 pub mod auth_key_steps;
-pub mod bls_steps;
 pub mod client_steps;
 pub mod codegen_steps;
 pub mod common_steps;

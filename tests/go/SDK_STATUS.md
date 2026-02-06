@@ -19,7 +19,8 @@
 
 > **Note:** Go SDK v2 (`2.0.0-alpha`) is a complete API rewrite with context-first methods, improved
 > error handling, and new features (keyless, sponsored tx, codegen, ANS). Migration from v1 is
-> tracked. See the [v2 migration guide](https://github.com/aptos-labs/aptos-go-sdk/blob/main/v2/MIGRATION.md).
+> tracked. See the
+> [v2 migration guide](https://github.com/aptos-labs/aptos-go-sdk/blob/main/v2/MIGRATION.md).
 
 ---
 

@@ -88,9 +88,6 @@ func InitializeScenario(ctx *godog.ScenarioContext) {
 	// Keyless steps (all pending - awaiting SDK implementation)
 	initKeylessSteps(ctx, world)
 
-	// BLS steps (all pending - awaiting SDK implementation)
-	initBLSSteps(ctx, world)
-
 	// Mnemonic/derivation steps
 	initMnemonicSteps(ctx, world)
 

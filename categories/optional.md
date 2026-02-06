@@ -24,15 +24,6 @@ A feature is classified as Optional if:
 - Derive authentication key
 - WebAuthn/Passkey compatibility
 
-### BLS12-381
-
-- Generate random key pairs
-- Sign messages
-- Verify signatures
-- Aggregate signatures
-- Aggregate public keys
-- Proof of possession
-
 ### Multi-Key Cryptography
 
 - Combine multiple public keys with weights
@@ -220,10 +211,6 @@ Feature-specific compliance:
 ### Secp256r1
 
 - [ ] `02-cryptography/secp256r1.feature`
-
-### BLS12-381
-
-- [ ] `02-cryptography/bls12381.feature`
 
 ---
 

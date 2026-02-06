@@ -149,33 +149,6 @@ Where `0x02` is the Secp256r1 scheme identifier.
 
 ---
 
-## BLS12-381 (Optional - P2)
-
-### Description
-
-BLS signatures enable signature aggregation for multi-signature schemes.
-
-### Key Sizes
-
-| Component   | Size     |
-| ----------- | -------- |
-| Private Key | 32 bytes |
-| Public Key  | 48 bytes |
-| Signature   | 96 bytes |
-
-### Requirements
-
-| Method                        | Priority | Description                  |
-| ----------------------------- | -------- | ---------------------------- |
-| `generate()`                  | P2       | Generate random key pair     |
-| `sign(message)`               | P2       | Sign message                 |
-| `verify(message, signature)`  | P2       | Verify signature             |
-| `aggregate_signatures(sigs)`  | P2       | Combine multiple signatures  |
-| `aggregate_public_keys(keys)` | P2       | Combine multiple public keys |
-| `proof_of_possession()`       | P2       | Generate PoP for key         |
-
----
-
 ## Hashing
 
 ### SHA3-256 (Required - P0)
@@ -338,5 +311,4 @@ deterministic test cases.
 | `ed25519.feature`   | 23        | Ed25519 key generation, signing, verification |
 | `secp256k1.feature` | 18        | Secp256k1 ECDSA operations                    |
 | `secp256r1.feature` | 26        | Secp256r1/P-256 for WebAuthn/Passkey          |
-| `bls12381.feature`  | 30        | BLS12-381 aggregatable signatures             |
 | `hashing.feature`   | 21        | SHA3-256, SHA2-256, domain separation         |
