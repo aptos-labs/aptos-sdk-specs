@@ -613,7 +613,7 @@ fn when_measure_account_balance(world: &mut TestWorld, iterations: usize) {
         let rt = tokio::runtime::Runtime::new().expect("Failed to create runtime");
         for _ in 0..iterations {
             let start = Instant::now();
-            let _ = rt.block_on(async { aptos.get_apt_balance(address).await });
+            let _ = rt.block_on(async { aptos.get_balance(address).await });
             world
                 .benchmark_timings
                 .push(start.elapsed().as_micros() as u64);
@@ -652,10 +652,12 @@ fn when_measure_query_transactions(world: &mut TestWorld, iterations: usize) {
         let rt = tokio::runtime::Runtime::new().expect("Failed to create runtime");
         for _ in 0..iterations {
             let start = Instant::now();
+            // Note: get_account_transactions is not available in the current SDK version.
+            // Using get_account_resources as an account-level fullnode query benchmark instead.
             let _ = rt.block_on(async {
                 aptos
                     .fullnode()
-                    .get_account_transactions(address, None, None)
+                    .get_account_resources(address)
                     .await
             });
             world
@@ -699,7 +701,13 @@ fn when_measure_query_events(world: &mut TestWorld, iterations: usize) {
             let _ = rt.block_on(async {
                 aptos
                     .fullnode()
-                    .get_account_transactions(address, None, None)
+                    .get_events_by_event_handle(
+                        address,
+                        "0x1::coin::CoinStore<0x1::aptos_coin::AptosCoin>",
+                        "withdraw_events",
+                        None,
+                        None,
+                    )
                     .await
             });
             world

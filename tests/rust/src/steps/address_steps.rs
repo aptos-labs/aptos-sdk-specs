@@ -87,7 +87,7 @@ fn when_parse_address(world: &mut TestWorld) {
 #[when("I format it as full hex")]
 fn when_format_full_hex(world: &mut TestWorld) {
     if let Some(addr) = world.address {
-        world.formatted_string = Some(addr.to_string());
+        world.formatted_string = Some(addr.to_long_string());
     }
 }
 
@@ -256,7 +256,7 @@ fn then_short_string_is(world: &mut TestWorld, expected: String) {
 #[then(expr = "the full hex should be {string}")]
 fn then_full_hex_is(world: &mut TestWorld, expected: String) {
     if let Some(addr) = world.address {
-        assert_eq!(addr.to_string(), expected);
+        assert_eq!(addr.to_long_string(), expected);
     }
 }
 

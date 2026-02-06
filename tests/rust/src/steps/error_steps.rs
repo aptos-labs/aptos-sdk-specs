@@ -102,7 +102,7 @@ fn then_see_abort_code(world: &mut TestWorld) {
 }
 
 #[then(expr = "the transaction hash if submitted")]
-fn then_see_tx_hash(world: &mut TestWorld) {
+fn then_see_tx_hash(_world: &mut TestWorld) {
     // Transaction hash would be stored if submitted
     // For this test, just pass as we're testing error handling structure
 }
@@ -135,7 +135,7 @@ fn given_tx_with_abort(world: &mut TestWorld) {
 }
 
 #[when(expr = "I parse the status")]
-fn when_parse_status(world: &mut TestWorld) {
+fn when_parse_status(_world: &mut TestWorld) {
     // Status is already parsed
 }
 
@@ -176,7 +176,7 @@ fn given_wrong_sequence_number(world: &mut TestWorld) {
 }
 
 #[when(expr = "I parse the error")]
-fn when_parse_error(world: &mut TestWorld) {
+fn when_parse_error(_world: &mut TestWorld) {
     // Error is already stored
 }
 
