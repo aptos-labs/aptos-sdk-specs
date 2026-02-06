@@ -5,17 +5,17 @@ specifications.
 
 ## Supported SDKs
 
-| SDK        | Framework         | Directory     | Status        |
-| ---------- | ----------------- | ------------- | ------------- |
-| TypeScript | Cucumber.js + Bun | `typescript/` | ✅ Ready      |
-| Go         | Godog             | `go/`         | ✅ Ready      |
-| **Rust**   | cucumber-rs       | `rust/`       | ✅ Ready      |
-| **Java**   | Cucumber-JVM      | `java/`       | 🚧 Phase 1    |
-| **C++**    | CWT-Cucumber      | `cpp/`        | 🚧 Integrated |
-| Python     | Behave            | `python/`     | 📋 Planned    |
-| C#         | Reqnroll          | `dotnet/`     | 📋 Planned    |
-| Kotlin     | Cucumber-JVM      | `kotlin/`     | 📋 Planned    |
-| **Swift**  | CucumberSwift     | `swift/`      | 📋 Planned    |
+| SDK        | Framework         | Directory     | Status                      | Last Verified |
+| ---------- | ----------------- | ------------- | --------------------------- | ------------- |
+| TypeScript | Cucumber.js + Bun | `typescript/` | ✅ 469+ passing             | 2026-02-06    |
+| Go         | Godog             | `go/`         | ✅ 333/791 passing (42%)    | 2026-02-06    |
+| Rust       | cucumber-rs       | `rust/`       | ❌ Build failure (API change) | 2026-02-06  |
+| Python     | Behave            | `python/`     | ✅ 459/791 passing (58%)    | 2026-02-06    |
+| Java       | Cucumber-JVM      | `java/`       | 🚧 22/802 passing (3%)     | 2026-02-06    |
+| .NET       | Reqnroll          | `dotnet/`     | 🟡 478/808 passing (59%)   | 2026-01-28    |
+| Kotlin     | Cucumber-JVM      | `kotlin/`     | 🟡 176/1652 passing (11%)  | 2026-01-28    |
+| C++        | CWT-Cucumber      | `cpp/`        | ❌ Segfault in runner       | 2026-01-28    |
+| Swift      | XCTest            | `swift/`      | 🟡 286/826 passing (35%)   | 2026-01-28    |
 
 ## Quick Start
 
