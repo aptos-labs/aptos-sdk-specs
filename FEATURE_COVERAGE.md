@@ -31,17 +31,17 @@
 
 > **Last verified:** 2026-02-06. Numbers reflect actual test runs.
 
-| SDK        | Required (P0)  | Preferred (P1) | Optional (P2)  | Total    | Notes                                    |
-| ---------- | -------------- | -------------- | -------------- | -------- | ---------------------------------------- |
-| TypeScript | ~320/370 (86%) | ~100/183 (55%) | ~131/252 (52%) | ~551/826 | Reference impl; API tests need network   |
-| Go         | 333/791 (42%)  | included       | included       | 333/791  | 136 failed, 312 pending, 10 undefined    |
-| Rust       | ❌ Build fail  | ❌ Build fail  | ❌ Build fail  | 0/791    | SDK API changed; 3 compile errors        |
-| .NET       | 478/808 (59%)  | included       | included       | 478/808  | 330 failures (last verified 2026-01-28)  |
-| Python     | 459/791 (58%)  | included       | included       | 459/791  | 121 failed, 75 errors, 136 skipped       |
-| Java       | 22/802 (3%)    | included       | included       | 22/802   | 780 errors, most steps undefined         |
-| Kotlin     | 176/1652 (11%) | included       | included       | 176/1652 | Not runnable (Gradle/JDK compat issue)   |
-| C++        | 0/370 (0%)     | 0/183 (0%)     | 0/250 (0%)     | 0/826    | Segfault in test runner                  |
-| Swift      | 286/826 (35%)  | included       | included       | 286/826  | XCTest-based (last verified 2026-01-28)  |
+| SDK        | Required (P0)  | Preferred (P1) | Optional (P2)  | Total    | Notes                                   |
+| ---------- | -------------- | -------------- | -------------- | -------- | --------------------------------------- |
+| TypeScript | ~320/370 (86%) | ~100/183 (55%) | ~131/252 (52%) | ~551/826 | Reference impl; API tests need network  |
+| Go         | 333/791 (42%)  | included       | included       | 333/791  | 136 failed, 312 pending, 10 undefined   |
+| Rust       | ❌ Build fail  | ❌ Build fail  | ❌ Build fail  | 0/791    | SDK API changed; 3 compile errors       |
+| .NET       | 478/808 (59%)  | included       | included       | 478/808  | 330 failures (last verified 2026-01-28) |
+| Python     | 459/791 (58%)  | included       | included       | 459/791  | 121 failed, 75 errors, 136 skipped      |
+| Java       | 22/802 (3%)    | included       | included       | 22/802   | 780 errors, most steps undefined        |
+| Kotlin     | 176/1652 (11%) | included       | included       | 176/1652 | Not runnable (Gradle/JDK compat issue)  |
+| C++        | 0/370 (0%)     | 0/183 (0%)     | 0/250 (0%)     | 0/826    | Segfault in test runner                 |
+| Swift      | 286/826 (35%)  | included       | included       | 286/826  | XCTest-based (last verified 2026-01-28) |
 
 ---
 

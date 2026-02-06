@@ -20,12 +20,12 @@
 
 ## 2. Coverage Summary
 
-| Priority       | Passing          | Total   | Percentage   | Status |
-| -------------- | ---------------- | ------- | ------------ | ------ |
-| Required (P0)  | ❌ Build failure | 791     | N/A          | ❌     |
-| Preferred (P1) | ❌ Build failure | -       | -            | -      |
-| Optional (P2)  | ❌ Build failure | -       | -            | -      |
-| **Total**      | **0 (blocked)**  | **791** | **0% (blocked)** | ❌ |
+| Priority       | Passing          | Total   | Percentage       | Status |
+| -------------- | ---------------- | ------- | ---------------- | ------ |
+| Required (P0)  | ❌ Build failure | 791     | N/A              | ❌     |
+| Preferred (P1) | ❌ Build failure | -       | -                | -      |
+| Optional (P2)  | ❌ Build failure | -       | -                | -      |
+| **Total**      | **0 (blocked)**  | **791** | **0% (blocked)** | ❌     |
 
 > **Notes:**
 >
@@ -81,10 +81,10 @@ The SDK uses feature flags. The `full` feature enables all:
 
 ## 4. Known Issues
 
-| Issue                  | Impact              | Resolution                                           |
-| ---------------------- | ------------------- | ---------------------------------------------------- |
-| Not on crates.io       | Git dep required    | Use git dependency from GitHub                       |
-| `get_apt_balance`      | Compile error       | Method removed/renamed in SDK; update step definition |
+| Issue                      | Impact             | Resolution                                            |
+| -------------------------- | ------------------ | ----------------------------------------------------- |
+| Not on crates.io           | Git dep required   | Use git dependency from GitHub                        |
+| `get_apt_balance`          | Compile error      | Method removed/renamed in SDK; update step definition |
 | `get_account_transactions` | Compile error (x2) | Method removed/renamed in SDK; update step definition |
 
 ### SDK Dependency
@@ -188,8 +188,7 @@ fn given_hex_string(world: &mut TestWorld, hex_string: String) {
 
 ## 9. Test Results Matrix
 
-> Last attempted: 2026-02-06 (build failure)
-> Last successful run: 2026-02-05
+> Last attempted: 2026-02-06 (build failure) Last successful run: 2026-02-05
 
 ### Full Test Suite Summary (from 2026-02-05, last successful build)
 
