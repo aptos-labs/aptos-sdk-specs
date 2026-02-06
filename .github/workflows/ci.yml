@@ -168,8 +168,9 @@ jobs:
         working-directory: ${{ github.workspace }}
 
       - name: Setup Rust
-        uses: dtolnay/rust-toolchain@nightly
+        uses: dtolnay/rust-toolchain@stable
         with:
+          toolchain: "1.85.0"
           components: clippy
 
       - name: Cache cargo
