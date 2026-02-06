@@ -103,7 +103,7 @@ func initMoreSteps(ctx *godog.ScenarioContext, world *World) {
 
 	ctx.Step(`^gas estimate endpoint is available$`, func() error {
 		if world.Client == nil {
-			client, err := aptos.NewClient(aptos.DevnetConfig)
+			client, err := NewTestClient(aptos.DevnetConfig)
 			if err != nil {
 				return err
 			}

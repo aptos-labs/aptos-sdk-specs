@@ -15,7 +15,7 @@ func initFaucetSteps(ctx *godog.ScenarioContext, world *World) {
 
 	ctx.Step(`^a faucet client$`, func() error {
 		if world.Client == nil {
-			client, err := aptos.NewClient(aptos.TestnetConfig)
+			client, err := NewTestClient(aptos.TestnetConfig)
 			if err != nil {
 				return err
 			}
@@ -26,7 +26,7 @@ func initFaucetSteps(ctx *godog.ScenarioContext, world *World) {
 	})
 
 	ctx.Step(`^a faucet client for testnet$`, func() error {
-		client, err := aptos.NewClient(aptos.TestnetConfig)
+		client, err := NewTestClient(aptos.TestnetConfig)
 		if err != nil {
 			return err
 		}
@@ -47,7 +47,7 @@ func initFaucetSteps(ctx *godog.ScenarioContext, world *World) {
 
 	ctx.Step(`^a funded Ed25519 account for benchmarking$`, func() error {
 		if world.Client == nil {
-			client, err := aptos.NewClient(aptos.TestnetConfig)
+			client, err := NewTestClient(aptos.TestnetConfig)
 			if err != nil {
 				return err
 			}
@@ -99,7 +99,7 @@ func initFaucetSteps(ctx *godog.ScenarioContext, world *World) {
 	})
 
 	ctx.Step(`^I create a faucet client for testnet$`, func() error {
-		client, err := aptos.NewClient(aptos.TestnetConfig)
+		client, err := NewTestClient(aptos.TestnetConfig)
 		if err != nil {
 			return err
 		}
@@ -108,7 +108,7 @@ func initFaucetSteps(ctx *godog.ScenarioContext, world *World) {
 	})
 
 	ctx.Step(`^I create a faucet client for devnet$`, func() error {
-		client, err := aptos.NewClient(aptos.DevnetConfig)
+		client, err := NewTestClient(aptos.DevnetConfig)
 		if err != nil {
 			return err
 		}
@@ -121,7 +121,7 @@ func initFaucetSteps(ctx *godog.ScenarioContext, world *World) {
 			NodeUrl:   "http://localhost:8080/v1",
 			FaucetUrl: "http://localhost:8081",
 		}
-		client, err := aptos.NewClient(config)
+		client, err := NewTestClient(config)
 		if err != nil {
 			world.SetError(err)
 			return nil
@@ -139,7 +139,7 @@ func initFaucetSteps(ctx *godog.ScenarioContext, world *World) {
 			NodeUrl:   "https://fullnode.testnet.aptoslabs.com/v1",
 			FaucetUrl: url,
 		}
-		client, err := aptos.NewClient(config)
+		client, err := NewTestClient(config)
 		if err != nil {
 			world.SetError(err)
 			return nil
@@ -156,7 +156,7 @@ func initFaucetSteps(ctx *godog.ScenarioContext, world *World) {
 
 	ctx.Step(`^I create a funded Ed25519 account$`, func() error {
 		if world.Client == nil {
-			client, err := aptos.NewClient(aptos.TestnetConfig)
+			client, err := NewTestClient(aptos.TestnetConfig)
 			if err != nil {
 				return err
 			}
@@ -180,7 +180,7 @@ func initFaucetSteps(ctx *godog.ScenarioContext, world *World) {
 
 	ctx.Step(`^I create a funded Secp256k1 account$`, func() error {
 		if world.Client == nil {
-			client, err := aptos.NewClient(aptos.TestnetConfig)
+			client, err := NewTestClient(aptos.TestnetConfig)
 			if err != nil {
 				return err
 			}
@@ -389,7 +389,7 @@ func initFaucetSteps(ctx *godog.ScenarioContext, world *World) {
 
 	ctx.Step(`^I call create_funded_account with (\d+)_(\d+)_(\d+) octas$`, func(a, b, c int) error {
 		if world.Client == nil {
-			client, err := aptos.NewClient(aptos.TestnetConfig)
+			client, err := NewTestClient(aptos.TestnetConfig)
 			if err != nil {
 				return err
 			}

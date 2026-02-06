@@ -14,7 +14,7 @@ func initViewFunctionSteps(ctx *godog.ScenarioContext, world *World) {
 
 	ctx.Step(`^I call view function "([^"]*)"$`, func(functionName string) error {
 		if world.Client == nil {
-			client, err := aptos.NewClient(aptos.TestnetConfig)
+			client, err := NewTestClient(aptos.TestnetConfig)
 			if err != nil {
 				return err
 			}
@@ -28,7 +28,7 @@ func initViewFunctionSteps(ctx *godog.ScenarioContext, world *World) {
 
 	ctx.Step(`^I call non-existent view function "([^"]*)"$`, func(functionName string) error {
 		if world.Client == nil {
-			client, err := aptos.NewClient(aptos.TestnetConfig)
+			client, err := NewTestClient(aptos.TestnetConfig)
 			if err != nil {
 				return err
 			}
@@ -62,7 +62,7 @@ func initViewFunctionSteps(ctx *godog.ScenarioContext, world *World) {
 
 	ctx.Step(`^I call a view function that returns multiple values$`, func() error {
 		if world.Client == nil {
-			client, err := aptos.NewClient(aptos.TestnetConfig)
+			client, err := NewTestClient(aptos.TestnetConfig)
 			if err != nil {
 				return err
 			}
@@ -74,7 +74,7 @@ func initViewFunctionSteps(ctx *godog.ScenarioContext, world *World) {
 
 	ctx.Step(`^I call a view function with too few arguments$`, func() error {
 		if world.Client == nil {
-			client, err := aptos.NewClient(aptos.TestnetConfig)
+			client, err := NewTestClient(aptos.TestnetConfig)
 			if err != nil {
 				return err
 			}
@@ -86,7 +86,7 @@ func initViewFunctionSteps(ctx *godog.ScenarioContext, world *World) {
 
 	ctx.Step(`^I call a view function with wrong argument types$`, func() error {
 		if world.Client == nil {
-			client, err := aptos.NewClient(aptos.TestnetConfig)
+			client, err := NewTestClient(aptos.TestnetConfig)
 			if err != nil {
 				return err
 			}
@@ -98,7 +98,7 @@ func initViewFunctionSteps(ctx *godog.ScenarioContext, world *World) {
 
 	ctx.Step(`^I call (\d+)x(\d+)::account::exists_at$`, func(a, b int) error {
 		if world.Client == nil {
-			client, err := aptos.NewClient(aptos.TestnetConfig)
+			client, err := NewTestClient(aptos.TestnetConfig)
 			if err != nil {
 				return err
 			}
@@ -110,7 +110,7 @@ func initViewFunctionSteps(ctx *godog.ScenarioContext, world *World) {
 
 	ctx.Step(`^I call (\d+)x(\d+)::coin::balance<(\d+)x(\d+)::aptos_coin::AptosCoin>$`, func(a, b, c, d int) error {
 		if world.Client == nil {
-			client, err := aptos.NewClient(aptos.TestnetConfig)
+			client, err := NewTestClient(aptos.TestnetConfig)
 			if err != nil {
 				return err
 			}
@@ -122,7 +122,7 @@ func initViewFunctionSteps(ctx *godog.ScenarioContext, world *World) {
 
 	ctx.Step(`^I call (\d+)x(\d+)::coin::supply<(\d+)x(\d+)::aptos_coin::AptosCoin>$`, func(a, b, c, d int) error {
 		if world.Client == nil {
-			client, err := aptos.NewClient(aptos.TestnetConfig)
+			client, err := NewTestClient(aptos.TestnetConfig)
 			if err != nil {
 				return err
 			}
@@ -134,7 +134,7 @@ func initViewFunctionSteps(ctx *godog.ScenarioContext, world *World) {
 
 	ctx.Step(`^I call (\d+)x(\d+)::timestamp::now_seconds$`, func(a, b int) error {
 		if world.Client == nil {
-			client, err := aptos.NewClient(aptos.TestnetConfig)
+			client, err := NewTestClient(aptos.TestnetConfig)
 			if err != nil {
 				return err
 			}
