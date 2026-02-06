@@ -1,6 +1,6 @@
 # Feature Coverage Matrix
 
-> **Last Updated:** 2026-01-28
+> **Last Updated:** 2026-02-06
 >
 > This file tracks implementation status of behavioral specifications across all SDK
 > implementations. Check boxes indicate that step definitions exist and tests pass for that
@@ -29,19 +29,19 @@
 
 ## Coverage Summary
 
-> **Last verified:** 2026-01-28. Numbers reflect actual test runs.
+> **Last verified:** 2026-02-06. Numbers reflect actual test runs.
 
-| SDK        | Required (P0)  | Preferred (P1) | Optional (P2)  | Total    | Notes                             |
-| ---------- | -------------- | -------------- | -------------- | -------- | --------------------------------- |
-| TypeScript | ~320/370 (86%) | ~100/183 (55%) | ~131/252 (52%) | ~551/826 | Reference implementation          |
-| Go         | 332/826 (40%)  | included       | included       | 332/826  | 146 failed, 348 pending           |
-| Rust       | 761/826 (92%)  | included       | included       | 761/826  | 65 skipped                        |
-| .NET       | 478/808 (59%)  | included       | included       | 478/808  | 330 failures                      |
-| Python     | 272/826 (33%)  | included       | included       | 272/826  | 36 failed, 60 errors, 458 skipped |
-| Java       | ~22/837 (3%)   | included       | included       | ~22/837  | 815 errors, most steps undefined  |
-| Kotlin     | 176/1652 (11%) | included       | included       | 176/1652 | 1476 failures, community SDK      |
-| C++        | 0/370 (0%)     | 0/183 (0%)     | 0/250 (0%)     | 0/826    | Segfault in test runner           |
-| Swift      | 286/826 (35%)  | included       | included       | 286/826  | XCTest-based tests passing        |
+| SDK        | Required (P0)  | Preferred (P1) | Optional (P2)  | Total    | Notes                                    |
+| ---------- | -------------- | -------------- | -------------- | -------- | ---------------------------------------- |
+| TypeScript | ~320/370 (86%) | ~100/183 (55%) | ~131/252 (52%) | ~551/826 | Reference impl; API tests need network   |
+| Go         | 333/791 (42%)  | included       | included       | 333/791  | 136 failed, 312 pending, 10 undefined    |
+| Rust       | ❌ Build fail  | ❌ Build fail  | ❌ Build fail  | 0/791    | SDK API changed; 3 compile errors        |
+| .NET       | 478/808 (59%)  | included       | included       | 478/808  | 330 failures (last verified 2026-01-28)  |
+| Python     | 459/791 (58%)  | included       | included       | 459/791  | 121 failed, 75 errors, 136 skipped       |
+| Java       | 22/802 (3%)    | included       | included       | 22/802   | 780 errors, most steps undefined         |
+| Kotlin     | 176/1652 (11%) | included       | included       | 176/1652 | Not runnable (Gradle/JDK compat issue)   |
+| C++        | 0/370 (0%)     | 0/183 (0%)     | 0/250 (0%)     | 0/826    | Segfault in test runner                  |
+| Swift      | 286/826 (35%)  | included       | included       | 286/826  | XCTest-based (last verified 2026-01-28)  |
 
 ---
 
@@ -1093,9 +1093,18 @@ cd tests/rust && cargo test --test specs
 
 ### TypeScript (`@aptos-labs/ts-sdk` ^5.2.0) — [Full Status](tests/typescript/SDK_STATUS.md)
 
-**Status:** Most complete implementation (320/370 required passing = 86%)
+**Status:** Most complete implementation (reference SDK)
 
-**Verified:** 2026-01-22 via `bun run cucumber-js`
+**Verified:** 2026-02-06 via `bun run cucumber-js` (per-category)
+
+**Test Results (per category, non-network):**
+
+- core-types: 121/121 passed (100%)
+- cryptography: 79/92 passed, 13 failed (86%)
+- account-management: 84/84 passed (100%)
+- transaction-building: 69/69 passed (100%)
+- advanced: 116/189 passed, 36 failed, 37 undefined (61%)
+- api-clients: Requires network (timeout in CI; ~190 scenarios)
 
 **Mocked Tests (not real implementations):**
 
@@ -1103,159 +1112,175 @@ cd tests/rust && cargo test --test specs
 - `script.feature` (partial): Mock RawTransaction for scripts
 - `secp256r1.feature` (signing): Mock transaction message
 
-**Missing Required Features:**
+**Missing/Failing Features:**
 
-- 4 failures in error-handling/simulation scenarios
-
-**Missing Preferred Features:**
-
+- `secp256r1`: 13 failures in cryptography (Secp256r1 address derivation issues)
+- `simulation`: Some failures in advanced (gas charging assertions)
+- `codegen.feature`: All 34 scenarios undefined (not implemented)
 - `gas-estimation.feature` #19-20: Historical gas prices not implemented
-- `retry.feature` #16, #23, #25, #28-31: Circuit breaker, retry statistics
-
-**Missing Optional Features:**
-
-- BLS12-381 removed from specs (not used for transaction signing)
-- `codegen.feature`: All 34 scenarios - Code generation not implemented
-- 75 scenarios undefined, 46 failures in optional tests
+- `retry.feature` #16, #23, #25, #28-31: Circuit breaker, statistics
 
 ---
 
 ### Go (`aptos-go-sdk` v1.11.0) — [Full Status](tests/go/SDK_STATUS.md)
 
-**Status:** Core functionality (212/370 required passing = 57%)
+**Status:** Core functionality (333/791 passing = 42%)
 
-**Verified:** 2026-01-22 (per TO_FIX.md)
+**Verified:** 2026-02-06 via `go test -v ./...`
 
-**Known Failures (8 total):**
+**Test Results:**
 
-- 4 SDK limitations (Secp256r1/MultiEd25519/MultiKey keys, coin module)
-- 4 network-dependent scenarios
+- 333 passed, 136 failed, 312 pending, 10 undefined
+- 1897 steps passed, 136 failed, 312 pending, 11 undefined, 702 skipped
+- Duration: ~36 seconds
 
-**Undefined (154 scenarios):**
+**Known Failures (136 total):**
 
-- Mostly network-dependent API tests
+- SDK limitations (Secp256r1/MultiEd25519/MultiKey keys, coin module)
+- Network-dependent scenarios
+- Missing API methods for some advanced features
+
+**Pending (312 scenarios):**
+
+- Step definitions exist but return `godog.ErrPending`
+- Features not available in SDK: keyless, codegen, most advanced features
+
+**Undefined (10 scenarios):**
+
+- Secp256r1-related steps (P-256 curve not in SDK)
 
 **SDK Gaps (features not available):**
 
-- Secp256k1, Secp256r1 cryptography
-- BLS12-381 cryptography
+- Secp256r1 cryptography
 - Mnemonic/HD derivation
 - AIP-80 key format
-- Most advanced features (simulation, multi-agent, fee-payer, keyless)
-
-**Missing Preferred Features:**
-
-- All faucet, gas-estimation, view-functions, retry, simulation features
+- Keyless authentication
+- Code generation
 
 ---
 
 ### Rust (`aptos-sdk` dev) — [Full Status](tests/rust/SDK_STATUS.md)
 
-**Status:** Not verified (SDK path not available)
+**Status:** Build failure (SDK API breaking changes)
+
+**Verified:** 2026-02-06 via `cargo test --test specs` (fails to compile)
 
 **Note:** Tests depend on `aptos-sdk` from GitHub (`https://github.com/aptos-labs/aptos-rust-sdk`),
-which is not yet on crates.io.
+which has undergone API changes since the test definitions were written.
 
-**To Fix:** Update `Cargo.toml` to use:
+**Compilation Errors (3):**
 
-- Published crate from crates.io, OR
-- Git dependency from GitHub
+- `get_apt_balance` method not found on `&Aptos`
+- `get_account_transactions` method not found on `&FullnodeClient` (2 occurrences)
 
-**Expected Features (when runnable):**
+**To Fix:**
 
-- Core types and cryptography
-- BCS serialization
-- Transaction building
+- Update step definitions to match current SDK API (method renamed or signature changed)
+- The SDK itself is healthy; only the test bindings need updating
+
+**Previous Results (2026-02-05):** 761/826 passed (92%) — excellent coverage when compilable
 
 ---
 
 ### Java (`japtos` 1.1.8) — [Full Status](tests/java/SDK_STATUS.md)
 
-**Status:** Early implementation (22/370 required passing = 6%)
+**Status:** Early implementation (22/802 passing = 3%)
 
-**Verified:** 2026-01-22 via `mvn test`
+**Verified:** 2026-02-06 via `mvn test`
 
-**Missing Required Features:**
+**Results:**
 
-- 797/819 step definitions are undefined
-- Only address parsing and basic Ed25519 key generation implemented
+- Tests run: 802, Errors: 780, Failures: 0, Passed: 22
+- Duration: ~11 seconds
 
 **Implemented Tests:**
 
 - Parse hex address (various formats)
 - Generate random Ed25519 key pair
+- Basic address formatting
 
 **SDK Gaps (features not available):**
 
-- Secp256k1 cryptography
+- Secp256k1/Secp256r1 cryptography
 - Mnemonic derivation
+- Keyless authentication
+- Code generation
 
 **Next Steps:**
 
-- Implement step definitions for core types, cryptography, account management
-- Add BCS serialization steps
-- Add transaction building steps
+- Implement step definitions for BCS serialization
+- Add Ed25519 signing/verification steps
+- Add TypeTag parsing steps
+- Add account management steps
 
 ---
 
 ### Kotlin (`kaptos` 0.1.2-beta) — [Full Status](tests/kotlin/SDK_STATUS.md)
 
-**Status:** Community SDK (176/370 required passing = 48%)
+**Status:** Community SDK — not runnable in current environment
 
-**Verified:** 2026-01-22 via `./gradlew test`
+**Last Verified:** 2026-01-28 via `./gradlew test` (176 passed, 1476 failed)
+
+**Current Issue (2026-02-06):** Build fails due to Gradle/JDK compatibility (requires JDK 17,
+environment has JDK 21). The `gradle-wrapper.properties` was configured for Gradle 4.4.1 which
+doesn't support JDK 21.
 
 **Publisher:** mcxross (community)
-
-**Results:**
-
-- 176 tests passed, 1440 failed
-- Most failures due to missing step definitions
 
 **Notes:**
 
 - Community-maintained SDK, not official aptos-labs
 - Kotlin Multiplatform support
+- Most failures due to missing step definitions
 
 ---
 
 ### Python (`aptos-sdk` >=0.11.0) — [Full Status](tests/python/SDK_STATUS.md)
 
-**Status:** Good core implementation (197/370 required passing = 53%)
+**Status:** Significantly improved coverage (459/791 passing = 58%)
 
-**Verified:** 2026-01-22 via `behave`
+**Verified:** 2026-02-06 via `behave`
 
-**Results:**
+**Results (per category):**
 
-- 197 passed, 25 failed, 148 errors (undefined steps)
-- 332 undefined step definitions
-- 438 scenarios skipped (network or feature limitations)
+- 01-core-types: 112 passed, 9 errors (93%)
+- 02-cryptography: 50 passed, 2 failed, 7 errors, 33 skipped
+- 03-account-management: 24 passed, 8 failed, 17 errors, 35 skipped
+- 04-transaction-building: 62 passed, 16 failed, 16 errors, 14 skipped
+- 05-api-clients: 122 passed, 66 failed, 2 errors, 3 skipped
+- 06-advanced: 89 passed, 29 failed, 8 errors, 63 skipped
+- **Total: 459 passed, 121 failed, 75 errors, 136 skipped**
 
 **Well-Implemented:**
 
-- Address parsing and formatting
-- Ed25519 cryptography
-- Basic account operations
-- BCS serialization primitives
+- Address parsing and formatting (22/22)
+- Ed25519 cryptography (25/25)
+- Hashing (19/20)
+- Error handling (30/30)
+- Basic API client operations
 
 **Needs Work:**
 
-- TypeTag parsing step definitions
-- Entry function building steps
-- Transaction signing steps
-- API client steps
+- Secp256k1 key derivation (errors in key-from-bytes)
+- Account management (auth key scheme identifiers)
+- Entry function BCS serialization
+- Multi-sig and fee-payer validation
+- Keyless (not supported in SDK)
 
 ---
 
 ### .NET (`Aptos` 0.0.x-beta) — [Full Status](tests/dotnet/SDK_STATUS.md)
 
-**Status:** Beta SDK (170/370 required passing = 46%)
+**Status:** Beta SDK (478/808 passing = 59%)
 
-**Verified:** 2026-01-22 via `dotnet test`
+**Last Verified:** 2026-01-28 via `dotnet test`
 
-**Results:**
+**Current Issue (2026-02-06):** Cannot run tests — `dotnet` SDK not installed in environment.
 
-- 170 passed, 200 failed out of 370 required tests
-- Most failures due to missing step definitions
+**Results (from 2026-01-28):**
+
+- 478 passed, 330 failed out of 808 tests
+- Many failures due to missing step definitions
 
 **Notes:**
 
