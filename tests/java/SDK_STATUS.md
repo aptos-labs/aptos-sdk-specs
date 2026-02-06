@@ -20,12 +20,12 @@
 
 ## 2. Coverage Summary
 
-| Priority       | Passing | Total   | Percentage | Status |
-| -------------- | ------- | ------- | ---------- | ------ |
-| Required (P0)  | 22      | 802     | 3%         | ❌     |
-| Preferred (P1) | included | -      | -          | -      |
-| Optional (P2)  | included | -      | -          | -      |
-| **Total**      | **22**  | **802** | **3%**     | ❌     |
+| Priority       | Passing  | Total   | Percentage | Status |
+| -------------- | -------- | ------- | ---------- | ------ |
+| Required (P0)  | 22       | 802     | 3%         | ❌     |
+| Preferred (P1) | included | -       | -          | -      |
+| Optional (P2)  | included | -       | -          | -      |
+| **Total**      | **22**   | **802** | **3%**     | ❌     |
 
 > **Notes:**
 >
@@ -178,12 +178,12 @@ Duration: ~11s
 
 ### Passing Tests Detail
 
-| Test                                      | Feature         |
-| ----------------------------------------- | --------------- |
-| Parse hex address without 0x prefix       | address.feature |
-| Parse full 64-character hex address       | address.feature |
-| Parse uppercase hex address               | address.feature |
-| Parse mixed case hex address              | address.feature |
-| Parse various valid formats (~16 scenarios)| address.feature |
-| Generate random Ed25519 key pair          | ed25519.feature |
-| Basic Ed25519 key generation (~2)         | ed25519.feature |
+| Test                                        | Feature         |
+| ------------------------------------------- | --------------- |
+| Parse hex address without 0x prefix         | address.feature |
+| Parse full 64-character hex address         | address.feature |
+| Parse uppercase hex address                 | address.feature |
+| Parse mixed case hex address                | address.feature |
+| Parse various valid formats (~16 scenarios) | address.feature |
+| Generate random Ed25519 key pair            | ed25519.feature |
+| Basic Ed25519 key generation (~2)           | ed25519.feature |

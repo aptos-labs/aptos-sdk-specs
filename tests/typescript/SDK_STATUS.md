@@ -243,9 +243,8 @@ To add or update tests for this SDK:
 | 05-api-clients          | ~80    | ~4     | ~10       | ~190  |
 | 06-advanced             | 116    | 36     | 37        | 189   |
 
-> **Note:** API client tests require network connectivity (devnet/testnet) and timeout
-> in CI environments without network access. Results for 05-api-clients are estimated from
-> previous runs.
+> **Note:** API client tests require network connectivity (devnet/testnet) and timeout in CI
+> environments without network access. Results for 05-api-clients are estimated from previous runs.
 
 ### Dry Run Summary (all scenarios)
 
