@@ -164,7 +164,6 @@
 | **hashing** `@required`    | ✅ 20/20 | ✅ 20/20 | ✅ 20/20 | ✅ 20/20 | 🟡     | 🟡 19/20 | 🟡 12/20 | 🟡 7/20  | ✅ 9  |
 | **secp256k1** `@preferred` | ✅ 19/19 | ➖       | ✅ 19/19 | ➖       | ➖     | ❌ 0/19  | ➖       | ➖       | ✅ 18 |
 | **secp256r1** `@optional`  | ✅ 26/26 | ➖       | ✅ 26/26 | ➖       | ➖     | ❌ 0/26  | ➖       | ➖       | ➖    |
-| **bls12381** `@optional`   | ❌ 0/35  | ➖       | ❌ 0/35  | ➖       | ➖     | ❌ 0/35  | ➖       | ➖       | ➖    |
 
 ### ed25519.feature `@required`
 
@@ -275,46 +274,6 @@
 | 24  | Test vector - key derivation               | ✅  | ➖  | ✅   | ➖   | ➖     | ❌     | ➖   | ➖  | ➖    |
 | 25  | Test vector - signing                      | ✅  | ➖  | ✅   | ➖   | ➖     | ❌     | ➖   | ➖  | ➖    |
 | 26  | Test vector - address                      | ✅  | ➖  | ✅   | ➖   | ➖     | ❌     | ➖   | ➖  | ➖    |
-
-### bls12381.feature `@optional`
-
-| #   | Scenario                           | TS  | Go  | Rust | Java | Kotlin | Python | .NET | C++ | Swift |
-| --- | ---------------------------------- | --- | --- | ---- | ---- | ------ | ------ | ---- | --- | ----- |
-| 1   | Generate random BLS key pair       | ❌  | ➖  | ❌   | ➖   | ➖     | ❌     | ➖   | ➖  | ➖    |
-| 2   | Create key pair from 32-byte seed  | ❌  | ➖  | ❌   | ➖   | ➖     | ❌     | ➖   | ➖  | ➖    |
-| 3   | Create key pair from hex string    | ❌  | ➖  | ❌   | ➖   | ➖     | ❌     | ➖   | ➖  | ➖    |
-| 4   | Reject invalid private key         | ❌  | ➖  | ❌   | ➖   | ➖     | ❌     | ➖   | ➖  | ➖    |
-| 5   | BLS public key size                | ❌  | ➖  | ❌   | ➖   | ➖     | ❌     | ➖   | ➖  | ➖    |
-| 6   | BLS signature size                 | ❌  | ➖  | ❌   | ➖   | ➖     | ❌     | ➖   | ➖  | ➖    |
-| 7   | Sign a message                     | ❌  | ➖  | ❌   | ➖   | ➖     | ❌     | ➖   | ➖  | ➖    |
-| 8   | Signing is deterministic           | ❌  | ➖  | ❌   | ➖   | ➖     | ❌     | ➖   | ➖  | ➖    |
-| 9   | Different messages different sigs  | ❌  | ➖  | ❌   | ➖   | ➖     | ❌     | ➖   | ➖  | ➖    |
-| 10  | Different keys different sigs      | ❌  | ➖  | ❌   | ➖   | ➖     | ❌     | ➖   | ➖  | ➖    |
-| 11  | Verify valid signature             | ❌  | ➖  | ❌   | ➖   | ➖     | ❌     | ➖   | ➖  | ➖    |
-| 12  | Reject signature from wrong key    | ❌  | ➖  | ❌   | ➖   | ➖     | ❌     | ➖   | ➖  | ➖    |
-| 13  | Reject signature for wrong message | ❌  | ➖  | ❌   | ➖   | ➖     | ❌     | ➖   | ➖  | ➖    |
-| 14  | Reject malformed signature         | ❌  | ➖  | ❌   | ➖   | ➖     | ❌     | ➖   | ➖  | ➖    |
-| 15  | Aggregate two signatures           | ❌  | ➖  | ❌   | ➖   | ➖     | ❌     | ➖   | ➖  | ➖    |
-| 16  | Aggregate multiple signatures      | ❌  | ➖  | ❌   | ➖   | ➖     | ❌     | ➖   | ➖  | ➖    |
-| 17  | Verify aggregated signature        | ❌  | ➖  | ❌   | ➖   | ➖     | ❌     | ➖   | ➖  | ➖    |
-| 18  | Aggregation is deterministic       | ❌  | ➖  | ❌   | ➖   | ➖     | ❌     | ➖   | ➖  | ➖    |
-| 19  | Cannot aggregate different msgs    | ❌  | ➖  | ❌   | ➖   | ➖     | ❌     | ➖   | ➖  | ➖    |
-| 20  | Aggregate two public keys          | ❌  | ➖  | ❌   | ➖   | ➖     | ❌     | ➖   | ➖  | ➖    |
-| 21  | Aggregate multiple public keys     | ❌  | ➖  | ❌   | ➖   | ➖     | ❌     | ➖   | ➖  | ➖    |
-| 22  | Aggregated key verification        | ❌  | ➖  | ❌   | ➖   | ➖     | ❌     | ➖   | ➖  | ➖    |
-| 23  | Generate proof of possession       | ❌  | ➖  | ❌   | ➖   | ➖     | ❌     | ➖   | ➖  | ➖    |
-| 24  | Verify valid PoP                   | ❌  | ➖  | ❌   | ➖   | ➖     | ❌     | ➖   | ➖  | ➖    |
-| 25  | Reject invalid PoP                 | ❌  | ➖  | ❌   | ➖   | ➖     | ❌     | ➖   | ➖  | ➖    |
-| 26  | PoP prevents rogue key attacks     | ❌  | ➖  | ❌   | ➖   | ➖     | ❌     | ➖   | ➖  | ➖    |
-| 27  | Create BLS account                 | ❌  | ➖  | ❌   | ➖   | ➖     | ❌     | ➖   | ➖  | ➖    |
-| 28  | BLS auth key derivation            | ❌  | ➖  | ❌   | ➖   | ➖     | ❌     | ➖   | ➖  | ➖    |
-| 29  | Sign transaction with BLS          | ❌  | ➖  | ❌   | ➖   | ➖     | ❌     | ➖   | ➖  | ➖    |
-| 30  | Reject invalid public key bytes    | ❌  | ➖  | ❌   | ➖   | ➖     | ❌     | ➖   | ➖  | ➖    |
-| 31  | Reject invalid signature bytes     | ❌  | ➖  | ❌   | ➖   | ➖     | ❌     | ➖   | ➖  | ➖    |
-| 32  | Reject point not on curve          | ❌  | ➖  | ❌   | ➖   | ➖     | ❌     | ➖   | ➖  | ➖    |
-| 33  | Test vector - key derivation       | ❌  | ➖  | ❌   | ➖   | ➖     | ❌     | ➖   | ➖  | ➖    |
-| 34  | Test vector - signing              | ❌  | ➖  | ❌   | ➖   | ➖     | ❌     | ➖   | ➖  | ➖    |
-| 35  | Test vector - aggregation          | ❌  | ➖  | ❌   | ➖   | ➖     | ❌     | ➖   | ➖  | ➖    |
 
 ---
 
@@ -1155,7 +1114,7 @@ cd tests/rust && cargo test --test specs
 
 **Missing Optional Features:**
 
-- `bls12381.feature`: All 35 scenarios - BLS12-381 not implemented in SDK
+- BLS12-381 removed from specs (not used for transaction signing)
 - `codegen.feature`: All 34 scenarios - Code generation not implemented
 - 75 scenarios undefined, 46 failures in optional tests
 
