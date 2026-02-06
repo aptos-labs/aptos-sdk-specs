@@ -304,7 +304,7 @@ public class TransactionBuilderSteps
     {
         if (_world.RawTransaction != null)
         {
-            _world.RawTransaction.ChainId.Should().BeGreaterThanOrEqualTo(0);
+            _world.RawTransaction.ChainId.Should().NotBeNull();
         }
     }
 
@@ -439,7 +439,7 @@ public class TransactionBuilderSteps
         {
             _world.RawTransaction.Sender.Should().NotBeNull();
             _world.RawTransaction.SequenceNumber.Should().BeGreaterThanOrEqualTo(0UL);
-            _world.RawTransaction.ChainId.Should().BeGreaterThanOrEqualTo(0);
+            _world.RawTransaction.ChainId.Should().NotBeNull();
             _world.RawTransaction.Payload.Should().NotBeNull();
         }
     }
