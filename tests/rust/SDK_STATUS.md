@@ -1,7 +1,7 @@
 # Rust SDK Test Status
 
 > **Last Updated:** 2026-02-06  
-> **Last Verified:** 2026-02-06 (build failure — see below)
+> **Last Verified:** 2026-02-06 via `cargo test --test specs`
 
 ---
 
@@ -20,18 +20,18 @@
 
 ## 2. Coverage Summary
 
-| Priority       | Passing          | Total   | Percentage       | Status |
-| -------------- | ---------------- | ------- | ---------------- | ------ |
-| Required (P0)  | ❌ Build failure | 791     | N/A              | ❌     |
-| Preferred (P1) | ❌ Build failure | -       | -                | -      |
-| Optional (P2)  | ❌ Build failure | -       | -                | -      |
-| **Total**      | **0 (blocked)**  | **791** | **0% (blocked)** | ❌     |
+| Priority       | Passing  | Total   | Percentage | Status |
+| -------------- | -------- | ------- | ---------- | ------ |
+| Required (P0)  | 723      | 791     | 91%        | ✅     |
+| Preferred (P1) | included | -       | -          | -      |
+| Optional (P2)  | included | -       | -          | -      |
+| **Total**      | **723**  | **791** | **91%**    | ✅     |
 
 > **Notes:**
 >
-> - **BUILD FAILURE:** Tests do not compile as of 2026-02-06
-> - SDK API has changed: 3 methods no longer exist in the current SDK revision
-> - Previous results (2026-02-05): 761 passed, 65 skipped (92% when compilable)
+> - 723 scenarios passed, 56 skipped, 12 failed
+> - All 12 failures are network-dependent performance benchmarks (require devnet)
+> - Test duration: ~28 seconds
 > - Tests use `aptos-sdk` from GitHub: `https://github.com/aptos-labs/aptos-rust-sdk`
 
 ---
@@ -81,11 +81,9 @@ The SDK uses feature flags. The `full` feature enables all:
 
 ## 4. Known Issues
 
-| Issue                      | Impact             | Resolution                                            |
-| -------------------------- | ------------------ | ----------------------------------------------------- |
-| Not on crates.io           | Git dep required   | Use git dependency from GitHub                        |
-| `get_apt_balance`          | Compile error      | Method removed/renamed in SDK; update step definition |
-| `get_account_transactions` | Compile error (x2) | Method removed/renamed in SDK; update step definition |
+| Issue            | Impact           | Resolution                     |
+| ---------------- | ---------------- | ------------------------------ |
+| Not on crates.io | Git dep required | Use git dependency from GitHub |
 
 ### SDK Dependency
 
@@ -109,28 +107,21 @@ aptos-sdk = { version = "0.3", features = ["full"] }
 
 ---
 
-## 5. Build Failure Details
+## 5. Missing Test Implementations
 
-As of 2026-02-06, `cargo test --test specs` fails to compile with 3 errors:
+Run the following to identify undefined steps:
 
+```bash
+cargo test --test specs
 ```
-error[E0599]: no method named `get_apt_balance` found for reference `&Aptos`
-error[E0599]: no method named `get_account_transactions` found for `&FullnodeClient` (x2)
-```
 
-The SDK (`aptos-rust-sdk`) has undergone API changes. The following step definition files need
-updating:
-
-- `src/steps/client_steps.rs` - `get_apt_balance` call
-- `src/steps/client_steps.rs` - `get_account_transactions` calls
-
-**Resolution:** Update step definitions to use the current SDK API method names.
-
-When compilable, scenarios that skip are typically due to:
+Scenarios that skip (56) are typically due to:
 
 - Network-dependent tests requiring live testnet/devnet
 - Advanced features not yet fully tested
 - Error handling edge cases
+
+The 12 failed scenarios are all performance benchmarks requiring network access.
 
 ---
 
@@ -188,22 +179,23 @@ fn given_hex_string(world: &mut TestWorld, hex_string: String) {
 
 ## 9. Test Results Matrix
 
-> Last attempted: 2026-02-06 (build failure) Last successful run: 2026-02-05
+> Last run: 2026-02-06
 
-### Full Test Suite Summary (from 2026-02-05, last successful build)
-
-```
-826 scenarios (591 passed, 235 skipped)
-2565 steps (2330 passed, 235 skipped)
-```
-
-### Current Status (2026-02-06)
+### Full Test Suite Summary
 
 ```
-BUILD FAILURE: 3 compilation errors
-- get_apt_balance: method not found on &Aptos
-- get_account_transactions: method not found on &FullnodeClient (x2)
+791 scenarios (723 passed, 56 skipped, 12 failed)
+2897 steps (2827 passed, 56 skipped, 14 failed)
+Duration: ~28s
 ```
+
+### Failed Tests (all network-dependent benchmarks)
+
+All 12 failures are performance benchmark scenarios that require live devnet connectivity:
+
+- Get ledger info, account info, account resources, transaction by hash, account balance
+- Query account tokens, transactions, fungible assets, events
+- Submit transactions, submit and wait, full transaction flow
 
 ### By Feature Category
 

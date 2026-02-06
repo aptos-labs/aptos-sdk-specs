@@ -31,17 +31,17 @@
 
 > **Last verified:** 2026-02-06. Numbers reflect actual test runs.
 
-| SDK        | Required (P0)  | Preferred (P1) | Optional (P2)  | Total    | Notes                                   |
-| ---------- | -------------- | -------------- | -------------- | -------- | --------------------------------------- |
-| TypeScript | ~320/370 (86%) | ~100/183 (55%) | ~131/252 (52%) | ~551/826 | Reference impl; API tests need network  |
-| Go         | 333/791 (42%)  | included       | included       | 333/791  | 136 failed, 312 pending, 10 undefined   |
-| Rust       | ❌ Build fail  | ❌ Build fail  | ❌ Build fail  | 0/791    | SDK API changed; 3 compile errors       |
-| .NET       | 478/808 (59%)  | included       | included       | 478/808  | 330 failures (last verified 2026-01-28) |
-| Python     | 459/791 (58%)  | included       | included       | 459/791  | 121 failed, 75 errors, 136 skipped      |
-| Java       | 22/802 (3%)    | included       | included       | 22/802   | 780 errors, most steps undefined        |
-| Kotlin     | 176/1652 (11%) | included       | included       | 176/1652 | Not runnable (Gradle/JDK compat issue)  |
-| C++        | 0/370 (0%)     | 0/183 (0%)     | 0/250 (0%)     | 0/826    | Segfault in test runner                 |
-| Swift      | 286/826 (35%)  | included       | included       | 286/826  | XCTest-based (last verified 2026-01-28) |
+| SDK        | Required (P0)  | Preferred (P1) | Optional (P2)  | Total    | Notes                                      |
+| ---------- | -------------- | -------------- | -------------- | -------- | ------------------------------------------ |
+| TypeScript | ~320/370 (86%) | ~100/183 (55%) | ~131/252 (52%) | ~551/826 | Reference impl; API tests need network     |
+| Go         | 333/791 (42%)  | included       | included       | 333/791  | 136 failed, 312 pending, 10 undefined      |
+| Rust       | 723/791 (91%)  | included       | included       | 723/791  | 56 skipped, 12 failed (network benchmarks) |
+| .NET       | 478/808 (59%)  | included       | included       | 478/808  | 330 failures (last verified 2026-01-28)    |
+| Python     | 459/791 (58%)  | included       | included       | 459/791  | 121 failed, 75 errors, 136 skipped         |
+| Java       | 22/802 (3%)    | included       | included       | 22/802   | 780 errors, most steps undefined           |
+| Kotlin     | 176/1652 (11%) | included       | included       | 176/1652 | Not runnable (Gradle/JDK compat issue)     |
+| C++        | 0/370 (0%)     | 0/183 (0%)     | 0/250 (0%)     | 0/826    | Segfault in test runner                    |
+| Swift      | 286/826 (35%)  | included       | included       | 286/826  | XCTest-based (last verified 2026-01-28)    |
 
 ---
 
@@ -1161,24 +1161,25 @@ cd tests/rust && cargo test --test specs
 
 ### Rust (`aptos-sdk` dev) — [Full Status](tests/rust/SDK_STATUS.md)
 
-**Status:** Build failure (SDK API breaking changes)
+**Status:** Excellent coverage (723/791 passing = 91%)
 
-**Verified:** 2026-02-06 via `cargo test --test specs` (fails to compile)
+**Verified:** 2026-02-06 via `cargo test --test specs`
+
+**Results:**
+
+- 723 passed, 56 skipped, 12 failed
+- All 12 failures are network-dependent performance benchmarks (require devnet access)
+- 56 skipped scenarios are for features not yet tested
+- Duration: ~28 seconds
 
 **Note:** Tests depend on `aptos-sdk` from GitHub (`https://github.com/aptos-labs/aptos-rust-sdk`),
-which has undergone API changes since the test definitions were written.
+which is not yet on crates.io.
 
-**Compilation Errors (3):**
+**Recent Fixes (2026-02-06):**
 
-- `get_apt_balance` method not found on `&Aptos`
-- `get_account_transactions` method not found on `&FullnodeClient` (2 occurrences)
-
-**To Fix:**
-
-- Update step definitions to match current SDK API (method renamed or signature changed)
-- The SDK itself is healthy; only the test bindings need updating
-
-**Previous Results (2026-02-05):** 761/826 passed (92%) — excellent coverage when compilable
+- Updated `get_apt_balance()` to `get_balance()` (method renamed in SDK)
+- Replaced `get_account_transactions()` (removed from SDK) with alternative API calls
+- Fixed `to_string()` to `to_long_string()` for full hex address formatting
 
 ---
 
