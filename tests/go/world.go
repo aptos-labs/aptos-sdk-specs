@@ -64,6 +64,17 @@ func NewWorld() *World {
 	}
 }
 
+// NewTestClient creates a new Aptos client with the required faucet auth header.
+// The Aptos testnet faucet requires the x-is-jwt header to be set.
+func NewTestClient(config aptos.NetworkConfig) (*aptos.Client, error) {
+	client, err := aptos.NewClient(config)
+	if err != nil {
+		return nil, err
+	}
+	client.SetHeader("x-is-jwt", "true")
+	return client, nil
+}
+
 // Reset clears state between scenarios
 func (w *World) Reset() {
 	w.Client = nil

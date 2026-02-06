@@ -9,12 +9,17 @@
 
 | Property             | Value                                      |
 | -------------------- | ------------------------------------------ |
-| **Package**          | `github.com/aptos-labs/aptos-go-sdk`       |
-| **Version Tested**   | v1.11.0                                    |
+| **Package (v1)**     | `github.com/aptos-labs/aptos-go-sdk`       |
+| **Package (v2)**     | `github.com/aptos-labs/aptos-go-sdk/v2`    |
+| **Version Tested**   | v1.11.0 (v2 migration pending)             |
 | **Publisher**        | aptos-labs                                 |
 | **Repository**       | https://github.com/aptos-labs/aptos-go-sdk |
 | **Package Registry** | Go modules                                 |
 | **Test Framework**   | Godog (Cucumber for Go)                    |
+
+> **Note:** Go SDK v2 (`2.0.0-alpha`) is a complete API rewrite with context-first methods, improved
+> error handling, and new features (keyless, sponsored tx, codegen, ANS). Migration from v1 is
+> tracked. See the [v2 migration guide](https://github.com/aptos-labs/aptos-go-sdk/blob/main/v2/MIGRATION.md).
 
 ---
 

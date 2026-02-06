@@ -12,7 +12,7 @@ func initClientSteps(ctx *godog.ScenarioContext, world *World) {
 	// =============================================================================
 
 	ctx.Step(`^an Aptos client with auto-gas enabled$`, func() error {
-		client, err := aptos.NewClient(aptos.DevnetConfig)
+		client, err := NewTestClient(aptos.DevnetConfig)
 		if err != nil {
 			return err
 		}
@@ -22,7 +22,7 @@ func initClientSteps(ctx *godog.ScenarioContext, world *World) {
 	})
 
 	ctx.Step(`^an Aptos client with faucet$`, func() error {
-		client, err := aptos.NewClient(aptos.DevnetConfig)
+		client, err := NewTestClient(aptos.DevnetConfig)
 		if err != nil {
 			return err
 		}
@@ -32,7 +32,7 @@ func initClientSteps(ctx *godog.ScenarioContext, world *World) {
 	})
 
 	ctx.Step(`^configured for testnet faucet$`, func() error {
-		client, err := aptos.NewClient(aptos.TestnetConfig)
+		client, err := NewTestClient(aptos.TestnetConfig)
 		if err != nil {
 			return err
 		}

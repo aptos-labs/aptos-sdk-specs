@@ -15,7 +15,7 @@ func initAPIClientSteps(ctx *godog.ScenarioContext, world *World) {
 	// =============================================================================
 
 	ctx.Step(`^a client connected to testnet$`, func() error {
-		client, err := aptos.NewClient(aptos.TestnetConfig)
+		client, err := NewTestClient(aptos.TestnetConfig)
 		if err != nil {
 			return err
 		}
@@ -24,7 +24,7 @@ func initAPIClientSteps(ctx *godog.ScenarioContext, world *World) {
 	})
 
 	ctx.Step(`^a client connected to testnet \(chain_id=(\d+)\)$`, func(chainId int) error {
-		client, err := aptos.NewClient(aptos.TestnetConfig)
+		client, err := NewTestClient(aptos.TestnetConfig)
 		if err != nil {
 			return err
 		}
@@ -33,7 +33,7 @@ func initAPIClientSteps(ctx *godog.ScenarioContext, world *World) {
 	})
 
 	ctx.Step(`^a client connected to devnet$`, func() error {
-		client, err := aptos.NewClient(aptos.DevnetConfig)
+		client, err := NewTestClient(aptos.DevnetConfig)
 		if err != nil {
 			return err
 		}
@@ -51,7 +51,7 @@ func initAPIClientSteps(ctx *godog.ScenarioContext, world *World) {
 	})
 
 	ctx.Step(`^a client connected to any network$`, func() error {
-		client, err := aptos.NewClient(aptos.TestnetConfig)
+		client, err := NewTestClient(aptos.TestnetConfig)
 		if err != nil {
 			return err
 		}
@@ -61,7 +61,7 @@ func initAPIClientSteps(ctx *godog.ScenarioContext, world *World) {
 
 	ctx.Step(`^a connected client$`, func() error {
 		if world.Client == nil {
-			client, err := aptos.NewClient(aptos.TestnetConfig)
+			client, err := NewTestClient(aptos.TestnetConfig)
 			if err != nil {
 				return err
 			}
@@ -71,7 +71,7 @@ func initAPIClientSteps(ctx *godog.ScenarioContext, world *World) {
 	})
 
 	ctx.Step(`^I create a client with testnet configuration$`, func() error {
-		client, err := aptos.NewClient(aptos.TestnetConfig)
+		client, err := NewTestClient(aptos.TestnetConfig)
 		if err != nil {
 			world.SetError(err)
 			return nil
@@ -138,7 +138,7 @@ func initAPIClientSteps(ctx *godog.ScenarioContext, world *World) {
 	})
 
 	ctx.Step(`^an Aptos client$`, func() error {
-		client, err := aptos.NewClient(aptos.TestnetConfig)
+		client, err := NewTestClient(aptos.TestnetConfig)
 		if err != nil {
 			return err
 		}
@@ -147,7 +147,7 @@ func initAPIClientSteps(ctx *godog.ScenarioContext, world *World) {
 	})
 
 	ctx.Step(`^an Aptos client configured for testnet$`, func() error {
-		client, err := aptos.NewClient(aptos.TestnetConfig)
+		client, err := NewTestClient(aptos.TestnetConfig)
 		if err != nil {
 			return err
 		}
@@ -165,7 +165,7 @@ func initAPIClientSteps(ctx *godog.ScenarioContext, world *World) {
 	})
 
 	ctx.Step(`^an Aptos client for testnet$`, func() error {
-		client, err := aptos.NewClient(aptos.TestnetConfig)
+		client, err := NewTestClient(aptos.TestnetConfig)
 		if err != nil {
 			return err
 		}
@@ -174,7 +174,7 @@ func initAPIClientSteps(ctx *godog.ScenarioContext, world *World) {
 	})
 
 	ctx.Step(`^a new Aptos client$`, func() error {
-		client, err := aptos.NewClient(aptos.TestnetConfig)
+		client, err := NewTestClient(aptos.TestnetConfig)
 		if err != nil {
 			return err
 		}
@@ -184,7 +184,7 @@ func initAPIClientSteps(ctx *godog.ScenarioContext, world *World) {
 
 	ctx.Step(`^a connected Aptos client$`, func() error {
 		if world.Client == nil {
-			client, err := aptos.NewClient(aptos.TestnetConfig)
+			client, err := NewTestClient(aptos.TestnetConfig)
 			if err != nil {
 				return err
 			}
@@ -410,7 +410,7 @@ func initAPIClientSteps(ctx *godog.ScenarioContext, world *World) {
 	ctx.Step(`^I simulate the transaction$`, func() error {
 		// Ensure client is connected
 		if world.Client == nil {
-			client, err := aptos.NewClient(aptos.TestnetConfig)
+			client, err := NewTestClient(aptos.TestnetConfig)
 			if err != nil {
 				return err
 			}
@@ -437,7 +437,7 @@ func initAPIClientSteps(ctx *godog.ScenarioContext, world *World) {
 	ctx.Step(`^a signed transaction for submission$`, func() error {
 		// Ensure client is connected
 		if world.Client == nil {
-			client, err := aptos.NewClient(aptos.TestnetConfig)
+			client, err := NewTestClient(aptos.TestnetConfig)
 			if err != nil {
 				return err
 			}
@@ -538,7 +538,7 @@ func initAPIClientSteps(ctx *godog.ScenarioContext, world *World) {
 	ctx.Step(`^a gas price estimate$`, func() error {
 		// Ensure client is connected
 		if world.Client == nil {
-			client, err := aptos.NewClient(aptos.TestnetConfig)
+			client, err := NewTestClient(aptos.TestnetConfig)
 			if err != nil {
 				return err
 			}
@@ -810,7 +810,7 @@ func initAPIClientSteps(ctx *godog.ScenarioContext, world *World) {
 
 		// Otherwise, create and submit a transaction
 		if world.Client == nil {
-			client, err := aptos.NewClient(aptos.TestnetConfig)
+			client, err := NewTestClient(aptos.TestnetConfig)
 			if err != nil {
 				return err
 			}
@@ -856,7 +856,7 @@ func initAPIClientSteps(ctx *godog.ScenarioContext, world *World) {
 
 	ctx.Step(`^a known ledger version$`, func() error {
 		if world.Client == nil {
-			client, err := aptos.NewClient(aptos.TestnetConfig)
+			client, err := NewTestClient(aptos.TestnetConfig)
 			if err != nil {
 				return err
 			}
@@ -906,7 +906,7 @@ func initAPIClientSteps(ctx *godog.ScenarioContext, world *World) {
 
 	ctx.Step(`^a funded account$`, func() error {
 		if world.Client == nil {
-			client, err := aptos.NewClient(aptos.TestnetConfig)
+			client, err := NewTestClient(aptos.TestnetConfig)
 			if err != nil {
 				return err
 			}
@@ -953,7 +953,7 @@ func initAPIClientSteps(ctx *godog.ScenarioContext, world *World) {
 	ctx.Step(`^a newly submitted transaction$`, func() error {
 		// Ensure client is connected
 		if world.Client == nil {
-			client, err := aptos.NewClient(aptos.TestnetConfig)
+			client, err := NewTestClient(aptos.TestnetConfig)
 			if err != nil {
 				return err
 			}
@@ -1167,7 +1167,7 @@ func initAPIClientSteps(ctx *godog.ScenarioContext, world *World) {
 
 	ctx.Step(`^I get the ledger info$`, func() error {
 		if world.Client == nil {
-			client, err := aptos.NewClient(aptos.TestnetConfig)
+			client, err := NewTestClient(aptos.TestnetConfig)
 			if err != nil {
 				return err
 			}
@@ -1185,7 +1185,7 @@ func initAPIClientSteps(ctx *godog.ScenarioContext, world *World) {
 
 	ctx.Step(`^I request ledger info$`, func() error {
 		if world.Client == nil {
-			client, err := aptos.NewClient(aptos.TestnetConfig)
+			client, err := NewTestClient(aptos.TestnetConfig)
 			if err != nil {
 				return err
 			}
@@ -1203,7 +1203,7 @@ func initAPIClientSteps(ctx *godog.ScenarioContext, world *World) {
 
 	ctx.Step(`^I request gas price estimate$`, func() error {
 		if world.Client == nil {
-			client, err := aptos.NewClient(aptos.TestnetConfig)
+			client, err := NewTestClient(aptos.TestnetConfig)
 			if err != nil {
 				return err
 			}
@@ -1273,7 +1273,7 @@ func initAPIClientSteps(ctx *godog.ScenarioContext, world *World) {
 
 	ctx.Step(`^I get the CoinInfo resource for AptosCoin$`, func() error {
 		if world.Client == nil {
-			client, err := aptos.NewClient(aptos.TestnetConfig)
+			client, err := NewTestClient(aptos.TestnetConfig)
 			if err != nil {
 				return err
 			}
@@ -1310,7 +1310,7 @@ func initAPIClientSteps(ctx *godog.ScenarioContext, world *World) {
 
 	ctx.Step(`^I get ledger info twice with delay$`, func() error {
 		if world.Client == nil {
-			client, err := aptos.NewClient(aptos.TestnetConfig)
+			client, err := NewTestClient(aptos.TestnetConfig)
 			if err != nil {
 				return err
 			}
@@ -1584,7 +1584,7 @@ func initAPIClientSteps(ctx *godog.ScenarioContext, world *World) {
 
 	ctx.Step(`^I simulate it$`, func() error {
 		if world.Client == nil {
-			client, err := aptos.NewClient(aptos.TestnetConfig)
+			client, err := NewTestClient(aptos.TestnetConfig)
 			if err != nil {
 				return err
 			}
@@ -1831,7 +1831,7 @@ func initAPIClientSteps(ctx *godog.ScenarioContext, world *World) {
 
 	ctx.Step(`^I get a resource type that doesn't exist$`, func() error {
 		if world.Client == nil {
-			client, err := aptos.NewClient(aptos.TestnetConfig)
+			client, err := NewTestClient(aptos.TestnetConfig)
 			if err != nil {
 				return err
 			}
@@ -1852,7 +1852,7 @@ func initAPIClientSteps(ctx *godog.ScenarioContext, world *World) {
 
 	ctx.Step(`^I make any API request$`, func() error {
 		if world.Client == nil {
-			client, err := aptos.NewClient(aptos.TestnetConfig)
+			client, err := NewTestClient(aptos.TestnetConfig)
 			if err != nil {
 				return err
 			}
@@ -2163,7 +2163,7 @@ func initAPIClientSteps(ctx *godog.ScenarioContext, world *World) {
 
 	ctx.Step(`^I request gas estimate$`, func() error {
 		if world.Client == nil {
-			client, err := aptos.NewClient(aptos.TestnetConfig)
+			client, err := NewTestClient(aptos.TestnetConfig)
 			if err != nil {
 				return err
 			}

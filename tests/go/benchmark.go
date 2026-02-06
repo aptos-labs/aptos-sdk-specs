@@ -102,7 +102,7 @@ func main() {
 	results := []BenchmarkResult{}
 
 	// Initialize client
-	client, err := aptos.NewClient(aptos.DevnetConfig)
+	client, err := NewTestClient(aptos.DevnetConfig)
 	if err != nil {
 		fmt.Printf("Failed to create client: %v\n", err)
 		return

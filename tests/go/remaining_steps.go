@@ -174,7 +174,7 @@ func initRemainingSteps(ctx *godog.ScenarioContext, world *World) {
 
 	ctx.Step(`^mainnet and testnet clients$`, func() error {
 		mainnetClient, _ := aptos.NewClient(aptos.MainnetConfig)
-		testnetClient, _ := aptos.NewClient(aptos.TestnetConfig)
+		testnetClient, _ := NewTestClient(aptos.TestnetConfig)
 		world.TestVectors["mainnetClient"] = mainnetClient
 		world.TestVectors["testnetClient"] = testnetClient
 		return nil

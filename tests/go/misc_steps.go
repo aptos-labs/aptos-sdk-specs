@@ -176,7 +176,7 @@ func initMiscSteps(ctx *godog.ScenarioContext, world *World) {
 	// =============================================================================
 
 	ctx.Step(`^I create an Aptos client$`, func() error {
-		client, err := aptos.NewClient(aptos.TestnetConfig)
+		client, err := NewTestClient(aptos.TestnetConfig)
 		if err != nil {
 			return err
 		}
@@ -185,7 +185,7 @@ func initMiscSteps(ctx *godog.ScenarioContext, world *World) {
 	})
 
 	ctx.Step(`^I create an Aptos client with this config$`, func() error {
-		client, err := aptos.NewClient(aptos.TestnetConfig)
+		client, err := NewTestClient(aptos.TestnetConfig)
 		if err != nil {
 			return err
 		}
@@ -195,7 +195,7 @@ func initMiscSteps(ctx *godog.ScenarioContext, world *World) {
 
 	ctx.Step(`^I configure the client$`, func() error {
 		if world.Client == nil {
-			client, err := aptos.NewClient(aptos.TestnetConfig)
+			client, err := NewTestClient(aptos.TestnetConfig)
 			if err != nil {
 				return err
 			}
