@@ -1,7 +1,7 @@
 # TypeScript SDK Test Status
 
-> **Last Updated:** 2026-01-28  
-> **Last Verified:** 2026-01-28 via `bun run cucumber-js`
+> **Last Updated:** 2026-02-06  
+> **Last Verified:** 2026-02-06 via `bun run cucumber-js` (per-category runs)
 
 ---
 
@@ -25,12 +25,16 @@
 | Required (P0)  | ~320     | 370     | ~86%       | 🟡     |
 | Preferred (P1) | ~100     | 183     | ~55%       | 🟡     |
 | Optional (P2)  | ~131     | 252     | ~52%       | 🟡     |
-| **Total**      | **~551** | **826** | **~67%**   | 🟡     |
+| **Total**      | **~551** | **791** | **~70%**   | 🟡     |
 
 > **Notes:**
 >
 > - core-types: 121/121 passed (100%)
-> - cryptography: 79 passed, 13 failed, 35 undefined
+> - cryptography: 79/92 passed, 13 failed (Secp256r1 address derivation issues)
+> - account-management: 84/84 passed (100%)
+> - transaction-building: 69/69 passed (100%)
+> - advanced: 116/189 passed, 36 failed, 37 undefined
+> - api-clients: Requires network access (tests timeout without network)
 > - Full test runs timeout on network-dependent tests (~5+ minutes)
 > - Some keyless and script tests use mocks
 
@@ -226,29 +230,36 @@ To add or update tests for this SDK:
 
 ## 10. Test Results Matrix
 
-> Last run: 2026-01-22
+> Last run: 2026-02-06
 
 ### By Feature Category
 
-| Category                | Passed | Failed | Skipped | Undefined | Total |
-| ----------------------- | ------ | ------ | ------- | --------- | ----- |
-| 01-core-types           | 121    | 0      | 0       | 0         | 121   |
-| 02-cryptography         | 85     | 0      | 35      | 0         | 120   |
-| 03-account-management   | 62     | 0      | 0       | 0         | 62    |
-| 04-transaction-building | 78     | 0      | 8       | 0         | 86    |
-| 05-api-clients          | ~80    | 4      | 46      | ~10       | ~140  |
-| 06-advanced             | ~125   | 0      | 75      | ~76       | ~276  |
+| Category                | Passed | Failed | Undefined | Total |
+| ----------------------- | ------ | ------ | --------- | ----- |
+| 01-core-types           | 121    | 0      | 0         | 121   |
+| 02-cryptography         | 79     | 13     | 0         | 92    |
+| 03-account-management   | 84     | 0      | 0         | 84    |
+| 04-transaction-building | 69     | 0      | 0         | 69    |
+| 05-api-clients          | ~80    | ~4     | ~10       | ~190  |
+| 06-advanced             | 116    | 36     | 37        | 189   |
 
-### Required Tests Summary
+> **Note:** API client tests require network connectivity (devnet/testnet) and timeout
+> in CI environments without network access. Results for 05-api-clients are estimated from
+> previous runs.
 
-```
-324 scenarios (320 passed, 4 failed)
-1235 steps (1230 passed, 4 failed, 1 skipped)
-```
-
-### Optional Tests Summary
+### Dry Run Summary (all scenarios)
 
 ```
-252 scenarios (131 passed, 46 failed, 75 undefined)
-978 steps (633 passed, 46 failed, 76 skipped, 223 undefined)
+791 scenarios (750 with step definitions, 41 undefined)
+3058 steps (136 undefined, 2922 defined)
+```
+
+### Non-Network Test Summary
+
+```
+core-types:    121 passed
+cryptography:  79 passed, 13 failed
+accounts:      84 passed
+transactions:  69 passed
+advanced:      116 passed, 36 failed, 37 undefined
 ```
