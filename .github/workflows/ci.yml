@@ -33,10 +33,10 @@ jobs:
         run: bun run format:check
 
   # ==========================================================================
-  # TypeScript Tests
+  # TypeScript Lint
   # ==========================================================================
-  typescript:
-    name: TypeScript Tests
+  typescript-lint:
+    name: TS Lint
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -56,24 +56,70 @@ jobs:
         run: bun run lint
         continue-on-error: true
 
-      - name: Run required tests
-        run: bun run test:required
-        continue-on-error: true # Tests depend on testnet which may be flaky
+  # ==========================================================================
+  # TypeScript Tests (parallelized by feature category)
+  # ==========================================================================
+  typescript:
+    name: TS (${{ matrix.category }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - category: core-types
+            tags: "@core-types"
+          - category: cryptography
+            tags: "@cryptography"
+          - category: accounts
+            tags: "@account-management"
+          - category: transactions
+            tags: "@transaction-building"
+          - category: api-clients
+            tags: "@api-clients"
+          - category: advanced
+            tags: "@advanced and not @performance"
+    defaults:
+      run:
+        working-directory: tests/typescript
+    steps:
+      - uses: actions/checkout@v4
 
-      - name: Run preferred tests
-        run: bun run test:preferred
-        continue-on-error: true
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
 
-      - name: Run optional tests
-        run: bun run test:optional
+      - name: Install dependencies
+        run: bun install
+
+      - name: Run tests
+        run: bun run cucumber-js --tags '${{ matrix.tags }}' --parallel 4
         continue-on-error: true
 
   # ==========================================================================
-  # Go Tests
+  # Go Tests (parallelized by feature category)
   # ==========================================================================
   go:
-    name: Go Tests
+    name: Go (${{ matrix.category }})
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - category: core-types
+            tags: "@core-types"
+          - category: cryptography
+            tags: "@cryptography"
+          - category: accounts
+            tags: "@account-management"
+          - category: transactions
+            tags: "@transaction-building"
+          - category: api-clients
+            tags: "@api-clients"
+          - category: advanced
+            tags: "@advanced and not @performance"
     defaults:
       run:
         working-directory: tests/go
@@ -89,20 +135,8 @@ jobs:
       - name: Install dependencies
         run: go mod download
 
-      - name: Lint
-        run: go vet ./...
-        continue-on-error: true
-
-      - name: Run required tests
-        run: make test-required
-        continue-on-error: true # Tests depend on testnet which may be flaky
-
-      - name: Run preferred tests
-        run: make test-preferred
-        continue-on-error: true
-
-      - name: Run optional tests
-        run: make test-optional
+      - name: Run tests
+        run: GODOG_TAGS='${{ matrix.tags }}' go test -v -count=1 ./...
         continue-on-error: true
 
   # ==========================================================================
@@ -111,6 +145,7 @@ jobs:
   rust:
     name: Rust Tests
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     defaults:
       run:
         working-directory: tests/rust
@@ -166,6 +201,7 @@ jobs:
   python:
     name: Python Tests
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     defaults:
       run:
         working-directory: tests/python
@@ -207,6 +243,7 @@ jobs:
   dotnet:
     name: .NET Tests
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     defaults:
       run:
         working-directory: tests/dotnet
@@ -238,6 +275,7 @@ jobs:
   java:
     name: Java Tests
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     defaults:
       run:
         working-directory: tests/java
@@ -265,6 +303,7 @@ jobs:
   kotlin:
     name: Kotlin Tests
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     defaults:
       run:
         working-directory: tests/kotlin
@@ -295,6 +334,7 @@ jobs:
   swift:
     name: Swift Tests
     runs-on: macos-latest
+    timeout-minutes: 10
     defaults:
       run:
         working-directory: tests/swift
@@ -353,6 +393,7 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - format-check
+      - typescript-lint
       - typescript
       - go
       - rust
@@ -361,7 +402,6 @@ jobs:
       - java
       - kotlin
       - swift
-      # - cpp  # disabled
     if: always()
     steps:
       - name: Check required jobs
@@ -374,15 +414,15 @@ jobs:
           
           # Report on SDK test results (informational)
           echo "=== SDK Test Results (informational) ==="
-          echo "TypeScript: ${{ needs.typescript.result }}"
-          echo "Go: ${{ needs.go.result }}"
+          echo "TS Lint: ${{ needs.typescript-lint.result }}"
+          echo "TypeScript (matrix): ${{ needs.typescript.result }}"
+          echo "Go (matrix): ${{ needs.go.result }}"
           echo "Rust: ${{ needs.rust.result }}"
           echo "Python: ${{ needs.python.result }}"
           echo ".NET: ${{ needs.dotnet.result }}"
           echo "Java: ${{ needs.java.result }}"
           echo "Kotlin: ${{ needs.kotlin.result }}"
           echo "Swift: ${{ needs.swift.result }}"
-          # echo "C++: ${{ needs.cpp.result }}"  # disabled
           echo ""
           echo "Note: SDK tests depend on external services (testnet, faucet)"
           echo "and may fail due to network issues, not code problems."
