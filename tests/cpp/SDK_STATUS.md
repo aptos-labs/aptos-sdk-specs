@@ -1,7 +1,7 @@
 # C++ SDK Test Status
 
-> **Last Updated:** 2026-01-28  
-> **Last Verified:** 2026-01-28 - Tests cannot run (segfault)
+> **Last Updated:** 2026-02-06  
+> **Last Verified:** 2026-01-28 - Tests cannot run (segfault; C++ build tools not available 2026-02-06)
 
 ---
 

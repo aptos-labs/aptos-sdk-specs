@@ -1,7 +1,7 @@
 # Kotlin SDK Test Status
 
-> **Last Updated:** 2026-01-28  
-> **Last Verified:** 2026-01-28 via `./gradlew test`
+> **Last Updated:** 2026-02-06  
+> **Last Verified:** 2026-01-28 via `./gradlew test` (cannot run 2026-02-06: Gradle/JDK compat issue)
 
 ---
 

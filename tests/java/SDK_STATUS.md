@@ -1,7 +1,7 @@
 # Java SDK Test Status
 
-> **Last Updated:** 2026-01-28  
-> **Last Verified:** 2026-01-28 via `mvn test`
+> **Last Updated:** 2026-02-06  
+> **Last Verified:** 2026-02-06 via `mvn test`
 
 ---
 
@@ -20,19 +20,19 @@
 
 ## 2. Coverage Summary
 
-| Priority       | Passing  | Total   | Percentage | Status |
-| -------------- | -------- | ------- | ---------- | ------ |
-| Required (P0)  | ~22      | 837     | ~3%        | ❌     |
-| Preferred (P1) | included | -       | -          | -      |
-| Optional (P2)  | included | -       | -          | -      |
-| **Total**      | **~22**  | **837** | **~3%**    | ❌     |
+| Priority       | Passing | Total   | Percentage | Status |
+| -------------- | ------- | ------- | ---------- | ------ |
+| Required (P0)  | 22      | 802     | 3%         | ❌     |
+| Preferred (P1) | included | -      | -          | -      |
+| Optional (P2)  | included | -      | -          | -      |
+| **Total**      | **22**  | **802** | **3%**     | ❌     |
 
 > **Notes:**
 >
-> - Tests run: 837, Errors: 815, Failures: 0
-> - Most step definitions are undefined
-> - Only address parsing and basic Ed25519 implemented
-> - Test duration: ~15 seconds
+> - Tests run: 802, Errors: 780, Failures: 0, Passed: 22
+> - Most step definitions are undefined (throw PendingException)
+> - Only address parsing and basic Ed25519 key generation implemented
+> - Test duration: ~11 seconds
 
 ---
 
@@ -164,26 +164,16 @@ To add or update tests for this SDK:
 
 ## 9. Test Results Matrix
 
-> Last run: 2026-01-27
-
-### By Feature Category
-
-| Category                | Passed | Errors | Skipped | Total |
-| ----------------------- | ------ | ------ | ------- | ----- |
-| 01-core-types           | ~11    | ~30    | ~23     | 64    |
-| 02-cryptography         | ~11    | ~60    | ~49     | 120   |
-| 03-account-management   | 0      | ~30    | ~32     | 62    |
-| 04-transaction-building | 0      | ~40    | ~46     | 86    |
-| 05-api-clients          | 0      | ~70    | ~70     | 140   |
-| 06-advanced             | 0      | ~129   | ~147    | 276   |
+> Last run: 2026-02-06
 
 ### Test Run Summary
 
 ```
-Tests run: 837
-Errors: 359 (undefined steps)
-Skipped: 456
-Passed: ~22
+Tests run: 802
+Errors: 780 (undefined steps / PendingException)
+Failures: 0
+Passed: 22
+Duration: ~11s
 ```
 
 ### Passing Tests Detail
@@ -194,5 +184,6 @@ Passed: ~22
 | Parse full 64-character hex address       | address.feature |
 | Parse uppercase hex address               | address.feature |
 | Parse mixed case hex address              | address.feature |
-| Parse various valid formats (6 scenarios) | address.feature |
+| Parse various valid formats (~16 scenarios)| address.feature |
 | Generate random Ed25519 key pair          | ed25519.feature |
+| Basic Ed25519 key generation (~2)         | ed25519.feature |

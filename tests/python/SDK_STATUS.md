@@ -1,7 +1,7 @@
 # Python SDK Test Status
 
-> **Last Updated:** 2026-01-28  
-> **Last Verified:** 2026-01-28 via `behave --tags=@required`
+> **Last Updated:** 2026-02-06  
+> **Last Verified:** 2026-02-06 via `behave` (full test suite)
 
 ---
 
@@ -22,16 +22,17 @@
 
 | Priority       | Passing  | Total   | Percentage | Status |
 | -------------- | -------- | ------- | ---------- | ------ |
-| Required (P0)  | 272      | 826     | 33%        | 🟡     |
+| Required (P0)  | 459      | 791     | 58%        | 🟡     |
 | Preferred (P1) | included | -       | -          | -      |
 | Optional (P2)  | included | -       | -          | -      |
-| **Total**      | **272**  | **826** | **33%**    | 🟡     |
+| **Total**      | **459**  | **791** | **58%**    | 🟡     |
 
 > **Notes:**
 >
-> - 272 passed, 36 failed, 60 errors, 458 skipped
-> - 1240 steps passed, 36 failed, 60 errors, 1843 skipped
+> - 459 passed, 121 failed, 75 errors, 136 skipped
+> - 2258 steps passed, 121 failed, 74 errors, 604 skipped, 1 undefined
 > - Test duration: ~1.2 seconds
+> - Significant improvement from previous run (272 -> 459 passing)
 
 ---
 
@@ -171,37 +172,43 @@ ln -sf ../tests/python/support support
 
 ## 9. Test Results Matrix
 
-> Last run: 2026-01-22
+> Last run: 2026-02-06
 
 ### By Feature Category
 
 | Category                | Passed | Failed | Error | Skipped | Total |
 | ----------------------- | ------ | ------ | ----- | ------- | ----- |
-| 01-core-types           | 60     | 2      | 10    | 0       | 72    |
-| 02-cryptography         | 45     | 5      | 30    | 40      | 120   |
-| 03-account-management   | 25     | 3      | 20    | 14      | 62    |
-| 04-transaction-building | 30     | 5      | 25    | 26      | 86    |
-| 05-api-clients          | 20     | 5      | 30    | 85      | 140   |
-| 06-advanced             | 17     | 5      | 33    | 273     | 328   |
+| 01-core-types           | 112    | 0      | 9     | 0       | 121   |
+| 02-cryptography         | 50     | 2      | 7     | 33      | 92    |
+| 03-account-management   | 24     | 8      | 17    | 35      | 84    |
+| 04-transaction-building | 62     | 16     | 16    | 14      | 108   |
+| 05-api-clients          | 122    | 66     | 2     | 3       | 193   |
+| 06-advanced             | 89     | 29     | 8     | 63      | 189   |
 
 ### Test Run Summary
 
 ```
-1 feature passed, 4 failed, 8 error, 16 skipped
-197 scenarios passed, 25 failed, 148 error, 438 skipped
-918 steps passed, 25 failed, 59 error, 1742 skipped, 332 undefined
+6 features passed, 14 failed, 6 error, 3 skipped
+459 scenarios passed, 121 failed, 75 error, 136 skipped
+2258 steps passed, 121 failed, 74 error, 604 skipped, 1 undefined
+Duration: ~1.2s
 ```
 
 ### Well-Implemented Areas
 
-- Address parsing and formatting
-- Basic Ed25519 cryptography
-- BCS serialization primitives
-- Basic account operations
+- Address parsing and formatting (22/22)
+- Ed25519 cryptography (25/25)
+- Hashing (19/20)
+- Error handling (30/30)
+- API client basics (many passing)
+- Simulation basics
+- Multi-agent / fee-payer basics
 
 ### Needs Work
 
-- TypeTag parsing step definitions
-- Entry function building steps
-- Transaction signing steps
-- API client steps
+- Secp256k1 key operations (errors in key-from-bytes)
+- Account management (scheme identifiers, AIP-80)
+- Entry function BCS serialization edge cases
+- Multi-sig validation assertions
+- Keyless (not supported in SDK)
+- Code generation (not supported in SDK)

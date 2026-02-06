@@ -1,6 +1,7 @@
 # Rust SDK Test Status
 
-> **Last Updated:** 2026-02-05 **Last Verified:** 2026-02-05
+> **Last Updated:** 2026-02-06  
+> **Last Verified:** 2026-02-06 (build failure — see below)
 
 ---
 
@@ -19,18 +20,18 @@
 
 ## 2. Coverage Summary
 
-| Priority       | Passing  | Total   | Percentage | Status |
-| -------------- | -------- | ------- | ---------- | ------ |
-| Required (P0)  | 761      | 826     | 92%        | ✅     |
-| Preferred (P1) | included | -       | -          | -      |
-| Optional (P2)  | included | -       | -          | -      |
-| **Total**      | **761**  | **826** | **92%**    | ✅     |
+| Priority       | Passing          | Total   | Percentage   | Status |
+| -------------- | ---------------- | ------- | ------------ | ------ |
+| Required (P0)  | ❌ Build failure | 791     | N/A          | ❌     |
+| Preferred (P1) | ❌ Build failure | -       | -            | -      |
+| Optional (P2)  | ❌ Build failure | -       | -            | -      |
+| **Total**      | **0 (blocked)**  | **791** | **0% (blocked)** | ❌ |
 
 > **Notes:**
 >
-> - 761 scenarios passed, 65 skipped
-> - 2962 steps passed, 65 skipped
-> - Test duration: ~16 seconds
+> - **BUILD FAILURE:** Tests do not compile as of 2026-02-06
+> - SDK API has changed: 3 methods no longer exist in the current SDK revision
+> - Previous results (2026-02-05): 761 passed, 65 skipped (92% when compilable)
 > - Tests use `aptos-sdk` from GitHub: `https://github.com/aptos-labs/aptos-rust-sdk`
 
 ---
@@ -80,9 +81,11 @@ The SDK uses feature flags. The `full` feature enables all:
 
 ## 4. Known Issues
 
-| Issue            | Impact           | Resolution                     |
-| ---------------- | ---------------- | ------------------------------ |
-| Not on crates.io | Git dep required | Use git dependency from GitHub |
+| Issue                  | Impact              | Resolution                                           |
+| ---------------------- | ------------------- | ---------------------------------------------------- |
+| Not on crates.io       | Git dep required    | Use git dependency from GitHub                       |
+| `get_apt_balance`      | Compile error       | Method removed/renamed in SDK; update step definition |
+| `get_account_transactions` | Compile error (x2) | Method removed/renamed in SDK; update step definition |
 
 ### SDK Dependency
 
@@ -106,15 +109,24 @@ aptos-sdk = { version = "0.3", features = ["full"] }
 
 ---
 
-## 5. Missing Test Implementations
+## 5. Build Failure Details
 
-Run the following to identify undefined steps:
+As of 2026-02-06, `cargo test --test specs` fails to compile with 3 errors:
 
-```bash
-cargo test --test specs
+```
+error[E0599]: no method named `get_apt_balance` found for reference `&Aptos`
+error[E0599]: no method named `get_account_transactions` found for `&FullnodeClient` (x2)
 ```
 
-Scenarios that skip are typically due to:
+The SDK (`aptos-rust-sdk`) has undergone API changes. The following step definition files need
+updating:
+
+- `src/steps/client_steps.rs` - `get_apt_balance` call
+- `src/steps/client_steps.rs` - `get_account_transactions` calls
+
+**Resolution:** Update step definitions to use the current SDK API method names.
+
+When compilable, scenarios that skip are typically due to:
 
 - Network-dependent tests requiring live testnet/devnet
 - Advanced features not yet fully tested
@@ -176,13 +188,22 @@ fn given_hex_string(world: &mut TestWorld, hex_string: String) {
 
 ## 9. Test Results Matrix
 
-> Last run: 2026-02-05
+> Last attempted: 2026-02-06 (build failure)
+> Last successful run: 2026-02-05
 
-### Full Test Suite Summary
+### Full Test Suite Summary (from 2026-02-05, last successful build)
 
 ```
 826 scenarios (591 passed, 235 skipped)
 2565 steps (2330 passed, 235 skipped)
+```
+
+### Current Status (2026-02-06)
+
+```
+BUILD FAILURE: 3 compilation errors
+- get_apt_balance: method not found on &Aptos
+- get_account_transactions: method not found on &FullnodeClient (x2)
 ```
 
 ### By Feature Category

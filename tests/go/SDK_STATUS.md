@@ -1,7 +1,7 @@
 # Go SDK Test Status
 
-> **Last Updated:** 2026-01-28  
-> **Last Verified:** 2026-01-28 via `go test -v ./...`
+> **Last Updated:** 2026-02-06  
+> **Last Verified:** 2026-02-06 via `go test -v ./...`
 
 ---
 
@@ -28,16 +28,16 @@
 
 | Priority       | Passing  | Total   | Percentage | Status |
 | -------------- | -------- | ------- | ---------- | ------ |
-| Required (P0)  | 332      | 826     | 40%        | 🟡     |
+| Required (P0)  | 333      | 791     | 42%        | 🟡     |
 | Preferred (P1) | included | -       | -          | -      |
 | Optional (P2)  | included | -       | -          | -      |
-| **Total**      | **332**  | **826** | **40%**    | 🟡     |
+| **Total**      | **333**  | **791** | **42%**    | 🟡     |
 
 > **Notes:**
 >
-> - 332 scenarios passed, 146 failed, 348 pending
-> - 1932 steps passed, 146 failed, 348 pending, 753 skipped
-> - Test duration: ~32 seconds
+> - 333 scenarios passed, 136 failed, 312 pending, 10 undefined
+> - 1897 steps passed, 136 failed, 312 pending, 11 undefined, 702 skipped
+> - Test duration: ~36 seconds
 
 ---
 
@@ -247,45 +247,30 @@ To add or update tests for this SDK:
 
 ## 10. Test Results Matrix
 
-> Last run: 2026-01-27
-
-### By Feature Category
-
-| Category                | Passed | Failed | Pending | Undefined | Total |
-| ----------------------- | ------ | ------ | ------- | --------- | ----- |
-| 01-core-types           | 121    | 0      | 0       | 0         | 121   |
-| 02-cryptography         | 60     | 10     | 15      | ~40       | ~125  |
-| 03-account-management   | 35     | 5      | 8       | ~20       | ~68   |
-| 04-transaction-building | 55     | 10     | 0       | ~25       | ~90   |
-| 05-api-clients          | 50     | 15     | 0       | ~80       | ~145  |
-| 06-advanced             | 8      | 44     | 0       | ~257      | ~309  |
-
-### Required Tests Summary
-
-```
-370 scenarios (304 passed, 66 failed, 0 undefined)
-1429 steps (1282 passed, 66 failed, 81 skipped)
-```
+> Last run: 2026-02-06
 
 ### Full Test Suite Summary
 
 ```
-826 scenarios (329 passed, 84 failed, 23 pending, 422 undefined)
-3179 steps (1669 passed, 84 failed, 23 pending, 1025 undefined, 378 skipped)
+791 scenarios (333 passed, 136 failed, 312 pending, 10 undefined)
+3058 steps (1897 passed, 136 failed, 312 pending, 11 undefined, 702 skipped)
+Duration: ~36s
 ```
 
 ### Pending Features (Awaiting SDK Implementation)
 
 | Feature   | Scenarios | Reason                           |
 | --------- | --------- | -------------------------------- |
-| BLS12-381 | ~8        | Cryptography not in SDK          |
-| Secp256r1 | ~5        | P-256 curve not in SDK           |
-| Keyless   | ~10       | JWT/OIDC infrastructure required |
+| Secp256r1 | ~10       | P-256 curve not in SDK           |
+| Keyless   | ~33       | JWT/OIDC infrastructure required |
+| Codegen   | ~34       | Code generation not available    |
+| Mnemonic  | ~29       | HD derivation not exposed        |
 
 ### Failure Details
 
 | Failure Type      | Count | Examples                                  |
 | ----------------- | ----- | ----------------------------------------- |
+| SDK Limitations   | ~40   | Secp256r1, MultiKey, specific API methods |
 | Network-dependent | ~50   | Testnet/devnet connection required        |
-| SDK Limitations   | ~10   | Secp256r1, MultiKey, specific API methods |
+| Pending steps     | ~312  | Step definitions return ErrPending        |
 | Test Setup        | ~6    | Missing test fixtures or state            |

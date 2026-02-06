@@ -1,7 +1,7 @@
 # .NET SDK Test Status
 
-> **Last Updated:** 2026-01-28  
-> **Last Verified:** 2026-01-28 via `dotnet test`
+> **Last Updated:** 2026-02-06  
+> **Last Verified:** 2026-01-28 via `dotnet test` (cannot run 2026-02-06: dotnet SDK not installed)
 
 ---
 
