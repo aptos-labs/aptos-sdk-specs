@@ -179,7 +179,7 @@ Feature: Code Generation from Move ABI
   Scenario: Generated code handles enum encoding
     Given a generated function expecting an enum
     When I call it with a variant value
-    Then it should properly BCS encode the variant tag and fields
+    Then it should properly BCS encode the variant index (ULEB128) and variant fields
 
   @optional
   Scenario: Generated code handles address encoding
