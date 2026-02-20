@@ -68,6 +68,81 @@ Configuration for connecting to Aptos networks.
 | `/v1/accounts/{address}/modules`         | GET    | P1       | Get all modules       |
 | `/v1/accounts/{address}/module/{name}`   | GET    | P1       | Get specific module   |
 
+### Module ABI Structure
+
+The module ABI includes struct definitions. Each struct in the ABI has the following fields:
+
+| Field               | Type                         | Description                                       |
+| ------------------- | ---------------------------- | ------------------------------------------------- |
+| name                | string                       | Name of the struct or enum                        |
+| is_native           | bool                         | Whether it is a native (built-in) struct          |
+| is_event            | bool                         | Whether it is annotated with `#[event]`           |
+| is_enum             | bool                         | Whether it is a Move enum rather than a struct    |
+| abilities           | string[]                     | Abilities: `copy`, `drop`, `store`, `key`         |
+| generic_type_params | MoveStructGenericTypeParam[] | Generic type parameter constraints                |
+| fields              | MoveStructField[]            | Fields (populated for structs, empty for enums)   |
+| variants            | MoveStructVariant[]          | Variants (populated for enums, empty for structs) |
+
+Each `MoveStructVariant` has:
+
+| Field  | Type              | Description                     |
+| ------ | ----------------- | ------------------------------- |
+| name   | string            | Name of the variant             |
+| fields | MoveStructField[] | Fields belonging to the variant |
+
+Each `MoveStructField` has:
+
+| Field | Type   | Description            |
+| ----- | ------ | ---------------------- |
+| name  | string | Name of the field      |
+| type  | string | Move type of the field |
+
+For example, given the Move enum:
+
+```move
+enum DrawCommand has copy, drop, store {
+    Fill { shape: Shape, color: Color },
+    Stroke { shape: Shape, color: Color, thickness: u64 },
+    Clear,
+}
+```
+
+The ABI JSON would include:
+
+```json
+{
+  "name": "DrawCommand",
+  "is_native": false,
+  "is_event": false,
+  "is_enum": true,
+  "abilities": ["copy", "drop", "store"],
+  "generic_type_params": [],
+  "fields": [],
+  "variants": [
+    {
+      "name": "Fill",
+      "fields": [
+        { "name": "shape", "type": "0x1::enums::Shape" },
+        { "name": "color", "type": "0x1::enums::Color" }
+      ]
+    },
+    {
+      "name": "Stroke",
+      "fields": [
+        { "name": "shape", "type": "0x1::enums::Shape" },
+        { "name": "color", "type": "0x1::enums::Color" },
+        { "name": "thickness", "type": "u64" }
+      ]
+    },
+    { "name": "Clear", "fields": [] }
+  ]
+}
+```
+
+**Note:** `std::option::Option` is a special case. Despite being an enum internally, it is
+represented as a struct with a single `vec` field for backwards compatibility (`is_enum` is
+`false`).
+
 ### Transaction Endpoints
 
 | Endpoint                                | Method | Priority | Description          |

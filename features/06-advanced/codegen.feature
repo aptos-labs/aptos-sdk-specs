@@ -56,6 +56,15 @@ Feature: Code Generation from Move ABI
     And abilities (copy, drop, store, key)
 
   @optional
+  Scenario: Parse enum definitions from ABI
+    Given an ABI with enum definitions
+    When I parse the ABI
+    Then I should identify enums via the is_enum flag
+    And extract variant names for each enum
+    And extract field names and types for each variant
+    And abilities (copy, drop, store, key)
+
+  @optional
   Scenario: Parse generic types
     Given an ABI with generic functions and structs
     When I parse the ABI
@@ -70,6 +79,12 @@ Feature: Code Generation from Move ABI
     Given a Move struct "CoinStore<CoinType>"
     When I generate TypeScript code
     Then I should get an interface with typed fields
+
+  @optional
+  Scenario: Generate TypeScript types for enums
+    Given a Move enum "DrawCommand" with variants Fill, Stroke, Clear
+    When I generate TypeScript code
+    Then I should get a discriminated union type with variant interfaces
 
   @optional
   Scenario: Generate TypeScript function wrappers
@@ -102,6 +117,13 @@ Feature: Code Generation from Move ABI
     Given a Move struct definition
     When I generate Rust code
     Then I should get a struct with typed fields
+    And appropriate derive macros
+
+  @optional
+  Scenario: Generate Rust types for enums
+    Given a Move enum definition with variants
+    When I generate Rust code
+    Then I should get a Rust enum with variant structs
     And appropriate derive macros
 
   @optional
@@ -153,6 +175,12 @@ Feature: Code Generation from Move ABI
   # =============================================================================
   # Argument Encoding
   # =============================================================================
+  @optional
+  Scenario: Generated code handles enum encoding
+    Given a generated function expecting an enum
+    When I call it with a variant value
+    Then it should properly BCS encode the variant tag and fields
+
   @optional
   Scenario: Generated code handles address encoding
     Given a generated function expecting address

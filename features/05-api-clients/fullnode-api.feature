@@ -105,6 +105,17 @@ Feature: Fullnode REST API Client
     Then I should receive a list of modules
     And each module should have bytecode and ABI
 
+  @preferred
+  @network
+  Scenario: Module ABI includes enum variant definitions
+    Given a client connected to testnet
+    And a module containing enum types
+    When I get the module ABI
+    Then enum structs should have is_enum set to true
+    And enum structs should have a variants array
+    And each variant should have a name and fields array
+    And non-enum structs should have an empty variants array
+
   # =============================================================================
   # Transaction Queries (requires network)
   # =============================================================================

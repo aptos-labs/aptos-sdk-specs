@@ -548,6 +548,7 @@
 | 23  | Handle API 404 error                | ✅  | ✅  | ✅   | ✅   | ✅     | ❌     | ✅   | ❌  | ❌    |
 | 24  | Handle API 400 error                | ✅  | ✅  | ✅   | ✅   | ✅     | ❌     | ✅   | ❌  | ❌    |
 | 25  | Handle network error                | ✅  | ❌  | ✅   | ✅   | ❌     | ❌     | ❌   | ❌  | ❌    |
+| 26  | Module ABI includes enum variants   | ❌  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
 
 ### transaction-submission.feature `@required`
 
