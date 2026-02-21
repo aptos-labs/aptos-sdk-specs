@@ -22,13 +22,12 @@ Final
 2. [Ed25519](#2-ed25519)
 3. [Secp256k1 ECDSA](#3-secp256k1-ecdsa)
 4. [Secp256r1 / P-256](#4-secp256r1--p-256)
-5. [BLS12-381](#5-bls12-381)
-6. [Hashing](#6-hashing)
-7. [Authentication Key Derivation](#7-authentication-key-derivation)
-8. [Key Derivation (BIP-39/BIP-44)](#8-key-derivation-bip-39bip-44)
-9. [Test Vectors](#9-test-vectors)
-10. [Security Considerations](#10-security-considerations)
-11. [References](#11-references)
+5. [Hashing](#5-hashing)
+6. [Authentication Key Derivation](#6-authentication-key-derivation)
+7. [Key Derivation (BIP-39/BIP-44)](#7-key-derivation-bip-39bip-44)
+8. [Test Vectors](#8-test-vectors)
+9. [Security Considerations](#9-security-considerations)
+10. [References](#10-references)
 
 ---
 
@@ -47,7 +46,6 @@ This specification covers:
 - Ed25519 signature scheme (required)
 - Secp256k1 ECDSA signature scheme (preferred)
 - Secp256r1/P-256 for WebAuthn compatibility (optional)
-- BLS12-381 for aggregatable signatures (optional)
 - SHA3-256 and SHA2-256 hashing
 - Authentication key derivation
 - BIP-39/BIP-44 key derivation
@@ -320,78 +318,9 @@ Secp256r1 Scheme Identifier: 0x02
 
 ---
 
-## 5. BLS12-381
+## 5. Hashing
 
-### 5.1 Overview
-
-BLS12-381 enables signature aggregation for multi-signature schemes and efficient batch
-verification.
-
-**Priority: P2 (Optional)**
-
-### 5.2 Key Sizes
-
-| Component   | Size     | Description           |
-| ----------- | -------- | --------------------- |
-| Private Key | 32 bytes | Scalar value          |
-| Public Key  | 48 bytes | G1 point (compressed) |
-| Signature   | 96 bytes | G2 point (compressed) |
-
-### 5.3 Key Generation [P2]
-
-**Signature:**
-
-```
-generate() -> (PrivateKey, PublicKey)
-from_bytes(bytes: [u8; 32]) -> Result<(PrivateKey, PublicKey), Error>
-```
-
-### 5.4 Signing [P2]
-
-**Signature:**
-
-```
-sign(private_key: PrivateKey, message: bytes) -> Signature
-```
-
-### 5.5 Verification [P2]
-
-**Signature:**
-
-```
-verify(public_key: PublicKey, message: bytes, signature: Signature) -> bool
-```
-
-### 5.6 Aggregation [P2]
-
-**Signatures:**
-
-```
-aggregate_signatures(signatures: Vec<Signature>) -> Signature
-aggregate_public_keys(public_keys: Vec<PublicKey>) -> PublicKey
-```
-
-**Requirements:**
-
-1. Aggregated signature **MUST** verify against aggregated public key
-2. Order of aggregation **MUST NOT** affect result
-
-### 5.7 Proof of Possession [P2]
-
-**Signature:**
-
-```
-proof_of_possession(private_key: PrivateKey) -> Signature
-verify_proof_of_possession(public_key: PublicKey, proof: Signature) -> bool
-```
-
-Used to prevent rogue key attacks in multi-signature schemes.
-
----
-
-## 6. Hashing
-
-### 6.1 SHA3-256 [P0]
+### 5.1 SHA3-256 [P0]
 
 **Signature:**
 
@@ -405,7 +334,7 @@ sha3_256(data: bytes) -> [u8; 32]
 2. Output **MUST** be exactly 32 bytes
 3. Empty input **MUST** be supported
 
-### 6.2 SHA2-256 [P0]
+### 5.2 SHA2-256 [P0]
 
 **Signature:**
 
@@ -418,7 +347,7 @@ sha256(data: bytes) -> [u8; 32]
 1. Implementation **MUST** use SHA-256 (FIPS 180-4)
 2. Required for BIP-39/BIP-44 key derivation
 
-### 6.3 Domain-Separated Hashing [P0]
+### 5.3 Domain-Separated Hashing [P0]
 
 Aptos uses domain separation to prevent cross-protocol signature attacks.
 
@@ -435,7 +364,7 @@ hash = SHA3-256(SHA3-256(domain_string) || data)
 | `APTOS::RawTransaction`         | Single-signer transaction signing  |
 | `APTOS::RawTransactionWithData` | Multi-agent/fee payer transactions |
 
-### 6.4 Hashing Multiple Parts [P1]
+### 5.4 Hashing Multiple Parts [P1]
 
 **Signature:**
 
@@ -447,19 +376,19 @@ Concatenates parts and hashes the result.
 
 ---
 
-## 7. Authentication Key Derivation
+## 6. Authentication Key Derivation
 
-### 7.1 Overview
+### 6.1 Overview
 
 An authentication key is derived from a public key and used to derive the initial account address.
 
-### 7.2 Derivation Formula [P0]
+### 6.2 Derivation Formula [P0]
 
 ```
 authentication_key = SHA3-256(public_key_bytes || scheme_identifier)
 ```
 
-### 7.3 Scheme Identifiers [P0]
+### 6.3 Scheme Identifiers [P0]
 
 | Scheme       | Identifier | Priority |
 | ------------ | ---------- | -------- |
@@ -470,7 +399,7 @@ authentication_key = SHA3-256(public_key_bytes || scheme_identifier)
 | MultiKey     | 0x03       | P2       |
 | Keyless      | 0x05       | P2       |
 
-### 7.4 Ed25519 Authentication Key [P0]
+### 6.4 Ed25519 Authentication Key [P0]
 
 **Signature:**
 
@@ -486,7 +415,7 @@ auth_key = SHA3-256(public_key || 0x00)
 
 Where `public_key` is the 32-byte Ed25519 public key.
 
-### 7.5 Secp256k1 Authentication Key [P1]
+### 6.5 Secp256k1 Authentication Key [P1]
 
 **Signature:**
 
@@ -502,7 +431,7 @@ auth_key = SHA3-256(uncompressed_public_key || 0x01)
 
 Where `uncompressed_public_key` is the 65-byte uncompressed public key.
 
-### 7.6 Address Derivation [P0]
+### 6.6 Address Derivation [P0]
 
 For new accounts (authentication key has not been rotated):
 
@@ -512,7 +441,7 @@ account_address = authentication_key
 
 The 32-byte authentication key **IS** the account address.
 
-### 7.7 AuthenticationKey Type [P0]
+### 6.7 AuthenticationKey Type [P0]
 
 **Methods:**
 
@@ -524,11 +453,11 @@ The 32-byte authentication key **IS** the account address.
 
 ---
 
-## 8. Key Derivation (BIP-39/BIP-44)
+## 7. Key Derivation (BIP-39/BIP-44)
 
-### 8.1 BIP-39 Mnemonics [P1]
+### 7.1 BIP-39 Mnemonics [P1]
 
-#### 8.1.1 Generation
+#### 7.1.1 Generation
 
 **Signature:**
 
@@ -552,7 +481,7 @@ generate_mnemonic(word_count: u8) -> Mnemonic
 2. Implementation **MUST** use BIP-39 English wordlist
 3. Checksum **MUST** be calculated per BIP-39
 
-#### 8.1.2 Parsing
+#### 7.1.2 Parsing
 
 **Signature:**
 
@@ -566,7 +495,7 @@ from_phrase(phrase: string) -> Result<Mnemonic, Error>
 2. Implementation **MUST** reject invalid words
 3. Implementation **SHOULD** be case-insensitive
 
-#### 8.1.3 Seed Derivation
+#### 7.1.3 Seed Derivation
 
 **Signature:**
 
@@ -586,9 +515,9 @@ seed = PBKDF2(
 )
 ```
 
-### 8.2 BIP-44 Path Derivation [P1]
+### 7.2 BIP-44 Path Derivation [P1]
 
-#### 8.2.1 Aptos Derivation Path
+#### 7.2.1 Aptos Derivation Path
 
 ```
 m / 44' / 637' / account' / change' / address_index'
@@ -606,7 +535,7 @@ m / 44' / 637' / account' / change' / address_index'
 
 **Default Path:** `m/44'/637'/0'/0'/0'`
 
-#### 8.2.2 Deriving Multiple Accounts
+#### 7.2.2 Deriving Multiple Accounts
 
 ```
 Account 0: m/44'/637'/0'/0'/0'
@@ -614,7 +543,7 @@ Account 1: m/44'/637'/0'/0'/1'
 Account 2: m/44'/637'/0'/0'/2'
 ```
 
-#### 8.2.3 Ed25519 Derivation [P1]
+#### 7.2.3 Ed25519 Derivation [P1]
 
 **Signature:**
 
@@ -627,7 +556,7 @@ derive_ed25519(seed: [u8; 64], path: string) -> Ed25519PrivateKey
 1. Implementation **MUST** use SLIP-0010 for Ed25519 derivation
 2. All path components **MUST** be hardened (')
 
-#### 8.2.4 Secp256k1 Derivation [P1]
+#### 7.2.4 Secp256k1 Derivation [P1]
 
 **Signature:**
 
@@ -642,9 +571,9 @@ derive_secp256k1(seed: [u8; 64], path: string) -> Secp256k1PrivateKey
 
 ---
 
-## 9. Test Vectors
+## 8. Test Vectors
 
-### 9.1 Ed25519 Signing
+### 8.1 Ed25519 Signing
 
 Test vectors in `test-vectors/signatures.json`:
 
@@ -662,7 +591,7 @@ Test vectors in `test-vectors/signatures.json`:
 }
 ```
 
-### 9.2 Key Derivation
+### 8.2 Key Derivation
 
 Test vectors in `test-vectors/mnemonics.json`:
 
@@ -679,7 +608,7 @@ Test vectors in `test-vectors/mnemonics.json`:
 }
 ```
 
-### 9.3 Authentication Key
+### 8.3 Authentication Key
 
 ```json
 {
@@ -695,34 +624,34 @@ Test vectors in `test-vectors/mnemonics.json`:
 
 ---
 
-## 10. Security Considerations
+## 9. Security Considerations
 
-### 10.1 Key Generation
+### 9.1 Key Generation
 
 1. Implementation **MUST** use OS-provided CSPRNG
 2. Implementation **MUST NOT** use predictable seeds in production
 3. Implementation **SHOULD** verify entropy source quality when possible
 
-### 10.2 Key Storage
+### 9.2 Key Storage
 
 1. Private keys **MUST** be zeroized when no longer needed
 2. Private keys **SHOULD** use memory protection when available
 3. Private keys **MUST NOT** appear in logs or debug output
 4. Private keys **MUST NOT** implement `Display` trait
 
-### 10.3 Signing
+### 9.3 Signing
 
 1. Implementation **MUST** use domain separation for different message types
 2. Implementation **SHOULD** require explicit user consent before signing
 3. Implementation **SHOULD** display transaction details before signing
 
-### 10.4 Side-Channel Resistance
+### 9.4 Side-Channel Resistance
 
 1. Verification **SHOULD** use constant-time comparison
 2. Private key operations **SHOULD** be constant-time
 3. Implementation **SHOULD NOT** branch on secret data
 
-### 10.5 Mnemonic Security
+### 9.5 Mnemonic Security
 
 1. Mnemonics **MUST** be generated with CSPRNG entropy
 2. Mnemonics **SHOULD** be zeroized after use
@@ -730,14 +659,14 @@ Test vectors in `test-vectors/mnemonics.json`:
 
 ---
 
-## 11. References
+## 10. References
 
-### 11.1 Related Specifications
+### 10.1 Related Specifications
 
 - [04-accounts.md](04-accounts.md) - Account types using these primitives
 - [05-transactions.md](05-transactions.md) - Transaction signing
 
-### 11.2 External Standards
+### 10.2 External Standards
 
 - [RFC 8032](https://datatracker.ietf.org/doc/html/rfc8032) - Edwards-Curve Digital Signature
   Algorithm (EdDSA)
@@ -747,15 +676,14 @@ Test vectors in `test-vectors/mnemonics.json`:
 - [SLIP-0010](https://github.com/satoshilabs/slips/blob/master/slip-0010.md) - Universal derivation
 - [FIPS 202](https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.202.pdf) - SHA-3 Standard
 
-### 11.3 Feature Files
+### 10.3 Feature Files
 
 - `features/02-cryptography/ed25519.feature` - 23 Ed25519 scenarios
 - `features/02-cryptography/secp256k1.feature` - 18 Secp256k1 scenarios
 - `features/02-cryptography/secp256r1.feature` - 26 Secp256r1 scenarios
-- `features/02-cryptography/bls12381.feature` - 30 BLS12-381 scenarios
 - `features/02-cryptography/hashing.feature` - 21 hashing scenarios
 
-### 11.4 Test Vectors
+### 10.4 Test Vectors
 
 - `test-vectors/signatures.json`
 - `test-vectors/mnemonics.json`

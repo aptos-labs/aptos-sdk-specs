@@ -51,7 +51,6 @@ specifications/
 │   │   ├── ed25519.feature      # 23 scenarios
 │   │   ├── secp256k1.feature    # 18 scenarios
 │   │   ├── secp256r1.feature    # 26 scenarios (WebAuthn/Passkey)
-│   │   ├── bls12381.feature     # 30 scenarios (aggregatable sigs)
 │   │   └── hashing.feature      # 21 scenarios
 │   │
 │   ├── 03-account-management/   # Account creation, derivation
