@@ -1,12 +1,12 @@
 # Aptos SDK Examples
 
-Standalone sample applications that demonstrate Aptos SDK features across multiple languages.
-Each example is self-contained, runnable, and designed to be a starting point you can expand.
+Standalone sample applications that demonstrate Aptos SDK features across multiple languages. Each
+example is self-contained, runnable, and designed to be a starting point you can expand.
 
 ## Examples
 
-| Example | Description | Languages |
-| ------- | ----------- | --------- |
+| Example                             | Description                                | Languages      |
+| ----------------------------------- | ------------------------------------------ | -------------- |
 | [batch-transfer](./batch-transfer/) | Send N transactions in parallel with retry | TypeScript, Go |
 
 ## Design Principles
