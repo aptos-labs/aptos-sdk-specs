@@ -62,7 +62,6 @@ This document compares feature availability across official Aptos SDK implementa
 | Feature           | TS  | PY  | GO  | NET | Notes            |
 | ----------------- | --- | --- | --- | --- | ---------------- |
 | Secp256r1 (P-256) | ✅  | 🔶  | ✅  | ✅  | WebAuthn support |
-| BLS12-381         | 🔶  | ❌  | ❌  | ❌  | Limited support  |
 | Multi-Ed25519     | ✅  | ✅  | ✅  | ✅  |                  |
 | MultiKey          | ✅  | 🔶  | 🔶  | 🔶  | Mixed key types  |
 
