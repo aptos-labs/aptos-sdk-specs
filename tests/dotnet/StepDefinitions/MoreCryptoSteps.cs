@@ -46,19 +46,7 @@ public class MoreCryptoSteps
         }
     }
 
-    [When(@"I create a BLS(.*) account")]
-    public void WhenICreateABLSAccount(string curve)
-    {
-        // TODO: awaiting SDK implementation - BLS not supported in .NET SDK
-        _scenarioContext.Pending();
-    }
 
-    [When(@"I create a BLS(.*) key pair from the seed")]
-    public void WhenICreateABLSKeyPairFromTheSeed(string curve)
-    {
-        // TODO: awaiting SDK implementation - BLS not supported in .NET SDK
-        _scenarioContext.Pending();
-    }
 
     [When("I create a key pair from hex")]
     public void WhenICreateAKeyPairFromHex()
@@ -104,26 +92,8 @@ public class MoreCryptoSteps
         }
     }
 
-    [When(@"I generate a random BLS(.*) key pair")]
-    public void WhenIGenerateARandomBLSKeyPair(string curve)
-    {
-        // TODO: awaiting SDK implementation - BLS not supported in .NET SDK
-        _scenarioContext.Pending();
-    }
 
-    [When("I derive a BLS key pair")]
-    public void WhenIDeriveABLSKeyPair()
-    {
-        // TODO: awaiting SDK implementation - BLS not supported in .NET SDK
-        _scenarioContext.Pending();
-    }
 
-    [When("I generate a proof of possession")]
-    public void WhenIGenerateAProofOfPossession()
-    {
-        // TODO: awaiting SDK implementation - BLS not supported in .NET SDK
-        _scenarioContext.Pending();
-    }
 
     // =========================================================================
     // When Steps - Derivation
@@ -291,64 +261,15 @@ public class MoreCryptoSteps
     }
 
     // =========================================================================
-    // When Steps - BLS Aggregation (Pending)
     // =========================================================================
 
-    [When("I aggregate all keys")]
-    public void WhenIAggregateAllKeys()
-    {
-        // TODO: awaiting SDK implementation - BLS not supported in .NET SDK
-        _scenarioContext.Pending();
-    }
 
-    [When("I aggregate all signatures")]
-    public void WhenIAggregateAllSignatures()
-    {
-        // TODO: awaiting SDK implementation - BLS not supported in .NET SDK
-        _scenarioContext.Pending();
-    }
 
-    [When("I aggregate in different orders")]
-    public void WhenIAggregateInDifferentOrders()
-    {
-        // TODO: awaiting SDK implementation - BLS not supported in .NET SDK
-        _scenarioContext.Pending();
-    }
 
-    [When("I aggregate signatures and public keys")]
-    public void WhenIAggregateSignaturesAndPublicKeys()
-    {
-        // TODO: awaiting SDK implementation - BLS not supported in .NET SDK
-        _scenarioContext.Pending();
-    }
 
-    [When("I verify each PoP before aggregation")]
-    public void WhenIVerifyEachPoPBeforeAggregation()
-    {
-        // TODO: awaiting SDK implementation - BLS not supported in .NET SDK
-        _scenarioContext.Pending();
-    }
 
-    [When("I verify the aggregated signature")]
-    public void WhenIVerifyTheAggregatedSignature()
-    {
-        // TODO: awaiting SDK implementation - BLS not supported in .NET SDK
-        _scenarioContext.Pending();
-    }
 
-    [When("verify aggregated signature with aggregated public key")]
-    public void WhenVerifyAggregatedSignatureWithAggregatedPublicKey()
-    {
-        // TODO: awaiting SDK implementation - BLS not supported in .NET SDK
-        _scenarioContext.Pending();
-    }
 
-    [When("I try to parse as BLS signature")]
-    public void WhenITryToParseAsBLSSignature()
-    {
-        // TODO: awaiting SDK implementation - BLS not supported in .NET SDK
-        _scenarioContext.Pending();
-    }
 
     // =========================================================================
     // When Steps - Misc
@@ -581,19 +502,7 @@ public class MoreCryptoSteps
         // Validation placeholder
     }
 
-    [Then("the authenticator should use BLS")]
-    public void ThenTheAuthenticatorShouldUseBLS()
-    {
-        // TODO: awaiting SDK implementation - BLS not supported in .NET SDK
-        _scenarioContext.Pending();
-    }
 
-    [Then("it should use the BLS scheme identifier")]
-    public void ThenItShouldUseTheBLSSchemeIdentifier()
-    {
-        // TODO: awaiting SDK implementation - BLS not supported in .NET SDK
-        _scenarioContext.Pending();
-    }
 
     [Then(@"the scheme identifier used should be ""(.*)""")]
     public void ThenTheSchemeIdentifierUsedShouldBe(string scheme)
@@ -625,45 +534,9 @@ public class MoreCryptoSteps
         // Validation placeholder
     }
 
-    [Then(@"the PoP should be (\d+) bytes")]
-    public void ThenThePoPShouldBeBytes(int bytes)
-    {
-        // TODO: awaiting SDK implementation - BLS not supported in .NET SDK
-        _scenarioContext.Pending();
-    }
 
-    [Then("rogue key attacks are prevented")]
-    public void ThenRogueKeyAttacksArePrevented()
-    {
-        // TODO: awaiting SDK implementation - BLS not supported in .NET SDK
-        _scenarioContext.Pending();
-    }
 
-    [Then("the aggregated signatures should be the same")]
-    public void ThenTheAggregatedSignaturesShouldBeTheSame()
-    {
-        // TODO: awaiting SDK implementation - BLS not supported in .NET SDK
-        _scenarioContext.Pending();
-    }
 
-    [Then("the result should match expected aggregated signature")]
-    public void ThenTheResultShouldMatchExpectedAggregatedSignature()
-    {
-        // TODO: awaiting SDK implementation - BLS not supported in .NET SDK
-        _scenarioContext.Pending();
-    }
 
-    [Then("the signature scheme should include BLS identifier")]
-    public void ThenTheSignatureSchemeShouldIncludeBLSIdentifier()
-    {
-        // TODO: awaiting SDK implementation - BLS not supported in .NET SDK
-        _scenarioContext.Pending();
-    }
 
-    [Then("verification against any single message should fail")]
-    public void ThenVerificationAgainstAnySingleMessageShouldFail()
-    {
-        // TODO: awaiting SDK implementation - BLS not supported in .NET SDK
-        _scenarioContext.Pending();
-    }
 }

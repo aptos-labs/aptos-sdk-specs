@@ -111,11 +111,6 @@ func initFinalSteps(ctx *godog.ScenarioContext, world *World) {
 		return nil
 	})
 
-	ctx.Step(`^the result should match expected aggregated signature$`, func() error {
-		// TODO: awaiting SDK implementation - BLS
-		return godog.ErrPending
-	})
-
 	ctx.Step(`^the retry should include the same body$`, func() error {
 		// TODO: awaiting SDK implementation - retry
 		return godog.ErrPending
@@ -204,11 +199,6 @@ func initFinalSteps(ctx *godog.ScenarioContext, world *World) {
 
 	ctx.Step(`^the secondary_signer_addresses should be \[A, B, C\] in order$`, func() error {
 		// TODO: implement address order check
-		return godog.ErrPending
-	})
-
-	ctx.Step(`^the signature scheme should include BLS identifier$`, func() error {
-		// TODO: awaiting SDK implementation - BLS
 		return godog.ErrPending
 	})
 
@@ -397,28 +387,8 @@ func initFinalSteps(ctx *godog.ScenarioContext, world *World) {
 	// Two Key Pair Steps
 	// =============================================================================
 
-	ctx.Step(`^two BLS public keys$`, func() error {
-		// TODO: awaiting SDK implementation - BLS
-		return godog.ErrPending
-	})
-
-	ctx.Step(`^two BLS signatures for the same message$`, func() error {
-		// TODO: awaiting SDK implementation - BLS
-		return godog.ErrPending
-	})
-
-	ctx.Step(`^two BLS12-381 key pairs$`, func() error {
-		// TODO: awaiting SDK implementation - BLS
-		return godog.ErrPending
-	})
-
 	ctx.Step(`^two JWTs with different user IDs$`, func() error {
 		// TODO: awaiting SDK implementation - keyless
-		return godog.ErrPending
-	})
-
-	ctx.Step(`^two different BLS12-381 key pairs$`, func() error {
-		// TODO: awaiting SDK implementation - BLS
 		return godog.ErrPending
 	})
 
@@ -495,18 +465,8 @@ func initFinalSteps(ctx *godog.ScenarioContext, world *World) {
 		return nil
 	})
 
-	ctx.Step(`^verification against any single message should fail$`, func() error {
-		// TODO: awaiting SDK implementation - BLS
-		return godog.ErrPending
-	})
-
 	ctx.Step(`^verification should work with Secp256r1$`, func() error {
 		// TODO: awaiting SDK implementation - Secp256r1
-		return godog.ErrPending
-	})
-
-	ctx.Step(`^verify aggregated signature with aggregated public key$`, func() error {
-		// TODO: awaiting SDK implementation - BLS
 		return godog.ErrPending
 	})
 

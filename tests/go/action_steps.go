@@ -119,13 +119,7 @@ func initActionSteps(ctx *godog.ScenarioContext, world *World) {
 	})
 
 	// =============================================================================
-	// BLS Steps - All Pending
 	// =============================================================================
-
-	ctx.Step(`^I try to parse as BLS public key$`, func() error {
-		// TODO: awaiting SDK implementation - BLS12-381
-		return godog.ErrPending
-	})
 
 	// =============================================================================
 	// Specify Steps

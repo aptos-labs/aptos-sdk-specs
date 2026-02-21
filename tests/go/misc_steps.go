@@ -14,7 +14,6 @@ var _ = crypto.GenerateEd25519PrivateKey
 
 func initMiscSteps(ctx *godog.ScenarioContext, world *World) {
 	// =============================================================================
-	// Multi-Ed25519 / BLS Steps
 	// =============================================================================
 
 	ctx.Step(`^(\d+) Ed25519 public keys$`, func(count int) error {
@@ -32,39 +31,9 @@ func initMiscSteps(ctx *godog.ScenarioContext, world *World) {
 		return nil
 	})
 
-	ctx.Step(`^(\d+) BLS public keys$`, func(count int) error {
-		world.TestVectors["blsKeyCount"] = count
-		return nil
-	})
-
-	ctx.Step(`^(\d+) BLS signatures for the same message$`, func(count int) error {
-		world.TestVectors["blsSignatureCount"] = count
-		return nil
-	})
-
 	ctx.Step(`^(\d+) bytes \(wrong length\)$`, func(count int) error {
 		world.Bytes = make([]byte, count)
 		world.TestVectors["wrongLength"] = true
-		return nil
-	})
-
-	ctx.Step(`^I aggregate all keys$`, func() error {
-		world.TestVectors["keysAggregated"] = true
-		return nil
-	})
-
-	ctx.Step(`^I aggregate all signatures$`, func() error {
-		world.TestVectors["signaturesAggregated"] = true
-		return nil
-	})
-
-	ctx.Step(`^I aggregate in different orders$`, func() error {
-		world.TestVectors["aggregatedDifferentOrder"] = true
-		return nil
-	})
-
-	ctx.Step(`^I aggregate signatures and public keys$`, func() error {
-		world.TestVectors["keysAndSignaturesAggregated"] = true
 		return nil
 	})
 
@@ -111,16 +80,6 @@ func initMiscSteps(ctx *godog.ScenarioContext, world *World) {
 		world.Account = account
 		world.TestVectors["accountType"] = "MultiEd25519"
 		return nil
-	})
-
-	ctx.Step(`^I create a BLS12-381 account$`, func() error {
-		// TODO: awaiting SDK implementation - BLS12-381 not supported in Go SDK
-		return godog.ErrPending
-	})
-
-	ctx.Step(`^I create a BLS12-381 key pair from the seed$`, func() error {
-		// TODO: awaiting SDK implementation - BLS12-381 not supported in Go SDK
-		return godog.ErrPending
 	})
 
 	ctx.Step(`^I create a Secp256r1 account$`, func() error {
@@ -361,32 +320,6 @@ func initMiscSteps(ctx *godog.ScenarioContext, world *World) {
 	// Additional Given Steps
 	// =============================================================================
 
-	ctx.Step(`^a BLS12-381 account$`, func() error {
-		world.TestVectors["accountType"] = "BLS12-381"
-		return nil
-	})
-
-	ctx.Step(`^a BLS12-381 key pair$`, func() error {
-		world.TestVectors["keyType"] = "BLS12-381"
-		return nil
-	})
-
-	ctx.Step(`^a BLS public key and its PoP$`, func() error {
-		world.TestVectors["blsWithPoP"] = true
-		return nil
-	})
-
-	ctx.Step(`^a BLS12-381 signature$`, func() error {
-		world.TestVectors["blsSignature"] = true
-		return nil
-	})
-
-	ctx.Step(`^a BLS signature for "([^"]*)"$`, func(msg string) error {
-		world.Message = []byte(msg)
-		world.TestVectors["blsSignature"] = true
-		return nil
-	})
-
 	ctx.Step(`^a compiled generic script$`, func() error {
 		world.TestVectors["compiledGenericScript"] = true
 		return nil
@@ -434,11 +367,6 @@ func initMiscSteps(ctx *godog.ScenarioContext, world *World) {
 
 	ctx.Step(`^a GraphQL query with variables$`, func() error {
 		world.TestVectors["graphqlQueryWithVars"] = true
-		return nil
-	})
-
-	ctx.Step(`^a hex-encoded BLS12-381 private key$`, func() error {
-		world.TestVectors["hexBLSKey"] = true
 		return nil
 	})
 

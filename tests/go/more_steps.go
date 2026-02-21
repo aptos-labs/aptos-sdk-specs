@@ -306,11 +306,6 @@ func initMoreSteps(ctx *godog.ScenarioContext, world *World) {
 		return godog.ErrPending
 	})
 
-	ctx.Step(`^I should get a (\d+)-byte BLS public key$`, func(size int) error {
-		// TODO: awaiting SDK implementation - BLS
-		return godog.ErrPending
-	})
-
 	ctx.Step(`^I should get a (\d+)-byte Ed(\d+) public key$`, func(size, keyType int) error {
 		if world.Ed25519PublicKey == nil {
 			return fmt.Errorf("no Ed25519 public key")
@@ -475,26 +470,11 @@ func initMoreSteps(ctx *godog.ScenarioContext, world *World) {
 		return nil
 	})
 
-	ctx.Step(`^I should get a valid BLS signature$`, func() error {
-		// TODO: awaiting SDK implementation - BLS
-		return godog.ErrPending
-	})
-
 	ctx.Step(`^I should get a valid Secp(\d+)k(\d+) signature$`, func(a, b int) error {
 		if world.Secp256k1Signature == nil {
 			return fmt.Errorf("no Secp256k1 signature")
 		}
 		return nil
-	})
-
-	ctx.Step(`^I should get a valid aggregated BLS signature$`, func() error {
-		// TODO: awaiting SDK implementation - BLS
-		return godog.ErrPending
-	})
-
-	ctx.Step(`^I should get a valid aggregated public key$`, func() error {
-		// TODO: awaiting SDK implementation - BLS
-		return godog.ErrPending
 	})
 
 	ctx.Step(`^I should get a valid combined MultiEd(\d+) public key$`, func(keyType int) error {

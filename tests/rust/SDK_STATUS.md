@@ -40,26 +40,25 @@
 
 ### Expected Features (Based on SDK Capabilities)
 
-| Feature            | Expected Status | Notes                            |
-| ------------------ | --------------- | -------------------------------- |
-| address            | ✅ Available    | Full address support (AIP-40)    |
-| serialization      | ✅ Available    | BCS serialization via aptos-bcs  |
-| type-tags          | ✅ Available    | TypeTag parsing                  |
-| ed25519            | ✅ Available    | Ed25519 signatures               |
-| secp256k1          | ✅ Available    | Secp256k1 ECDSA                  |
-| secp256r1          | ✅ Available    | Secp256r1 (P-256) ECDSA          |
-| bls12381           | ✅ Available    | BLS12-381 (behind `bls` feature) |
-| hashing            | ✅ Available    | SHA3-256 and SHA2-256            |
-| authentication-key | ✅ Available    | Auth key derivation              |
-| mnemonic           | ✅ Available    | BIP-39 mnemonic support          |
-| entry-function     | ✅ Available    | Entry function building          |
-| raw-transaction    | ✅ Available    | Transaction building             |
-| signing            | ✅ Available    | Transaction signing              |
-| multi-agent        | ✅ Available    | Multi-agent transactions         |
-| fee-payer          | ✅ Available    | Sponsored transactions           |
-| multi-signature    | ✅ Available    | Multi-Ed25519 and MultiKey       |
-| keyless            | ✅ Available    | OIDC-based keyless accounts      |
-| codegen            | ✅ Available    | Code generation from Move ABIs   |
+| Feature            | Expected Status | Notes                           |
+| ------------------ | --------------- | ------------------------------- |
+| address            | ✅ Available    | Full address support (AIP-40)   |
+| serialization      | ✅ Available    | BCS serialization via aptos-bcs |
+| type-tags          | ✅ Available    | TypeTag parsing                 |
+| ed25519            | ✅ Available    | Ed25519 signatures              |
+| secp256k1          | ✅ Available    | Secp256k1 ECDSA                 |
+| secp256r1          | ✅ Available    | Secp256r1 (P-256) ECDSA         |
+| hashing            | ✅ Available    | SHA3-256 and SHA2-256           |
+| authentication-key | ✅ Available    | Auth key derivation             |
+| mnemonic           | ✅ Available    | BIP-39 mnemonic support         |
+| entry-function     | ✅ Available    | Entry function building         |
+| raw-transaction    | ✅ Available    | Transaction building            |
+| signing            | ✅ Available    | Transaction signing             |
+| multi-agent        | ✅ Available    | Multi-agent transactions        |
+| fee-payer          | ✅ Available    | Sponsored transactions          |
+| multi-signature    | ✅ Available    | Multi-Ed25519 and MultiKey      |
+| keyless            | ✅ Available    | OIDC-based keyless accounts     |
+| codegen            | ✅ Available    | Code generation from Move ABIs  |
 
 ### Feature Flags
 
@@ -73,7 +72,6 @@ The SDK uses feature flags. The `full` feature enables all:
 | `mnemonic`  | Yes     | BIP-39 mnemonic support |
 | `indexer`   | Yes     | GraphQL indexer client  |
 | `faucet`    | Yes     | Faucet integration      |
-| `bls`       | No      | BLS12-381 signatures    |
 | `keyless`   | No      | OIDC-based keyless auth |
 | `full`      | No      | All features combined   |
 
@@ -207,7 +205,6 @@ All 12 failures are performance benchmark scenarios that require live devnet con
 | ed25519            | ✅     | Ed25519 cryptography working |
 | secp256k1          | ✅     | Secp256k1 ECDSA working      |
 | secp256r1          | ✅     | Secp256r1/P-256 working      |
-| bls12381           | ✅     | BLS12-381 working            |
 | hashing            | ✅     | SHA3-256 support             |
 | authentication-key | ✅     | Auth key derivation          |
 | mnemonic           | ✅     | BIP-39 derivation            |

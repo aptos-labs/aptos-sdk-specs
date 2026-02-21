@@ -182,18 +182,7 @@ func initClientSteps(ctx *godog.ScenarioContext, world *World) {
 	})
 
 	// =============================================================================
-	// BLS Steps - All Pending
 	// =============================================================================
-
-	ctx.Step(`^an aggregated signature from N signers$`, func() error {
-		// TODO: awaiting SDK implementation - BLS
-		return godog.ErrPending
-	})
-
-	ctx.Step(`^an invalid BLS private key \(e\.g\., zero\)$`, func() error {
-		// TODO: awaiting SDK implementation - BLS
-		return godog.ErrPending
-	})
 
 	// =============================================================================
 	// ABI Steps - All Pending

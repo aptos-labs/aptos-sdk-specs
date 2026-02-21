@@ -293,11 +293,6 @@ fn when_sign_message(world: &mut TestWorld) {
     {
         let signature = private_key.sign(message);
         world.secp256r1_signature = Some(signature);
-    } else if let (Some(private_key), Some(message)) =
-        (world.bls_private_key.as_ref(), world.message.as_ref())
-    {
-        let signature = private_key.sign(message);
-        world.bls_signature = Some(signature);
     }
 }
 
@@ -308,11 +303,6 @@ fn when_sign_message_twice(world: &mut TestWorld) {
     {
         world.ed25519_signature = Some(private_key.sign(message));
         world.ed25519_signature2 = Some(private_key.sign(message));
-    } else if let (Some(private_key), Some(message)) =
-        (world.bls_private_key.as_ref(), world.message.as_ref())
-    {
-        world.bls_signature = Some(private_key.sign(message));
-        world.bls_signature2 = Some(private_key.sign(message));
     } else if let (Some(account), Some(message)) =
         (world.ed25519_account.as_ref(), world.message.as_ref())
     {
@@ -339,13 +329,6 @@ fn when_sign_both_messages(world: &mut TestWorld) {
         if let Some(msg2) = world.message2.as_ref() {
             world.ed25519_signature2 = Some(private_key.sign(msg2));
         }
-    } else if let Some(private_key) = world.bls_private_key.as_ref() {
-        if let Some(msg1) = world.message.as_ref() {
-            world.bls_signature = Some(private_key.sign(msg1));
-        }
-        if let Some(msg2) = world.message2.as_ref() {
-            world.bls_signature2 = Some(private_key.sign(msg2));
-        }
     }
 }
 
@@ -357,12 +340,6 @@ fn when_both_keys_sign(world: &mut TestWorld) {
         }
         if let Some(pk2) = world.ed25519_private_key2.as_ref() {
             world.ed25519_signature2 = Some(pk2.sign(message));
-        }
-        if let Some(pk1) = world.bls_private_key.as_ref() {
-            world.bls_signature = Some(pk1.sign(message));
-        }
-        if let Some(pk2) = world.bls_private_key2.as_ref() {
-            world.bls_signature2 = Some(pk2.sign(message));
         }
     }
 }
@@ -398,13 +375,6 @@ fn when_verify_signature(world: &mut TestWorld) {
             Ok(()) => world.bool_result = Some(true),
             Err(_) => world.bool_result = Some(false),
         }
-    } else if let (Some(public_key), Some(signature)) =
-        (world.bls_public_key.as_ref(), world.bls_signature.as_ref())
-    {
-        match public_key.verify(message, signature) {
-            Ok(()) => world.bool_result = Some(true),
-            Err(_) => world.bool_result = Some(false),
-        }
     }
 }
 
@@ -435,13 +405,6 @@ fn when_verify_with_second_key(world: &mut TestWorld) {
         world.secp256r1_public_key2.as_ref(),
         world.secp256r1_signature.as_ref(),
     ) {
-        match public_key2.verify(message, signature) {
-            Ok(()) => world.bool_result = Some(true),
-            Err(_) => world.bool_result = Some(false),
-        }
-    } else if let (Some(public_key2), Some(signature)) =
-        (world.bls_public_key2.as_ref(), world.bls_signature.as_ref())
-    {
         match public_key2.verify(message, signature) {
             Ok(()) => world.bool_result = Some(true),
             Err(_) => world.bool_result = Some(false),
@@ -566,8 +529,6 @@ fn then_private_key_length(world: &mut TestWorld, length: usize) {
 fn then_public_key_length(world: &mut TestWorld, length: usize) {
     if let Some(public_key) = world.ed25519_public_key.as_ref() {
         assert_eq!(public_key.to_bytes().len(), length);
-    } else if let Some(public_key) = world.bls_public_key.as_ref() {
-        assert_eq!(public_key.to_bytes().len(), length);
     }
 }
 
@@ -578,9 +539,8 @@ fn then_key_pair_valid(world: &mut TestWorld) {
         world.secp256k1_private_key.is_some() && world.secp256k1_public_key.is_some();
     let has_secp256r1 =
         world.secp256r1_private_key.is_some() && world.secp256r1_public_key.is_some();
-    let has_bls = world.bls_private_key.is_some() && world.bls_public_key.is_some();
     assert!(
-        has_ed25519 || has_secp256k1 || has_secp256r1 || has_bls,
+        has_ed25519 || has_secp256k1 || has_secp256r1,
         "No valid key pair found"
     );
 }
@@ -638,8 +598,6 @@ fn then_signature_length(world: &mut TestWorld, length: usize) {
         assert_eq!(signature.to_bytes().len(), length);
     } else if let Some(signature) = world.secp256r1_signature.as_ref() {
         assert_eq!(signature.to_bytes().len(), length);
-    } else if let Some(signature) = world.bls_signature.as_ref() {
-        assert_eq!(signature.to_bytes().len(), length);
     } else if let Some(sig_bytes) = world.bytes.as_ref() {
         assert_eq!(
             sig_bytes.len(),
@@ -658,19 +616,13 @@ fn then_signature_valid_for_message(world: &mut TestWorld) {
         world.ed25519_signature.as_ref(),
     ) {
         assert!(public_key.verify(message, signature).is_ok());
-    } else if let (Some(public_key), Some(message), Some(signature)) = (
-        world.bls_public_key.as_ref(),
-        world.message.as_ref(),
-        world.bls_signature.as_ref(),
-    ) {
-        assert!(public_key.verify(message, signature).is_ok());
     }
 }
 
 #[then("the signature should be valid")]
 fn then_signature_valid(world: &mut TestWorld) {
     // Try dedicated signature types first
-    if world.ed25519_signature.is_some() || world.bls_signature.is_some() {
+    if world.ed25519_signature.is_some() {
         then_signature_valid_for_message(world);
         return;
     }
@@ -691,10 +643,6 @@ fn then_signatures_identical(world: &mut TestWorld) {
     ) {
         assert_eq!(sig1.to_bytes(), sig2.to_bytes());
     } else if let (Some(sig1), Some(sig2)) =
-        (world.bls_signature.as_ref(), world.bls_signature2.as_ref())
-    {
-        assert_eq!(sig1.to_bytes(), sig2.to_bytes());
-    } else if let (Some(sig1), Some(sig2)) =
         (world.bytes.as_ref(), world.serialized_bytes2.as_ref())
     {
         assert_eq!(sig1, sig2, "Signatures should be identical");
@@ -707,10 +655,6 @@ fn then_signatures_different(world: &mut TestWorld) {
         world.ed25519_signature.as_ref(),
         world.ed25519_signature2.as_ref(),
     ) {
-        assert_ne!(sig1.to_bytes(), sig2.to_bytes());
-    } else if let (Some(sig1), Some(sig2)) =
-        (world.bls_signature.as_ref(), world.bls_signature2.as_ref())
-    {
         assert_ne!(sig1.to_bytes(), sig2.to_bytes());
     } else if let (Some(sig1), Some(sig2)) =
         (world.bytes.as_ref(), world.serialized_bytes2.as_ref())

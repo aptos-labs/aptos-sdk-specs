@@ -243,11 +243,6 @@ func initSimulationSteps(ctx *godog.ScenarioContext, world *World) {
 		return nil
 	})
 
-	ctx.Step(`^rogue key attacks are prevented$`, func() error {
-		// TODO: awaiting SDK implementation - BLS
-		return godog.ErrPending
-	})
-
 	ctx.Step(`^save API calls$`, func() error {
 		// Documentation assertion
 		return nil

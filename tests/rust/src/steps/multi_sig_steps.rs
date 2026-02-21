@@ -406,8 +406,7 @@ fn when_party_signs(world: &mut TestWorld, party: usize) {
     }
 }
 
-// Note: "I aggregate the signatures" step now handled by bls_steps.rs with context-aware logic
-// This step is specific to multi-Ed25519 signature contributions
+// This step is specific to multi-Ed25519 signature contributions.
 #[when("I aggregate the multi-sig contributions")]
 fn when_aggregate_multi_sig_contributions(world: &mut TestWorld) {
     match MultiEd25519Signature::new(world.signature_contributions.clone()) {

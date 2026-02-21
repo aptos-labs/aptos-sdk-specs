@@ -251,11 +251,6 @@ func initSetupSteps(ctx *godog.ScenarioContext, world *World) {
 		return godog.ErrPending
 	})
 
-	ctx.Step(`^aggregated public keys with valid PoPs$`, func() error {
-		// TODO: awaiting SDK implementation - BLS
-		return godog.ErrPending
-	})
-
 	ctx.Step(`^an ABI with entry functions$`, func() error {
 		// TODO: awaiting SDK implementation - ABI
 		return godog.ErrPending
