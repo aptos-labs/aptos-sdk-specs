@@ -1,0 +1,13 @@
+{
+  "name": "aptos-batch-transfer-example",
+  "version": "1.0.0",
+  "description": "Batch APT transfer example demonstrating parallel transaction submission",
+  "type": "module",
+  "scripts": {
+    "start": "bun src/main.ts",
+    "start:testnet": "bun src/main.ts --network testnet"
+  },
+  "dependencies": {
+    "@aptos-labs/ts-sdk": "^5.2.0"
+  }
+}
