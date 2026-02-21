@@ -9,13 +9,7 @@ import (
 // initTheSteps registers "the" prefix step definitions.
 func initTheSteps(ctx *godog.ScenarioContext, world *World) {
 	// =============================================================================
-	// "The PoP" Steps - BLS Pending
 	// =============================================================================
-
-	ctx.Step(`^the PoP should be (\d+) bytes$`, func(size int) error {
-		// TODO: awaiting SDK implementation - BLS
-		return godog.ErrPending
-	})
 
 	// =============================================================================
 	// "The SDK" Steps
@@ -193,18 +187,7 @@ func initTheSteps(ctx *godog.ScenarioContext, world *World) {
 	})
 
 	// =============================================================================
-	// "The aggregated" Steps - BLS Pending
 	// =============================================================================
-
-	ctx.Step(`^the aggregated public key$`, func() error {
-		// TODO: awaiting SDK implementation - BLS
-		return godog.ErrPending
-	})
-
-	ctx.Step(`^the aggregated signatures should be the same$`, func() error {
-		// TODO: awaiting SDK implementation - BLS
-		return godog.ErrPending
-	})
 
 	// =============================================================================
 	// "The authenticator" Steps
@@ -232,11 +215,6 @@ func initTheSteps(ctx *godog.ScenarioContext, world *World) {
 
 	ctx.Step(`^the authenticator should be MultiEd25519 variant$`, func() error {
 		// TODO: implement authenticator variant check
-		return godog.ErrPending
-	})
-
-	ctx.Step(`^the authenticator should use BLS$`, func() error {
-		// TODO: awaiting SDK implementation - BLS
 		return godog.ErrPending
 	})
 

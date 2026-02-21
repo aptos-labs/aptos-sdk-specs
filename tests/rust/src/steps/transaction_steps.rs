@@ -430,12 +430,6 @@ fn when_sign_transaction(world: &mut TestWorld) {
     // Check for various account types
     if world.ed25519_account.is_some() || world.secp256k1_account.is_some() {
         when_sign_with_account(world);
-    } else if world.bls_private_key.is_some() {
-        // BLS signing is not yet fully supported for transactions
-        // Just mark that we have a "signed" transaction for test purposes
-        world
-            .named_values
-            .insert("bls_signed".to_string(), "true".to_string());
     }
 }
 
@@ -462,12 +456,11 @@ fn when_both_accounts_sign(world: &mut TestWorld) {
 
 #[then(expr = "I should get a SignedTransaction")]
 fn then_get_signed_transaction(world: &mut TestWorld) {
-    // Check for either a real signed transaction or a BLS "signed" marker or keyless
+    // Check for either a real signed transaction or a keyless marker.
     let has_signed_tx = world.signed_transaction.is_some();
-    let has_bls_signed = world.named_values.get("bls_signed") == Some(&"true".to_string());
     let has_keyless_signed = world.named_values.get("tx_signed") == Some(&"true".to_string());
     assert!(
-        has_signed_tx || has_bls_signed || has_keyless_signed,
+        has_signed_tx || has_keyless_signed,
         "Expected a SignedTransaction"
     );
 }

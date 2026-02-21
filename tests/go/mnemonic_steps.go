@@ -159,11 +159,6 @@ func initMnemonicSteps(ctx *godog.ScenarioContext, world *World) {
 		return godog.ErrPending
 	})
 
-	ctx.Step(`^I derive a BLS key pair$`, func() error {
-		// TODO: awaiting SDK implementation - BLS + HD derivation
-		return godog.ErrPending
-	})
-
 	ctx.Step(`^I derive the Secp256r1 authentication key$`, func() error {
 		// TODO: awaiting SDK implementation - Secp256r1 + HD derivation
 		return godog.ErrPending

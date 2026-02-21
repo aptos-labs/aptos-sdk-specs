@@ -78,18 +78,7 @@ func initGivenSteps(ctx *godog.ScenarioContext, world *World) {
 	})
 
 	// =============================================================================
-	// BLS Steps - All Pending
 	// =============================================================================
-
-	ctx.Step(`^a known BLS key pair and message from test vectors$`, func() error {
-		// TODO: awaiting SDK implementation - BLS12-381
-		return godog.ErrPending
-	})
-
-	ctx.Step(`^a PoP from a different key$`, func() error {
-		// TODO: awaiting SDK implementation - BLS12-381
-		return godog.ErrPending
-	})
 
 	// =============================================================================
 	// Script Steps

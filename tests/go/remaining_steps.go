@@ -139,11 +139,6 @@ func initRemainingSteps(ctx *godog.ScenarioContext, world *World) {
 		return godog.ErrPending
 	})
 
-	ctx.Step(`^it should use the BLS scheme identifier$`, func() error {
-		// TODO: awaiting SDK implementation - BLS
-		return godog.ErrPending
-	})
-
 	// =============================================================================
 	// Simulation/State Steps
 	// =============================================================================

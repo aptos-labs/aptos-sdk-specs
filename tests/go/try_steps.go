@@ -57,13 +57,7 @@ func initTrySteps(ctx *godog.ScenarioContext, world *World) {
 	})
 
 	// =============================================================================
-	// BLS Try Steps - All Pending
 	// =============================================================================
-
-	ctx.Step(`^I try to parse as BLS signature$`, func() error {
-		// TODO: awaiting SDK implementation - BLS12-381
-		return godog.ErrPending
-	})
 
 	// =============================================================================
 	// Verify Steps
@@ -74,23 +68,8 @@ func initTrySteps(ctx *godog.ScenarioContext, world *World) {
 		return nil
 	})
 
-	ctx.Step(`^I verify each PoP before aggregation$`, func() error {
-		// TODO: awaiting SDK implementation - BLS12-381
-		return godog.ErrPending
-	})
-
-	ctx.Step(`^I verify the PoP$`, func() error {
-		// TODO: awaiting SDK implementation - BLS12-381
-		return godog.ErrPending
-	})
-
 	ctx.Step(`^I verify the Secp256r1 signature$`, func() error {
 		// TODO: awaiting SDK implementation - Secp256r1
-		return godog.ErrPending
-	})
-
-	ctx.Step(`^I verify the aggregated signature$`, func() error {
-		// TODO: awaiting SDK implementation - BLS12-381
 		return godog.ErrPending
 	})
 

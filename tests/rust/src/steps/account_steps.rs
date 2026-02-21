@@ -641,13 +641,6 @@ fn then_account_has_valid_address(world: &mut TestWorld) {
         assert!(!account.address().is_zero(), "Address should not be zero");
     } else if let Some(ref account) = world.secp256k1_account {
         assert!(!account.address().is_zero(), "Address should not be zero");
-    } else if world.bls_public_key.is_some() {
-        // BLS accounts derive address from public key
-        // Just verify we have a public key
-        assert!(
-            world.bls_public_key.is_some(),
-            "BLS public key should exist"
-        );
     } else {
         panic!("No account available");
     }

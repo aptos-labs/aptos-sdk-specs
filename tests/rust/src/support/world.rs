@@ -5,7 +5,6 @@ use aptos_sdk::account::{
 };
 use aptos_sdk::api::{FaucetClient, FullnodeClient};
 use aptos_sdk::crypto::{
-    Bls12381PrivateKey, Bls12381ProofOfPossession, Bls12381PublicKey, Bls12381Signature,
     Ed25519PrivateKey, Ed25519PublicKey, Ed25519Signature, MultiEd25519PublicKey,
     MultiEd25519Signature, Secp256k1PrivateKey, Secp256k1PublicKey, Secp256k1Signature,
     Secp256r1PrivateKey, Secp256r1PublicKey, Secp256r1Signature,
@@ -189,36 +188,6 @@ pub struct TestWorld {
     pub secp256r1_signature: Option<Secp256r1Signature>,
     /// Second Secp256r1 signature.
     pub secp256r1_signature2: Option<Secp256r1Signature>,
-
-    // ==========================================================================
-    // BLS12-381 State
-    // ==========================================================================
-    /// BLS12-381 private key.
-    #[world(skip)]
-    pub bls_private_key: Option<Bls12381PrivateKey>,
-    /// BLS12-381 public key.
-    pub bls_public_key: Option<Bls12381PublicKey>,
-    /// Second BLS12-381 private key.
-    #[world(skip)]
-    pub bls_private_key2: Option<Bls12381PrivateKey>,
-    /// Second BLS12-381 public key.
-    pub bls_public_key2: Option<Bls12381PublicKey>,
-    /// BLS12-381 signature.
-    pub bls_signature: Option<Bls12381Signature>,
-    /// Second BLS12-381 signature.
-    pub bls_signature2: Option<Bls12381Signature>,
-    /// BLS12-381 proof of possession.
-    pub bls_pop: Option<Bls12381ProofOfPossession>,
-    /// Aggregated BLS12-381 signature.
-    pub bls_aggregated_signature: Option<Bls12381Signature>,
-    /// Aggregated BLS12-381 public key.
-    pub bls_aggregated_public_key: Option<Bls12381PublicKey>,
-    /// Multiple BLS signatures for aggregation.
-    pub bls_signatures: Vec<Bls12381Signature>,
-    /// Multiple BLS public keys for aggregation.
-    pub bls_public_keys: Vec<Bls12381PublicKey>,
-    /// Multiple BLS proofs of possession.
-    pub bls_pops: Vec<Bls12381ProofOfPossession>,
 
     /// Private key bytes (for creating keys from bytes).
     pub private_key_bytes: Option<Vec<u8>>,
