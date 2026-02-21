@@ -16,17 +16,17 @@ These specifications are intended for:
 
 ## Specification Documents
 
-| Document                                           | Description                                       |
-| -------------------------------------------------- | ------------------------------------------------- |
-| [00-conventions.md](00-conventions.md)             | Conventions, keywords, and compliance levels      |
-| [01-core-types.md](01-core-types.md)               | AccountAddress, ChainId, TypeTag, StructTag       |
-| [02-bcs-serialization.md](02-bcs-serialization.md) | Binary Canonical Serialization format             |
-| [03-cryptography.md](03-cryptography.md)           | Ed25519, Secp256k1, Secp256r1, hashing             |
-| [04-accounts.md](04-accounts.md)                   | Account types, authentication, key derivation     |
-| [05-transactions.md](05-transactions.md)           | RawTransaction, payloads, signing                 |
-| [06-api-clients.md](06-api-clients.md)             | REST API, Faucet, Indexer clients                 |
-| [07-advanced-features.md](07-advanced-features.md) | Multi-sig, multi-agent, fee payer, keyless        |
-| [08-error-handling.md](08-error-handling.md)       | Error categories, codes, and handling             |
+| Document                                           | Description                                   |
+| -------------------------------------------------- | --------------------------------------------- |
+| [00-conventions.md](00-conventions.md)             | Conventions, keywords, and compliance levels  |
+| [01-core-types.md](01-core-types.md)               | AccountAddress, ChainId, TypeTag, StructTag   |
+| [02-bcs-serialization.md](02-bcs-serialization.md) | Binary Canonical Serialization format         |
+| [03-cryptography.md](03-cryptography.md)           | Ed25519, Secp256k1, Secp256r1, hashing        |
+| [04-accounts.md](04-accounts.md)                   | Account types, authentication, key derivation |
+| [05-transactions.md](05-transactions.md)           | RawTransaction, payloads, signing             |
+| [06-api-clients.md](06-api-clients.md)             | REST API, Faucet, Indexer clients             |
+| [07-advanced-features.md](07-advanced-features.md) | Multi-sig, multi-agent, fee payer, keyless    |
+| [08-error-handling.md](08-error-handling.md)       | Error categories, codes, and handling         |
 
 ## Compliance Levels
 
