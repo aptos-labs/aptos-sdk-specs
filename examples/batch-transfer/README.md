@@ -14,7 +14,7 @@ This example showcases:
 
 ## The Core Pattern: Sequence Number Management
 
-The naive approach to batch transactions fetches the account's sequence number *per transaction*:
+The naive approach to batch transactions fetches the account's sequence number _per transaction_:
 
 ```
 for each tx:
@@ -37,10 +37,10 @@ This reduces N round-trips to 1 and enables true parallel submission.
 
 ## Implementations
 
-| Language | Directory | Command |
-| -------- | --------- | ------- |
+| Language   | Directory                    | Command           |
+| ---------- | ---------------------------- | ----------------- |
 | TypeScript | [typescript/](./typescript/) | `bun src/main.ts` |
-| Go | [go/](./go/) | `go run main.go` |
+| Go         | [go/](./go/)                 | `go run main.go`  |
 
 ## Expected Output
 
