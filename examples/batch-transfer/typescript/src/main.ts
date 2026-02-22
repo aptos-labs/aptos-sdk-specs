@@ -8,7 +8,7 @@
  *   - Exponential backoff retry on confirmation
  *
  * Usage:
- *   bun src/main.ts [--count N] [--network devnet|testnet|mainnet]
+ *   bun src/main.ts [--count N] [--network devnet|testnet]
  */
 
 import {
@@ -43,20 +43,24 @@ function parseArgs(): { count: number; network: string } {
     }
     if (args[i] === "--network" && i + 1 < args.length) {
       network = args[i + 1];
+      if (network === "mainnet") {
+        console.error(
+          "Error: mainnet is not supported by this example because it funds a new account via faucet.",
+        );
+        console.error("To use mainnet, extend this example to accept a pre-funded sender key.");
+        process.exit(1);
+      }
+      if (!["devnet", "testnet"].includes(network)) {
+        console.error(`Error: unknown network "${network}". Allowed values: devnet, testnet`);
+        process.exit(1);
+      }
     }
   }
   return { count, network };
 }
 
 function toNetworkEnum(name: string): Network {
-  switch (name.toLowerCase()) {
-    case "testnet":
-      return Network.TESTNET;
-    case "mainnet":
-      return Network.MAINNET;
-    default:
-      return Network.DEVNET;
-  }
+  return name === "testnet" ? Network.TESTNET : Network.DEVNET;
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -235,7 +239,7 @@ async function main() {
   console.log(`[4/4] Verify & Report`);
 
   const finalBalance = await getBalanceOctas(aptos, sender.accountAddress);
-  const totalSpent = initialBalance - finalBalance;
+  const totalSpent = Math.max(0, initialBalance - finalBalance);
   const avgCostPerTx = confirmed > 0 ? Math.round(totalSpent / confirmed) : 0;
 
   console.log(`  ✓ Final balance: ${finalBalance.toLocaleString()} octas`);

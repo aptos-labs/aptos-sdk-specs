@@ -96,8 +96,13 @@ Transactions: 10
 
 ```
 --count N       Number of transactions to send (default: 10)
---network NAME  Network: devnet, testnet, or mainnet (default: devnet)
+--network NAME  Network: devnet or testnet (default: devnet)
 ```
+
+> **Note:** `mainnet` is intentionally unsupported. This example generates a fresh sender account
+> and funds it via the devnet/testnet faucet, which does not exist on mainnet. To extend this
+> example for mainnet, accept a pre-funded sender private key via an environment variable and skip
+> the faucet step.
 
 ## Extending This Example
 
