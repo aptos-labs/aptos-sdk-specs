@@ -2,15 +2,15 @@
 
 > **Updated:** 2026-01-22
 >
-> **Current Status:** 578/739 scenarios (~78%)
+> **Current Status:** 578/704 scenarios (~82%)
 >
 > - Required (P0): ~300/306 (98%)
 > - Preferred (P1): ~168/183 (92%)
-> - Optional (P2): ~110/250 (44%)
+> - Optional (P2): ~110/215 (51%)
 
 ## Summary of Missing Scenarios
 
-Total undefined scenarios: 161 (down from 163)
+Total undefined scenarios: ~126 (down from 163)
 
 ### By Priority Level (After Updates)
 
