@@ -2,6 +2,10 @@
 
 > **Date:** 2026-02-06 **Author:** Automated Audit **Scope:** Aptos API behavioral specs vs. Aptos
 > TS SDK, Rust SDK, Go SDK, and aptos-core protocol
+>
+> **Historical note:** This report predates the BLS specification removal. Any BLS references in
+> this document reflect the repository state at audit time and are not current behavioral
+> requirements.
 
 ---
 

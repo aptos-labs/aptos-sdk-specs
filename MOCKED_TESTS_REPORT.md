@@ -2,6 +2,9 @@
 
 > Generated: 2026-01-31 Scope: All SDK test implementations (TypeScript, Go, Rust, Python, .NET,
 > Kotlin)
+>
+> **Historical note:** This inventory predates the BLS specification removal. BLS mentions here
+> describe legacy mocked/placeholder coverage and are kept for historical audit context.
 
 ## Executive Summary
 

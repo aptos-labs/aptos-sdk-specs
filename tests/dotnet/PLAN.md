@@ -51,7 +51,7 @@ tests/dotnet/
 │   ├── FaucetSteps.cs           # Faucet integration (mocked)
 │   ├── IndexerSteps.cs          # GraphQL indexer client
 │   ├── KeylessSteps.cs          # Keyless/OIDC (NOT SUPPORTED)
-│   └── BLSSteps.cs              # BLS12-381 & codegen (NOT SUPPORTED)
+│   └── CodegenSteps.cs          # ABI code generation (NOT SUPPORTED)
 ├── Support/
 │   ├── TestWorld.cs             # Scenario context/state
 │   ├── Vectors.cs               # Test vector loading utilities
@@ -130,7 +130,6 @@ The following features are **not currently supported** by the Aptos .NET SDK and
 `NotImplementedException`:
 
 - **Keyless Accounts (OIDC)** - `KeylessSteps.cs` - Ephemeral keys, JWT/OIDC flow, ZK proofs
-- **BLS12-381 Cryptography** - `BLSSteps.cs` - BLS key pairs, signatures, PoP
 - **Code Generation** - ABI parsing, Move struct codegen (external tooling)
 
 ### Remaining Work

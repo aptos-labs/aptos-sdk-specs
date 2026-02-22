@@ -63,7 +63,6 @@
 | ------------------- | ------------------- | -------------- |
 | secp256k1           | Not yet implemented | -              |
 | secp256r1           | Not yet implemented | -              |
-| bls12381            | Not yet implemented | -              |
 | mnemonic-derivation | Not yet implemented | -              |
 | keyless             | Not yet implemented | -              |
 | codegen             | Not yet implemented | -              |
