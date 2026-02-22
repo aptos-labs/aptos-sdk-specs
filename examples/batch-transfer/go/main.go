@@ -8,7 +8,7 @@
 //
 // Usage:
 //
-//	go run main.go [--count N] [--network devnet|testnet|mainnet]
+//	go run main.go [--count N] [--network devnet|testnet]
 package main
 
 import (
@@ -65,14 +65,10 @@ type econStats struct {
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
 func networkConfig(name string) aptos.NetworkConfig {
-	switch name {
-	case "testnet":
+	if name == "testnet" {
 		return aptos.TestnetConfig
-	case "mainnet":
-		return aptos.MainnetConfig
-	default:
-		return aptos.DevnetConfig
 	}
+	return aptos.DevnetConfig
 }
 
 // submitWithRetry submits a signed transaction, retrying with exponential
@@ -125,8 +121,22 @@ func waitWithRetry(
 
 func main() {
 	count := flag.Int("count", 10, "Number of transactions to send")
-	networkName := flag.String("network", "devnet", "Network: devnet, testnet, or mainnet")
+	networkName := flag.String("network", "devnet", "Network: devnet or testnet")
 	flag.Parse()
+
+	if *count < 1 {
+		fmt.Fprintf(os.Stderr, "Invalid value for --count: %d (must be >= 1)\n", *count)
+		os.Exit(1)
+	}
+	if *networkName == "mainnet" {
+		fmt.Fprintln(os.Stderr, "Error: mainnet is not supported by this example because it funds a new account via faucet.")
+		fmt.Fprintln(os.Stderr, "To use mainnet, extend this example to accept a pre-funded sender key.")
+		os.Exit(1)
+	}
+	if *networkName != "devnet" && *networkName != "testnet" {
+		fmt.Fprintf(os.Stderr, "Error: unknown network %q. Allowed values: devnet, testnet\n", *networkName)
+		os.Exit(1)
+	}
 
 	client, err := aptos.NewClient(networkConfig(*networkName))
 	if err != nil {
@@ -359,6 +369,10 @@ func main() {
 		},
 	}
 
-	jsonBytes, _ := json.MarshalIndent(summary, "", "  ")
+	jsonBytes, err := json.MarshalIndent(summary, "", "  ")
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Failed to marshal summary to JSON: %v\n", err)
+		os.Exit(1)
+	}
 	fmt.Printf("\n=== Summary ===\n%s\n", jsonBytes)
 }
