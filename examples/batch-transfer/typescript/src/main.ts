@@ -40,8 +40,8 @@ function parseArgs(): { count: number; network: string } {
         console.error("--count must be a positive integer");
         process.exit(1);
       }
-    }
-    if (args[i] === "--network" && i + 1 < args.length) {
+      i++; // consume the value token
+    } else if (args[i] === "--network" && i + 1 < args.length) {
       network = args[i + 1];
       if (network === "mainnet") {
         console.error(
@@ -54,6 +54,7 @@ function parseArgs(): { count: number; network: string } {
         console.error(`Error: unknown network "${network}". Allowed values: devnet, testnet`);
         process.exit(1);
       }
+      i++; // consume the value token
     }
   }
   return { count, network };
