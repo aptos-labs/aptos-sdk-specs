@@ -172,7 +172,6 @@ signature verification
 **Feature Files:**
 
 - `features/02-cryptography/secp256r1.feature` (26 scenarios)
-- `features/02-cryptography/bls12381.feature` (35 scenarios)
 - `features/04-transaction-building/script.feature` (25 scenarios)
 - `features/05-api-clients/indexer.feature` (31 scenarios)
 - `features/06-advanced/error-handling.feature` (30 scenarios)

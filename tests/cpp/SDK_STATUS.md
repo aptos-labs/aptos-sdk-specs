@@ -61,7 +61,6 @@
 | ---------- | --------------- | -------------- |
 | secp256k1  | Not implemented | -              |
 | secp256r1  | Not implemented | -              |
-| bls12381   | Not implemented | -              |
 | keyless    | Not implemented | -              |
 | codegen    | Not implemented | -              |
 | simulation | Not implemented | -              |

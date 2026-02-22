@@ -14,11 +14,11 @@ Total undefined scenarios: 161 (down from 163)
 
 ### By Priority Level (After Updates)
 
-| Priority  | Missing | Feature Areas                                                                             |
-| --------- | ------- | ----------------------------------------------------------------------------------------- |
-| Required  | ~6      | Transaction submission (4), Error handling (2)                                            |
-| Preferred | ~15     | Simulation (13), Fee-payer (2)                                                            |
-| Optional  | ~140    | BLS12381 (35), Codegen (34), Indexer (~24), Multi-agent/Fee-payer/Multi-sig/Keyless (~47) |
+| Priority  | Missing | Feature Areas                                                              |
+| --------- | ------- | -------------------------------------------------------------------------- |
+| Required  | ~6      | Transaction submission (4), Error handling (2)                             |
+| Preferred | ~15     | Simulation (13), Fee-payer (2)                                             |
+| Optional  | ~105    | Codegen (34), Indexer (~24), Multi-agent/Fee-payer/Multi-sig/Keyless (~47) |
 
 ---
 
@@ -93,10 +93,6 @@ These scenarios have step definitions but patterns may not match exactly:
 
 ### Skip - SDK Limitations
 
-#### BLS12-381 (35 scenarios) - @optional
-
-**Status:** SDK does not support BLS12-381. These scenarios cannot be implemented.
-
 #### Codegen (34 scenarios) - @optional
 
 **Status:** Code generation is not a TypeScript SDK feature. Skip.
@@ -155,14 +151,13 @@ bun run test:preferred
 
 ### What Remains
 
-1. **BLS12381** (35) - Not supported by SDK, skip
-2. **Codegen** (34) - Not a SDK feature, skip
-3. **Pattern mismatches** (~30) - Step definitions exist but Gherkin patterns don't match
-4. **Edge cases** (~20) - Multi-agent, fee-payer, multi-sig validation scenarios
+1. **Codegen** (34) - Not a SDK feature, skip
+2. **Pattern mismatches** (~30) - Step definitions exist but Gherkin patterns don't match
+3. **Edge cases** (~20) - Multi-agent, fee-payer, multi-sig validation scenarios
 
 ### Recommendations
 
 1. Run actual tests (not dry-run) to see which scenarios pass
 2. Fix remaining pattern mismatches in simulation.steps.ts
 3. Add validation edge cases for multi-agent/fee-payer
-4. Consider marking BLS12381 and Codegen as "N/A" in FEATURE_COVERAGE.md
+4. Consider marking Codegen as "N/A" in FEATURE_COVERAGE.md

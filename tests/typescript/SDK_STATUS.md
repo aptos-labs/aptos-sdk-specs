@@ -71,10 +71,9 @@
 
 ### ➖ Not Available in SDK
 
-| Feature  | Reason          | Tracking Issue |
-| -------- | --------------- | -------------- |
-| bls12381 | Not implemented | -              |
-| codegen  | Not implemented | -              |
+| Feature | Reason          | Tracking Issue |
+| ------- | --------------- | -------------- |
+| codegen | Not implemented | -              |
 
 ---
 
@@ -103,11 +102,10 @@ Issues with tests marked 🟡 (partial):
 
 ### Optional (P2) - Low Priority
 
-| Feature  | Scenarios               | Notes                        |
-| -------- | ----------------------- | ---------------------------- |
-| bls12381 | All 35                  | Feature not in SDK           |
-| codegen  | All 34                  | Feature not in SDK           |
-| script   | #8-12, #18, #21-22, #24 | Script compilation scenarios |
+| Feature | Scenarios               | Notes                        |
+| ------- | ----------------------- | ---------------------------- |
+| codegen | All 34                  | Feature not in SDK           |
+| script  | #8-12, #18, #21-22, #24 | Script compilation scenarios |
 
 ---
 

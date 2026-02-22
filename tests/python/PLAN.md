@@ -39,7 +39,6 @@ against the behavioral specifications in `/features/`.
 | hashing.feature   | [x] Complete | 21/22   | HMAC-SHA512 step undefined       |
 | secp256k1.feature | [ ] Partial  | 0/40    | SDK support varies               |
 | secp256r1.feature | [ ] Partial  | 0/38    | SDK support varies               |
-| bls12381.feature  | [ ] Partial  | 0/2     | Limited SDK support              |
 
 ### Account Management (Partial)
 

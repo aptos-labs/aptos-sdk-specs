@@ -78,7 +78,6 @@
 | Feature             | Reason                             | Status  |
 | ------------------- | ---------------------------------- | ------- |
 | secp256r1           | P-256/WebAuthn not implemented     | Pending |
-| bls12381            | BLS cryptography not implemented   | Pending |
 | keyless             | JWT/OIDC authentication not in SDK | Pending |
 | ephemeral-keys      | Keyless dependency                 | Pending |
 | pepper-service      | Keyless infrastructure             | Pending |
