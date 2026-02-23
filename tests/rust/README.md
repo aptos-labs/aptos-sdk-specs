@@ -6,7 +6,7 @@ This directory contains the Cucumber-rs implementation of behavioral specificati
 ## Prerequisites
 
 - Rust 1.75+ (stable)
-- The SDK is pulled from GitHub with the `full` feature enabled
+- The SDK is pulled from crates.io with the `full` feature enabled
 
 ## Quick Start
 
@@ -47,11 +47,10 @@ rust/
 
 ## SDK Dependency
 
-The tests depend on [`aptos-sdk`](https://github.com/aptos-labs/aptos-rust-sdk), which is not yet
-published to crates.io. The dependency is configured as a Git dependency:
+The tests depend on [`aptos-sdk`](https://crates.io/crates/aptos-sdk) from crates.io:
 
 ```toml
-aptos-sdk = { git = "https://github.com/aptos-labs/aptos-rust-sdk", features = ["full"] }
+aptos-sdk = { version = "0.3", features = ["full"] }
 ```
 
 For local development against a local clone:

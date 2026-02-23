@@ -9,8 +9,8 @@ description = "Behavioral specification tests for aptos-rust-sdk"
 [workspace]
 
 [dependencies]
-# The SDK we're testing - from GitHub (not yet on crates.io)
-aptos-sdk = { git = "https://github.com/aptos-labs/aptos-rust-sdk", features = ["full"] }
+# The SDK we're testing
+aptos-sdk = { version = "0.3", features = ["full"] }
 aptos-bcs = "0.1"
 
 # BDD testing framework

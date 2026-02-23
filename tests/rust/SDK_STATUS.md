@@ -10,10 +10,10 @@
 | Property             | Value                                        |
 | -------------------- | -------------------------------------------- |
 | **Package**          | `aptos-sdk`                                  |
-| **Version Tested**   | dev (git dependency)                         |
+| **Version Tested**   | 0.3.x (crates.io)                            |
 | **Publisher**        | aptos-labs                                   |
 | **Repository**       | https://github.com/aptos-labs/aptos-rust-sdk |
-| **Package Registry** | Not yet on crates.io                         |
+| **Package Registry** | https://crates.io/crates/aptos-sdk           |
 | **Test Framework**   | cucumber-rs                                  |
 
 ---
@@ -32,7 +32,7 @@
 > - 723 scenarios passed, 56 skipped, 12 failed
 > - All 12 failures are network-dependent performance benchmarks (require devnet)
 > - Test duration: ~28 seconds
-> - Tests use `aptos-sdk` from GitHub: `https://github.com/aptos-labs/aptos-rust-sdk`
+> - Tests use `aptos-sdk` v0.3.x from crates.io
 
 ---
 
@@ -79,28 +79,22 @@ The SDK uses feature flags. The `full` feature enables all:
 
 ## 4. Known Issues
 
-| Issue            | Impact           | Resolution                     |
-| ---------------- | ---------------- | ------------------------------ |
-| Not on crates.io | Git dep required | Use git dependency from GitHub |
+| Issue | Impact | Resolution |
+| ----- | ------ | ---------- |
+| None  | -      | -          |
 
 ### SDK Dependency
 
-The Cargo.toml uses a Git dependency since the SDK is not yet published to crates.io:
+The Cargo.toml uses the SDK from crates.io:
 
 ```toml
-aptos-sdk = { git = "https://github.com/aptos-labs/aptos-rust-sdk", features = ["full"] }
+aptos-sdk = { version = "0.3", features = ["full"] }
 ```
 
 For local development against a local clone:
 
 ```toml
 aptos-sdk = { path = "../../../aptos-rust-sdk/crates/aptos-sdk", features = ["full"] }
-```
-
-When the SDK is published to crates.io:
-
-```toml
-aptos-sdk = { version = "0.3", features = ["full"] }
 ```
 
 ---
