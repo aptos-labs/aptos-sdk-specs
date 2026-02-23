@@ -330,27 +330,49 @@ jobs:
         continue-on-error: true
 
   # ==========================================================================
-  # Swift Tests (macOS only)
+  # Swift Tests (macOS only — requires Swift 6.0 / Xcode 16+)
   # ==========================================================================
   swift:
     name: Swift Tests
-    runs-on: macos-latest
-    timeout-minutes: 10
+    runs-on: macos-15
+    timeout-minutes: 15
     defaults:
       run:
         working-directory: tests/swift
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup features
+      - name: Select Xcode
+        run: |
+          # List available Xcode versions and pick the latest 16.x+
+          ls /Applications/ | grep Xcode
+          XCODE_PATH=$(ls -d /Applications/Xcode*.app 2>/dev/null | sort -V | tail -1)
+          if [ -n "$XCODE_PATH" ]; then
+            sudo xcode-select -s "$XCODE_PATH/Contents/Developer"
+          fi
+          swift --version
+          xcodebuild -version
+
+      - name: Setup features and test vectors
         run: make link-features
+
+      - name: Resolve dependencies
+        run: swift package resolve
 
       - name: Build
         run: swift build
 
-      - name: Run tests
+      - name: Run required tests
         run: swift test
         continue-on-error: true
+
+      - name: Test summary
+        if: always()
+        run: |
+          echo "## Swift Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "SDK: aptos-labs/aptos-swift-sdk (official)" >> $GITHUB_STEP_SUMMARY
+          echo "Runner: macOS 15 (Sequoia)" >> $GITHUB_STEP_SUMMARY
 
   # ==========================================================================
   # C++ Tests (disabled - SDK not yet available)
