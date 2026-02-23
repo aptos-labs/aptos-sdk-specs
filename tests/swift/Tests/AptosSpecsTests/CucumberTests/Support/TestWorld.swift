@@ -1,7 +1,4 @@
-import Aptos
-import BCS
-import Core
-import Transactions
+import AptosSDK
 import Foundation
 
 /// Shared test context for Cucumber scenarios.
@@ -37,9 +34,9 @@ final class TestWorld {
     
     // MARK: - Accounts
     
-    var ed25519Account: Account.Ed25519Account?
-    var singleKeyAccount: Account.SingleKeyAccount?
-    var account: (any AccountProtocol)?
+    var ed25519Account: Ed25519Account?
+    var singleKeyAccount: SingleKeyAccount?
+    var account: (any AptosAccount)?
     var authKey: AuthenticationKey?
     var mnemonic: String?
     var derivationPath: String?
@@ -48,12 +45,11 @@ final class TestWorld {
     
     var rawTransaction: RawTransaction?
     var signedTransaction: SignedTransaction?
-    var entryFunction: EntryFunction?
     
     // MARK: - API Client
     
-    var client: Aptos?
-    var network: AptosConfig.Network?
+    var client: AptosClient?
+    var network: Network?
     
     // MARK: - Results
     
@@ -93,7 +89,6 @@ final class TestWorld {
         derivationPath = nil
         rawTransaction = nil
         signedTransaction = nil
-        entryFunction = nil
         client = nil
         network = nil
         result = nil

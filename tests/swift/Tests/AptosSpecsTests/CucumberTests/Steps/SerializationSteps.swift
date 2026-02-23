@@ -1,6 +1,4 @@
-import Aptos
-import BCS
-import Core
+import AptosSDK
 import CucumberSwift
 import XCTest
 

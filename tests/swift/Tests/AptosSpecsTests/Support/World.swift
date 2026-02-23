@@ -1,7 +1,5 @@
-import Aptos
-import Core
+import AptosSDK
 import Foundation
-import Transactions
 
 /// Shared test context for XCTest scenarios.
 /// Holds state between test methods.
@@ -33,16 +31,16 @@ final class World {
 
   // MARK: - Accounts
 
-  var ed25519Account: Account.Ed25519Account?
-  var singleKeyAccount: Account.SingleKeyAccount?
-  var account: (any AccountProtocol)?
+  var ed25519Account: Ed25519Account?
+  var singleKeyAccount: SingleKeyAccount?
+  var account: (any AptosAccount)?
   var authKey: AuthenticationKey?
   var mnemonic: String?
   var derivationPath: String?
 
   // MARK: - API Client
 
-  var client: Aptos?
+  var client: AptosClient?
 
   // MARK: - Results
 
