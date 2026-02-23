@@ -1,10 +1,5 @@
-import Aptos
-import BCS
-import Core
+import AptosSDK
 import CryptoKit
-import CryptoSwift
-import Transactions
-import Utils
 import XCTest
 
 @testable import AptosSpecs
@@ -499,19 +494,19 @@ extension AptosSpecsTests {
     var seed = [UInt8](repeating: 0, count: 32)
     seed[0] = 42
     let privateKey = try Ed25519PrivateKey(seed)
-    let account = try Account.Ed25519Account(privateKey: privateKey)
+    let account = try Ed25519Account(privateKey: privateKey)
 
     XCTAssertNotNil(account.accountAddress)
 
     let privateKey2 = try Ed25519PrivateKey(seed)
-    let account2 = try Account.Ed25519Account(privateKey: privateKey2)
+    let account2 = try Ed25519Account(privateKey: privateKey2)
     XCTAssertEqual(account.accountAddress, account2.accountAddress)
   }
 
   func test_Account_CreateFromHexString() throws {
     let hex = "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
     let privateKey = try Ed25519PrivateKey(hex)
-    let account = try Account.Ed25519Account(privateKey: privateKey)
+    let account = try Ed25519Account(privateKey: privateKey)
 
     XCTAssertNotNil(account.accountAddress)
   }
@@ -519,7 +514,7 @@ extension AptosSpecsTests {
   func test_Account_CreateFromHexWithoutPrefix() throws {
     let hex = "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
     let privateKey = try Ed25519PrivateKey(hex)
-    let account = try Account.Ed25519Account(privateKey: privateKey)
+    let account = try Ed25519Account(privateKey: privateKey)
 
     XCTAssertNotNil(account.accountAddress)
   }
@@ -589,7 +584,7 @@ extension AptosSpecsTests {
     var seed = [UInt8](repeating: 0, count: 32)
     seed[0] = 42
     let privateKey = try Ed25519PrivateKey(seed)
-    let account = try Account.Ed25519Account(privateKey: privateKey)
+    let account = try Ed25519Account(privateKey: privateKey)
     let message = Array("test".utf8)
 
     let signature = try account.sign(message: message)
@@ -1306,7 +1301,7 @@ extension AptosSpecsTests {
     var seed = [UInt8](repeating: 0, count: 32)
     seed[0] = 42
     let privateKey = try Secp256k1PrivateKey(seed)
-    let account = try Account.SingleKeyAccount(privateKey: privateKey)
+    let account = try SingleKeyAccount(privateKey: privateKey)
 
     XCTAssertNotNil(account.accountAddress)
     XCTAssertEqual(account.signingScheme, .singleKey)
@@ -1320,8 +1315,8 @@ extension AptosSpecsTests {
     let ed25519Key = try Ed25519PrivateKey(seed)
     let secp256k1Key = try Secp256k1PrivateKey(seed)
 
-    let ed25519Account = try Account.SingleKeyAccount(privateKey: ed25519Key)
-    let secp256k1Account = try Account.SingleKeyAccount(privateKey: secp256k1Key)
+    let ed25519Account = try SingleKeyAccount(privateKey: ed25519Key)
+    let secp256k1Account = try SingleKeyAccount(privateKey: secp256k1Key)
 
     XCTAssertNotEqual(ed25519Account.accountAddress, secp256k1Account.accountAddress)
   }
@@ -2235,21 +2230,21 @@ extension AptosSpecsTests {
 extension AptosSpecsTests {
 
   func test_Client_DevnetConfiguration() throws {
-    let client = Aptos(aptosConfig: .devnet)
+    let client = AptosClient(.devnet())
     XCTAssertNotNil(client)
-    XCTAssertEqual(client.aptosConfig.network.name, "devnet")
+    XCTAssertEqual(client.config.network.rawValue, "devnet")
   }
 
   func test_Client_TestnetConfiguration() throws {
-    let client = Aptos(aptosConfig: .testnet)
+    let client = AptosClient(.testnet())
     XCTAssertNotNil(client)
-    XCTAssertEqual(client.aptosConfig.network.name, "testnet")
+    XCTAssertEqual(client.config.network.rawValue, "testnet")
   }
 
   func test_Client_MainnetConfiguration() throws {
-    let client = Aptos(aptosConfig: .mainnet)
+    let client = AptosClient(.mainnet())
     XCTAssertNotNil(client)
-    XCTAssertEqual(client.aptosConfig.network.name, "mainnet")
+    XCTAssertEqual(client.config.network.rawValue, "mainnet")
   }
 }
 
@@ -2258,98 +2253,98 @@ extension AptosSpecsTests {
 extension AptosSpecsTests {
 
   func test_Network_MainnetName() throws {
-    let network = AptosConfig.Network.mainnet
-    XCTAssertEqual(network.name, "mainnet")
+    let network = Network.mainnet
+    XCTAssertEqual(network.rawValue, "mainnet")
   }
 
   func test_Network_TestnetName() throws {
-    let network = AptosConfig.Network.testnet
-    XCTAssertEqual(network.name, "testnet")
+    let network = Network.testnet
+    XCTAssertEqual(network.rawValue, "testnet")
   }
 
   func test_Network_DevnetName() throws {
-    let network = AptosConfig.Network.devnet
-    XCTAssertEqual(network.name, "devnet")
+    let network = Network.devnet
+    XCTAssertEqual(network.rawValue, "devnet")
   }
 
   func test_Network_LocalnetName() throws {
-    let network = AptosConfig.Network.localnet
-    XCTAssertEqual(network.name, "local")
+    let network = Network.local
+    XCTAssertEqual(network.rawValue, "local")
   }
 
   func test_Network_MainnetChainId() throws {
-    let network = AptosConfig.Network.mainnet
+    let network = Network.mainnet
     XCTAssertEqual(network.chainId, 1)
   }
 
   func test_Network_TestnetChainId() throws {
-    let network = AptosConfig.Network.testnet
+    let network = Network.testnet
     XCTAssertEqual(network.chainId, 2)
   }
 
   func test_Network_LocalnetChainId() throws {
-    let network = AptosConfig.Network.localnet
+    let network = Network.local
     XCTAssertEqual(network.chainId, 4)
   }
 
   func test_Network_MainnetFullNodeUrl() throws {
-    let network = AptosConfig.Network.mainnet
+    let network = Network.mainnet
     XCTAssertEqual(network.fullNodeApi, "https://api.mainnet.aptoslabs.com/v1")
   }
 
   func test_Network_TestnetFullNodeUrl() throws {
-    let network = AptosConfig.Network.testnet
+    let network = Network.testnet
     XCTAssertEqual(network.fullNodeApi, "https://api.testnet.aptoslabs.com/v1")
   }
 
   func test_Network_DevnetFullNodeUrl() throws {
-    let network = AptosConfig.Network.devnet
+    let network = Network.devnet
     XCTAssertEqual(network.fullNodeApi, "https://api.devnet.aptoslabs.com/v1")
   }
 
   func test_Network_LocalnetFullNodeUrl() throws {
-    let network = AptosConfig.Network.localnet
+    let network = Network.local
     XCTAssertEqual(network.fullNodeApi, "http://127.0.0.1:8080/v1")
   }
 
   func test_Network_MainnetIndexerUrl() throws {
-    let network = AptosConfig.Network.mainnet
+    let network = Network.mainnet
     XCTAssertEqual(network.indexerApi, "https://api.mainnet.aptoslabs.com/v1/graphql")
   }
 
   func test_Network_TestnetIndexerUrl() throws {
-    let network = AptosConfig.Network.testnet
+    let network = Network.testnet
     XCTAssertEqual(network.indexerApi, "https://api.testnet.aptoslabs.com/v1/graphql")
   }
 
   func test_Network_MainnetFaucetUrl() throws {
-    let network = AptosConfig.Network.mainnet
+    let network = Network.mainnet
     XCTAssertEqual(network.faucetApi, "https://faucet.mainnet.aptoslabs.com")
   }
 
   func test_Network_TestnetFaucetUrl() throws {
-    let network = AptosConfig.Network.testnet
+    let network = Network.testnet
     XCTAssertEqual(network.faucetApi, "https://faucet.testnet.aptoslabs.com")
   }
 
   func test_Network_DevnetFaucetUrl() throws {
-    let network = AptosConfig.Network.devnet
+    let network = Network.devnet
     XCTAssertEqual(network.faucetApi, "https://faucet.devnet.aptoslabs.com")
   }
 
   func test_Network_CustomNetwork() throws {
-    let network = AptosConfig.Network.custom(
-      apiEnv: .custom(
-        nodeApi: "https://custom.node.com/v1",
-        indexerApi: "https://custom.indexer.com/v1/graphql",
-        faucetApi: "https://custom.faucet.com"
-      ))
+    let config = AptosConfig(
+      network: .custom,
+      fullnodeURL: "https://custom.node.com/v1",
+      indexerURL: "https://custom.indexer.com/v1/graphql",
+      faucetURL: "https://custom.faucet.com"
+    )
 
-    XCTAssertEqual(network.name, "custom")
-    XCTAssertEqual(network.fullNodeApi, "https://custom.node.com/v1")
-    XCTAssertEqual(network.indexerApi, "https://custom.indexer.com/v1/graphql")
-    XCTAssertEqual(network.faucetApi, "https://custom.faucet.com")
-    XCTAssertNil(network.chainId)  // Custom networks don't have predefined chain ID
+    XCTAssertEqual(config.network.rawValue, "custom")
+    XCTAssertEqual(config.fullnodeURL, "https://custom.node.com/v1")
+    XCTAssertEqual(config.indexerURL, "https://custom.indexer.com/v1/graphql")
+    XCTAssertEqual(config.faucetURL, "https://custom.faucet.com")
+    XCTAssertNil(config.network.chainId)
   }
 }
 
@@ -2358,41 +2353,38 @@ extension AptosSpecsTests {
 extension AptosSpecsTests {
 
   func test_AptosConfig_Mainnet() throws {
-    let config = AptosConfig.mainnet
-    XCTAssertEqual(config.network.name, "mainnet")
+    let config = AptosConfig.mainnet()
+    XCTAssertEqual(config.network.rawValue, "mainnet")
   }
 
   func test_AptosConfig_Testnet() throws {
-    let config = AptosConfig.testnet
-    XCTAssertEqual(config.network.name, "testnet")
+    let config = AptosConfig.testnet()
+    XCTAssertEqual(config.network.rawValue, "testnet")
   }
 
   func test_AptosConfig_Devnet() throws {
-    let config = AptosConfig.devnet
-    XCTAssertEqual(config.network.name, "devnet")
+    let config = AptosConfig.devnet()
+    XCTAssertEqual(config.network.rawValue, "devnet")
   }
 
   func test_AptosConfig_Localnet() throws {
-    let config = AptosConfig.localnet
-    XCTAssertEqual(config.network.name, "local")
+    let config = AptosConfig.localnet()
+    XCTAssertEqual(config.network.rawValue, "local")
   }
 
   func test_AptosConfig_DefaultsToDevnet() throws {
     let config = AptosConfig()
-    XCTAssertEqual(config.network.name, "devnet")
+    XCTAssertEqual(config.network.rawValue, "devnet")
   }
 
   func test_AptosConfig_CustomNetwork() throws {
-    let customNetwork = AptosConfig.Network.custom(
-      apiEnv: .custom(
-        nodeApi: "https://my-node.example.com/v1",
-        indexerApi: nil,
-        faucetApi: nil
-      ))
-    let config = AptosConfig(network: customNetwork)
+    let config = AptosConfig(
+      network: .custom,
+      fullnodeURL: "https://my-node.example.com/v1"
+    )
 
-    XCTAssertEqual(config.network.name, "custom")
-    XCTAssertEqual(config.network.fullNodeApi, "https://my-node.example.com/v1")
+    XCTAssertEqual(config.network.rawValue, "custom")
+    XCTAssertEqual(config.fullnodeURL, "https://my-node.example.com/v1")
   }
 }
 

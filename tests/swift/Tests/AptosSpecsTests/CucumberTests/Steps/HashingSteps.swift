@@ -1,5 +1,5 @@
+import AptosSDK
 import CryptoKit
-import CryptoSwift
 import CucumberSwift
 import XCTest
 
