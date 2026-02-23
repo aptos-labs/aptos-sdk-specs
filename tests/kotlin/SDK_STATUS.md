@@ -7,14 +7,14 @@
 
 ## 1. SDK Information
 
-| Property             | Value                                                    |
-| -------------------- | -------------------------------------------------------- |
-| **Package**          | `com.aptos:core`                                         |
-| **Version Tested**   | 0.1.0                                                    |
-| **Publisher**        | aptos-labs (official)                                    |
-| **Repository**       | https://github.com/aptos-labs/aptos-kotlin-sdk           |
-| **Package Registry** | Maven Central / Maven Local                              |
-| **Test Framework**   | Cucumber-JVM + Kotlin                                    |
+| Property             | Value                                          |
+| -------------------- | ---------------------------------------------- |
+| **Package**          | `com.aptos:core`                               |
+| **Version Tested**   | 0.1.0                                          |
+| **Publisher**        | aptos-labs (official)                          |
+| **Repository**       | https://github.com/aptos-labs/aptos-kotlin-sdk |
+| **Package Registry** | Maven Central / Maven Local                    |
+| **Test Framework**   | Cucumber-JVM + Kotlin                          |
 
 ---
 
@@ -39,47 +39,47 @@
 
 ### ✅ Available in SDK
 
-| Feature             | Notes                                    |
-| ------------------- | ---------------------------------------- |
-| address             | AccountAddress.fromHex/fromHexRelaxed    |
-| ed25519             | Ed25519.PrivateKey, PublicKey, Signature  |
-| secp256k1           | Secp256k1.PrivateKey, PublicKey, Signature|
-| hashing             | SHA3-256, SHA2-256 via JVM/BouncyCastle  |
-| serialization       | BcsSerializer, BcsDeserializer           |
-| authentication-key  | AuthenticationKey.fromEd25519/Secp256k1  |
-| mnemonic-derivation | Mnemonic, SLIP-0010, BIP-32              |
-| type-tags           | TypeTag parsing and formatting           |
-| transactions        | RawTransaction, SignedTransaction         |
-| accounts            | Ed25519Account, Secp256k1Account          |
-| keyless             | KeylessAccount (via SDK)                 |
-| multi-key           | MultiKey, MultiEd25519                   |
+| Feature             | Notes                                      |
+| ------------------- | ------------------------------------------ |
+| address             | AccountAddress.fromHex/fromHexRelaxed      |
+| ed25519             | Ed25519.PrivateKey, PublicKey, Signature   |
+| secp256k1           | Secp256k1.PrivateKey, PublicKey, Signature |
+| hashing             | SHA3-256, SHA2-256 via JVM/BouncyCastle    |
+| serialization       | BcsSerializer, BcsDeserializer             |
+| authentication-key  | AuthenticationKey.fromEd25519/Secp256k1    |
+| mnemonic-derivation | Mnemonic, SLIP-0010, BIP-32                |
+| type-tags           | TypeTag parsing and formatting             |
+| transactions        | RawTransaction, SignedTransaction          |
+| accounts            | Ed25519Account, Secp256k1Account           |
+| keyless             | KeylessAccount (via SDK)                   |
+| multi-key           | MultiKey, MultiEd25519                     |
 
 ### 🟡 Partially Available
 
-| Feature         | Reason                       | Impact                    |
-| --------------- | ---------------------------- | ------------------------- |
-| entry-function  | Step definitions need update | Needs test verification   |
-| raw-transaction | Step definitions need update | Needs test verification   |
-| signing         | Step definitions need update | Needs test verification   |
+| Feature         | Reason                       | Impact                  |
+| --------------- | ---------------------------- | ----------------------- |
+| entry-function  | Step definitions need update | Needs test verification |
+| raw-transaction | Step definitions need update | Needs test verification |
+| signing         | Step definitions need update | Needs test verification |
 
 ### ➖ Not Yet Tested
 
-| Feature                | Reason                    | Tracking Issue |
-| ---------------------- | ------------------------- | -------------- |
-| fullnode-api           | Needs network access      | -              |
-| transaction-submission | Needs network access      | -              |
-| simulation             | Step definitions needed   | -              |
-| multi-agent            | Step definitions needed   | -              |
-| fee-payer              | Step definitions needed   | -              |
+| Feature                | Reason                  | Tracking Issue |
+| ---------------------- | ----------------------- | -------------- |
+| fullnode-api           | Needs network access    | -              |
+| transaction-submission | Needs network access    | -              |
+| simulation             | Step definitions needed | -              |
+| multi-agent            | Step definitions needed | -              |
+| fee-payer              | Step definitions needed | -              |
 
 ---
 
 ## 4. Known Issues
 
-| Scenario      | Issue                           | Workaround           |
-| ------------- | ------------------------------- | -------------------- |
-| SDK publishing| SDK may not be on Maven Central | Use mavenLocal()     |
-| Test run      | Not yet verified in CI          | Run locally          |
+| Scenario       | Issue                           | Workaround       |
+| -------------- | ------------------------------- | ---------------- |
+| SDK publishing | SDK may not be on Maven Central | Use mavenLocal() |
+| Test run       | Not yet verified in CI          | Run locally      |
 
 ---
 
