@@ -7,14 +7,14 @@
 
 ## 1. SDK Information
 
-| Property             | Value                                                 |
-| -------------------- | ----------------------------------------------------- |
-| **Package**          | `AptosSDK`                                            |
-| **Version Tested**   | main                                                  |
-| **Publisher**        | aptos-labs (official)                                 |
-| **Repository**       | https://github.com/aptos-labs/aptos-swift-sdk         |
-| **Package Registry** | Swift Package Manager                                 |
-| **Test Framework**   | XCTest                                                |
+| Property             | Value                                         |
+| -------------------- | --------------------------------------------- |
+| **Package**          | `AptosSDK`                                    |
+| **Version Tested**   | main                                          |
+| **Publisher**        | aptos-labs (official)                         |
+| **Repository**       | https://github.com/aptos-labs/aptos-swift-sdk |
+| **Package Registry** | Swift Package Manager                         |
+| **Test Framework**   | XCTest                                        |
 
 ---
 
@@ -43,38 +43,38 @@
 | Feature             | Notes                                      |
 | ------------------- | ------------------------------------------ |
 | address             | AccountAddress with hex parsing/formatting |
-| ed25519             | Ed25519PrivateKey, PublicKey, Signature     |
-| secp256k1           | Secp256k1PrivateKey, PublicKey, Signature   |
-| secp256r1           | Secp256r1PrivateKey, PublicKey (P-256)      |
+| ed25519             | Ed25519PrivateKey, PublicKey, Signature    |
+| secp256k1           | Secp256k1PrivateKey, PublicKey, Signature  |
+| secp256r1           | Secp256r1PrivateKey, PublicKey (P-256)     |
 | hashing             | AptosHashing (SHA3-256, SHA2-256)          |
 | serialization       | BCS Serializer/Deserializer                |
 | authentication-key  | AuthenticationKey derivation               |
-| mnemonic-derivation | Mnemonic, HDKey, BIP-39/BIP-44/SLIP-0010  |
+| mnemonic-derivation | Mnemonic, HDKey, BIP-39/BIP-44/SLIP-0010   |
 | type-tags           | TypeTag, StructTag parsing                 |
-| transactions        | RawTransaction, SignedTransaction           |
-| accounts            | Ed25519Account, SingleKeyAccount            |
+| transactions        | RawTransaction, SignedTransaction          |
+| accounts            | Ed25519Account, SingleKeyAccount           |
 | keyless             | KeylessAccount, PepperClient, ProverClient |
-| multi-key           | MultiKeyAccount, MultiKey                   |
-| multi-agent         | MultiAgentUtils                             |
-| fee-payer           | FeePayerUtils                               |
+| multi-key           | MultiKeyAccount, MultiKey                  |
+| multi-agent         | MultiAgentUtils                            |
+| fee-payer           | FeePayerUtils                              |
 
 ### 🟡 Partially Available
 
-| Feature         | Reason                       | Impact                    |
-| --------------- | ---------------------------- | ------------------------- |
-| entry-function  | Step definitions need update | Needs test verification   |
-| raw-transaction | Step definitions need update | Needs test verification   |
-| signing         | Step definitions need update | Needs test verification   |
+| Feature         | Reason                       | Impact                  |
+| --------------- | ---------------------------- | ----------------------- |
+| entry-function  | Step definitions need update | Needs test verification |
+| raw-transaction | Step definitions need update | Needs test verification |
+| signing         | Step definitions need update | Needs test verification |
 
 ---
 
 ## 4. Known Issues
 
-| Scenario         | Issue                                 | Workaround                |
-| ---------------- | ------------------------------------- | ------------------------- |
-| CucumberSwift    | Upstream compilation bug              | Use XCTest-based tests    |
-| Swift 6.0        | Requires latest Xcode                 | Install Xcode 16+        |
-| Platform         | macOS 14+ required                    | Update macOS              |
+| Scenario      | Issue                    | Workaround             |
+| ------------- | ------------------------ | ---------------------- |
+| CucumberSwift | Upstream compilation bug | Use XCTest-based tests |
+| Swift 6.0     | Requires latest Xcode    | Install Xcode 16+      |
+| Platform      | macOS 14+ required       | Update macOS           |
 
 ---
 

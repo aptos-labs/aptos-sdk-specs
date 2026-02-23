@@ -79,11 +79,11 @@ swift test --verbose
 
 ## SDK Under Test
 
-| Property          | Value                                              |
-| ----------------- | -------------------------------------------------- |
-| **Package**       | `AptosSDK`                                         |
-| **Repository**    | https://github.com/aptos-labs/aptos-swift-sdk      |
-| **Publisher**     | aptos-labs (official)                               |
+| Property       | Value                                         |
+| -------------- | --------------------------------------------- |
+| **Package**    | `AptosSDK`                                    |
+| **Repository** | https://github.com/aptos-labs/aptos-swift-sdk |
+| **Publisher**  | aptos-labs (official)                         |
 
 ## Dependencies
 
@@ -131,8 +131,8 @@ XCTest requires full Xcode installation, not just Command Line Tools. To run tes
 
 ### CucumberSwift Bug
 
-CucumberSwift has a compilation bug preventing its use. Step definitions in
-`CucumberTests/Steps/` are ready for when this is fixed upstream.
+CucumberSwift has a compilation bug preventing its use. Step definitions in `CucumberTests/Steps/`
+are ready for when this is fixed upstream.
 
 **Workaround:** Use the XCTest-based tests in `AptosSpecsTests.swift`.
 
