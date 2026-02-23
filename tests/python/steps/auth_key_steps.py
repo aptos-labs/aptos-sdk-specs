@@ -9,6 +9,13 @@ from aptos_sdk.ed25519 import (
     PrivateKey as Ed25519PrivateKey,
 )
 from behave import given, when, then
+from support.ecdsa_compat import (
+    NIST256P_AVAILABLE,
+    SECP256K1_AVAILABLE,
+    NIST256p,
+    SECP256k1,
+    SigningKey,
+)
 import sys
 import os
 import hashlib
@@ -61,33 +68,31 @@ def step_given_typed_public_key(context, key_type):
         context.world.public_key_bytes = bytes(context.world.ed25519_public_key.key)
         context.world.scheme_id = 0x00
     elif key_type == "Secp256k1":
-        try:
-            from ecdsa import SECP256k1, SigningKey
-
-            private_key = SigningKey.generate(curve=SECP256k1)
-            # Compressed public key (33 bytes)
-            context.world.public_key_bytes = private_key.get_verifying_key().to_string(
-                "compressed"
-            )
-            context.world.scheme_id = 0x01
-        except ImportError:
+        if not SECP256K1_AVAILABLE:
             context.world.set_error(
-                ImportError("ecdsa library not available for Secp256k1")
+                ImportError("Secp256k1 crypto backend not available")
             )
+            return
+
+        private_key = SigningKey.generate(curve=SECP256k1)
+        # Compressed public key (33 bytes)
+        context.world.public_key_bytes = private_key.get_verifying_key().to_string(
+            "compressed"
+        )
+        context.world.scheme_id = 0x01
     elif key_type == "Secp256r1":
-        try:
-            from ecdsa import NIST256p, SigningKey
-
-            private_key = SigningKey.generate(curve=NIST256p)
-            # Compressed public key (33 bytes)
-            context.world.public_key_bytes = private_key.get_verifying_key().to_string(
-                "compressed"
-            )
-            context.world.scheme_id = 0x02
-        except ImportError:
+        if not NIST256P_AVAILABLE:
             context.world.set_error(
-                ImportError("ecdsa library not available for Secp256r1")
+                ImportError("P-256 crypto backend not available")
             )
+            return
+
+        private_key = SigningKey.generate(curve=NIST256p)
+        # Compressed public key (33 bytes)
+        context.world.public_key_bytes = private_key.get_verifying_key().to_string(
+            "compressed"
+        )
+        context.world.scheme_id = 0x02
     elif key_type == "MultiEd25519":
         context.world.scheme_id = 0x01
     elif key_type == "MultiKey":
@@ -125,20 +130,19 @@ def step_given_ed25519_from_test_vectors(context):
 
 @given("Secp256k1 public key from test vectors")
 def step_given_secp256k1_from_test_vectors(context):
-    try:
-        from ecdsa import SECP256k1, SigningKey
-
-        # Generate a deterministic Secp256k1 key for test vectors
-        private_key = SigningKey.generate(curve=SECP256k1)
-        context.world.public_key_bytes = private_key.get_verifying_key().to_string(
-            "compressed"
-        )
-        context.world.scheme_id = 0x01
-        context.world.clear_error()
-    except ImportError:
+    if not SECP256K1_AVAILABLE:
         context.world.set_error(
-            ImportError("ecdsa library not available for Secp256k1")
+            ImportError("Secp256k1 crypto backend not available")
         )
+        return
+
+    # Generate a deterministic Secp256k1 key for test vectors
+    private_key = SigningKey.generate(curve=SECP256k1)
+    context.world.public_key_bytes = private_key.get_verifying_key().to_string(
+        "compressed"
+    )
+    context.world.scheme_id = 0x01
+    context.world.clear_error()
 
 
 # =============================================================================

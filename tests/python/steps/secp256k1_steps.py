@@ -16,9 +16,14 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 # Try to import secp256k1 support
 try:
-    from ecdsa import SECP256k1, SigningKey, VerifyingKey, BadSignatureError
+    from support.ecdsa_compat import (
+        BadSignatureError,
+        SECP256K1_AVAILABLE,
+        SECP256k1,
+        SigningKey,
+        VerifyingKey,
+    )
 
-    SECP256K1_AVAILABLE = True
 except ImportError:
     SECP256K1_AVAILABLE = False
 
