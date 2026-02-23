@@ -146,7 +146,15 @@ def step_given_secp256k1_from_test_vectors(context):
         if not secp_vectors:
             raise ValueError("missing secp256k1 key vectors in signatures.json")
 
-        private_key_hex = secp_vectors[0].get("input", {}).get("private_key_hex")
+        key_vector = next(
+            (
+                vector
+                for vector in secp_vectors
+                if vector.get("name") == "secp256k1_key_from_seed"
+            ),
+            secp_vectors[0],
+        )
+        private_key_hex = key_vector.get("input", {}).get("private_key_hex")
         if not private_key_hex:
             raise ValueError("missing private_key_hex in secp256k1 key vector")
 
