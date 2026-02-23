@@ -2,13 +2,16 @@ package com.aptos.specs.steps
 
 import com.aptos.specs.support.World
 import com.aptos.specs.support.hexToBytes
+import com.aptos.specs.support.toHex
 import io.cucumber.java.en.Given
 import io.cucumber.java.en.Then
 import io.cucumber.java.en.When
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
-import xyz.mcxross.kaptos.account.Account
-import xyz.mcxross.kaptos.model.HexInput
+import com.aptos.core.account.Ed25519Account
+import com.aptos.core.account.Secp256k1Account
+import com.aptos.core.crypto.Ed25519
+import com.aptos.core.crypto.Secp256k1
 
 /**
  * Step definitions for Ed25519 and Secp256k1 cryptography scenarios.
@@ -17,7 +20,7 @@ import xyz.mcxross.kaptos.model.HexInput
  * - features/02-cryptography/ed25519.feature
  * - features/02-cryptography/secp256k1.feature
  *
- * Note: Uses Kaptos SDK 0.1.2-beta. API may change.
+ * Uses the official Aptos Kotlin SDK (aptos-labs/aptos-kotlin-sdk).
  */
 class CryptoSteps(private val world: World) {
     // ============================================================
@@ -31,7 +34,7 @@ class CryptoSteps(private val world: World) {
     @When("I generate a random Ed25519 key pair")
     fun whenIGenerateARandomEd25519KeyPair() {
         runCatching {
-            val account = Account.generate()
+            val account = Ed25519Account.generate()
             world.keyPair = account
             world.account = account
         }.onSuccess {
@@ -44,8 +47,8 @@ class CryptoSteps(private val world: World) {
     @When("I generate two random Ed25519 key pairs")
     fun whenIGenerateTwoRandomEd25519KeyPairs() {
         runCatching {
-            world.keyPair = Account.generate()
-            world.keyPair2 = Account.generate()
+            world.keyPair = Ed25519Account.generate()
+            world.keyPair2 = Ed25519Account.generate()
         }.onSuccess {
             world.clearError()
         }.onFailure {
@@ -56,7 +59,7 @@ class CryptoSteps(private val world: World) {
     @Given("I generate another random Ed25519 key pair")
     fun givenIGenerateAnotherRandomEd25519KeyPair() {
         runCatching {
-            world.keyPair2 = Account.generate()
+            world.keyPair2 = Ed25519Account.generate()
         }.onSuccess {
             world.clearError()
         }.onFailure {
@@ -67,7 +70,7 @@ class CryptoSteps(private val world: World) {
     @Given("an Ed25519 key pair")
     fun givenAnEd25519KeyPair() {
         runCatching {
-            val account = Account.generate()
+            val account = Ed25519Account.generate()
             world.keyPair = account
             world.account = account
         }.onSuccess {
@@ -125,8 +128,7 @@ class CryptoSteps(private val world: World) {
     @Given("an Ed25519 private key from bytes")
     fun givenAnEd25519PrivateKeyFromBytes() {
         runCatching {
-            // TODO: Implement when Kaptos SDK exposes private key creation from bytes
-            throw NotImplementedError("Ed25519PrivateKey from bytes not yet available in Kaptos 0.1.2-beta")
+            world.privateKey = Ed25519.PrivateKey(world.bytes!!)
         }.onSuccess {
             world.clearError()
         }.onFailure {
@@ -137,8 +139,10 @@ class CryptoSteps(private val world: World) {
     @Given("an Ed25519 key pair from seed")
     fun givenAnEd25519KeyPairFromSeed() {
         runCatching {
-            // TODO: Implement when Kaptos SDK exposes key derivation from seed
-            throw NotImplementedError("Key pair from seed not yet available in Kaptos 0.1.2-beta")
+            val privateKey = Ed25519.PrivateKey.fromSeed(world.bytes!!)
+            val account = Ed25519Account.fromPrivateKey(privateKey)
+            world.keyPair = account
+            world.account = account
         }.onSuccess {
             world.clearError()
         }.onFailure {
@@ -168,8 +172,9 @@ class CryptoSteps(private val world: World) {
     @Given("I generate a random Secp256k1 key pair")
     fun givenIGenerateARandomSecp256k1KeyPair() {
         runCatching {
-            // TODO: Implement when Kaptos SDK supports Secp256k1
-            throw NotImplementedError("Secp256k1 not yet available in Kaptos 0.1.2-beta")
+            val account = Secp256k1Account.generate()
+            world.keyPair = account
+            world.account = account
         }.onSuccess {
             world.clearError()
         }.onFailure {
@@ -185,7 +190,7 @@ class CryptoSteps(private val world: World) {
     @Given("a Secp256k1 private key from bytes")
     fun givenASecp256k1PrivateKeyFromBytes() {
         runCatching {
-            throw NotImplementedError("Secp256k1 not yet available in Kaptos 0.1.2-beta")
+            world.privateKey = Secp256k1.PrivateKey(world.bytes!!)
         }.onSuccess {
             world.clearError()
         }.onFailure {
@@ -200,8 +205,10 @@ class CryptoSteps(private val world: World) {
     @When("I create an Ed25519 key pair from the seed")
     fun whenICreateAnEd25519KeyPairFromTheSeed() {
         runCatching {
-            // Kaptos doesn't expose key creation from seed directly
-            throw NotImplementedError("Key pair from seed not yet available in Kaptos 0.1.2-beta")
+            val privateKey = Ed25519.PrivateKey.fromSeed(world.bytes!!)
+            val account = Ed25519Account.fromPrivateKey(privateKey)
+            world.keyPair = account
+            world.account = account
         }.onSuccess {
             world.clearError()
         }.onFailure {
@@ -212,7 +219,10 @@ class CryptoSteps(private val world: World) {
     @When("I create an Ed25519 key pair from the bytes")
     fun whenICreateAnEd25519KeyPairFromTheBytes() {
         runCatching {
-            throw NotImplementedError("Key pair from bytes not yet available in Kaptos 0.1.2-beta")
+            val privateKey = Ed25519.PrivateKey(world.bytes!!)
+            val account = Ed25519Account.fromPrivateKey(privateKey)
+            world.keyPair = account
+            world.account = account
         }.onSuccess {
             world.clearError()
         }.onFailure {
@@ -223,7 +233,10 @@ class CryptoSteps(private val world: World) {
     @When("I create an Ed25519 key pair from hex")
     fun whenICreateAnEd25519KeyPairFromHex() {
         runCatching {
-            throw NotImplementedError("Key pair from hex not yet available in Kaptos 0.1.2-beta")
+            val privateKey = Ed25519.PrivateKey.fromHex(world.hexString!!)
+            val account = Ed25519Account.fromPrivateKey(privateKey)
+            world.keyPair = account
+            world.account = account
         }.onSuccess {
             world.clearError()
         }.onFailure {
@@ -247,9 +260,9 @@ class CryptoSteps(private val world: World) {
     fun whenISignTheMessageTwice() {
         runCatching {
             val message = world.retrieve<ByteArray>("message")!!
-            val account = world.keyPair as Account
-            world.signature = account.sign(HexInput.fromByteArray(message))
-            world.store("signature2", account.sign(HexInput.fromByteArray(message)))
+            val account = world.keyPair as com.aptos.core.account.Account
+            world.signature = account.sign(message)
+            world.store("signature2", account.sign(message))
         }.onSuccess {
             world.clearError()
         }.onFailure {
@@ -262,9 +275,9 @@ class CryptoSteps(private val world: World) {
         runCatching {
             val msg1 = world.retrieve<ByteArray>("message1")!!
             val msg2 = world.retrieve<ByteArray>("message2")!!
-            val account = world.keyPair as Account
-            world.signature = account.sign(HexInput.fromByteArray(msg1))
-            world.store("signature2", account.sign(HexInput.fromByteArray(msg2)))
+            val account = world.keyPair as com.aptos.core.account.Account
+            world.signature = account.sign(msg1)
+            world.store("signature2", account.sign(msg2))
         }.onSuccess {
             world.clearError()
         }.onFailure {
@@ -308,8 +321,8 @@ class CryptoSteps(private val world: World) {
     @When("I get the public key")
     fun whenIGetThePublicKey() {
         runCatching {
-            val account = world.keyPair as Account
-            world.publicKey = account.publicKey
+            val account = world.keyPair as com.aptos.core.account.Account
+            world.publicKey = account.publicKeyBytes
         }.onSuccess {
             world.clearError()
         }.onFailure {
@@ -320,7 +333,9 @@ class CryptoSteps(private val world: World) {
     @When("I get the private key")
     fun whenIGetThePrivateKey() {
         runCatching {
-            throw NotImplementedError("Direct private key access not yet available")
+            val account = world.keyPair as? Ed25519Account
+                ?: throw IllegalStateException("Not an Ed25519Account")
+            world.privateKey = account.privateKey
         }.onSuccess {
             world.clearError()
         }.onFailure {
@@ -331,7 +346,8 @@ class CryptoSteps(private val world: World) {
     @When("I export the public key bytes")
     fun whenIExportThePublicKeyBytes() {
         runCatching {
-            throw NotImplementedError("Public key bytes export not yet available")
+            val account = world.keyPair as com.aptos.core.account.Account
+            world.bytes = account.publicKeyBytes
         }.onSuccess {
             world.clearError()
         }.onFailure {
@@ -342,7 +358,9 @@ class CryptoSteps(private val world: World) {
     @When("I export the private key bytes")
     fun whenIExportThePrivateKeyBytes() {
         runCatching {
-            throw NotImplementedError("Private key bytes export not yet available")
+            val account = world.keyPair as? Ed25519Account
+                ?: throw IllegalStateException("Not an Ed25519Account")
+            world.bytes = account.privateKey.data
         }.onSuccess {
             world.clearError()
         }.onFailure {
@@ -358,8 +376,8 @@ class CryptoSteps(private val world: World) {
     fun whenISignTheMessage() {
         runCatching {
             val message = world.retrieve<ByteArray>("message")!!
-            val account = world.keyPair as Account
-            world.signature = account.sign(HexInput.fromByteArray(message))
+            val account = world.keyPair as com.aptos.core.account.Account
+            world.signature = account.sign(message)
         }.onSuccess {
             world.clearError()
         }.onFailure {
@@ -370,7 +388,9 @@ class CryptoSteps(private val world: World) {
     @When("I sign the message with the private key")
     fun whenISignTheMessageWithThePrivateKey() {
         runCatching {
-            throw NotImplementedError("Signing with standalone private key not yet available")
+            val message = world.retrieve<ByteArray>("message")!!
+            val privateKey = world.privateKey as Ed25519.PrivateKey
+            world.signature = privateKey.sign(message).data
         }.onSuccess {
             world.clearError()
         }.onFailure {
@@ -382,8 +402,8 @@ class CryptoSteps(private val world: World) {
     fun whenISignTheSameMessageAgain() {
         runCatching {
             val message = world.retrieve<ByteArray>("message")!!
-            val account = world.keyPair as Account
-            world.store("signature2", account.sign(HexInput.fromByteArray(message)))
+            val account = world.keyPair as com.aptos.core.account.Account
+            world.store("signature2", account.sign(message))
         }.onSuccess {
             world.clearError()
         }.onFailure {
@@ -398,7 +418,12 @@ class CryptoSteps(private val world: World) {
     @When("I verify the signature")
     fun whenIVerifyTheSignature() {
         runCatching {
-            throw NotImplementedError("Signature verification not yet available in Kaptos 0.1.2-beta")
+            val message = world.retrieve<ByteArray>("message")!!
+            val account = world.keyPair as? Ed25519Account
+                ?: throw IllegalStateException("Not an Ed25519Account")
+            val sigBytes = world.signature as ByteArray
+            val result = account.publicKey.verify(message, Ed25519.Signature(sigBytes))
+            world.store("verification_result", result)
         }.onSuccess {
             world.clearError()
         }.onFailure {
@@ -435,7 +460,8 @@ class CryptoSteps(private val world: World) {
     @When("I derive the authentication key")
     fun whenIDeriveTheAuthenticationKey() {
         runCatching {
-            throw NotImplementedError("Authentication key derivation not yet available")
+            val account = world.keyPair as com.aptos.core.account.Account
+            world.authKey = account.authenticationKey
         }.onSuccess {
             world.clearError()
         }.onFailure {
@@ -446,7 +472,8 @@ class CryptoSteps(private val world: World) {
     @When("I derive the account address from the authentication key")
     fun whenIDeriveTheAccountAddressFromTheAuthenticationKey() {
         runCatching {
-            throw NotImplementedError("Address derivation from auth key not yet available")
+            val authKey = world.authKey as com.aptos.core.crypto.AuthenticationKey
+            world.address = authKey.derivedAddress()
         }.onSuccess {
             world.clearError()
         }.onFailure {
@@ -473,22 +500,22 @@ class CryptoSteps(private val world: World) {
     @Then("the public key should be 32 bytes")
     fun thenThePublicKeyShouldBe32BytesCheck() {
         world.keyPair shouldNotBe null
-        val account = world.keyPair as Account
-        account.publicKey shouldNotBe null
+        val account = world.keyPair as com.aptos.core.account.Account
+        account.publicKeyBytes.size shouldBe 32
     }
 
     @Then("the private keys should be different")
     fun thenThePrivateKeysShouldBeDifferent() {
-        val kp1 = world.keyPair as Account
-        val kp2 = world.keyPair2 as Account
-        kp1.accountAddress shouldNotBe kp2.accountAddress
+        val kp1 = world.keyPair as com.aptos.core.account.Account
+        val kp2 = world.keyPair2 as com.aptos.core.account.Account
+        kp1.address shouldNotBe kp2.address
     }
 
     @Then("the public keys should be different")
     fun thenThePublicKeysShouldBeDifferent() {
-        val kp1 = world.keyPair as Account
-        val kp2 = world.keyPair2 as Account
-        kp1.publicKey shouldNotBe kp2.publicKey
+        val kp1 = world.keyPair as com.aptos.core.account.Account
+        val kp2 = world.keyPair2 as com.aptos.core.account.Account
+        kp1.publicKeyBytes.contentEquals(kp2.publicKeyBytes) shouldBe false
     }
 
     @Then("creating again from the same seed should produce the same key pair")
@@ -532,9 +559,9 @@ class CryptoSteps(private val world: World) {
 
     @Then("the key pairs should be different")
     fun thenTheKeyPairsShouldBeDifferent() {
-        val kp1 = world.keyPair as Account
-        val kp2 = world.keyPair2 as Account
-        kp1.accountAddress shouldNotBe kp2.accountAddress
+        val kp1 = world.keyPair as com.aptos.core.account.Account
+        val kp2 = world.keyPair2 as com.aptos.core.account.Account
+        kp1.address shouldNotBe kp2.address
     }
 
     // Removed duplicate: "the public key should be 32 bytes" is defined above

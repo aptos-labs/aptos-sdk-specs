@@ -1,5 +1,5 @@
 plugins {
-    kotlin("jvm") version "1.9.22"
+    kotlin("jvm") version "2.1.10"
     id("org.jlleitschuh.gradle.ktlint") version "12.1.0"
 }
 
@@ -8,12 +8,13 @@ version = "1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
+    mavenLocal()
 }
 
 dependencies {
-    // Kaptos SDK - Kotlin Multiplatform SDK for Aptos (published to Maven Central)
-    // Use the JVM-specific artifact for pure JVM testing
-    implementation("xyz.mcxross.kaptos:kaptos-jvm:0.1.2-beta")
+    // Official Aptos Kotlin SDK (aptos-labs)
+    // Uses the :core module for types, crypto, BCS, accounts, transactions
+    implementation("com.aptos:core:0.1.0")
 
     // Cucumber BDD Framework
     testImplementation("io.cucumber:cucumber-java:7.15.0")
@@ -28,15 +29,15 @@ dependencies {
     testImplementation("com.google.code.gson:gson:2.10.1")
 
     // Kotlin coroutines
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0")
 
     // Kotest assertions
-    testImplementation("io.kotest:kotest-assertions-core:5.8.0")
+    testImplementation("io.kotest:kotest-assertions-core:5.9.1")
 }
 
 kotlin {
-    jvmToolchain(17)
+    jvmToolchain(11)
 }
 
 tasks.test {

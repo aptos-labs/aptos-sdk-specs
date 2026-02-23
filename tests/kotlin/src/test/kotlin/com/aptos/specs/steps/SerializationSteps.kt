@@ -8,7 +8,7 @@ import io.cucumber.java.en.Then
 import io.cucumber.java.en.When
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
-import xyz.mcxross.kaptos.model.AccountAddress
+import com.aptos.core.types.AccountAddress
 import java.io.ByteArrayOutputStream
 import java.math.BigInteger
 import java.nio.ByteBuffer
@@ -185,7 +185,7 @@ class SerializationSteps(private val world: World) {
     @Given("an AccountAddress {string}")
     fun givenAnAccountAddressString(hex: String) {
         runCatching {
-            world.address = AccountAddress.fromString(hex)
+            world.address = AccountAddress.fromHexRelaxed(hex)
         }.onSuccess {
             world.clearError()
         }.onFailure {
