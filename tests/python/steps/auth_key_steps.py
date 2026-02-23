@@ -136,7 +136,8 @@ def step_given_secp256k1_from_test_vectors(context):
         )
         return
 
-    # Derive a deterministic Secp256k1 key from fixed test-vector bytes.
+    # Intentionally deterministic for reproducible vector-based assertions.
+    # This step is used for test-vector scenarios, not randomness checks.
     private_key = SigningKey.from_string(
         bytes.fromhex(
             "0000000000000000000000000000000000000000000000000000000000000001"

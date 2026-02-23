@@ -39,6 +39,10 @@ except ImportError:
 
 SECP256k1 = "SECP256k1"
 NIST256p = "NIST256p"
+NIST256P_ORDER = int(
+    "FFFFFFFF00000000FFFFFFFFFFFFFFFFBCE6FAADA7179E84F3B9CAC2FC632551",
+    16,
+)
 
 
 class BadSignatureError(Exception):
@@ -53,28 +57,42 @@ def _build_hasher(
     return lambda message: hashfunc(message).digest()
 
 
-def _hash_algorithm_for(hashfunc: Optional[Callable]) -> "hashes.HashAlgorithm":
+def _hash_algorithm_for(
+    hashfunc: Optional[Callable],
+) -> "hashes.HashAlgorithm":
     if not NIST256P_AVAILABLE:
         raise ImportError("cryptography library not available")
 
     if hashfunc is None:
         return hashes.SHA256()
 
+    known_hashes = {
+        hashlib.sha512: hashes.SHA512,
+        hashlib.sha384: hashes.SHA384,
+        hashlib.sha256: hashes.SHA256,
+        hashlib.sha1: hashes.SHA1,
+    }
+    for known_func, algorithm in known_hashes.items():
+        if hashfunc is known_func:
+            return algorithm()
+
     name = getattr(hashfunc, "__name__", "").lower()
-    if "sha512" in name:
+    if name == "sha512":
         return hashes.SHA512()
-    if "sha384" in name:
+    if name == "sha384":
         return hashes.SHA384()
-    if "sha1" in name:
+    if name == "sha1":
         return hashes.SHA1()
     return hashes.SHA256()
 
 
-def _raw_signature_to_der(signature: bytes) -> bytes:
+def _raw_signature_to_der(signature: bytes, curve: str) -> bytes:
     if len(signature) != 64:
         raise BadSignatureError("expected 64-byte raw signature")
 
-    if SECP256K1_AVAILABLE:
+    if curve == SECP256k1:
+        if not SECP256K1_AVAILABLE:
+            raise ImportError("coincurve library not available")
         try:
             return coincurve_ecdsa.cdata_to_der(
                 coincurve_ecdsa.deserialize_compact(signature)
@@ -82,15 +100,20 @@ def _raw_signature_to_der(signature: bytes) -> bytes:
         except (TypeError, ValueError) as exc:
             raise BadSignatureError("invalid signature bytes") from exc
 
-    if not NIST256P_AVAILABLE:
-        raise ImportError("signature conversion backend not available")
-    r = int.from_bytes(signature[:32], "big")
-    s = int.from_bytes(signature[32:], "big")
-    return utils.encode_dss_signature(r, s)
+    if curve == NIST256p:
+        if not NIST256P_AVAILABLE:
+            raise ImportError("cryptography library not available")
+        r = int.from_bytes(signature[:32], "big")
+        s = int.from_bytes(signature[32:], "big")
+        return utils.encode_dss_signature(r, s)
+
+    raise ValueError(f"unsupported curve: {curve}")
 
 
-def _der_signature_to_raw(signature: bytes) -> bytes:
-    if SECP256K1_AVAILABLE:
+def _der_signature_to_raw(signature: bytes, curve: str) -> bytes:
+    if curve == SECP256k1:
+        if not SECP256K1_AVAILABLE:
+            raise ImportError("coincurve library not available")
         try:
             return coincurve_ecdsa.serialize_compact(
                 coincurve_ecdsa.der_to_cdata(signature)
@@ -98,10 +121,21 @@ def _der_signature_to_raw(signature: bytes) -> bytes:
         except (TypeError, ValueError) as exc:
             raise BadSignatureError("invalid signature bytes") from exc
 
-    if not NIST256P_AVAILABLE:
-        raise ImportError("signature conversion backend not available")
-    r, s = utils.decode_dss_signature(signature)
-    return r.to_bytes(32, "big") + s.to_bytes(32, "big")
+    if curve == NIST256p:
+        if not NIST256P_AVAILABLE:
+            raise ImportError("cryptography library not available")
+
+        try:
+            r, s = utils.decode_dss_signature(signature)
+        except ValueError as exc:
+            raise BadSignatureError("invalid signature bytes") from exc
+
+        try:
+            return r.to_bytes(32, "big") + s.to_bytes(32, "big")
+        except OverflowError as exc:
+            raise BadSignatureError("signature component too large") from exc
+
+    raise ValueError(f"unsupported curve: {curve}")
 
 
 class VerifyingKey:
@@ -161,7 +195,10 @@ class VerifyingKey:
         try:
             if self.curve == SECP256k1:
                 if len(signature) == 64:
-                    signature = _raw_signature_to_der(signature)
+                    signature = _raw_signature_to_der(
+                        signature,
+                        curve=self.curve,
+                    )
                 is_valid = self._key_obj.verify(
                     signature,
                     message,
@@ -173,7 +210,10 @@ class VerifyingKey:
 
             if self.curve == NIST256p:
                 if len(signature) == 64:
-                    signature = _raw_signature_to_der(signature)
+                    signature = _raw_signature_to_der(
+                        signature,
+                        curve=self.curve,
+                    )
                 self._key_obj.verify(
                     signature,
                     message,
@@ -185,8 +225,13 @@ class VerifyingKey:
         except BadSignatureError:
             raise
         except Exception as exc:
-            if InvalidSignature is not None and isinstance(exc, InvalidSignature):
-                raise BadSignatureError("signature verification failed") from exc
+            if (
+                InvalidSignature is not None
+                and isinstance(exc, InvalidSignature)
+            ):
+                raise BadSignatureError(
+                    "signature verification failed"
+                ) from exc
             if isinstance(exc, (ValueError, TypeError)):
                 raise BadSignatureError("invalid signature bytes") from exc
             raise
@@ -224,6 +269,10 @@ class SigningKey:
             if len(key_bytes) != 32:
                 raise ValueError("private key must be 32 bytes")
             private_value = int.from_bytes(key_bytes, "big")
+            if not 1 <= private_value < NIST256P_ORDER:
+                raise ValueError(
+                    "private key integer is out of range for NIST256p curve"
+                )
             private_key = ec.derive_private_key(private_value, ec.SECP256R1())
             return cls(curve, private_key)
 
@@ -250,11 +299,13 @@ class SigningKey:
         hashfunc: Optional[Callable[[bytes], "hashlib._Hash"]] = None,
     ) -> bytes:
         if self.curve == SECP256k1:
+            if not SECP256K1_AVAILABLE:
+                raise ImportError("coincurve library not available")
             der_signature = self._key_obj.sign(
                 message,
                 hasher=_build_hasher(hashfunc),
             )
-            return _der_signature_to_raw(der_signature)
+            return _der_signature_to_raw(der_signature, curve=self.curve)
 
         if self.curve == NIST256p:
             if not NIST256P_AVAILABLE:
@@ -263,6 +314,6 @@ class SigningKey:
                 message,
                 ec.ECDSA(_hash_algorithm_for(hashfunc)),
             )
-            return _der_signature_to_raw(der_signature)
+            return _der_signature_to_raw(der_signature, curve=self.curve)
 
         raise ValueError(f"unsupported curve: {self.curve}")
