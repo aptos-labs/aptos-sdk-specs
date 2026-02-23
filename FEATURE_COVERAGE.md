@@ -1,6 +1,6 @@
 # Feature Coverage Matrix
 
-> **Last Updated:** 2026-02-06
+> **Last Updated:** 2026-02-23
 >
 > This file tracks implementation status of behavioral specifications across all SDK
 > implementations. Check boxes indicate that step definitions exist and tests pass for that
@@ -29,19 +29,19 @@
 
 ## Coverage Summary
 
-> **Last verified:** 2026-02-06. Numbers reflect actual test runs.
+> **Last verified:** 2026-02-23. Numbers reflect actual test runs.
 
-| SDK        | Required (P0)  | Preferred (P1) | Optional (P2)  | Total    | Notes                                      |
-| ---------- | -------------- | -------------- | -------------- | -------- | ------------------------------------------ |
-| TypeScript | ~320/370 (86%) | ~100/183 (55%) | ~131/252 (52%) | ~551/826 | Reference impl; API tests need network     |
-| Go         | 333/791 (42%)  | included       | included       | 333/791  | 136 failed, 312 pending, 10 undefined      |
-| Rust       | 723/791 (91%)  | included       | included       | 723/791  | 56 skipped, 12 failed (network benchmarks) |
-| .NET       | 478/808 (59%)  | included       | included       | 478/808  | 330 failures (last verified 2026-01-28)    |
-| Python     | 459/791 (58%)  | included       | included       | 459/791  | 121 failed, 75 errors, 136 skipped         |
-| Java       | 22/802 (3%)    | included       | included       | 22/802   | 780 errors, most steps undefined           |
-| Kotlin     | 176/1652 (11%) | included       | included       | 176/1652 | Not runnable (Gradle/JDK compat issue)     |
-| C++        | 0/370 (0%)     | 0/183 (0%)     | 0/250 (0%)     | 0/826    | Segfault in test runner                    |
-| Swift      | 286/826 (35%)  | included       | included       | 286/826  | XCTest-based (last verified 2026-01-28)    |
+| SDK        | Required (P0)  | Preferred (P1) | Optional (P2) | Total   | Notes                                            |
+| ---------- | -------------- | -------------- | ------------- | ------- | ------------------------------------------------ |
+| TypeScript | ~494/791 (62%) | included       | included      | 494/791 | 49 failed, 37 undefined; API tests need network  |
+| Go         | 333/791 (42%)  | included       | included      | 333/791 | 136 failed, 312 pending, 10 undefined            |
+| Rust       | 723/791 (91%)  | included       | included      | 723/791 | 56 skipped, 12 failed (network/benchmarks)       |
+| .NET       | 478/808 (59%)  | included       | included      | 478/808 | 330 failures (last verified 2026-01-28)          |
+| Python     | 459/791 (58%)  | included       | included      | 459/791 | 121 failed, 75 errors, 136 skipped               |
+| Java       | 22/802 (3%)    | included       | included      | 22/802  | 780 errors, most steps undefined                 |
+| Kotlin     | —              | —              | —             | —       | SDK not yet published to Maven Central           |
+| C++        | 0/791 (0%)     | included       | included      | 0/791   | Segfault in test runner                          |
+| Swift      | —              | —              | —             | —       | Not verified (Swift 6.0/Xcode required, new SDK) |
 
 ---
 
@@ -1095,16 +1095,13 @@ cd tests/rust && cargo test --test specs
 
 **Status:** Most complete implementation (reference SDK)
 
-**Verified:** 2026-02-06 via `bun run cucumber-js` (per-category)
+**Verified:** 2026-02-23 via `bun run cucumber-js`
 
-**Test Results (per category, non-network):**
+**Test Results (non-network, non-performance):**
 
-- core-types: 121/121 passed (100%)
-- cryptography: 79/92 passed, 13 failed (86%)
-- account-management: 84/84 passed (100%)
-- transaction-building: 69/69 passed (100%)
-- advanced: 116/189 passed, 36 failed, 37 undefined (61%)
-- api-clients: Requires network (timeout in CI; ~190 scenarios)
+- 580 scenarios: 494 passed, 49 failed, 37 undefined
+- 2220 steps: 1993 passed, 49 failed, 132 undefined, 46 skipped
+- api-clients: Requires network (133 additional scenarios, timeout in CI)
 
 **Mocked Tests (not real implementations):**
 
@@ -1126,13 +1123,13 @@ cd tests/rust && cargo test --test specs
 
 **Status:** Core functionality (333/791 passing = 42%)
 
-**Verified:** 2026-02-06 via `go test -v ./...`
+**Verified:** 2026-02-23 via `go test -v ./...`
 
 **Test Results:**
 
 - 333 passed, 136 failed, 312 pending, 10 undefined
 - 1897 steps passed, 136 failed, 312 pending, 11 undefined, 702 skipped
-- Duration: ~36 seconds
+- Duration: ~33 seconds
 
 **Known Failures (136 total):**
 
@@ -1163,14 +1160,14 @@ cd tests/rust && cargo test --test specs
 
 **Status:** Excellent coverage (723/791 passing = 91%)
 
-**Verified:** 2026-02-06 via `cargo test --test specs`
+**Verified:** 2026-02-23 via `cargo test --test specs`
 
 **Results:**
 
 - 723 passed, 56 skipped, 12 failed
 - All 12 failures are network-dependent performance benchmarks (require devnet access)
 - 56 skipped scenarios are for features not yet tested
-- Duration: ~28 seconds
+- Duration: ~110 seconds
 
 **Note:** Tests depend on `aptos-sdk` from GitHub (`https://github.com/aptos-labs/aptos-rust-sdk`),
 which is not yet on crates.io.
@@ -1187,12 +1184,12 @@ which is not yet on crates.io.
 
 **Status:** Early implementation (22/802 passing = 3%)
 
-**Verified:** 2026-02-06 via `mvn test`
+**Verified:** 2026-02-23 via `mvn test`
 
 **Results:**
 
 - Tests run: 802, Errors: 780, Failures: 0, Passed: 22
-- Duration: ~11 seconds
+- Duration: ~17 seconds
 
 **Implemented Tests:**
 
@@ -1218,7 +1215,9 @@ which is not yet on crates.io.
 
 ### Kotlin (`aptos-kotlin-sdk` 0.1.0) — [Full Status](tests/kotlin/SDK_STATUS.md)
 
-**Status:** Official Aptos Labs SDK — newly integrated
+**Status:** Official Aptos Labs SDK — not yet runnable
+
+**Verified:** 2026-02-23 — build fails (SDK not published to Maven Central)
 
 **Publisher:** aptos-labs (official)
 
@@ -1229,7 +1228,8 @@ which is not yet on crates.io.
 - Modular architecture (core, client, sdk, indexer)
 - Full Ed25519 and Secp256k1 support
 - BCS serialization, authentication keys, mnemonic derivation
-- Previous test results not applicable due to SDK replacement
+- Cannot build: `com.aptos:core:0.1.0` not found in Maven Central or mavenLocal
+- Step definitions updated, awaiting SDK publication
 
 ---
 
@@ -1237,7 +1237,7 @@ which is not yet on crates.io.
 
 **Status:** Significantly improved coverage (459/791 passing = 58%)
 
-**Verified:** 2026-02-06 via `behave`
+**Verified:** 2026-02-23 via `behave`
 
 **Results (per category):**
 
@@ -1273,7 +1273,7 @@ which is not yet on crates.io.
 
 **Last Verified:** 2026-01-28 via `dotnet test`
 
-**Current Issue (2026-02-06):** Cannot run tests — `dotnet` SDK not installed in environment.
+**Current Issue (2026-02-23):** Cannot run tests — `dotnet` SDK not installed in environment.
 
 **Results (from 2026-01-28):**
 

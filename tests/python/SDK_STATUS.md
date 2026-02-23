@@ -1,7 +1,7 @@
 # Python SDK Test Status
 
-> **Last Updated:** 2026-02-06  
-> **Last Verified:** 2026-02-06 via `behave` (full test suite)
+> **Last Updated:** 2026-02-23  
+> **Last Verified:** 2026-02-23 via `behave` (full test suite)
 
 ---
 

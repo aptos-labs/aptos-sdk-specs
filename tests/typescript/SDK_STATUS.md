@@ -1,7 +1,7 @@
 # TypeScript SDK Test Status
 
-> **Last Updated:** 2026-02-06  
-> **Last Verified:** 2026-02-06 via `bun run cucumber-js` (per-category runs)
+> **Last Updated:** 2026-02-23  
+> **Last Verified:** 2026-02-23 via `bun run cucumber-js`
 
 ---
 
@@ -22,20 +22,18 @@
 
 | Priority       | Passing  | Total   | Percentage | Status |
 | -------------- | -------- | ------- | ---------- | ------ |
-| Required (P0)  | ~320     | 370     | ~86%       | 🟡     |
-| Preferred (P1) | ~100     | 183     | ~55%       | 🟡     |
-| Optional (P2)  | ~131     | 252     | ~52%       | 🟡     |
-| **Total**      | **~551** | **791** | **~70%**   | 🟡     |
+| Required (P0)  | ~494     | 580     | ~85%       | 🟡     |
+| Preferred (P1) | included | -       | -          | -      |
+| Optional (P2)  | included | -       | -          | -      |
+| **Total**      | **494**  | **791** | **62%**    | 🟡     |
 
 > **Notes:**
 >
-> - core-types: 121/121 passed (100%)
-> - cryptography: 79/92 passed, 13 failed (Secp256r1 address derivation issues)
-> - account-management: 84/84 passed (100%)
-> - transaction-building: 69/69 passed (100%)
-> - advanced: 116/189 passed, 36 failed, 37 undefined
-> - api-clients: Requires network access (tests timeout without network)
-> - Full test runs timeout on network-dependent tests (~5+ minutes)
+> - 580 non-network/perf scenarios: 494 passed, 49 failed, 37 undefined
+> - 133 api-client scenarios: Require network access (timeout without network)
+> - 78 network/performance scenarios: Require live devnet/testnet
+> - 49 failures in Secp256r1, simulation, retry
+> - 37 undefined (codegen, some advanced features)
 > - Some keyless and script tests use mocks
 
 ---
