@@ -20,7 +20,7 @@ All agents share this foundational knowledge about the repository.
   - `tests/go/` - Godog (tests aptos-go-sdk)
   - `tests/rust/` - cucumber-rs (tests aptos-rust-sdk)
   - `tests/java/` - Cucumber-JVM (tests japtos)
-  - `tests/kotlin/` - Cucumber-JVM (tests kaptos)
+  - `tests/kotlin/` - Cucumber-JVM (tests aptos-kotlin-sdk)
   - `tests/python/` - Behave (tests aptos-sdk)
   - `tests/dotnet/` - Reqnroll (tests Aptos .NET SDK)
   - `tests/swift/` - CucumberSwift (tests aptos-swift-sdk)

@@ -1,13 +1,12 @@
 # Swift SDK Behavioral Specification Tests
 
-This directory contains BDD test implementations for the Aptos Swift SDK using CucumberSwift and
-XCTest.
+This directory contains BDD test implementations for the official Aptos Swift SDK using XCTest.
 
 ## Prerequisites
 
-- Xcode 15.0+ or Swift 5.9+
-- macOS 12.0+ (for development)
-- iOS 13.0+ (for iOS target)
+- Xcode 16.0+ or Swift 6.0+
+- macOS 14.0+ (for development)
+- iOS 17.0+ (for iOS target)
 
 ## Setup
 
@@ -38,12 +37,12 @@ swift/
 │       └── AptosSpecs.swift         # Empty (test-only package)
 └── Tests/
     └── AptosSpecsTests/
-        ├── AptosSpecsTests.swift    # XCTest-based tests (286 tests)
+        ├── AptosSpecsTests.swift    # XCTest-based tests
         ├── Support/                 # Test utilities
         │   ├── World.swift          # Test context
         │   ├── Vectors.swift        # Test vector loading
         │   └── Hooks.swift          # Before/After hooks
-        └── CucumberTests/           # CucumberSwift BDD tests
+        └── CucumberTests/           # CucumberSwift BDD tests (disabled)
             ├── CucumberTestRunner.swift  # Cucumber test runner
             ├── Steps/               # Step definitions
             │   ├── AddressSteps.swift
@@ -65,9 +64,6 @@ swift test
 # Run only XCTest-based tests
 make test-xctest
 
-# Run only Cucumber BDD tests
-make test-cucumber
-
 # Run only @required tests
 make test-required
 
@@ -83,32 +79,30 @@ swift test --verbose
 
 ## SDK Under Test
 
-| Property          | Value                                                 |
-| ----------------- | ----------------------------------------------------- |
-| **Package**       | `aptos-swift-sdk`                                     |
-| **Repository**    | https://github.com/ALCOVE-LAB/aptos-swift-sdk         |
-| **Documentation** | https://aptos.dev/build/sdks/community-sdks/swift-sdk |
+| Property          | Value                                              |
+| ----------------- | -------------------------------------------------- |
+| **Package**       | `AptosSDK`                                         |
+| **Repository**    | https://github.com/aptos-labs/aptos-swift-sdk      |
+| **Publisher**     | aptos-labs (official)                               |
 
 ## Dependencies
 
-- **CucumberSwift** - BDD testing framework for Swift
-- **aptos-swift-sdk** - Aptos SDK for Swift
-- **CryptoSwift** - For SHA3-256 hashing
-- **secp256k1.swift** - For secp256k1 cryptography
+- **AptosSDK** — Official Aptos SDK for Swift (includes secp256k1, BigInt, CTweetNaCl)
+- **CucumberSwift** — BDD testing framework for Swift (disabled, upstream bug)
 
 ## Test Frameworks
 
 This project uses two complementary test approaches:
 
 1. **XCTest-based tests** (`AptosSpecsTests.swift`)
-   - 286 manually translated tests from Gherkin scenarios
+   - Manually translated tests from Gherkin scenarios
    - Uses XCTest assertions directly
    - Follows `test_<Feature>_<Scenario>` naming pattern
 
 2. **CucumberSwift BDD tests** (`CucumberTests/`)
    - Parses Gherkin `.feature` files directly
    - Step definitions in `Steps/` directory
-   - Better alignment with shared feature files
+   - Currently disabled due to upstream CucumberSwift bug
 
 ## Test Tags
 
@@ -137,21 +131,10 @@ XCTest requires full Xcode installation, not just Command Line Tools. To run tes
 
 ### CucumberSwift Bug
 
-CucumberSwift has a bug in `CucumberTest.swift` line 84 - it uses `addTeardownBlock` without the
-required `@available(macOS 10.15, iOS 13.0, tvOS 13.0, *)` annotation. This causes compilation
-errors even when targeting macOS 10.15 or newer.
+CucumberSwift has a compilation bug preventing its use. Step definitions in
+`CucumberTests/Steps/` are ready for when this is fixed upstream.
 
-The step definitions in `CucumberTests/Steps/` are ready and waiting for this upstream fix. Once
-fixed, uncomment the CucumberSwift dependency and CucumberTests target in `Package.swift`.
-
-**Workaround:** Use the XCTest-based tests in `AptosSpecsTests.swift` (286 tests, all passing).
-
-### SDK Path Behaviors
-
-- `AccountAddress.toString()` only shortens "special" addresses (0x0-0xf)
-- For non-special addresses, use `toStringLong()` for consistent format
-- Ed25519 BIP-44 path uses hardened derivation: `m/44'/637'/0'/0'/0'`
-- Secp256k1 BIP-44 path uses standard derivation: `m/44'/637'/0'/0/0`
+**Workaround:** Use the XCTest-based tests in `AptosSpecsTests.swift`.
 
 ## Implementation Status
 

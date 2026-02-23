@@ -1,67 +1,63 @@
 # Swift SDK Test Implementation Plan
 
-> **Status:** In Progress - Core + Crypto + Move + Config Complete  
-> **Last Updated:** 2026-01-28  
-> **Target SDK:** ALCOVE-LAB/aptos-swift-sdk  
+> **Status:** SDK Replaced — Tests Need Verification  
+> **Last Updated:** 2026-02-23  
+> **Target SDK:** aptos-labs/aptos-swift-sdk (official)  
 > **BDD Framework:** XCTest (CucumberSwift step definitions prepared for future integration)
+
+## SDK Migration (2026-02-23)
+
+### Old SDK (ALCOVE-LAB)
+- **Package URL**: `https://github.com/ALCOVE-LAB/aptos-swift-sdk.git`
+- **Import**: `import Aptos`, `import BCS`, `import Core`, `import Transactions`, `import Utils`
+- **Publisher**: ALCOVE-LAB (community)
+- **Swift**: 5.9+, iOS 15+, macOS 12+
+
+### New SDK (aptos-labs)
+- **Package URL**: `https://github.com/aptos-labs/aptos-swift-sdk.git`
+- **Import**: `import AptosSDK` (single unified module)
+- **Publisher**: aptos-labs (official)
+- **Swift**: 6.0+, iOS 17+, macOS 14+
+
+### Key API Changes
+- `import Aptos/BCS/Core/Transactions/Utils` → `import AptosSDK`
+- `Account.Ed25519Account` → `Ed25519Account`
+- `Account.SingleKeyAccount` → `SingleKeyAccount`
+- `AccountProtocol` → `AptosAccount`
+- `Aptos(aptosConfig:)` → `AptosClient(config:)`
+- `AptosConfig.Network.*` → `Network.*`
+- `AptosConfig.mainnet` → `AptosConfig.mainnet()`
+- `network.localnet` → `Network.local`
+
+### New Features in Official SDK
+- Secp256r1 (P-256) support for WebAuthn/passkeys
+- Keyless authentication (OIDC pepper/prover)
+- Fee-payer transaction support
+- Multi-agent transaction support
+- 15 domain APIs (Account, Transaction, Coin, Faucet, etc.)
+- AIP-80 private key format
+- Actor-based HTTP client with retry
+- Full strict Swift 6 concurrency
 
 ## Current Coverage
 
-| Category          | Tests   | Status      |
-| ----------------- | ------- | ----------- |
-| Address           | 32      | ✅ Complete |
-| Ed25519           | 18      | ✅ Complete |
-| Secp256k1         | 18      | ✅ Complete |
-| SingleKey Account | 5       | ✅ Complete |
-| Mnemonic/BIP-44   | 9       | ✅ Complete |
-| Account           | 17      | ✅ Complete |
-| TypeTag           | 32      | ✅ Complete |
-| Hashing           | 9       | ✅ Complete |
-| AuthenticationKey | 8       | ✅ Complete |
-| BCS Serialization | 23      | ✅ Complete |
-| Hex Utilities     | 18      | ✅ Complete |
-| Identifier        | 6       | ✅ Complete |
-| ModuleId          | 6       | ✅ Complete |
-| ChainId           | 9       | ✅ Complete |
-| Move Primitives   | 12      | ✅ Complete |
-| MoveString        | 5       | ✅ Complete |
-| MoveVector        | 6       | ✅ Complete |
-| MoveOption        | 12      | ✅ Complete |
-| Network Config    | 19      | ✅ Complete |
-| AptosConfig       | 6       | ✅ Complete |
-| Signatures        | 7       | ✅ Complete |
-| PublicKeys        | 9       | ✅ Complete |
-| API Client        | 3       | ✅ Basic    |
-| **Total**         | **286** | **93% P0**  |
+Tests need verification after SDK migration.
 
-## Known Issues
-
-### CucumberSwift SPM Compatibility
-
-CucumberSwift imports XCTest in its main library target, which causes compilation errors with Swift
-Package Manager when building for non-test targets. This is a known limitation.
-
-**Workaround:** Use XCTest directly with Gherkin-style naming conventions:
-
-- Test methods follow `test_<FeatureName>_<ScenarioName>` pattern
-- Step implementations are regular Swift test methods
-- Feature file scenarios are manually translated to test methods
-
-### Xcode Requirement
-
-XCTest requires full Xcode installation, not just Command Line Tools. To run tests:
-
-1. Install Xcode from the App Store
-2. Run `sudo xcode-select -s /Applications/Xcode.app/Contents/Developer`
-3. Then `swift test` will work
-
-### SDK Behaviors
-
-- `AccountAddress.toString()` only shortens "special" addresses (0x0-0xf)
-- For non-special addresses, use `toStringLong()` for consistent format
-- `Identifier` type uses `.identifier` property (not `.value`)
-- Ed25519 BIP-44 path uses hardened derivation: `m/44'/637'/0'/0'/0'`
-- Secp256k1 BIP-44 path uses standard derivation: `m/44'/637'/0'/0/0`
+| Category          | Tests   | Status        |
+| ----------------- | ------- | ------------- |
+| Address           | 32      | 🔄 Migrated  |
+| Ed25519           | 18      | 🔄 Migrated  |
+| Secp256k1         | 18      | 🔄 Migrated  |
+| SingleKey Account | 5       | 🔄 Migrated  |
+| Mnemonic/BIP-44   | 9       | 🔄 Migrated  |
+| Account           | 17      | 🔄 Migrated  |
+| TypeTag           | 32      | 🔄 Migrated  |
+| Hashing           | 9       | 🔄 Migrated  |
+| AuthenticationKey | 8       | 🔄 Migrated  |
+| BCS Serialization | 23      | 🔄 Migrated  |
+| Network Config    | 19      | 🔄 Migrated  |
+| AptosConfig       | 6       | 🔄 Migrated  |
+| Other             | ~90     | 🔄 Migrated  |
 
 ## Project Structure
 
@@ -77,80 +73,38 @@ tests/swift/
 │       └── AptosSpecs.swift         # Empty (test-only project)
 └── Tests/
     └── AptosSpecsTests/
-        ├── AptosSpecsTests.swift    # Main test file (286 tests)
+        ├── AptosSpecsTests.swift    # Main test file
         ├── Support/
         │   ├── World.swift          # Test context
         │   ├── Hooks.swift          # Helper functions
         │   └── Vectors.swift        # Test vector loading
-        └── Features/                # (Copied from root)
+        └── CucumberTests/           # Prepared for CucumberSwift
 ```
-
-## Completed Phases
-
-### Phase 1: Core Types ✅
-
-- AccountAddress parsing, formatting, BCS
-- TypeTag parsing, formatting, BCS
-- Hex utilities
-- Hashing (SHA2-256, SHA3-256)
-- Identifier and ModuleId
-- ChainId
-
-### Phase 2: Cryptography ✅
-
-- Ed25519 key generation, signing, verification
-- Secp256k1 key generation, signing, verification
-- AuthenticationKey derivation
-- Signatures and PublicKeys
-
-### Phase 3: Account Management ✅
-
-- Ed25519Account creation and signing
-- SingleKeyAccount creation and signing
-- Mnemonic/BIP-44 derivation paths
-
-### Phase 4: BCS Serialization ✅
-
-- Primitive types (bool, u8-u128, string)
-- Bytes and ULEB128
-- AccountAddress
-- TypeTag
-
-### Phase 5: Move Types ✅
-
-- Move Primitives (Boolean, U8, U16, U32, U64)
-- MoveString
-- MoveVector<T>
-- MoveOption<T>
-
-### Phase 6: Configuration ✅
-
-- Network configuration (mainnet, testnet, devnet, local, custom)
-- AptosConfig presets
-- Chain IDs, URLs
 
 ## Next Steps
 
-### Phase 7: Transaction Building
+### Phase 1: Verification (Priority)
+- [ ] Verify all migrated tests compile with new SDK
+- [ ] Fix any compilation errors from API changes
+- [ ] Run tests and verify pass rate
 
+### Phase 2: Transaction Building
 - [ ] Entry function building
 - [ ] Raw transaction construction
 - [ ] Transaction signing
 - [ ] Signed transaction serialization
 
-### Phase 8: API Integration (requires network)
+### Phase 3: New SDK Features
+- [ ] Secp256r1 (P-256) tests
+- [ ] Keyless authentication tests
+- [ ] Fee-payer transaction tests
+- [ ] Multi-agent transaction tests
 
+### Phase 4: API Integration (requires network)
 - [ ] Faucet funding (testnet/devnet)
 - [ ] Account info queries
 - [ ] Transaction submission
 - [ ] Transaction status polling
-
-### Phase 9: Advanced Features
-
-- [ ] Multi-agent transactions
-- [ ] Fee payer transactions
-- [ ] View functions
-- [ ] Simulate transactions
 
 ## Running Tests
 
@@ -169,6 +123,6 @@ swift package clean && swift test
 
 ## Dependencies
 
-- aptos-swift-sdk (main branch)
-- CryptoSwift (for SHA3-256)
-- CryptoKit (for SHA2-256)
+- AptosSDK (official, via SPM from aptos-labs/aptos-swift-sdk)
+  - Includes: secp256k1.swift, BigInt, CTweetNaCl (embedded)
+- CryptoKit (Apple framework)
