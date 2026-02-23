@@ -334,7 +334,7 @@ jobs:
   # ==========================================================================
   swift:
     name: Swift Tests
-    runs-on: macos-15
+    runs-on: macos-latest
     timeout-minutes: 15
     defaults:
       run:

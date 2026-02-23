@@ -213,7 +213,7 @@ jobs:
   # ==========================================================================
   swift:
     name: Swift (Full)
-    runs-on: macos-15
+    runs-on: macos-latest
     if: ${{ github.event.inputs.sdk == 'all' || github.event.inputs.sdk == 'swift' || github.event_name == 'schedule' }}
     defaults:
       run:
