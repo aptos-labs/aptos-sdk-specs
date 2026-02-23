@@ -11,11 +11,13 @@ import hashlib
 from typing import Callable, Optional
 
 try:
+    from coincurve import ecdsa as coincurve_ecdsa
     from coincurve import PrivateKey as CoincurvePrivateKey
     from coincurve import PublicKey as CoincurvePublicKey
 
     SECP256K1_AVAILABLE = True
 except ImportError:
+    coincurve_ecdsa = None
     CoincurvePrivateKey = None
     CoincurvePublicKey = None
     SECP256K1_AVAILABLE = False
@@ -69,18 +71,35 @@ def _hash_algorithm_for(hashfunc: Optional[Callable]) -> "hashes.HashAlgorithm":
 
 
 def _raw_signature_to_der(signature: bytes) -> bytes:
-    if not NIST256P_AVAILABLE:
-        raise ImportError("cryptography library not available")
     if len(signature) != 64:
         raise BadSignatureError("expected 64-byte raw signature")
+
+    if SECP256K1_AVAILABLE:
+        try:
+            return coincurve_ecdsa.cdata_to_der(
+                coincurve_ecdsa.deserialize_compact(signature)
+            )
+        except (TypeError, ValueError) as exc:
+            raise BadSignatureError("invalid signature bytes") from exc
+
+    if not NIST256P_AVAILABLE:
+        raise ImportError("signature conversion backend not available")
     r = int.from_bytes(signature[:32], "big")
     s = int.from_bytes(signature[32:], "big")
     return utils.encode_dss_signature(r, s)
 
 
 def _der_signature_to_raw(signature: bytes) -> bytes:
+    if SECP256K1_AVAILABLE:
+        try:
+            return coincurve_ecdsa.serialize_compact(
+                coincurve_ecdsa.der_to_cdata(signature)
+            )
+        except (TypeError, ValueError) as exc:
+            raise BadSignatureError("invalid signature bytes") from exc
+
     if not NIST256P_AVAILABLE:
-        raise ImportError("cryptography library not available")
+        raise ImportError("signature conversion backend not available")
     r, s = utils.decode_dss_signature(signature)
     return r.to_bytes(32, "big") + s.to_bytes(32, "big")
 

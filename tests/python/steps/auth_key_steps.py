@@ -136,8 +136,13 @@ def step_given_secp256k1_from_test_vectors(context):
         )
         return
 
-    # Generate a deterministic Secp256k1 key for test vectors
-    private_key = SigningKey.generate(curve=SECP256k1)
+    # Derive a deterministic Secp256k1 key from fixed test-vector bytes.
+    private_key = SigningKey.from_string(
+        bytes.fromhex(
+            "0000000000000000000000000000000000000000000000000000000000000001"
+        ),
+        curve=SECP256k1,
+    )
     context.world.public_key_bytes = private_key.get_verifying_key().to_string(
         "compressed"
     )
