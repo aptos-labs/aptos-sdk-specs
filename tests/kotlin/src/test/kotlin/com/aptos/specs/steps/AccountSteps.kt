@@ -9,8 +9,10 @@ import io.cucumber.java.en.When
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.string.shouldNotContain
-import xyz.mcxross.kaptos.account.Account
-import xyz.mcxross.kaptos.model.HexInput
+import com.aptos.core.account.Ed25519Account
+import com.aptos.core.account.Secp256k1Account
+import com.aptos.core.crypto.AuthenticationKey
+import com.aptos.core.crypto.Ed25519
 
 /**
  * Step definitions for account creation and management scenarios.
@@ -19,7 +21,7 @@ import xyz.mcxross.kaptos.model.HexInput
  * - features/03-account-management/single-key.feature
  * - features/03-account-management/authentication-key.feature
  *
- * Note: Uses Kaptos SDK 0.1.2-beta. Some features may not be available.
+ * Uses the official Aptos Kotlin SDK (aptos-labs/aptos-kotlin-sdk).
  */
 class AccountSteps(private val world: World) {
     // ============================================================
@@ -29,7 +31,7 @@ class AccountSteps(private val world: World) {
     @Given("I generate a random Ed25519 account")
     fun givenIGenerateARandomEd25519Account() {
         runCatching {
-            world.account = Account.generate()
+            world.account = Ed25519Account.generate()
         }.onSuccess {
             world.clearError()
         }.onFailure {
@@ -40,7 +42,7 @@ class AccountSteps(private val world: World) {
     @Given("I generate another random Ed25519 account")
     fun givenIGenerateAnotherRandomEd25519Account() {
         runCatching {
-            world.account2 = Account.generate()
+            world.account2 = Ed25519Account.generate()
         }.onSuccess {
             world.clearError()
         }.onFailure {
@@ -51,7 +53,7 @@ class AccountSteps(private val world: World) {
     @Given("I generate a random Secp256k1 account")
     fun givenIGenerateARandomSecp256k1Account() {
         runCatching {
-            throw NotImplementedError("Secp256k1 account not yet available in Kaptos 0.1.2-beta")
+            world.account = Secp256k1Account.generate()
         }.onSuccess {
             world.clearError()
         }.onFailure {
@@ -62,7 +64,8 @@ class AccountSteps(private val world: World) {
     @Given("an Ed25519 account from private key bytes {string}")
     fun givenAnEd25519AccountFromPrivateKeyBytes(hex: String) {
         runCatching {
-            throw NotImplementedError("Account from private key bytes not yet available")
+            val privateKey = Ed25519.PrivateKey(hex.hexToBytes())
+            world.account = Ed25519Account.fromPrivateKey(privateKey)
         }.onSuccess {
             world.clearError()
         }.onFailure {
@@ -73,7 +76,7 @@ class AccountSteps(private val world: World) {
     @Given("an Ed25519 account from hex string {string}")
     fun givenAnEd25519AccountFromHexString(hex: String) {
         runCatching {
-            throw NotImplementedError("Account from hex string not yet available")
+            world.account = Ed25519Account.fromPrivateKeyHex(hex)
         }.onSuccess {
             world.clearError()
         }.onFailure {
@@ -110,7 +113,7 @@ class AccountSteps(private val world: World) {
     @When("I get the account public key")
     fun whenIGetTheAccountPublicKey() {
         runCatching {
-            world.publicKey = (world.account as Account).publicKey
+            world.publicKey = (world.account as com.aptos.core.account.Account).publicKeyBytes
         }.onSuccess {
             world.clearError()
         }.onFailure {
@@ -121,7 +124,7 @@ class AccountSteps(private val world: World) {
     @When("I get the account authentication key")
     fun whenIGetTheAccountAuthenticationKey() {
         runCatching {
-            throw NotImplementedError("Authentication key access not yet available")
+            world.authKey = (world.account as com.aptos.core.account.Account).authenticationKey
         }.onSuccess {
             world.clearError()
         }.onFailure {
@@ -132,7 +135,7 @@ class AccountSteps(private val world: World) {
     @When("I get the account address")
     fun whenIGetTheAccountAddress() {
         runCatching {
-            world.address = (world.account as Account).accountAddress
+            world.address = (world.account as com.aptos.core.account.Account).address
         }.onSuccess {
             world.clearError()
         }.onFailure {
@@ -155,8 +158,8 @@ class AccountSteps(private val world: World) {
     fun whenISignAMessageWithTheAccount() {
         runCatching {
             val message = world.retrieve<ByteArray>("message")!!
-            val account = world.account as Account
-            world.signature = account.sign(HexInput.fromByteArray(message))
+            val account = world.account as com.aptos.core.account.Account
+            world.signature = account.sign(message)
         }.onSuccess {
             world.clearError()
         }.onFailure {
@@ -214,9 +217,9 @@ class AccountSteps(private val world: World) {
 
     @Then("the accounts should be different")
     fun thenTheAccountsShouldBeDifferent() {
-        val acc1 = world.account as Account
-        val acc2 = world.account2 as Account
-        acc1.accountAddress shouldNotBe acc2.accountAddress
+        val acc1 = world.account as com.aptos.core.account.Account
+        val acc2 = world.account2 as com.aptos.core.account.Account
+        acc1.address shouldNotBe acc2.address
     }
 
     @Then("the account public key should be {string}")
@@ -247,17 +250,16 @@ class AccountSteps(private val world: World) {
 
     @Then("the private key should not be exposed accidentally")
     fun thenThePrivateKeyShouldNotBeExposedAccidentally() {
-        val account = world.account as Account
+        val account = world.account as com.aptos.core.account.Account
         val accountString = account.toString()
-        // Should not contain obvious private key patterns
         accountString shouldNotContain "privateKey"
     }
 
     @Then("the accounts should have the same address")
     fun thenTheAccountsShouldHaveTheSameAddress() {
-        val acc1 = world.account as Account
-        val acc2 = world.account2 as Account
-        acc1.accountAddress shouldBe acc2.accountAddress
+        val acc1 = world.account as com.aptos.core.account.Account
+        val acc2 = world.account2 as com.aptos.core.account.Account
+        acc1.address shouldBe acc2.address
     }
 
     // ============================================================
@@ -284,7 +286,9 @@ class AccountSteps(private val world: World) {
     @When("I derive an AuthenticationKey from the public key")
     fun whenIDeriveAnAuthenticationKeyFromThePublicKey() {
         runCatching {
-            throw NotImplementedError("AuthenticationKey derivation not yet available")
+            val account = world.account as? Ed25519Account
+                ?: throw IllegalStateException("Not an Ed25519Account")
+            world.authKey = AuthenticationKey.fromEd25519(account.publicKey)
         }.onSuccess {
             world.clearError()
         }.onFailure {

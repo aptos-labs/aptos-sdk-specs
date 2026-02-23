@@ -8,15 +8,14 @@ import io.cucumber.java.en.Then
 import io.cucumber.java.en.When
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
-import xyz.mcxross.kaptos.model.AccountAddress
+import com.aptos.core.types.AccountAddress
 
 /**
  * Step definitions for address parsing and formatting scenarios.
  *
  * Feature: features/01-core-types/address.feature
  *
- * Note: Uses Kaptos SDK 0.1.2-beta. Some methods may need adjustment
- * as the SDK API evolves.
+ * Uses the official Aptos Kotlin SDK (aptos-labs/aptos-kotlin-sdk).
  */
 class AddressSteps(private val world: World) {
     // Helper to get address bytes
@@ -52,7 +51,7 @@ class AddressSteps(private val world: World) {
     @Given("an AccountAddress with value {int}")
     fun givenAnAccountAddressWithValue(value: Int) {
         runCatching {
-            world.address = AccountAddress.fromString("0x${value.toString(16)}")
+            world.address = AccountAddress.fromHexRelaxed("0x${value.toString(16)}")
         }.onSuccess {
             world.clearError()
         }.onFailure {
@@ -63,7 +62,7 @@ class AddressSteps(private val world: World) {
     @Given("an AccountAddress from hex {string}")
     fun givenAnAccountAddressFromHex(hex: String) {
         runCatching {
-            world.address = AccountAddress.fromString(hex)
+            world.address = AccountAddress.fromHexRelaxed(hex)
         }.onSuccess {
             world.clearError()
         }.onFailure {
@@ -74,7 +73,7 @@ class AddressSteps(private val world: World) {
     @Given("another AccountAddress from hex {string}")
     fun givenAnotherAccountAddressFromHex(hex: String) {
         runCatching {
-            world.address2 = AccountAddress.fromString(hex)
+            world.address2 = AccountAddress.fromHexRelaxed(hex)
         }.onSuccess {
             world.clearError()
         }.onFailure {
@@ -99,7 +98,7 @@ class AddressSteps(private val world: World) {
     @When("I parse it as an AccountAddress")
     fun whenIParseItAsAnAccountAddress() {
         runCatching {
-            world.address = AccountAddress.fromString(world.hexString!!)
+            world.address = AccountAddress.fromHex(world.hexString!!)
         }.onSuccess {
             world.clearError()
         }.onFailure {
@@ -151,7 +150,7 @@ class AddressSteps(private val world: World) {
     fun whenIDeserializeTheBytesAsAccountAddress() {
         runCatching {
             val hex = "0x" + world.bytes!!.toHex()
-            world.address = AccountAddress.fromString(hex)
+            world.address = AccountAddress.fromHexRelaxed(hex)
         }.onSuccess {
             world.clearError()
         }.onFailure {
@@ -210,7 +209,7 @@ class AddressSteps(private val world: World) {
     fun whenIBcsDeserializeAsAccountAddress() {
         runCatching {
             val hex = "0x" + world.bytes!!.toHex()
-            world.address = AccountAddress.fromString(hex)
+            world.address = AccountAddress.fromHexRelaxed(hex)
         }.onSuccess {
             world.clearError()
         }.onFailure {
@@ -222,7 +221,7 @@ class AddressSteps(private val world: World) {
     fun whenIBcsDeserializeTheResultAsAccountAddress() {
         runCatching {
             val hex = "0x" + world.serializedBytes!!.toHex()
-            world.address2 = AccountAddress.fromString(hex)
+            world.address2 = AccountAddress.fromHexRelaxed(hex)
         }.onSuccess {
             world.clearError()
         }.onFailure {
@@ -366,7 +365,7 @@ class AddressSteps(private val world: World) {
     @Given("the ZERO address constant")
     fun givenTheZeroAddressConstant() {
         runCatching {
-            world.address = AccountAddress.fromString("0x0")
+            world.address = AccountAddress.fromHexRelaxed("0x0")
         }.onSuccess {
             world.clearError()
         }.onFailure {
@@ -377,7 +376,7 @@ class AddressSteps(private val world: World) {
     @Given("the ONE address constant")
     fun givenTheOneAddressConstant() {
         runCatching {
-            world.address = AccountAddress.fromString("0x1")
+            world.address = AccountAddress.fromHexRelaxed("0x1")
         }.onSuccess {
             world.clearError()
         }.onFailure {
@@ -388,7 +387,7 @@ class AddressSteps(private val world: World) {
     @Given("the THREE address constant")
     fun givenTheThreeAddressConstant() {
         runCatching {
-            world.address = AccountAddress.fromString("0x3")
+            world.address = AccountAddress.fromHexRelaxed("0x3")
         }.onSuccess {
             world.clearError()
         }.onFailure {
@@ -399,7 +398,7 @@ class AddressSteps(private val world: World) {
     @Given("the FOUR address constant")
     fun givenTheFourAddressConstant() {
         runCatching {
-            world.address = AccountAddress.fromString("0x4")
+            world.address = AccountAddress.fromHexRelaxed("0x4")
         }.onSuccess {
             world.clearError()
         }.onFailure {
