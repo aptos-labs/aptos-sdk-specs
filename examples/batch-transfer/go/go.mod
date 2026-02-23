@@ -11,6 +11,6 @@ require (
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/hasura/go-graphql-client v0.14.4 // indirect
 	github.com/hdevalence/ed25519consensus v0.2.0 // indirect
-	golang.org/x/crypto v0.42.0 // indirect
+	golang.org/x/crypto v0.45.0 // indirect
 	golang.org/x/sys v0.38.0 // indirect
 )
