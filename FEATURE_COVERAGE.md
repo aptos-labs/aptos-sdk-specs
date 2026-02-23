@@ -19,11 +19,11 @@
 | Go         | `aptos-go-sdk`       | v1.11.0    | aptos-labs    | [aptos-go-sdk](https://github.com/aptos-labs/aptos-go-sdk)         | [Details](tests/go/SDK_STATUS.md)         |
 | Rust       | `aptos-sdk`          | dev (git)  | aptos-labs    | [aptos-rust-sdk](https://github.com/aptos-labs/aptos-rust-sdk)     | [Details](tests/rust/SDK_STATUS.md)       |
 | Java       | `japtos`             | 1.1.8      | aptos-labs    | [aptos-java-sdk](https://github.com/aptos-labs/aptos-java-sdk)     | [Details](tests/java/SDK_STATUS.md)       |
-| Kotlin     | `kaptos`             | 0.1.2-beta | mcxross       | [kaptos](https://github.com/mcxross/kaptos)                        | [Details](tests/kotlin/SDK_STATUS.md)     |
+| Kotlin     | `aptos-kotlin-sdk`   | 0.1.0      | aptos-labs    | [aptos-kotlin-sdk](https://github.com/aptos-labs/aptos-kotlin-sdk) | [Details](tests/kotlin/SDK_STATUS.md)     |
 | Python     | `aptos-sdk`          | >=0.11.0   | aptos-labs    | [aptos-python-sdk](https://github.com/aptos-labs/aptos-python-sdk) | [Details](tests/python/SDK_STATUS.md)     |
 | .NET       | `Aptos`              | 0.0.x-beta | aptos-labs    | [aptos-dotnet-sdk](https://github.com/aptos-labs/aptos-dotnet-sdk) | [Details](tests/dotnet/SDK_STATUS.md)     |
 | C++        | `Aptos-Cpp-SDK`      | dev        | VAR-META-Tech | [Aptos-Cpp-SDK](https://github.com/VAR-META-Tech/Aptos-Cpp-SDK)    | [Details](tests/cpp/SDK_STATUS.md)        |
-| Swift      | `aptos-swift-sdk`    | main       | ALCOVE-LAB    | [aptos-swift-sdk](https://github.com/ALCOVE-LAB/aptos-swift-sdk)   | [Details](tests/swift/SDK_STATUS.md)      |
+| Swift      | `aptos-swift-sdk`    | main       | aptos-labs    | [aptos-swift-sdk](https://github.com/aptos-labs/aptos-swift-sdk)   | [Details](tests/swift/SDK_STATUS.md)      |
 
 ---
 
@@ -1216,23 +1216,20 @@ which is not yet on crates.io.
 
 ---
 
-### Kotlin (`kaptos` 0.1.2-beta) — [Full Status](tests/kotlin/SDK_STATUS.md)
+### Kotlin (`aptos-kotlin-sdk` 0.1.0) — [Full Status](tests/kotlin/SDK_STATUS.md)
 
-**Status:** Community SDK — not runnable in current environment
+**Status:** Official Aptos Labs SDK — newly integrated
 
-**Last Verified:** 2026-01-28 via `./gradlew test` (176 passed, 1476 failed)
-
-**Current Issue (2026-02-06):** Build fails due to Gradle/JDK compatibility (requires JDK 17,
-environment has JDK 21). The `gradle-wrapper.properties` was configured for Gradle 4.4.1 which
-doesn't support JDK 21.
-
-**Publisher:** mcxross (community)
+**Publisher:** aptos-labs (official)
 
 **Notes:**
 
-- Community-maintained SDK, not official aptos-labs
-- Kotlin Multiplatform support
-- Most failures due to missing step definitions
+- Official Aptos Labs Kotlin SDK (replaced community kaptos SDK)
+- JVM-focused with Android support
+- Modular architecture (core, client, sdk, indexer)
+- Full Ed25519 and Secp256k1 support
+- BCS serialization, authentication keys, mnemonic derivation
+- Previous test results not applicable due to SDK replacement
 
 ---
 

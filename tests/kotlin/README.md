@@ -1,17 +1,13 @@
-# Aptos Kotlin SDK (Kaptos) BDD Tests
+# Aptos Kotlin SDK BDD Tests
 
-This directory contains BDD (Behavior-Driven Development) tests for the
-[Kaptos](https://github.com/mcxross/kaptos) Kotlin Multiplatform SDK, using Cucumber-JVM.
-
-> **Note:** The Kaptos SDK is currently in beta (0.1.2-beta) with limited API exposure. Many step
-> definitions are stubs that will be implemented as the SDK matures. The test infrastructure is
-> complete and ready for future SDK updates.
+This directory contains BDD (Behavior-Driven Development) tests for the official
+[Aptos Kotlin SDK](https://github.com/aptos-labs/aptos-kotlin-sdk), using Cucumber-JVM.
 
 ## Prerequisites
 
-- **JDK 17+** - Required for building and running tests
+- **JDK 11+** - Required for building and running tests
 - **Gradle 8.x** - Build tool (wrapper included)
-- **Kaptos SDK** - The Kotlin SDK must be available (see Dependencies section)
+- **Aptos Kotlin SDK** - The SDK must be available (see Dependencies section)
 
 ## Quick Start
 
@@ -43,11 +39,17 @@ tests/kotlin/
     ├── RunCucumberTest.kt           # JUnit 5 Cucumber runner
     ├── support/
     │   ├── World.kt                 # Test context
+    │   ├── Hooks.kt                 # Lifecycle hooks
     │   └── Vectors.kt               # Test vector loading
     └── steps/
         ├── AddressSteps.kt          # Address operations
+        ├── CryptoSteps.kt           # Ed25519/Secp256k1 crypto
+        ├── AccountSteps.kt          # Account management
         ├── SerializationSteps.kt    # BCS serialization
-        └── ...                      # Other step definitions
+        ├── TypeTagSteps.kt          # TypeTag parsing
+        ├── TransactionSteps.kt      # Transaction building
+        ├── HashingSteps.kt          # Hashing operations
+        └── CommonSteps.kt           # Shared steps
 ```
 
 ## Available Commands
@@ -66,15 +68,12 @@ tests/kotlin/
 
 ## Dependencies
 
-The Kaptos SDK is published to Maven Central. The current dependency in `build.gradle.kts`:
+The official Aptos Kotlin SDK is used. The current dependency in `build.gradle.kts`:
 
 ```kotlin
-// Kaptos SDK - JVM variant for pure JVM testing
-implementation("xyz.mcxross.kaptos:kaptos-jvm:0.1.2-beta")
+// Official Aptos Kotlin SDK (aptos-labs)
+implementation("com.aptos:core:0.1.0")
 ```
-
-**Note:** The SDK is in beta. Check
-[Maven Central](https://search.maven.org/search?q=g:xyz.mcxross.kaptos) for the latest version.
 
 ## Configuration
 
@@ -115,6 +114,7 @@ import io.cucumber.java.en.Given
 import io.cucumber.java.en.When
 import io.cucumber.java.en.Then
 import com.aptos.specs.support.World
+import com.aptos.core.types.AccountAddress
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 
@@ -128,7 +128,7 @@ class AddressSteps(private val world: World) {
     @When("I parse it as an AccountAddress")
     fun parseAccountAddress() {
         runCatching {
-            world.address = AccountAddress.fromString(world.hexString!!)
+            world.address = AccountAddress.fromHex(world.hexString!!)
         }.onFailure {
             world.error = it
         }
@@ -149,60 +149,26 @@ After running tests, reports are available at:
 - **HTML Report**: `build/reports/cucumber/cucumber.html`
 - **JSON Report**: `build/reports/cucumber/cucumber.json`
 
-Open the HTML report:
-
-```bash
-make report
-```
-
-## Troubleshooting
-
-### Gradle wrapper not found
-
-```bash
-make wrapper
-```
-
-### SDK dependency not found
-
-Ensure the Kaptos SDK is published and accessible. Update `build.gradle.kts` with the correct
-repository and coordinates.
-
-### Feature files not found
-
-Feature files are expected at `../../features/` relative to this directory. Ensure you're running
-from `tests/kotlin/`.
-
-## Contributing
-
-1. Check `PLAN.md` for implementation status
-2. Implement step definitions in `src/test/kotlin/com/aptos/specs/steps/`
-3. Update `../../FEATURE_COVERAGE.md` when tests pass
-4. Follow Kotlin coding conventions and idiomatic patterns
-
 ## Current Status
 
-- **SDK Version:** 0.1.2-beta
+- **SDK Version:** 0.1.0 (official aptos-labs)
 - **Test Infrastructure:** ✅ Complete
-- **Step Definitions:** ~30% implemented (limited by SDK API exposure)
-- **Tests Passing:** ~8/1616 (most scenarios need SDK features not yet available)
+- **Step Definitions:** Updated for new SDK API
 
-### SDK Limitations (0.1.2-beta)
+### SDK Features Available
 
-The current Kaptos SDK doesn't expose several low-level primitives needed for the specs:
-
-- No direct `Bcs` class for serialization
-- No `Ed25519PrivateKey`, `Secp256k1` key classes
-- No `RawTransaction`, `SignedTransaction` constructors
-- No `AuthenticationKey` class
-- No AIP-80 format support
-
-Step definitions for these features are stubs that will be implemented as the SDK matures.
+- AccountAddress parsing (fromHex/fromHexRelaxed) and formatting
+- Ed25519 key generation, signing, verification
+- Secp256k1 key generation, signing, verification
+- BCS serialization and deserialization
+- AuthenticationKey derivation
+- BIP-39 mnemonic and HD key derivation
+- TypeTag parsing and formatting
+- Transaction building primitives
 
 ## References
 
-- [Kaptos SDK](https://github.com/mcxross/kaptos)
-- [Kaptos on Maven Central](https://search.maven.org/search?q=g:xyz.mcxross.kaptos)
+- [Aptos Kotlin SDK](https://github.com/aptos-labs/aptos-kotlin-sdk)
 - [Cucumber-JVM Documentation](https://cucumber.io/docs/cucumber/)
 - [Kotest Assertions](https://kotest.io/docs/assertions/assertions.html)
 - [Feature Specifications](../../features/)

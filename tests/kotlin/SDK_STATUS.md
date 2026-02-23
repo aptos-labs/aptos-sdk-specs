@@ -1,125 +1,103 @@
 # Kotlin SDK Test Status
 
-> **Last Updated:** 2026-02-06  
-> **Last Verified:** 2026-01-28 via `./gradlew test` (cannot run 2026-02-06: Gradle/JDK compat
-> issue)
+> **Last Updated:** 2026-02-23  
+> **Last Verified:** Not yet verified (SDK integration just completed)
 
 ---
 
 ## 1. SDK Information
 
-| Property             | Value                             |
-| -------------------- | --------------------------------- |
-| **Package**          | `xyz.mcxross.kaptos:kaptos-jvm`   |
-| **Version Tested**   | 0.1.2-beta                        |
-| **Publisher**        | mcxross (community)               |
-| **Repository**       | https://github.com/mcxross/kaptos |
-| **Package Registry** | Maven Central                     |
-| **Test Framework**   | Cucumber-JVM + Kotlin             |
+| Property             | Value                                                    |
+| -------------------- | -------------------------------------------------------- |
+| **Package**          | `com.aptos:core`                                         |
+| **Version Tested**   | 0.1.0                                                    |
+| **Publisher**        | aptos-labs (official)                                    |
+| **Repository**       | https://github.com/aptos-labs/aptos-kotlin-sdk           |
+| **Package Registry** | Maven Central / Maven Local                              |
+| **Test Framework**   | Cucumber-JVM + Kotlin                                    |
 
 ---
 
 ## 2. Coverage Summary
 
-| Priority       | Passing  | Total    | Percentage | Status |
-| -------------- | -------- | -------- | ---------- | ------ |
-| Required (P0)  | 176      | 1652     | 11%        | ❌     |
-| Preferred (P1) | included | -        | -          | -      |
-| Optional (P2)  | included | -        | -          | -      |
-| **Total**      | **176**  | **1652** | **11%**    | ❌     |
+| Priority       | Passing | Total | Percentage | Status |
+| -------------- | ------- | ----- | ---------- | ------ |
+| Required (P0)  | TBD     | TBD   | TBD        | 🔄     |
+| Preferred (P1) | TBD     | TBD   | TBD        | 🔄     |
+| Optional (P2)  | TBD     | TBD   | TBD        | 🔄     |
+| **Total**      | **TBD** | TBD   | TBD        | 🔄     |
 
 > **Notes:**
 >
-> - 1652 tests completed, 176 passed, 1476 failed
-> - Community SDK, not official aptos-labs
-> - Many failures due to undefined step definitions
-> - Test duration: ~28 seconds
+> - SDK integration just completed — test results pending verification
+> - Official aptos-labs SDK replaces community kaptos SDK
+> - Step definitions updated to use new SDK API
 
 ---
 
 ## 3. Feature Availability
 
-### ✅ Fully Available Features
+### ✅ Available in SDK
 
-| Feature       | Notes                               |
-| ------------- | ----------------------------------- |
-| address       | Full address parsing and formatting |
-| ed25519       | Ed25519 key support                 |
-| hashing       | Basic hashing support               |
-| serialization | BCS serialization                   |
+| Feature             | Notes                                    |
+| ------------------- | ---------------------------------------- |
+| address             | AccountAddress.fromHex/fromHexRelaxed    |
+| ed25519             | Ed25519.PrivateKey, PublicKey, Signature  |
+| secp256k1           | Secp256k1.PrivateKey, PublicKey, Signature|
+| hashing             | SHA3-256, SHA2-256 via JVM/BouncyCastle  |
+| serialization       | BcsSerializer, BcsDeserializer           |
+| authentication-key  | AuthenticationKey.fromEd25519/Secp256k1  |
+| mnemonic-derivation | Mnemonic, SLIP-0010, BIP-32              |
+| type-tags           | TypeTag parsing and formatting           |
+| transactions        | RawTransaction, SignedTransaction         |
+| accounts            | Ed25519Account, Secp256k1Account          |
+| keyless             | KeylessAccount (via SDK)                 |
+| multi-key           | MultiKey, MultiEd25519                   |
 
 ### 🟡 Partially Available
 
-| Feature            | Reason                   | Impact           |
-| ------------------ | ------------------------ | ---------------- |
-| authentication-key | Available, tests partial | Partial coverage |
-| entry-function     | Available, tests partial | Partial coverage |
-| raw-transaction    | Available, tests partial | Partial coverage |
-| signing            | Available, tests partial | Partial coverage |
+| Feature         | Reason                       | Impact                    |
+| --------------- | ---------------------------- | ------------------------- |
+| entry-function  | Step definitions need update | Needs test verification   |
+| raw-transaction | Step definitions need update | Needs test verification   |
+| signing         | Step definitions need update | Needs test verification   |
 
-### ➖ Not Available in SDK
+### ➖ Not Yet Tested
 
-| Feature             | Reason          | Tracking Issue |
-| ------------------- | --------------- | -------------- |
-| secp256k1           | Not implemented | -              |
-| secp256r1           | Not implemented | -              |
-| mnemonic-derivation | Not implemented | -              |
-| keyless             | Not implemented | -              |
-| codegen             | Not implemented | -              |
-| simulation          | Not implemented | -              |
-| multi-agent         | Not implemented | -              |
-| fee-payer           | Not implemented | -              |
+| Feature                | Reason                    | Tracking Issue |
+| ---------------------- | ------------------------- | -------------- |
+| fullnode-api           | Needs network access      | -              |
+| transaction-submission | Needs network access      | -              |
+| simulation             | Step definitions needed   | -              |
+| multi-agent            | Step definitions needed   | -              |
+| fee-payer              | Step definitions needed   | -              |
 
 ---
 
 ## 4. Known Issues
 
-| Scenario      | Issue                        | Workaround            |
-| ------------- | ---------------------------- | --------------------- |
-| Most tests    | Step definitions undefined   | Implementation needed |
-| Community SDK | May lag behind official SDKs | Check for updates     |
+| Scenario      | Issue                           | Workaround           |
+| ------------- | ------------------------------- | -------------------- |
+| SDK publishing| SDK may not be on Maven Central | Use mavenLocal()     |
+| Test run      | Not yet verified in CI          | Run locally          |
 
 ---
 
-## 5. Missing Test Implementations
+## 5. SDK-Specific Notes
 
-### Required (P0) - High Priority
-
-| Feature                | Scenarios | Notes                   |
-| ---------------------- | --------- | ----------------------- |
-| type-tags              | Many      | Step definitions needed |
-| secp256k1              | All       | Feature not in SDK      |
-| authentication-key     | Partial   | More steps needed       |
-| mnemonic-derivation    | All       | Feature not in SDK      |
-| single-key             | Many      | Step definitions needed |
-| entry-function         | Partial   | More steps needed       |
-| raw-transaction        | Partial   | More steps needed       |
-| signing                | Partial   | More steps needed       |
-| fullnode-api           | Many      | Step definitions needed |
-| transaction-submission | Many      | Step definitions needed |
-| error-handling         | Most      | Step definitions needed |
-
-### Preferred (P1) - Medium Priority
-
-All preferred features need step definitions.
-
-### Optional (P2) - Low Priority
-
-All optional features need step definitions.
+- **Official SDK** — Maintained by aptos-labs
+- **JVM-focused** with Android support (API 26+)
+- **Modular architecture**: core, client, sdk, indexer modules
+- **Kotlin 2.1.10** with JVM target 11
+- Uses **Bouncy Castle** for cryptographic operations
+- Uses **kotlinx.serialization** for JSON parsing
+- Full **BCS serialization** support
+- **Ed25519 and Secp256k1** key generation, signing, verification
+- **BIP-39 mnemonic** and **SLIP-0010/BIP-32** key derivation
 
 ---
 
-## 6. SDK-Specific Notes
-
-- **Community SDK** - Maintained by mcxross, not official aptos-labs
-- **Kotlin Multiplatform** support (JVM, JS, Native)
-- Uses Kotlin coroutines for async operations
-- Good for Android and cross-platform Kotlin projects
-- May have different API than official SDKs
-
----
-
-## 7. How to Run Tests
+## 6. How to Run Tests
 
 ```bash
 cd tests/kotlin
@@ -130,21 +108,21 @@ cd tests/kotlin
 # Run with info output
 ./gradlew test --info
 
-# Run specific test
-./gradlew test --tests "*.AddressTest"
+# Run only required (P0) tests
+./gradlew testRequired
 
 # Generate HTML report
 ./gradlew test
-# Report at: build/reports/tests/test/index.html
+# Report at: build/reports/cucumber/cucumber.html
 ```
 
 ---
 
-## 8. Contributing
+## 7. Contributing
 
 To add or update tests for this SDK:
 
-1. Add step definitions in `src/test/kotlin/steps/*.kt`
+1. Add step definitions in `src/test/kotlin/com/aptos/specs/steps/*.kt`
 2. Run `./gradlew test` to verify tests pass
 3. Update `FEATURE_COVERAGE.md` with test status (✅/🟡/❌)
 4. Update this file's coverage summary
@@ -161,35 +139,10 @@ fun givenAHexString(hexString: String) {
 
 ---
 
-## 9. Test Results Matrix
+## 8. References
 
-> Last run: 2026-01-22
-
-### By Feature Category
-
-| Category                | Passed | Failed | Total |
-| ----------------------- | ------ | ------ | ----- |
-| 01-core-types           | 50     | 14     | 64    |
-| 02-cryptography         | 45     | 75     | 120   |
-| 03-account-management   | 20     | 42     | 62    |
-| 04-transaction-building | 25     | 61     | 86    |
-| 05-api-clients          | 20     | 120    | 140   |
-| 06-advanced             | 16     | 260    | 276   |
-
-### Test Run Summary
-
-```
-1616 tests completed
-176 passed
-1440 failed
-```
-
-### Community SDK Notes
-
-This is a community-maintained SDK. It may have:
-
-- Different API patterns than official SDKs
-- Features that lag behind official releases
-- Limited documentation
-
-Check the [kaptos repository](https://github.com/mcxross/kaptos) for the latest updates.
+- [Aptos Kotlin SDK](https://github.com/aptos-labs/aptos-kotlin-sdk)
+- [Cucumber-JVM Documentation](https://cucumber.io/docs/cucumber/)
+- [Kotest Assertions](https://kotest.io/docs/assertions/assertions.html)
+- [Feature Specifications](../../features/)
+- [Test Vectors](../../test-vectors/)
