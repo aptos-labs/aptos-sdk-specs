@@ -105,6 +105,8 @@ def _raw_signature_to_der(signature: bytes, curve: str) -> bytes:
             raise ImportError("cryptography library not available")
         r = int.from_bytes(signature[:32], "big")
         s = int.from_bytes(signature[32:], "big")
+        if not (0 < r < NIST256P_ORDER and 0 < s < NIST256P_ORDER):
+            raise BadSignatureError("invalid signature bytes")
         return utils.encode_dss_signature(r, s)
 
     raise ValueError(f"unsupported curve: {curve}")
@@ -129,6 +131,9 @@ def _der_signature_to_raw(signature: bytes, curve: str) -> bytes:
             r, s = utils.decode_dss_signature(signature)
         except ValueError as exc:
             raise BadSignatureError("invalid signature bytes") from exc
+
+        if not (0 < r < NIST256P_ORDER and 0 < s < NIST256P_ORDER):
+            raise BadSignatureError("invalid signature bytes")
 
         try:
             return r.to_bytes(32, "big") + s.to_bytes(32, "big")
@@ -171,8 +176,6 @@ class VerifyingKey:
             return key_bytes if compressed else key_bytes[1:]
 
         if self.curve == NIST256p:
-            if not NIST256P_AVAILABLE:
-                raise ImportError("cryptography library not available")
             if encoding == "compressed":
                 return self._key_obj.public_bytes(
                     encoding=serialization.Encoding.X962,
@@ -299,8 +302,6 @@ class SigningKey:
         hashfunc: Optional[Callable[[bytes], "hashlib._Hash"]] = None,
     ) -> bytes:
         if self.curve == SECP256k1:
-            if not SECP256K1_AVAILABLE:
-                raise ImportError("coincurve library not available")
             der_signature = self._key_obj.sign(
                 message,
                 hasher=_build_hasher(hashfunc),
@@ -308,8 +309,6 @@ class SigningKey:
             return _der_signature_to_raw(der_signature, curve=self.curve)
 
         if self.curve == NIST256p:
-            if not NIST256P_AVAILABLE:
-                raise ImportError("cryptography library not available")
             der_signature = self._key_obj.sign(
                 message,
                 ec.ECDSA(_hash_algorithm_for(hashfunc)),
