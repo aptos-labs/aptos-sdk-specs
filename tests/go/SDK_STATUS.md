@@ -1,7 +1,7 @@
 # Go SDK Test Status
 
-> **Last Updated:** 2026-02-06  
-> **Last Verified:** 2026-02-06 via `go test -v ./...`
+> **Last Updated:** 2026-02-23  
+> **Last Verified:** 2026-02-23 via `go test -v ./...`
 
 ---
 

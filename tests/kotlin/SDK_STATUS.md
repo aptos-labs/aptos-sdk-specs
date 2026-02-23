@@ -1,7 +1,7 @@
 # Kotlin SDK Test Status
 
 > **Last Updated:** 2026-02-23  
-> **Last Verified:** Not yet verified (SDK integration just completed)
+> **Last Verified:** 2026-02-23 — build fails (`com.aptos:core:0.1.0` not found in Maven Central)
 
 ---
 
@@ -29,9 +29,10 @@
 
 > **Notes:**
 >
-> - SDK integration just completed — test results pending verification
+> - Build fails: `com.aptos:core:0.1.0` not yet published to Maven Central
 > - Official aptos-labs SDK replaces community kaptos SDK
 > - Step definitions updated to use new SDK API
+> - Tests will be runnable once the SDK is published or built locally
 
 ---
 

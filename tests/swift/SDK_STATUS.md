@@ -1,7 +1,7 @@
 # Swift SDK Test Status
 
 > **Last Updated:** 2026-02-23  
-> **Last Verified:** Not yet verified (SDK integration just completed)
+> **Last Verified:** 2026-02-23 — cannot run (Swift 6.0/Xcode not installed in environment)
 
 ---
 
@@ -29,9 +29,10 @@
 
 > **Notes:**
 >
-> - SDK integration just completed — test results pending verification
+> - Cannot run: Swift 6.0/Xcode not installed in environment
 > - Official aptos-labs SDK replaces community ALCOVE-LAB SDK
 > - Requires Xcode with Swift 6.0+ and macOS 14+
+> - Test code updated for new SDK API (imports, type names)
 > - CucumberSwift step definitions prepared for future BDD integration
 
 ---
