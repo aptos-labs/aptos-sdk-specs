@@ -16,6 +16,7 @@ from support.ecdsa_compat import (
     SECP256k1,
     SigningKey,
 )
+from support.vectors import get_signature_vectors
 import sys
 import os
 import hashlib
@@ -136,19 +137,35 @@ def step_given_secp256k1_from_test_vectors(context):
         )
         return
 
-    # Intentionally deterministic for reproducible vector-based assertions.
-    # This step is used for test-vector scenarios, not randomness checks.
-    private_key = SigningKey.from_string(
-        bytes.fromhex(
-            "0000000000000000000000000000000000000000000000000000000000000001"
-        ),
-        curve=SECP256k1,
-    )
-    context.world.public_key_bytes = private_key.get_verifying_key().to_string(
-        "compressed"
-    )
-    context.world.scheme_id = 0x01
-    context.world.clear_error()
+    try:
+        # Intentionally deterministic for reproducible vector-based assertions.
+        # This step is used for test-vector scenarios, not randomness checks.
+        secp_vectors = get_signature_vectors().get("secp256k1", {}).get(
+            "key_vectors", []
+        )
+        if not secp_vectors:
+            raise ValueError("missing secp256k1 key vectors in signatures.json")
+
+        private_key_hex = secp_vectors[0].get("input", {}).get("private_key_hex")
+        if not private_key_hex:
+            raise ValueError("missing private_key_hex in secp256k1 key vector")
+
+        normalized_hex = (
+            private_key_hex[2:]
+            if private_key_hex.startswith("0x")
+            else private_key_hex
+        )
+        private_key = SigningKey.from_string(
+            bytes.fromhex(normalized_hex),
+            curve=SECP256k1,
+        )
+        context.world.public_key_bytes = private_key.get_verifying_key().to_string(
+            "compressed"
+        )
+        context.world.scheme_id = 0x01
+        context.world.clear_error()
+    except Exception as e:
+        context.world.set_error(e)
 
 
 # =============================================================================
