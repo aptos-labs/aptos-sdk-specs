@@ -131,6 +131,9 @@ dist
 
 .idea/
 
+# Auto-generated Reqnroll/C# feature code-behind files
+features/**/*.feature.cs
+
 # Symlinks for Python behave tests
 features/steps
 features/support
