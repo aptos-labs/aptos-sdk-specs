@@ -71,8 +71,11 @@ Given("a transaction I haven't signed yet", function (this: AptosWorld) {
 });
 
 Then("simulation should work", function (this: AptosWorld) {
-  const response = this.testVectors.get("simulationResponse") as any[];
-  expect(response?.[0]?.success).to.be.true;
+  const response = this.testVectors.get("simulationResponse") as any[] | undefined;
+  const simulationResult = this.testVectors.get("simulationResult") as any;
+  const resolvedSimulation =
+    response?.[0] ?? (Array.isArray(simulationResult) ? simulationResult[0] : simulationResult);
+  expect(resolvedSimulation?.success).to.be.true;
 });
 
 Then("use a dummy signature internally", function (this: AptosWorld) {
@@ -595,12 +598,13 @@ Then("it should include events for involved accounts", function (this: AptosWorl
 });
 
 Then("gas should be charged to fee payer", function (this: AptosWorld) {
-  expect(
+  const hasFeePayerContext = Boolean(
     this.testVectors.get("feePayerTransaction") ||
       this.testVectors.get("feePayerTransactionCreated") ||
       this.testVectors.get("feePayerAccount") ||
       this.testVectors.get("feePayerAddress"),
-  ).to.be.true;
+  );
+  expect(hasFeePayerContext).to.be.true;
 });
 
 Then("simulation should reflect that", function (this: AptosWorld) {

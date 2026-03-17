@@ -34,6 +34,8 @@
 > - 78 network/performance scenarios: Require live devnet/testnet
 > - 49 failures in Secp256r1, simulation, retry
 > - 41 undefined (codegen, some advanced features)
+> - Multi-agent simulation strict scenarios (#17-23 in `simulation.feature`) pass in targeted run
+>   (7/7, 2026-03-17)
 > - Some keyless and script tests use mocks
 
 ---

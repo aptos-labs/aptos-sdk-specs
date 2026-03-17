@@ -756,7 +756,7 @@
 | Feature                         | TS       | Go      | Rust     | Java     | Kotlin | Python  | .NET     | C++     | Swift |
 | ------------------------------- | -------- | ------- | -------- | -------- | ------ | ------- | -------- | ------- | ----- |
 | **error-handling** `@required`  | 🟡 28/30 | 🟡 1/30 | 🟡 27/30 | 🟡 28/30 | 🟡     | ❌ 0/30 | 🟡 15/30 | ❌ 0/30 | ❌    |
-| **simulation** `@preferred`     | 🟡 19/31 | ❌ 0/31 | ❌ 0/31  | ❌ 0/31  | ❌     | ❌ 0/31 | ❌ 0/31  | ❌ 0/31 | ❌    |
+| **simulation** `@preferred`     | 🟡 26/31 | ❌ 0/31 | ❌ 0/31  | ❌ 0/31  | ❌     | ❌ 0/31 | ❌ 0/31  | ❌ 0/31 | ❌    |
 | **multi-agent** `@optional`     | ✅ 20/20 | ❌ 0/20 | ❌ 0/20  | ❌ 0/20  | ❌     | ❌ 0/20 | ❌ 0/20  | ❌ 0/20 | ❌    |
 | **fee-payer** `@optional`       | ✅ 23/23 | ❌ 0/23 | ❌ 0/23  | ❌ 0/23  | ❌     | ❌ 0/23 | ❌ 0/23  | ❌ 0/23 | ❌    |
 | **multi-signature** `@optional` | ✅ 23/23 | ❌ 0/23 | ❌ 0/23  | ❌ 0/23  | ❌     | ❌ 0/23 | ❌ 0/23  | ❌ 0/23 | ❌    |
@@ -818,13 +818,13 @@
 | 14  | Simulate at specific version          | ✅  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
 | 15  | Simulate with gas override            | ✅  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
 | 16  | Simulate with gas price override      | ✅  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
-| 17  | Multi-agent sim with signer pubkeys   | ❌  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
-| 18  | Multi-agent sim without pubkeys       | ❌  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
-| 19  | Multi-agent sim with partial checks   | ❌  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
-| 20  | Reject malformed signer key mapping   | ❌  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
-| 21  | Multi-agent sim includes changes      | ❌  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
-| 22  | Multi-agent + fee payer sim (skip)    | ❌  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
-| 23  | Multi-agent + fee payer sim (keys)    | ❌  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
+| 17  | Multi-agent sim with signer pubkeys   | ✅  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
+| 18  | Multi-agent sim without pubkeys       | ✅  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
+| 19  | Multi-agent sim with partial checks   | ✅  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
+| 20  | Reject malformed signer key mapping   | ✅  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
+| 21  | Multi-agent sim includes changes      | ✅  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
+| 22  | Multi-agent + fee payer sim (skip)    | ✅  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
+| 23  | Multi-agent + fee payer sim (keys)    | ✅  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
 | 24  | Simulation doesn't commit             | ✅  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
 | 25  | Simulation may differ from exec       | ✅  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
 | 26  | Simulation with current seq           | ✅  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
