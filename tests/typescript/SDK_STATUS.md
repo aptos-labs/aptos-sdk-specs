@@ -1,7 +1,7 @@
 # TypeScript SDK Test Status
 
-> **Last Updated:** 2026-02-23  
-> **Last Verified:** 2026-02-23 via `bun run cucumber-js`
+> **Last Updated:** 2026-03-17  
+> **Last Verified:** 2026-03-17 via `bun run cucumber-js --dry-run --format summary`
 
 ---
 
@@ -25,15 +25,15 @@
 | Required (P0)  | ~494     | 580     | ~85%       | 🟡     |
 | Preferred (P1) | included | -       | -          | -      |
 | Optional (P2)  | included | -       | -          | -      |
-| **Total**      | **494**  | **791** | **62%**    | 🟡     |
+| **Total**      | **494**  | **796** | **62%**    | 🟡     |
 
 > **Notes:**
 >
-> - 580 non-network/perf scenarios: 494 passed, 49 failed, 37 undefined
+> - 584 non-network/perf scenarios: 494 passed, 49 failed, 41 undefined
 > - 133 api-client scenarios: Require network access (timeout without network)
 > - 78 network/performance scenarios: Require live devnet/testnet
 > - 49 failures in Secp256r1, simulation, retry
-> - 37 undefined (codegen, some advanced features)
+> - 41 undefined (codegen, some advanced features)
 > - Some keyless and script tests use mocks
 
 ---
@@ -237,16 +237,17 @@ To add or update tests for this SDK:
 | 03-account-management   | 84     | 0      | 0         | 84    |
 | 04-transaction-building | 69     | 0      | 0         | 69    |
 | 05-api-clients          | ~80    | ~4     | ~10       | ~190  |
-| 06-advanced             | 116    | 36     | 37        | 189   |
+| 06-advanced             | 116    | 36     | 42        | 194   |
 
 > **Note:** API client tests require network connectivity (devnet/testnet) and timeout in CI
 > environments without network access. Results for 05-api-clients are estimated from previous runs.
+> 06-advanced total/undefined counts reflect spec updates validated by dry-run.
 
 ### Dry Run Summary (all scenarios)
 
 ```
-791 scenarios (750 with step definitions, 41 undefined)
-3058 steps (136 undefined, 2922 defined)
+796 scenarios (755 with step definitions, 41 undefined)
+3090 steps (136 undefined, 2954 defined)
 ```
 
 ### Non-Network Test Summary
@@ -256,5 +257,5 @@ core-types:    121 passed
 cryptography:  79 passed, 13 failed
 accounts:      84 passed
 transactions:  69 passed
-advanced:      116 passed, 36 failed, 37 undefined
+advanced:      116 passed, 36 failed, 42 undefined
 ```

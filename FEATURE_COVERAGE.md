@@ -756,7 +756,7 @@
 | Feature                         | TS       | Go      | Rust     | Java     | Kotlin | Python  | .NET     | C++     | Swift |
 | ------------------------------- | -------- | ------- | -------- | -------- | ------ | ------- | -------- | ------- | ----- |
 | **error-handling** `@required`  | 🟡 28/30 | 🟡 1/30 | 🟡 27/30 | 🟡 28/30 | 🟡     | ❌ 0/30 | 🟡 15/30 | ❌ 0/30 | ❌    |
-| **simulation** `@preferred`     | 🟡 21/26 | ❌ 0/26 | ❌ 0/26  | ❌ 0/26  | ❌     | ❌ 0/26 | ❌ 0/26  | ❌ 0/26 | ❌    |
+| **simulation** `@preferred`     | 🟡 19/31 | ❌ 0/31 | ❌ 0/31  | ❌ 0/31  | ❌     | ❌ 0/31 | ❌ 0/31  | ❌ 0/31 | ❌    |
 | **multi-agent** `@optional`     | ✅ 20/20 | ❌ 0/20 | ❌ 0/20  | ❌ 0/20  | ❌     | ❌ 0/20 | ❌ 0/20  | ❌ 0/20 | ❌    |
 | **fee-payer** `@optional`       | ✅ 23/23 | ❌ 0/23 | ❌ 0/23  | ❌ 0/23  | ❌     | ❌ 0/23 | ❌ 0/23  | ❌ 0/23 | ❌    |
 | **multi-signature** `@optional` | ✅ 23/23 | ❌ 0/23 | ❌ 0/23  | ❌ 0/23  | ❌     | ❌ 0/23 | ❌ 0/23  | ❌ 0/23 | ❌    |
@@ -818,16 +818,21 @@
 | 14  | Simulate at specific version          | ✅  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
 | 15  | Simulate with gas override            | ✅  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
 | 16  | Simulate with gas price override      | ✅  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
-| 17  | Simulate multi-agent tx               | ✅  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
-| 18  | Simulate fee payer tx                 | ✅  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
-| 19  | Simulation doesn't commit             | ✅  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
-| 20  | Simulation may differ from exec       | ✅  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
-| 21  | Simulation with current seq           | ✅  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
-| 22  | Simulate multiple txs                 | ❌  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
-| 23  | Simulate tx sequence                  | ❌  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
-| 24  | Simulation network error              | ❌  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
-| 25  | Invalid tx for simulation             | ❌  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
-| 26  | Simulation timeout                    | ❌  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
+| 17  | Multi-agent sim with signer pubkeys   | ❌  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
+| 18  | Multi-agent sim without pubkeys       | ❌  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
+| 19  | Multi-agent sim with partial checks   | ❌  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
+| 20  | Reject malformed signer key mapping   | ❌  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
+| 21  | Multi-agent sim includes changes      | ❌  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
+| 22  | Multi-agent + fee payer sim (skip)    | ❌  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
+| 23  | Multi-agent + fee payer sim (keys)    | ❌  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
+| 24  | Simulation doesn't commit             | ✅  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
+| 25  | Simulation may differ from exec       | ✅  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
+| 26  | Simulation with current seq           | ✅  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
+| 27  | Simulate multiple txs                 | ❌  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
+| 28  | Simulate tx sequence                  | ❌  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
+| 29  | Simulation network error              | ❌  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
+| 30  | Invalid tx for simulation             | ❌  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
+| 31  | Simulation timeout                    | ❌  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
 
 ### multi-agent.feature `@optional`
 
