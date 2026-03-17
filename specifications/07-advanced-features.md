@@ -571,7 +571,7 @@ authentication key checks before simulation.
 simulate_multi_agent(
     raw_txn: RawTransaction,
     secondary_signer_addresses: Vec<AccountAddress>,
-    signer_public_key: Option<PublicKey>,
+    sender_public_key: Option<PublicKey>,
     secondary_signers_public_keys: Option<Vec<Option<PublicKey>>>
 ) -> Result<SimulationResult, Error>
 
@@ -579,7 +579,7 @@ simulate_fee_payer(
     raw_txn: RawTransaction,
     secondary_signer_addresses: Vec<AccountAddress>,
     fee_payer_address: AccountAddress,
-    signer_public_key: Option<PublicKey>,
+    sender_public_key: Option<PublicKey>,
     secondary_signers_public_keys: Option<Vec<Option<PublicKey>>>,
     fee_payer_public_key: Option<PublicKey>
 ) -> Result<SimulationResult, Error>
@@ -587,8 +587,8 @@ simulate_fee_payer(
 
 **Requirements:**
 
-1. If signer public keys are provided, SDK **MUST** check provided signer/address mappings via
-   authentication keys.
+1. If signer public keys (sender / secondary / fee payer) are provided, SDK **MUST** check provided
+   signer/address mappings via authentication keys.
 2. If signer public keys are omitted, SDK **MAY** skip authentication key checks and still simulate.
 3. For multi-agent simulation, SDK **MAY** support partial checks by allowing `undefined`/`None`
    entries in secondary signer key slots.

@@ -818,7 +818,7 @@
 | 14  | Simulate at specific version          | ✅  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
 | 15  | Simulate with gas override            | ✅  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
 | 16  | Simulate with gas price override      | ✅  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
-| 17  | Multi-agent sim with signer pubkeys   | ✅  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
+| 17  | Multi-agent sim with sender pubkey    | ✅  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
 | 18  | Multi-agent sim without pubkeys       | ✅  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
 | 19  | Multi-agent sim with partial checks   | ✅  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
 | 20  | Reject malformed signer key mapping   | ✅  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |

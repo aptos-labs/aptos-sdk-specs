@@ -357,6 +357,14 @@ Given("a multi-agent simulation transaction with {int} secondary signers", funct
     "secondaryAddresses",
     secondaries.map((account) => account.accountAddress),
   );
+  this.testVectors.set("rawTransaction", {
+    sender: sender.accountAddress,
+    secondarySignerAddresses: secondaries.map((account) => account.accountAddress),
+  });
+  this.testVectors.set("multiAgentTransaction", {
+    rawTransaction: this.testVectors.get("rawTransaction"),
+    secondarySignerAddresses: secondaries.map((account) => account.accountAddress),
+  });
 
   this.testVectors.set("simulationResponse", [
     {
@@ -381,10 +389,11 @@ Given("a multi-agent simulation transaction with {int} secondary signers", funct
 });
 
 Given("sender public key is provided for simulation", function (this: AptosWorld) {
-  let sender = this.testVectors.get("senderAccount") as Account | undefined;
+  const sender = this.testVectors.get("senderAccount") as Account | undefined;
   if (!sender) {
-    sender = Account.fromPrivateKey({ privateKey: Ed25519PrivateKey.generate() });
-    this.testVectors.set("senderAccount", sender);
+    throw new Error(
+      "senderAccount is required before setting sender public key for simulation",
+    );
   }
 
   this.testVectors.set("simulationSenderPublicKey", sender.publicKey);
@@ -533,6 +542,76 @@ Given(
   },
 );
 
+When("I simulate the multi-agent transaction", function (this: AptosWorld) {
+  const transaction =
+    this.testVectors.get("multiAgentTransaction") ?? this.testVectors.get("rawTransaction");
+  expect(transaction).to.not.be.undefined;
+
+  const simulationRequest = {
+    transaction,
+    senderPublicKey: this.testVectors.get("simulationSenderPublicKey"),
+    secondarySignersPublicKeys:
+      (this.testVectors.get("simulationSecondarySignerPublicKeys") as Array<unknown> | undefined) ??
+      [],
+  };
+  this.testVectors.set("simulationRequest", simulationRequest);
+
+  if (!this.testVectors.get("simulationResponse")) {
+    const sender = this.testVectors.get("senderAccount") as Account | undefined;
+    const secondaryAddresses =
+      (this.testVectors.get("secondaryAddresses") as AccountAddress[] | undefined) ?? [];
+    const involvedAddresses = [
+      sender?.accountAddress.toString() ?? "0x1",
+      ...secondaryAddresses.map((address) => address.toString()),
+    ];
+
+    this.testVectors.set("simulationResponse", [
+      {
+        success: true,
+        gas_used: "1000",
+        changes: involvedAddresses.map((address) => ({
+          type: "write_resource",
+          address,
+          data: {},
+        })),
+        events: [],
+      },
+    ]);
+  }
+
+  const simulationResponse = this.testVectors.get("simulationResponse") as any[] | undefined;
+  this.testVectors.set("simulationResult", simulationResponse?.[0]);
+});
+
+When("I simulate the multi-agent fee-payer transaction", function (this: AptosWorld) {
+  const transaction =
+    this.testVectors.get("feePayerTransaction") ?? this.testVectors.get("rawTransaction");
+  expect(transaction).to.not.be.undefined;
+
+  const simulationRequest = {
+    transaction,
+    senderPublicKey: this.testVectors.get("simulationSenderPublicKey"),
+    secondarySignersPublicKeys:
+      (this.testVectors.get("simulationSecondarySignerPublicKeys") as Array<unknown> | undefined) ??
+      [],
+    feePayerAddress: this.testVectors.get("feePayerAddress"),
+    feePayerPublicKey: this.testVectors.get("simulationFeePayerPublicKey"),
+  };
+  this.testVectors.set("simulationRequest", simulationRequest);
+
+  if (!this.testVectors.get("simulationResponse")) {
+    this.testVectors.set("simulationResponse", [
+      {
+        success: true,
+        gas_used: "1100",
+      },
+    ]);
+  }
+
+  const simulationResponse = this.testVectors.get("simulationResponse") as any[] | undefined;
+  this.testVectors.set("simulationResult", simulationResponse?.[0]);
+});
+
 When("I inspect the multi-agent simulation result", function (this: AptosWorld) {
   const response = this.testVectors.get("simulationResponse") as any[];
   this.testVectors.set("simulationResult", response?.[0]);
@@ -542,6 +621,15 @@ Then("auth-key checks should run for all provided signers", function (this: Apto
   const mode = this.testVectors.get("simulationAuthKeyCheckMode") as string;
   expect(mode).to.equal("full");
   expect(this.testVectors.get("simulationSenderPublicKeyProvided")).to.be.true;
+  const simulationRequest = this.testVectors.get("simulationRequest") as
+    | {
+        senderPublicKey?: unknown;
+        secondarySignersPublicKeys?: Array<unknown>;
+        feePayerPublicKey?: unknown;
+      }
+    | undefined;
+  expect(simulationRequest).to.not.be.undefined;
+  expect(simulationRequest?.senderPublicKey).to.not.be.undefined;
 
   const secondarySignerKeys = this.testVectors.get("simulationSecondarySignerPublicKeys") as
     | Array<unknown>
@@ -549,10 +637,15 @@ Then("auth-key checks should run for all provided signers", function (this: Apto
   expect(secondarySignerKeys).to.be.an("array");
   expect((secondarySignerKeys ?? []).length).to.be.greaterThan(0);
   expect((secondarySignerKeys ?? []).every((key) => key !== undefined)).to.be.true;
+  const requestSecondarySignerKeys = simulationRequest?.secondarySignersPublicKeys ?? [];
+  expect(requestSecondarySignerKeys).to.be.an("array");
+  expect(requestSecondarySignerKeys.length).to.be.greaterThan(0);
+  expect(requestSecondarySignerKeys.every((key) => key !== undefined)).to.be.true;
 
   const feePayerKeyProvided = this.testVectors.get("simulationFeePayerPublicKeyProvided");
   if (feePayerKeyProvided === true) {
     expect(this.testVectors.get("simulationFeePayerPublicKey")).to.not.be.undefined;
+    expect(simulationRequest?.feePayerPublicKey).to.not.be.undefined;
   }
 });
 
@@ -560,11 +653,23 @@ Then("auth-key checks should be skipped", function (this: AptosWorld) {
   const mode = this.testVectors.get("simulationAuthKeyCheckMode") as string;
   expect(mode).to.equal("skipped");
   expect(this.testVectors.get("simulationSenderPublicKeyProvided")).to.not.be.true;
+  const simulationRequest = this.testVectors.get("simulationRequest") as
+    | {
+        senderPublicKey?: unknown;
+        secondarySignersPublicKeys?: Array<unknown>;
+        feePayerPublicKey?: unknown;
+      }
+    | undefined;
+  expect(simulationRequest).to.not.be.undefined;
+  expect(simulationRequest?.senderPublicKey).to.be.undefined;
 
   const secondarySignerKeys = this.testVectors.get("simulationSecondarySignerPublicKeys") as
     | Array<unknown>
     | undefined;
   expect((secondarySignerKeys ?? []).length).to.equal(0);
+  const requestSecondarySignerKeys = simulationRequest?.secondarySignersPublicKeys ?? [];
+  expect(requestSecondarySignerKeys.length).to.equal(0);
+  expect(simulationRequest?.feePayerPublicKey).to.be.undefined;
 });
 
 Then(
@@ -572,6 +677,12 @@ Then(
   function (this: AptosWorld) {
     const mode = this.testVectors.get("simulationAuthKeyCheckMode") as string;
     expect(mode).to.equal("partial");
+    const simulationRequest = this.testVectors.get("simulationRequest") as
+      | {
+          secondarySignersPublicKeys?: Array<unknown>;
+        }
+      | undefined;
+    expect(simulationRequest).to.not.be.undefined;
 
     const secondarySignerKeys = this.testVectors.get("simulationSecondarySignerPublicKeys") as
       | Array<unknown>
@@ -579,6 +690,9 @@ Then(
     expect(secondarySignerKeys).to.be.an("array");
     expect((secondarySignerKeys ?? []).some((key) => key === undefined)).to.be.true;
     expect((secondarySignerKeys ?? []).some((key) => key !== undefined)).to.be.true;
+    const requestSecondarySignerKeys = simulationRequest?.secondarySignersPublicKeys ?? [];
+    expect(requestSecondarySignerKeys.some((key) => key === undefined)).to.be.true;
+    expect(requestSecondarySignerKeys.some((key) => key !== undefined)).to.be.true;
   },
 );
 

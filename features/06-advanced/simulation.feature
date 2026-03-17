@@ -134,11 +134,11 @@ Feature: Transaction Simulation
   # Multi-Agent Simulation
   # =============================================================================
   @preferred
-  Scenario: Simulate multi-agent tx with signerPublicKey + secondarySignersPublicKeys
-    Given a multi-agent transaction
+  Scenario: Simulate multi-agent tx with senderPublicKey + secondarySignersPublicKeys
+    Given a multi-agent simulation transaction with 1 secondary signers
     And sender public key is provided for simulation
     And secondary signer public keys are provided for simulation
-    When I simulate it
+    When I simulate the multi-agent transaction
     Then simulation should work
     And auth-key checks should run for all provided signers
 
@@ -146,7 +146,7 @@ Feature: Transaction Simulation
   Scenario: Simulate multi-agent tx with no public keys (skip auth-key checks)
     Given a multi-agent transaction
     And no signer public keys are provided for simulation
-    When I simulate it
+    When I simulate the multi-agent transaction
     Then simulation should work
     And auth-key checks should be skipped
 
@@ -155,7 +155,7 @@ Feature: Transaction Simulation
     Given a multi-agent simulation transaction with 3 secondary signers
     And sender public key is provided for simulation
     And secondary signer public keys include undefined placeholders
-    When I simulate it
+    When I simulate the multi-agent transaction
     Then simulation should work
     And auth-key checks should run only for provided signer slots
 
@@ -179,7 +179,7 @@ Feature: Transaction Simulation
   Scenario: Simulate multi-agent + fee payer transaction with skipped auth-key checks
     Given a fee payer transaction with sender, secondary, and sponsor
     And no signer public keys are provided for simulation
-    When I simulate it
+    When I simulate the multi-agent fee-payer transaction
     Then simulation should work
     And gas should be charged to fee payer
     And simulation should reflect that
@@ -188,7 +188,7 @@ Feature: Transaction Simulation
   Scenario: Simulate multi-agent + fee payer transaction with explicit signer key checks
     Given a fee payer transaction with sender, secondary, and sponsor
     And sender, secondary, and fee payer public keys are provided for simulation
-    When I simulate it
+    When I simulate the multi-agent fee-payer transaction
     Then simulation should work
     And gas should be charged to fee payer
     And auth-key checks should run for all provided signers
