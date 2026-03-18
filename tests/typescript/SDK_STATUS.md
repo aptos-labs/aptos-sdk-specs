@@ -36,8 +36,8 @@
 > - 41 undefined (codegen, some advanced features)
 > - Multi-agent simulation strict scenarios in `simulation.feature` (from
 >   `Simulate multi-agent tx with senderPublicKey + secondarySignersPublicKeys` to
->   `Simulate multi-agent + fee payer transaction with explicit signer key checks`) pass in targeted
->   run (7/7, 2026-03-18)
+>   `Simulate multi-agent + fee payer transaction with explicit signer key checks`) passed in
+>   targeted run (7/7, 2026-03-18)
 > - Some keyless and script tests use mocks
 
 ---

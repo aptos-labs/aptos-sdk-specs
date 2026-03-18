@@ -14,13 +14,97 @@ import {
   Ed25519PrivateKey,
   Secp256k1PrivateKey,
   RawTransaction,
+  TransactionPayloadEntryFunction,
   EntryFunction,
+  EntryFunctionBytes,
   Identifier,
   U64,
   ChainId,
+  MultiAgentTransaction,
+  ModuleId,
   Serializer,
 } from "@aptos-labs/ts-sdk";
 import type { AptosWorld } from "../support/world.js";
+
+function createEntryFunction(
+  moduleAddress: AccountAddress,
+  moduleName: string,
+  functionName: string,
+  typeArgs: any[] = [],
+  args: Uint8Array[] = [],
+): EntryFunction {
+  const moduleId = new ModuleId(moduleAddress, new Identifier(moduleName));
+  const wrappedArgs = args.map((a) => new EntryFunctionBytes(a));
+  return new EntryFunction(moduleId, new Identifier(functionName), typeArgs, wrappedArgs);
+}
+
+function createTransferPayload(
+  recipient: AccountAddress,
+  amount: bigint,
+): TransactionPayloadEntryFunction {
+  const recipientSerializer = new Serializer();
+  recipient.serialize(recipientSerializer);
+
+  const amountSerializer = new Serializer();
+  amountSerializer.serializeU64(amount);
+
+  const entryFunction = createEntryFunction(
+    AccountAddress.ONE,
+    "aptos_account",
+    "transfer",
+    [],
+    [recipientSerializer.toUint8Array(), amountSerializer.toUint8Array()],
+  );
+
+  return new TransactionPayloadEntryFunction(entryFunction);
+}
+
+function setupMultiAgentSimulationTransaction(world: AptosWorld, count: number) {
+  const sender = Account.fromPrivateKey({ privateKey: Ed25519PrivateKey.generate() });
+  const secondaries: Account[] = [];
+  for (let i = 0; i < count; i++) {
+    secondaries.push(Account.fromPrivateKey({ privateKey: Ed25519PrivateKey.generate() }));
+  }
+
+  const payload = createTransferPayload(AccountAddress.from("0x2"), BigInt(1000));
+  const rawTxn = new RawTransaction(
+    sender.accountAddress,
+    BigInt(0),
+    payload,
+    BigInt(100000),
+    BigInt(100),
+    BigInt(Math.floor(Date.now() / 1000) + 600),
+    new ChainId(1),
+  );
+  const secondaryAddresses = secondaries.map((account) => account.accountAddress);
+  const multiAgentTxn = new MultiAgentTransaction(rawTxn, secondaryAddresses);
+
+  world.testVectors.set("senderAccount", sender);
+  world.testVectors.set("secondaryAccounts", secondaries);
+  world.testVectors.set("secondaryAddresses", secondaryAddresses);
+  world.testVectors.set("rawTransaction", rawTxn);
+  world.testVectors.set("multiAgentTransaction", multiAgentTxn);
+  world.testVectors.set("simulationResponse", [
+    {
+      success: true,
+      gas_used: "1200",
+      changes: [
+        { type: "write_resource", address: sender.accountAddress.toString(), data: {} },
+        ...secondaries.map((account) => ({
+          type: "write_resource",
+          address: account.accountAddress.toString(),
+          data: {},
+        })),
+      ],
+      events: [
+        {
+          type: "0x1::coin::WithdrawEvent",
+          data: { amount: "100" },
+        },
+      ],
+    },
+  ]);
+}
 
 // =============================================================================
 // Basic Simulation (simulation.feature patterns)
@@ -344,48 +428,12 @@ Then("simulation uses that price for calculations", function (this: AptosWorld) 
 // Multi-agent simulation - use steps from multi-agent.steps.ts
 // Fee payer simulation - use steps from fee-payer.steps.ts
 
+Given("a multi-agent simulation transaction with {int} secondary signer", function (this: AptosWorld, count: number) {
+  setupMultiAgentSimulationTransaction(this, count);
+});
+
 Given("a multi-agent simulation transaction with {int} secondary signers", function (this: AptosWorld, count: number) {
-  const sender = Account.fromPrivateKey({ privateKey: Ed25519PrivateKey.generate() });
-  const secondaries: Account[] = [];
-  for (let i = 0; i < count; i++) {
-    secondaries.push(Account.fromPrivateKey({ privateKey: Ed25519PrivateKey.generate() }));
-  }
-
-  this.testVectors.set("senderAccount", sender);
-  this.testVectors.set("secondaryAccounts", secondaries);
-  this.testVectors.set(
-    "secondaryAddresses",
-    secondaries.map((account) => account.accountAddress),
-  );
-  this.testVectors.set("rawTransaction", {
-    sender: sender.accountAddress,
-    secondarySignerAddresses: secondaries.map((account) => account.accountAddress),
-  });
-  this.testVectors.set("multiAgentTransaction", {
-    rawTransaction: this.testVectors.get("rawTransaction"),
-    secondarySignerAddresses: secondaries.map((account) => account.accountAddress),
-  });
-
-  this.testVectors.set("simulationResponse", [
-    {
-      success: true,
-      gas_used: "1200",
-      changes: [
-        { type: "write_resource", address: sender.accountAddress.toString(), data: {} },
-        ...secondaries.map((account) => ({
-          type: "write_resource",
-          address: account.accountAddress.toString(),
-          data: {},
-        })),
-      ],
-      events: [
-        {
-          type: "0x1::coin::WithdrawEvent",
-          data: { amount: "100" },
-        },
-      ],
-    },
-  ]);
+  setupMultiAgentSimulationTransaction(this, count);
 });
 
 Given("sender public key is provided for simulation", function (this: AptosWorld) {
@@ -601,9 +649,11 @@ When("I simulate the multi-agent transaction", function (this: AptosWorld) {
 });
 
 When("I simulate the multi-agent fee-payer transaction", function (this: AptosWorld) {
-  const transaction =
-    this.testVectors.get("feePayerTransaction") ?? this.testVectors.get("rawTransaction");
-  expect(transaction).to.not.be.undefined;
+  const transaction = this.testVectors.get("feePayerTransaction");
+  expect(
+    transaction,
+    "feePayerTransaction must be set before simulating a multi-agent fee-payer transaction",
+  ).to.not.be.undefined;
 
   const simulationRequest: {
     transaction: unknown;

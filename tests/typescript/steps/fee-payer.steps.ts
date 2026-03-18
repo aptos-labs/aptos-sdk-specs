@@ -295,11 +295,17 @@ Given("a fee payer transaction with sender, secondary, and sponsor", function (t
     BigInt(Math.floor(Date.now() / 1000) + 600),
     new ChainId(1),
   );
+  const feePayerTxn = new FeePayerRawTransaction(
+    rawTxn,
+    [secondary.accountAddress],
+    feePayer.accountAddress,
+  );
 
   this.testVectors.set("senderAccount", sender);
   this.testVectors.set("secondaryAccounts", [secondary]);
   this.testVectors.set("feePayerAccount", feePayer);
   this.testVectors.set("rawTransaction", rawTxn);
+  this.testVectors.set("feePayerTransaction", feePayerTxn);
   this.testVectors.set("feePayerAddress", feePayer.accountAddress);
   this.testVectors.set("secondaryAddresses", [secondary.accountAddress]);
 });

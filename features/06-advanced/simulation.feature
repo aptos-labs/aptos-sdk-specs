@@ -135,7 +135,7 @@ Feature: Transaction Simulation
   # =============================================================================
   @preferred
   Scenario: Simulate multi-agent tx with senderPublicKey + secondarySignersPublicKeys
-    Given a multi-agent simulation transaction with 1 secondary signers
+    Given a multi-agent simulation transaction with 1 secondary signer
     And sender public key is provided for simulation
     And secondary signer public keys are provided for simulation
     When I simulate the multi-agent transaction
