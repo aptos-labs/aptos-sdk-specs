@@ -565,7 +565,7 @@ simulation.
 For multi-agent and fee payer simulation, SDKs MAY accept additional signer public keys to run
 authentication key checks before simulation.
 
-**TypeScript-style shape (illustrative):**
+**Language-agnostic pseudocode shape (illustrative):**
 
 ```
 simulate_multi_agent(

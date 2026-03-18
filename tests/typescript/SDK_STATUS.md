@@ -1,7 +1,7 @@
 # TypeScript SDK Test Status
 
-> **Last Updated:** 2026-03-17  
-> **Last Verified:** 2026-03-17 via `bun run cucumber-js --dry-run --format summary`
+> **Last Updated:** 2026-03-18  
+> **Last Verified:** 2026-03-18 via `bun run cucumber-js --dry-run --format summary`
 
 ---
 
@@ -34,8 +34,10 @@
 > - 78 network/performance scenarios: Require live devnet/testnet
 > - 49 failures in Secp256r1, simulation, retry
 > - 41 undefined (codegen, some advanced features)
-> - Multi-agent simulation strict scenarios (#17-23 in `simulation.feature`) pass in targeted run
->   (7/7, 2026-03-17)
+> - Multi-agent simulation strict scenarios in `simulation.feature` (from
+>   `Simulate multi-agent tx with senderPublicKey + secondarySignersPublicKeys` to
+>   `Simulate multi-agent + fee payer transaction with explicit signer key checks`) pass in targeted
+>   run (7/7, 2026-03-18)
 > - Some keyless and script tests use mocks
 
 ---
