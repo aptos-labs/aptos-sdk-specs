@@ -1,7 +1,9 @@
 # TypeScript SDK Test Status
 
-> **Last Updated:** 2026-03-18  
-> **Last Verified:** 2026-03-18 via `bun run cucumber-js --dry-run --format summary`
+> **Last Updated:** 2026-03-19  
+> **Last Verified:** 2026-03-19 via targeted execution of multi-agent simulation scenarios (7/7
+> passed)  
+> **Last Dry Run:** 2026-03-18 via `bun run cucumber-js --dry-run --format summary`
 
 ---
 
@@ -37,7 +39,7 @@
 > - Multi-agent simulation strict scenarios in `simulation.feature` (from
 >   `Simulate multi-agent tx with senderPublicKey + secondarySignersPublicKeys` to
 >   `Simulate multi-agent + fee payer transaction with explicit signer key checks`) passed in
->   targeted run (7/7, 2026-03-18)
+>   targeted run (7/7, 2026-03-19)
 > - Some keyless and script tests use mocks
 
 ---

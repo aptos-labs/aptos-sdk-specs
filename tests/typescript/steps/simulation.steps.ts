@@ -425,9 +425,6 @@ Then("simulation uses that price for calculations", function (this: AptosWorld) 
   expect(this.testVectors.get("specificGasPrice")).to.equal(200);
 });
 
-// Multi-agent simulation - use steps from multi-agent.steps.ts
-// Fee payer simulation - use steps from fee-payer.steps.ts
-
 Given("a multi-agent simulation transaction with {int} secondary signer", function (this: AptosWorld, count: number) {
   setupMultiAgentSimulationTransaction(this, count);
 });
