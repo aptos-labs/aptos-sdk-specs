@@ -1,10 +1,9 @@
 # TypeScript SDK Test Status
 
-> **Last Updated:** 2026-03-19  
-> **Last Verified:** 2026-03-19 via targeted execution of multi-agent simulation scenarios (7/7 passed)  
-> **Last Dry Run:** 2026-03-18 via `bun run cucumber-js --dry-run --format summary`
-
-
+> **Last Updated:** 2026-03-20  
+> **Last Verified:** 2026-03-19 via targeted execution of multi-agent simulation scenarios (7/7
+> passed)  
+> **Last Dry Run:** 2026-03-20 via `bun run cucumber-js --dry-run --format summary`
 ---
 
 ## 1. SDK Information
@@ -31,8 +30,9 @@
 
 > **Notes:**
 >
-> - 584 non-network/perf scenarios: 494 passed, 49 failed, 41 undefined
-> - 133 api-client scenarios: Require network access (timeout without network)
+> - 585 non-api, non-network/perf scenarios
+> - 133 api-clients scenarios (excluding `@network`/`@performance`): Require network access (timeout
+>   without network)
 > - 78 network/performance scenarios: Require live devnet/testnet
 > - 49 failures in Secp256r1, simulation, retry
 > - 41 undefined (codegen, some advanced features)

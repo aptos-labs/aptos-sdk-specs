@@ -1,6 +1,6 @@
 # Feature Coverage Matrix
 
-> **Last Updated:** 2026-02-23
+> **Last Updated:** 2026-03-20
 >
 > This file tracks implementation status of behavioral specifications across all SDK
 > implementations. Check boxes indicate that step definitions exist and tests pass for that
@@ -33,7 +33,7 @@
 
 | SDK        | Required (P0)  | Preferred (P1) | Optional (P2) | Total   | Notes                                            |
 | ---------- | -------------- | -------------- | ------------- | ------- | ------------------------------------------------ |
-| TypeScript | ~494/791 (62%) | included       | included      | 494/791 | 49 failed, 37 undefined; API tests need network  |
+| TypeScript | ~494/796 (62%) | included       | included      | 494/796 | 49 failed, 37 undefined; API tests need network  |
 | Go         | 333/791 (42%)  | included       | included      | 333/791 | 136 failed, 312 pending, 10 undefined            |
 | Rust       | 723/791 (91%)  | included       | included      | 723/791 | 56 skipped, 12 failed (network/benchmarks)       |
 | .NET       | 478/808 (59%)  | included       | included      | 478/808 | 330 failures (last verified 2026-01-28)          |
@@ -1104,9 +1104,10 @@ cd tests/rust && cargo test --test specs
 
 **Test Results (non-network, non-performance):**
 
-- 580 scenarios: 494 passed, 49 failed, 37 undefined
+- 585 scenarios in this bucket (`not (@api-clients or @network or @performance)`)
 - 2220 steps: 1993 passed, 49 failed, 132 undefined, 46 skipped
-- api-clients: Requires network (133 additional scenarios, timeout in CI)
+- api-clients: Requires network (133 scenarios for
+  `@api-clients and not (@network or @performance)`; 193 total `@api-clients` scenarios)
 
 **Mocked Tests (not real implementations):**
 
