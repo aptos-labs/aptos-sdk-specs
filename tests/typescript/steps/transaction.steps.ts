@@ -5,14 +5,11 @@ import {
   Serializer,
   Deserializer,
   EntryFunction,
-  EntryFunctionBytes,
   TransactionPayloadEntryFunction,
   RawTransaction,
   SignedTransaction,
   ChainId,
   parseTypeTag,
-  ModuleId,
-  Identifier,
   Account,
   Ed25519PrivateKey,
   Ed25519PublicKey,
@@ -25,20 +22,7 @@ import {
 import { sha3_256 } from "@noble/hashes/sha3.js";
 import type { AptosWorld } from "../support/world.js";
 import { bytesToHex } from "../support/vectors.js";
-
-// Helper to create a proper EntryFunction
-function createEntryFunction(
-  moduleAddress: AccountAddress,
-  moduleName: string,
-  functionName: string,
-  typeArgs: any[] = [],
-  args: Uint8Array[] = [],
-): EntryFunction {
-  const moduleId = new ModuleId(moduleAddress, new Identifier(moduleName));
-  // Wrap args in EntryFunctionBytes
-  const wrappedArgs = args.map((a) => new EntryFunctionBytes(a));
-  return new EntryFunction(moduleId, new Identifier(functionName), typeArgs, wrappedArgs);
-}
+import { createEntryFunction } from "../support/transaction-payload-helpers.js";
 
 // Helper to sign a transaction with an account
 function signWithAccount(rawTxn: RawTransaction, account: Account): SignedTransaction {
