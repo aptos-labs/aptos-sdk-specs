@@ -22,12 +22,7 @@ export function createEntryFunction(
     return EntryFunctionBytes.deserialize(deserializer, arg.length);
   });
 
-  return new EntryFunction(
-    moduleId,
-    new Identifier(functionName),
-    typeArgs,
-    wrappedArgs,
-  );
+  return new EntryFunction(moduleId, new Identifier(functionName), typeArgs, wrappedArgs);
 }
 
 export function createTransferPayload(
