@@ -14,7 +14,6 @@ import {
   EntryFunction,
   EntryFunctionBytes,
   Identifier,
-  U64,
   ChainId,
   MultiAgentTransaction,
   ModuleId,
