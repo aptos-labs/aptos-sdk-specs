@@ -1,8 +1,7 @@
 # TypeScript SDK Test Status
 
 > **Last Updated:** 2026-03-19  
-> **Last Verified:** 2026-03-19 via targeted execution of multi-agent simulation scenarios (7/7
-> passed)  
+> **Last Verified:** 2026-03-19 via targeted execution of multi-agent simulation scenarios (7/7 passed)  
 > **Last Dry Run:** 2026-03-18 via `bun run cucumber-js --dry-run --format summary`
 
 ---
