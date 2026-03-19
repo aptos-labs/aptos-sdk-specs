@@ -1,6 +1,10 @@
 import {
   AccountAddress,
+  Deserializer,
   EntryFunction,
+  EntryFunctionBytes,
+  Identifier,
+  ModuleId,
   Serializer,
   TransactionPayloadEntryFunction,
 } from "@aptos-labs/ts-sdk";
@@ -10,13 +14,19 @@ export function createEntryFunction(
   moduleName: string,
   functionName: string,
   typeArgs: any[] = [],
-  args: any[] = [],
+  args: Uint8Array[] = [],
 ): EntryFunction {
-  return EntryFunction.build(
-    `${moduleAddress.toString()}::${moduleName}`,
-    functionName,
+  const moduleId = new ModuleId(moduleAddress, new Identifier(moduleName));
+  const wrappedArgs = args.map((arg) => {
+    const deserializer = new Deserializer(arg);
+    return EntryFunctionBytes.deserialize(deserializer, arg.length);
+  });
+
+  return new EntryFunction(
+    moduleId,
+    new Identifier(functionName),
     typeArgs,
-    args,
+    wrappedArgs,
   );
 }
 
