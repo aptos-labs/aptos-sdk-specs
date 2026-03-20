@@ -1,6 +1,6 @@
 # Feature Coverage Matrix
 
-> **Last Updated:** 2026-02-23
+> **Last Updated:** 2026-03-20
 >
 > This file tracks implementation status of behavioral specifications across all SDK
 > implementations. Check boxes indicate that step definitions exist and tests pass for that
@@ -33,7 +33,7 @@
 
 | SDK        | Required (P0)  | Preferred (P1) | Optional (P2) | Total   | Notes                                            |
 | ---------- | -------------- | -------------- | ------------- | ------- | ------------------------------------------------ |
-| TypeScript | ~494/791 (62%) | included       | included      | 494/791 | 49 failed, 37 undefined; API tests need network  |
+| TypeScript | ~494/796 (62%) | included       | included      | 494/796 | 49 failed, 37 undefined; API tests need network  |
 | Go         | 333/791 (42%)  | included       | included      | 333/791 | 136 failed, 312 pending, 10 undefined            |
 | Rust       | 723/791 (91%)  | included       | included      | 723/791 | 56 skipped, 12 failed (network/benchmarks)       |
 | .NET       | 478/808 (59%)  | included       | included      | 478/808 | 330 failures (last verified 2026-01-28)          |
@@ -756,7 +756,7 @@
 | Feature                         | TS       | Go      | Rust     | Java     | Kotlin | Python  | .NET     | C++     | Swift |
 | ------------------------------- | -------- | ------- | -------- | -------- | ------ | ------- | -------- | ------- | ----- |
 | **error-handling** `@required`  | 🟡 28/30 | 🟡 1/30 | 🟡 27/30 | 🟡 28/30 | 🟡     | ❌ 0/30 | 🟡 15/30 | ❌ 0/30 | ❌    |
-| **simulation** `@preferred`     | 🟡 21/26 | ❌ 0/26 | ❌ 0/26  | ❌ 0/26  | ❌     | ❌ 0/26 | ❌ 0/26  | ❌ 0/26 | ❌    |
+| **simulation** `@preferred`     | 🟡 26/31 | ❌ 0/31 | ❌ 0/31  | ❌ 0/31  | ❌     | ❌ 0/31 | ❌ 0/31  | ❌ 0/31 | ❌    |
 | **multi-agent** `@optional`     | ✅ 20/20 | ❌ 0/20 | ❌ 0/20  | ❌ 0/20  | ❌     | ❌ 0/20 | ❌ 0/20  | ❌ 0/20 | ❌    |
 | **fee-payer** `@optional`       | ✅ 23/23 | ❌ 0/23 | ❌ 0/23  | ❌ 0/23  | ❌     | ❌ 0/23 | ❌ 0/23  | ❌ 0/23 | ❌    |
 | **multi-signature** `@optional` | ✅ 23/23 | ❌ 0/23 | ❌ 0/23  | ❌ 0/23  | ❌     | ❌ 0/23 | ❌ 0/23  | ❌ 0/23 | ❌    |
@@ -818,16 +818,21 @@
 | 14  | Simulate at specific version          | ✅  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
 | 15  | Simulate with gas override            | ✅  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
 | 16  | Simulate with gas price override      | ✅  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
-| 17  | Simulate multi-agent tx               | ✅  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
-| 18  | Simulate fee payer tx                 | ✅  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
-| 19  | Simulation doesn't commit             | ✅  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
-| 20  | Simulation may differ from exec       | ✅  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
-| 21  | Simulation with current seq           | ✅  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
-| 22  | Simulate multiple txs                 | ❌  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
-| 23  | Simulate tx sequence                  | ❌  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
-| 24  | Simulation network error              | ❌  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
-| 25  | Invalid tx for simulation             | ❌  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
-| 26  | Simulation timeout                    | ❌  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
+| 17  | Multi-agent sim with sender pubkey    | ✅  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
+| 18  | Multi-agent sim without pubkeys       | ✅  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
+| 19  | Multi-agent sim with partial checks   | ✅  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
+| 20  | Reject malformed signer key mapping   | ✅  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
+| 21  | Multi-agent sim includes changes      | ✅  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
+| 22  | Multi-agent + fee payer sim (skip)    | ✅  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
+| 23  | Multi-agent + fee payer sim (keys)    | ✅  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
+| 24  | Simulation doesn't commit             | ✅  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
+| 25  | Simulation may differ from exec       | ✅  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
+| 26  | Simulation with current seq           | ✅  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
+| 27  | Simulate multiple txs                 | ❌  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
+| 28  | Simulate tx sequence                  | ❌  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
+| 29  | Simulation network error              | ❌  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
+| 30  | Invalid tx for simulation             | ❌  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
+| 31  | Simulation timeout                    | ❌  | ❌  | ❌   | ❌   | ❌     | ❌     | ❌   | ❌  | ❌    |
 
 ### multi-agent.feature `@optional`
 
@@ -1099,9 +1104,10 @@ cd tests/rust && cargo test --test specs
 
 **Test Results (non-network, non-performance):**
 
-- 580 scenarios: 494 passed, 49 failed, 37 undefined
+- 585 scenarios in this bucket (`not (@api-clients or @network or @performance)`)
 - 2220 steps: 1993 passed, 49 failed, 132 undefined, 46 skipped
-- api-clients: Requires network (133 additional scenarios, timeout in CI)
+- api-clients: Requires network (133 scenarios for
+  `@api-clients and not (@network or @performance)`; 193 total `@api-clients` scenarios)
 
 **Mocked Tests (not real implementations):**
 

@@ -11,9 +11,6 @@ import {
   Account,
   AccountAddress,
   RawTransaction,
-  TransactionPayloadEntryFunction,
-  EntryFunction,
-  EntryFunctionBytes,
   ChainId,
   SignedTransaction,
   MultiAgentTransaction,
@@ -24,47 +21,11 @@ import {
   generateSigningMessageForTransaction,
   Serializer,
   Deserializer,
-  ModuleId,
-  Identifier,
 } from "@aptos-labs/ts-sdk";
 import { sha3_256 } from "@noble/hashes/sha3.js";
 import { bytesToHex } from "@noble/hashes/utils.js";
 import type { AptosWorld } from "../support/world.js";
-
-// Helper to create a proper EntryFunction
-function createEntryFunction(
-  moduleAddress: AccountAddress,
-  moduleName: string,
-  functionName: string,
-  typeArgs: any[] = [],
-  args: Uint8Array[] = [],
-): EntryFunction {
-  const moduleId = new ModuleId(moduleAddress, new Identifier(moduleName));
-  const wrappedArgs = args.map((a) => new EntryFunctionBytes(a));
-  return new EntryFunction(moduleId, new Identifier(functionName), typeArgs, wrappedArgs);
-}
-
-// Helper to create a standard APT transfer payload
-function createTransferPayload(
-  recipient: AccountAddress,
-  amount: bigint,
-): TransactionPayloadEntryFunction {
-  const recipientSerializer = new Serializer();
-  recipient.serialize(recipientSerializer);
-
-  const amountSerializer = new Serializer();
-  amountSerializer.serializeU64(amount);
-
-  const entryFunction = createEntryFunction(
-    AccountAddress.ONE,
-    "aptos_account",
-    "transfer",
-    [],
-    [recipientSerializer.toUint8Array(), amountSerializer.toUint8Array()],
-  );
-
-  return new TransactionPayloadEntryFunction(entryFunction);
-}
+import { createTransferPayload } from "../support/transaction-payload-helpers.js";
 
 // =============================================================================
 // Fee Payer Transaction Creation
@@ -295,11 +256,17 @@ Given("a fee payer transaction with sender, secondary, and sponsor", function (t
     BigInt(Math.floor(Date.now() / 1000) + 600),
     new ChainId(1),
   );
+  const feePayerTxn = new FeePayerRawTransaction(
+    rawTxn,
+    [secondary.accountAddress],
+    feePayer.accountAddress,
+  );
 
   this.testVectors.set("senderAccount", sender);
   this.testVectors.set("secondaryAccounts", [secondary]);
   this.testVectors.set("feePayerAccount", feePayer);
   this.testVectors.set("rawTransaction", rawTxn);
+  this.testVectors.set("feePayerTransaction", feePayerTxn);
   this.testVectors.set("feePayerAddress", feePayer.accountAddress);
   this.testVectors.set("secondaryAddresses", [secondary.accountAddress]);
 });

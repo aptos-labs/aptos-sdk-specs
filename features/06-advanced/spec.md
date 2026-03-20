@@ -164,6 +164,25 @@ message = SHA3-256("APTOS::RawTransactionWithData") || bcs(FeePayer {
 
 ---
 
+## Transaction Simulation Semantics (Preferred - P1)
+
+### Description
+
+Simulation validates transaction structure and executes VM logic without committing state.
+
+### Multi-Agent / Fee Payer Simulation Rules
+
+- Simulation input MAY include sender, secondary signer, and fee payer public keys for optional
+  authentication key checks.
+- SDKs MAY allow simulation when signer public keys are omitted; in this mode, authentication key
+  checks are skipped.
+- For multi-agent simulation, SDKs MAY support partial checks by allowing undefined placeholders in
+  secondary signer public key slots.
+- Simulation does NOT require full transaction authenticator validation and does NOT imply the
+  transaction can be submitted successfully on-chain.
+
+---
+
 ## Keyless Accounts (Optional - P2)
 
 ### Description

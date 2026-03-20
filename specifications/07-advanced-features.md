@@ -553,11 +553,50 @@ Transaction simulation executes a transaction without committing, returning expe
 ```
 simulate(
     raw_txn: RawTransaction,
-    sender_public_key: PublicKey
+    sender_public_key: Option<PublicKey>
 ) -> Result<SimulationResult, Error>
 ```
 
-### 6.3 Simulation Result [P1]
+`sender_public_key` is optional for SDKs that support skipping authentication key checks in
+simulation.
+
+### 6.3 Multi-Agent / Fee Payer Simulation Inputs [P1]
+
+For multi-agent and fee payer simulation, SDKs MAY accept additional signer public keys to run
+authentication key checks before simulation.
+
+**Language-agnostic pseudocode shape (illustrative):**
+
+```
+simulate_multi_agent(
+    raw_txn: RawTransaction,
+    secondary_signer_addresses: Vec<AccountAddress>,
+    sender_public_key: Option<PublicKey>,
+    secondary_signers_public_keys: Option<Vec<Option<PublicKey>>>
+) -> Result<SimulationResult, Error>
+
+simulate_fee_payer(
+    raw_txn: RawTransaction,
+    secondary_signer_addresses: Vec<AccountAddress>,
+    fee_payer_address: AccountAddress,
+    sender_public_key: Option<PublicKey>,
+    secondary_signers_public_keys: Option<Vec<Option<PublicKey>>>,
+    fee_payer_public_key: Option<PublicKey>
+) -> Result<SimulationResult, Error>
+```
+
+**Requirements:**
+
+1. If signer public keys (sender / secondary / fee payer) are provided, SDK **MUST** check provided
+   signer/address mappings via authentication keys.
+2. If signer public keys are omitted, SDK **MAY** skip authentication key checks and still simulate.
+3. For multi-agent simulation, SDK **MAY** support partial checks by allowing `undefined`/`None`
+   entries in secondary signer key slots.
+4. Malformed key mappings (e.g., address count and key-slot count mismatch) **MUST** fail validation
+   before simulation request execution.
+5. Simulation **MUST NOT** be treated as full transaction authenticator validation.
+
+### 6.4 Simulation Result [P1]
 
 | Field     | Type        | Description                    |
 | --------- | ----------- | ------------------------------ |
@@ -567,7 +606,7 @@ simulate(
 | changes   | Vec<Change> | State changes that would occur |
 | events    | Vec<Event>  | Events that would be emitted   |
 
-### 6.4 Use Cases [P1]
+### 6.5 Use Cases [P1]
 
 1. **Gas Estimation:** Determine gas needed before submission
 2. **Error Preview:** Check for errors before submission
@@ -718,7 +757,7 @@ Test vectors in `test-vectors/multi-sig.json`:
 - `features/06-advanced/multi-agent.feature` - 22 multi-agent scenarios
 - `features/06-advanced/fee-payer.feature` - 23 fee payer scenarios
 - `features/06-advanced/keyless.feature` - 28 keyless scenarios
-- `features/06-advanced/simulation.feature` - 23 simulation scenarios
+- `features/06-advanced/simulation.feature` - 31 simulation scenarios
 - `features/06-advanced/codegen.feature` - 30 codegen scenarios
 
 ### 10.3 Test Vectors

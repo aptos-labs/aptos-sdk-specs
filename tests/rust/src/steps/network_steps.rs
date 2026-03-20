@@ -586,12 +586,11 @@ fn when_measure_get_tx_by_hash(world: &mut TestWorld, iterations: usize) {
     if let Some(ref aptos) = world.aptos_client {
         let rt = tokio::runtime::Runtime::new().expect("Failed to create runtime");
         // Use hash from world or a known genesis transaction
-        let hash_str = world.hex_string.as_deref().unwrap_or(
-            "0x0000000000000000000000000000000000000000000000000000000000000001",
-        );
-        if let Ok(hash) =
-            aptos_sdk::types::HashValue::from_hex(hash_str.trim_start_matches("0x"))
-        {
+        let hash_str = world
+            .hex_string
+            .as_deref()
+            .unwrap_or("0x0000000000000000000000000000000000000000000000000000000000000001");
+        if let Ok(hash) = aptos_sdk::types::HashValue::from_hex(hash_str.trim_start_matches("0x")) {
             for _ in 0..iterations {
                 let start = Instant::now();
                 let _ =
@@ -630,12 +629,7 @@ fn when_measure_query_tokens(world: &mut TestWorld, iterations: usize) {
         let rt = tokio::runtime::Runtime::new().expect("Failed to create runtime");
         for _ in 0..iterations {
             let start = Instant::now();
-            let _ = rt.block_on(async {
-                aptos
-                    .fullnode()
-                    .get_account_resources(address)
-                    .await
-            });
+            let _ = rt.block_on(async { aptos.fullnode().get_account_resources(address).await });
             world
                 .benchmark_timings
                 .push(start.elapsed().as_micros() as u64);
@@ -654,12 +648,7 @@ fn when_measure_query_transactions(world: &mut TestWorld, iterations: usize) {
             let start = Instant::now();
             // Note: get_account_transactions is not available in the current SDK version.
             // Using get_account_resources as an account-level fullnode query benchmark instead.
-            let _ = rt.block_on(async {
-                aptos
-                    .fullnode()
-                    .get_account_resources(address)
-                    .await
-            });
+            let _ = rt.block_on(async { aptos.fullnode().get_account_resources(address).await });
             world
                 .benchmark_timings
                 .push(start.elapsed().as_micros() as u64);
@@ -676,12 +665,7 @@ fn when_measure_query_fa_balances(world: &mut TestWorld, iterations: usize) {
         let rt = tokio::runtime::Runtime::new().expect("Failed to create runtime");
         for _ in 0..iterations {
             let start = Instant::now();
-            let _ = rt.block_on(async {
-                aptos
-                    .fullnode()
-                    .get_account_resources(address)
-                    .await
-            });
+            let _ = rt.block_on(async { aptos.fullnode().get_account_resources(address).await });
             world
                 .benchmark_timings
                 .push(start.elapsed().as_micros() as u64);
@@ -722,9 +706,7 @@ fn when_measure_submit_transfers(world: &mut TestWorld, count: usize) {
     world.benchmark_timings.clear();
 
     // Network-dependent: only run real submissions when we have a funded account and client
-    if let (Some(ref aptos), Some(ref account)) =
-        (&world.aptos_client, &world.ed25519_account)
-    {
+    if let (Some(ref aptos), Some(ref account)) = (&world.aptos_client, &world.ed25519_account) {
         use aptos_sdk::transaction::{EntryFunction, TransactionBuilder, TransactionPayload};
         use aptos_sdk::ChainId;
 
@@ -798,9 +780,7 @@ fn when_measure_submit_and_wait(world: &mut TestWorld, count: usize) {
     world.benchmark_timings.clear();
 
     // Full round-trip requires real network - record timings only when available
-    if let (Some(ref aptos), Some(ref account)) =
-        (&world.aptos_client, &world.ed25519_account)
-    {
+    if let (Some(ref aptos), Some(ref account)) = (&world.aptos_client, &world.ed25519_account) {
         use aptos_sdk::transaction::{EntryFunction, TransactionBuilder, TransactionPayload};
         use aptos_sdk::ChainId;
 
@@ -843,9 +823,7 @@ fn when_measure_full_flow(world: &mut TestWorld, count: usize) {
     world.benchmark_timings.clear();
 
     // Full flow measurement requires real network
-    if let (Some(ref aptos), Some(ref account)) =
-        (&world.aptos_client, &world.ed25519_account)
-    {
+    if let (Some(ref aptos), Some(ref account)) = (&world.aptos_client, &world.ed25519_account) {
         use aptos_sdk::transaction::{
             builder::sign_transaction, EntryFunction, TransactionBuilder, TransactionPayload,
         };

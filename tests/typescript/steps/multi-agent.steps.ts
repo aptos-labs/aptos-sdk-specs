@@ -11,9 +11,6 @@ import {
   Account,
   AccountAddress,
   RawTransaction,
-  TransactionPayloadEntryFunction,
-  EntryFunction,
-  EntryFunctionBytes,
   ChainId,
   SignedTransaction,
   MultiAgentTransaction,
@@ -26,47 +23,11 @@ import {
   Serializer,
   Deserializer,
   SigningSchemeInput,
-  ModuleId,
-  Identifier,
 } from "@aptos-labs/ts-sdk";
 import { sha3_256 } from "@noble/hashes/sha3.js";
 import { bytesToHex } from "@noble/hashes/utils.js";
 import type { AptosWorld } from "../support/world.js";
-
-// Helper to create a proper EntryFunction
-function createEntryFunction(
-  moduleAddress: AccountAddress,
-  moduleName: string,
-  functionName: string,
-  typeArgs: any[] = [],
-  args: Uint8Array[] = [],
-): EntryFunction {
-  const moduleId = new ModuleId(moduleAddress, new Identifier(moduleName));
-  const wrappedArgs = args.map((a) => new EntryFunctionBytes(a));
-  return new EntryFunction(moduleId, new Identifier(functionName), typeArgs, wrappedArgs);
-}
-
-// Helper to create a standard APT transfer payload
-function createTransferPayload(
-  recipient: AccountAddress,
-  amount: bigint,
-): TransactionPayloadEntryFunction {
-  const recipientSerializer = new Serializer();
-  recipient.serialize(recipientSerializer);
-
-  const amountSerializer = new Serializer();
-  amountSerializer.serializeU64(amount);
-
-  const entryFunction = createEntryFunction(
-    AccountAddress.ONE,
-    "aptos_account",
-    "transfer",
-    [],
-    [recipientSerializer.toUint8Array(), amountSerializer.toUint8Array()],
-  );
-
-  return new TransactionPayloadEntryFunction(entryFunction);
-}
+import { createTransferPayload } from "../support/transaction-payload-helpers.js";
 
 // =============================================================================
 // Multi-Agent Transaction Creation

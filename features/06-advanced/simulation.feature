@@ -134,17 +134,64 @@ Feature: Transaction Simulation
   # Multi-Agent Simulation
   # =============================================================================
   @preferred
-  Scenario: Simulate multi-agent transaction
-    Given a multi-agent transaction
-    When I simulate it
+  Scenario: Simulate multi-agent tx with senderPublicKey + secondarySignersPublicKeys
+    Given a multi-agent simulation transaction with 1 secondary signer
+    And sender public key is provided for simulation
+    And secondary signer public keys are provided for simulation
+    When I simulate the multi-agent transaction
     Then simulation should work
-    And show changes for all involved accounts
+    And auth-key checks should run for all provided signers
 
   @preferred
-  Scenario: Simulate fee payer transaction
-    Given a fee payer transaction
-    When I simulate it
-    Then gas should be charged to fee payer
+  Scenario: Simulate multi-agent tx with no public keys (skip auth-key checks)
+    Given a multi-agent transaction
+    And no signer public keys are provided for simulation
+    When I simulate the multi-agent transaction
+    Then simulation should work
+    And auth-key checks should be skipped
+
+  @preferred
+  Scenario: Simulate multi-agent tx with partial auth-key checks using undefined placeholders
+    Given a multi-agent simulation transaction with 3 secondary signers
+    And sender public key is provided for simulation
+    And secondary signer public keys include undefined placeholders
+    When I simulate the multi-agent transaction
+    Then simulation should work
+    And auth-key checks should run only for provided signer slots
+
+  @preferred
+  Scenario: Reject simulation input when secondary signer key mapping is malformed
+    Given a multi-agent simulation transaction with 2 secondary signers
+    And secondary signer public key mapping has wrong length
+    When I try to simulate
+    Then I should get validation error before simulation even runs
+
+  @preferred
+  Scenario: Simulation result includes changes/events across involved accounts
+    Given a multi-agent transaction
+    And a simulation result covering sender and secondary accounts
+    When I inspect the multi-agent simulation result
+    Then simulation should work
+    And show changes for all involved accounts
+    And it should include events for involved accounts
+
+  @preferred
+  Scenario: Simulate multi-agent + fee payer transaction with skipped auth-key checks
+    Given a fee payer transaction with sender, secondary, and sponsor
+    And no signer public keys are provided for simulation
+    When I simulate the multi-agent fee-payer transaction
+    Then simulation should work
+    And gas should be charged to fee payer
+    And simulation should reflect that
+
+  @preferred
+  Scenario: Simulate multi-agent + fee payer transaction with explicit signer key checks
+    Given a fee payer transaction with sender, secondary, and sponsor
+    And sender, secondary, and fee payer public keys are provided for simulation
+    When I simulate the multi-agent fee-payer transaction
+    Then simulation should work
+    And gas should be charged to fee payer
+    And auth-key checks should run for all provided signers
     And simulation should reflect that
 
   # =============================================================================

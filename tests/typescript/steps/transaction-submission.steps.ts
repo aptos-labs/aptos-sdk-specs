@@ -148,15 +148,9 @@ When("I submit it successfully", async function (this: AptosWorld) {
   if (account) {
     const addrHex = account.accountAddress.toString().replace("0x", "");
     // Use address-derived hash to ensure uniqueness per account
-    this.testVectors.set(
-      "transactionHash",
-      "0x" + addrHex.padStart(64, "0").slice(0, 64),
-    );
+    this.testVectors.set("transactionHash", "0x" + addrHex.padStart(64, "0").slice(0, 64));
   } else {
-    this.testVectors.set(
-      "transactionHash",
-      "0x" + "0".repeat(64),
-    );
+    this.testVectors.set("transactionHash", "0x" + "0".repeat(64));
   }
   this.testVectors.set("submissionSuccessful", true);
 });
