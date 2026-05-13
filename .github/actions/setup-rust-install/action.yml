@@ -1,0 +1,39 @@
+name: Setup Rust + Cache
+description: >
+  Installs the Rust toolchain via dtolnay/rust-toolchain and restores
+  the Cargo registry/target cache. No explicit `cargo install` step is
+  needed — callers invoke `cargo` or `make` directly after this action.
+
+inputs:
+  toolchain:
+    description: Rust toolchain version (e.g. "1.85.0").
+    required: false
+    default: "1.85.0"
+  components:
+    description: Comma-separated list of additional components (e.g. "clippy").
+    required: false
+    default: ""
+  cargo-lock-path:
+    description: Relative path to Cargo.lock for cache key derivation.
+    required: false
+    default: "Cargo.lock"
+
+runs:
+  using: composite
+  steps:
+    - name: Setup Rust toolchain
+      uses: dtolnay/rust-toolchain@29eef336d9b2848a0b548edc03f92a220660cdb8 # stable
+      with:
+        toolchain: ${{ inputs.toolchain }}
+        components: ${{ inputs.components }}
+
+    - name: Cache cargo
+      uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+      with:
+        path: |
+          ~/.cargo/bin/
+          ~/.cargo/registry/index/
+          ~/.cargo/registry/cache/
+          ~/.cargo/git/db/
+          target/
+        key: ${{ runner.os }}-cargo-${{ hashFiles(inputs.cargo-lock-path) }}

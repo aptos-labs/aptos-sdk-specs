@@ -1,0 +1,27 @@
+name: Setup Java + Gradle
+description: >
+  Sets up Java with Gradle dependency caching and configures the Gradle
+  build toolchain.
+
+inputs:
+  java-version:
+    description: Java version to install (e.g. "21").
+    required: false
+    default: "21"
+  distribution:
+    description: JDK distribution (e.g. "temurin").
+    required: false
+    default: "temurin"
+
+runs:
+  using: composite
+  steps:
+    - name: Setup Java
+      uses: actions/setup-java@c1e323688fd81a25caa38c78aa6df2d33d3e20d9 # v4
+      with:
+        distribution: ${{ inputs.distribution }}
+        java-version: ${{ inputs.java-version }}
+        cache: "gradle"
+
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@48b5f213c81028ace310571dc5ec0fbbca0b2947 # v4

@@ -1,0 +1,32 @@
+name: Setup Conan + Install
+description: >
+  Runs aikidosec safe-chain, installs system build tools (cmake, ninja-build),
+  installs Conan via pip, detects the default Conan profile, and installs
+  Conan dependencies into the specified output folder.
+
+inputs:
+  output-folder:
+    description: Output folder path passed to `conan install --output-folder`.
+    required: false
+    default: "build"
+
+runs:
+  using: composite
+  steps:
+    - uses: aptos-labs/actions/aikidosec-safe-chain@main
+
+    - name: Install system build tools
+      shell: bash
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y cmake ninja-build
+
+    - name: Install Conan
+      shell: bash
+      run: |
+        pip install conan
+        conan profile detect
+
+    - name: Install Conan dependencies
+      shell: bash
+      run: conan install . --output-folder=${{ inputs.output-folder }} --build=missing

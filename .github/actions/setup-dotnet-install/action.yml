@@ -1,0 +1,26 @@
+name: Setup .NET + Restore
+description: >
+  Installs the .NET SDK and runs `dotnet restore` to download NuGet packages.
+
+inputs:
+  dotnet-version:
+    description: .NET SDK version to install (e.g. "8.0.x").
+    required: false
+    default: "8.0.x"
+  working-directory:
+    description: Directory containing the .NET project/solution where `dotnet restore` should run.
+    required: false
+    default: "."
+
+runs:
+  using: composite
+  steps:
+    - name: Setup .NET
+      uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9 # v4
+      with:
+        dotnet-version: ${{ inputs.dotnet-version }}
+
+    - name: Restore dependencies
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: dotnet restore
