@@ -1,0 +1,25 @@
+name: Setup Java (Maven)
+description: >
+  Sets up Java with Maven dependency caching. Maven dependencies are
+  resolved lazily on first `mvn`/`make` invocation; this action primes
+  the cache via setup-java's built-in Maven cache support.
+
+inputs:
+  java-version:
+    description: Java version to install (e.g. "21").
+    required: false
+    default: "21"
+  distribution:
+    description: JDK distribution (e.g. "temurin").
+    required: false
+    default: "temurin"
+
+runs:
+  using: composite
+  steps:
+    - name: Setup Java
+      uses: actions/setup-java@c1e323688fd81a25caa38c78aa6df2d33d3e20d9 # v4
+      with:
+        distribution: ${{ inputs.distribution }}
+        java-version: ${{ inputs.java-version }}
+        cache: "maven"

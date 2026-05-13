@@ -1,0 +1,31 @@
+name: Setup Go + Install
+description: >
+  Sets up Go and downloads module dependencies via `go mod download`.
+
+inputs:
+  go-version:
+    description: Go version to install (e.g. "1.22").
+    required: false
+    default: "1.22"
+  cache-dependency-path:
+    description: Path to go.sum file for cache key derivation.
+    required: false
+    default: "go.sum"
+  working-directory:
+    description: Directory containing go.mod where `go mod download` should run.
+    required: false
+    default: "."
+
+runs:
+  using: composite
+  steps:
+    - name: Setup Go
+      uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5
+      with:
+        go-version: ${{ inputs.go-version }}
+        cache-dependency-path: ${{ inputs.cache-dependency-path }}
+
+    - name: Install dependencies
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: go mod download

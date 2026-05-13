@@ -1,0 +1,29 @@
+name: Setup Swift + Resolve
+description: >
+  Selects the latest available Xcode installation and resolves Swift Package
+  Manager dependencies via `swift package resolve`.
+
+inputs:
+  working-directory:
+    description: Directory containing Package.swift where `swift package resolve` should run.
+    required: false
+    default: "."
+
+runs:
+  using: composite
+  steps:
+    - name: Select Xcode
+      shell: bash
+      run: |
+        ls /Applications/ | grep Xcode || true
+        XCODE_PATH=$(ls -d /Applications/Xcode*.app 2>/dev/null | sort -V | tail -1)
+        if [ -n "$XCODE_PATH" ]; then
+          sudo xcode-select -s "$XCODE_PATH/Contents/Developer"
+        fi
+        swift --version
+        xcodebuild -version || true
+
+    - name: Resolve Swift dependencies
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: swift package resolve
